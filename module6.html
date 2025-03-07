@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Module 6: AI Impact</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/stylesModules.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="module-container">
+            <div class="module-header">
+                <h1>Module 6: AI Impact</h1>
+                <p class="subtitle">Exploring the broader impacts of AI on society</p>
+            </div>
+            
+            <div class="module-intro">
+                <div class="module-intro-content">
+                    <p>Welcome to Module 6 of the AI Fluency course! This final module explores how AI is making a positive impact on society through accessibility, job roles, and humanitarian action.</p>
+                    <p>You'll learn about the ways AI is transforming opportunities for people with disabilities, changing job roles, and addressing global challenges. Choose a chapter below to explore these important topics.</p>
+                </div>
+                <div class="module-intro-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Earth -->
+                        <circle cx="100" cy="100" r="50" fill="#4B6EFB" opacity="0.7"/>
+                        
+                        <!-- Continents -->
+                        <path d="M70 70 Q90 60, 110 70 Q130 80, 140 65 Q145 90, 130 110 Q110 115, 90 105 Q70 90, 70 70" fill="#4BFB9D" opacity="0.7"/>
+                        <path d="M90 130 Q110 125, 120 140 Q100 150, 80 140 Q85 130, 90 130" fill="#4BFB9D" opacity="0.7"/>
+                        
+                        <!-- Connection Points -->
+                        <circle cx="80" cy="80" r="5" fill="#FB4B4B"/>
+                        <circle cx="130" cy="70" r="5" fill="#FB4B4B"/>
+                        <circle cx="120" cy="120" r="5" fill="#FB4B4B"/>
+                        <circle cx="90" cy="140" r="5" fill="#FB4B4B"/>
+                        
+                        <!-- Connections -->
+                        <line x1="80" y1="80" x2="50" y2="50" stroke="#FBD44B" stroke-width="2"/>
+                        <line x1="130" y1="70" x2="160" y2="40" stroke="#FBD44B" stroke-width="2"/>
+                        <line x1="120" y1="120" x2="150" y2="150" stroke="#FBD44B" stroke-width="2"/>
+                        <line x1="90" y1="140" x2="60" y2="170" stroke="#FBD44B" stroke-width="2"/>
+                        
+                        <!-- Connected Devices -->
+                        <rect x="40" y="40" width="20" height="20" rx="2" fill="#f0f0f0" stroke="#333"/>
+                        <rect x="150" y="30" width="20" height="20" rx="2" fill="#f0f0f0" stroke="#333"/>
+                        <rect x="140" y="140" width="20" height="20" rx="2" fill="#f0f0f0" stroke="#333"/>
+                        <rect x="50" y="160" width="20" height="20" rx="2" fill="#f0f0f0" stroke="#333"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-universal-access"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>6.40 - AI and Accessibility</h3>
+                        <p>How AI is improving accessibility for people with disabilities.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>6.41 - Impact on Job Roles</h3>
+                        <p>How AI is transforming job roles across various industries.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>6.42 - AI for Humanitarian Action</h3>
+                        <p>Using AI to address global humanitarian challenges.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>6.43 - Inclusive AI</h3>
+                        <p>Building AI systems that work for everyone.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module-navigation">
+                <a href="module5.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Module</a>
+                <a href="index.html" class="nav-button next">Back to Modules <i class="fas fa-th-list"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

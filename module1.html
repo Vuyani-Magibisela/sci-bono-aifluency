@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Module 1: AI Foundations</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/stylesModules.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="module-container">
+            <div class="module-header">
+                <h1>Module 1: AI Foundations</h1>
+                <p class="subtitle">Explore the history and fundamental concepts of AI</p>
+            </div>
+            
+            <div class="module-intro">
+                <div class="module-intro-content">
+                    <p>Welcome to Module 1 of the AI Fluency course! In this module, you'll learn about the history and fundamental concepts of artificial intelligence. From its early beginnings to modern developments, you'll gain a comprehensive understanding of what AI is and how it has evolved over the decades.</p>
+                    <p>Choose a chapter below to begin your learning journey.</p>
+                </div>
+                <div class="module-intro-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Brain with network connections -->
+                        <ellipse cx="100" cy="100" rx="70" ry="60" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <path d="M70 80 Q100 40, 130 80" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <path d="M70 120 Q100 160, 130 120" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <line x1="70" y1="100" x2="130" y2="100" stroke="#4B6EFB" stroke-width="2" />
+                        
+                        <!-- Nodes -->
+                        <circle cx="70" cy="80" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="80" r="5" fill="#FB4B4B" />
+                        <circle cx="70" cy="120" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="120" r="5" fill="#FB4B4B" />
+                        <circle cx="70" cy="100" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="100" r="5" fill="#FB4B4B" />
+                        <circle cx="100" cy="60" r="5" fill="#FB4B4B" />
+                        <circle cx="100" cy="140" r="5" fill="#FB4B4B" />
+                        
+                        <!-- Connect all nodes -->
+                        <line x1="70" y1="80" x2="70" y2="100" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="100" x2="70" y2="120" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="80" x2="130" y2="100" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="100" x2="130" y2="120" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="80" x2="100" y2="60" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="80" x2="100" y2="60" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="120" x2="100" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="120" x2="100" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.00 - AI History</h3>
+                        <p>A brief history of AI from its early beginnings to modern developments.</p>
+                        <a href="chapter1.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.01 - What is Artificial Intelligence?</h3>
+                        <p>Explore the fundamental concepts and definitions of AI.</p>
+                        <a href="chapter2.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.02 - Knowledge vs Intelligence</h3>
+                        <p>Understanding the key differences between knowledge and intelligence in AI.</p>
+                        <a href="chapter3.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.03 - Data Everywhere</h3>
+                        <p>How data fuels AI systems and impacts our daily lives.</p>
+                        <a href="chapter4.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.04 - Finding Patterns in Data</h3>
+                        <p>How AI identifies and utilizes patterns in data.</p>
+                        <a href="chapter5.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.05 - Machine Learning</h3>
+                        <p>Understanding the principles and applications of machine learning.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.06 - Types of Machine Learning</h3>
+                        <p>Exploring supervised, unsupervised, and reinforcement learning.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.07 - Deep Learning</h3>
+                        <p>Understanding deep learning and neural networks.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.08 - Natural Language Processing</h3>
+                        <p>How AI understands and generates human language.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.09 - AI Algorithms</h3>
+                        <p>The computational processes that power AI systems.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>1.10 - AI in Action</h3>
+                        <p>Real-world applications and implementations of AI.</p>
+                        <a href="#" class="chapter-link disabled">Coming Soon</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module-navigation">
+                <a href="index.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Back to Modules</a>
+                <a href="module2.html" class="nav-button next">Next Module <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
