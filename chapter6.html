@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fluency - Types of Machine Learning</title>
+    <title>AI Fluency - Chapter 1.05: Machine Learning</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -29,294 +29,248 @@
         <div class="chapter-container">
             <div class="chapter-header">
                 <div class="module-badge">Module 1: AI Foundations</div>
-                <h1>Chapter 1.06: Types of Machine Learning</h1>
-                <p class="subtitle">Understanding Different Learning Approaches</p>
+                <h1>Chapter 1.05: Machine Learning</h1>
+                <p class="subtitle">Understanding the differences between AI and machine learning, and how machines learn from data</p>
             </div>
 
             <div class="chapter-nav">
                 <div class="nav-buttons-container">
                     <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
-                    <a href="#supervised" class="nav-tab"><i class="fas fa-chalkboard-teacher"></i> Supervised Learning</a>
-                    <a href="#unsupervised" class="nav-tab"><i class="fas fa-project-diagram"></i> Unsupervised Learning</a>
-                    <a href="#reinforcement" class="nav-tab"><i class="fas fa-trophy"></i> Reinforcement Learning</a>
-                    <a href="#deep-learning" class="nav-tab"><i class="fas fa-brain"></i> Deep Learning</a>
+                    <a href="#differences" class="nav-tab"><i class="fas fa-exchange-alt"></i> AI vs ML</a>
+                    <a href="#learning-types" class="nav-tab"><i class="fas fa-graduation-cap"></i> Learning Types</a>
+                    <a href="#math-concepts" class="nav-tab"><i class="fas fa-square-root-alt"></i> Mathematical Foundations</a>
+                    <a href="#bicycle-analogy" class="nav-tab"><i class="fas fa-bicycle"></i> Learning Analogy</a>
                 </div>
             </div>
 
             <div class="chapter-content">
                 <section class="content-section" id="introduction">
-                    <h2>Learning from Experience</h2>
-                    <p>Just as humans learn from experience, machines can too. Machine learning enables computers to learn from data, identify patterns, and make decisions with minimal human intervention.</p>
-                    
-                    <p>Machine learning approaches can be categorized into three main types: supervised learning, unsupervised learning, and reinforcement learning. Each approach has its unique characteristics and applications.</p>
-                    
-                    <div class="info-box">
-                        <h3>Key Concept</h3>
-                        <p>All machine learning is AI, but not all AI involves machine learning. These learning approaches reflect different ways machines can acquire knowledge and improve over time.</p>
-                    </div>
+                    <h2>Understanding Machine Learning</h2>
+                    <p>You might have heard the terms 'machine learning' and 'AI' used interchangeably, and you may be wondering, 'What is the difference?' Well, there is a difference, and it is important to understand how they are different.</p>
                     
                     <div class="image-container">
-                        <svg width="400" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Learning types illustration -->
-                            <circle cx="150" cy="150" r="100" fill="#f3f4f6" stroke="#4B6EFB" stroke-width="2"/>
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- AI Speech Bubble Woman -->
+                            <circle cx="100" cy="110" r="20" fill="#666" />
+                            <rect x="95" y="130" width="10" height="25" fill="#666" />
+                            <rect x="85" y="155" width="30" height="15" rx="5" fill="#333" />
+                            <rect x="87" y="157" width="26" height="11" fill="#f0f0f0" />
+                            <path d="M130 70 Q150 60, 160 80 L160 90 Q160 100, 150 105 L110 105 Q100 105, 100 95 L100 80 Q100 70, 110 70 Z" fill="#fff" stroke="#333" />
+                            <text x="115" y="93" font-family="Arial" font-size="16" fill="#333">AI</text>
                             
-                            <!-- Three segments -->
-                            <path d="M150,150 L150,50 A100,100 0 0,1 236.6,200 Z" fill="#e6f7ff" stroke="#6E4BFB" stroke-width="1"/>
-                            <path d="M150,150 L236.6,200 A100,100 0 0,1 63.4,200 Z" fill="#ffe6e6" stroke="#FB4B4B" stroke-width="1"/>
-                            <path d="M150,150 L63.4,200 A100,100 0 0,1 150,50 Z" fill="#e6ffe6" stroke="#4BFB9D" stroke-width="1"/>
+                            <!-- ML Speech Bubble Woman -->
+                            <circle cx="300" cy="110" r="20" fill="#666" />
+                            <rect x="295" y="130" width="10" height="25" fill="#666" />
+                            <rect x="285" y="155" width="30" height="15" rx="5" fill="#333" />
+                            <rect x="287" y="157" width="26" height="11" fill="#f0f0f0" />
+                            <path d="M270 70 Q250 60, 240 80 L240 90 Q240 100, 250 105 L290 105 Q300 105, 300 95 L300 80 Q300 70, 290 70 Z" fill="#fff" stroke="#333" />
+                            <text x="255" y="93" font-family="Arial" font-size="16" fill="#333">ML</text>
                             
-                            <!-- Labels -->
-                            <text x="170" y="100" font-family="Montserrat" font-size="12" fill="#6E4BFB">Supervised</text>
-                            <text x="180" y="190" font-family="Montserrat" font-size="12" fill="#FB4B4B">Reinforcement</text>
-                            <text x="90" y="190" font-family="Montserrat" font-size="12" fill="#4BFB9D">Unsupervised</text>
+                            <!-- What's the difference? -->
+                            <rect x="170" y="30" width="60" height="25" rx="12" fill="#FB4B4B" opacity="0.7" />
+                            <text x="180" y="47" font-family="Arial" font-size="10" fill="#fff">What's the difference?</text>
                             
-                            <!-- Center point -->
-                            <circle cx="150" cy="150" r="5" fill="#4B6EFB"/>
+                            <!-- Laptop Screen with Concept Visualization -->
+                            <rect x="150" y="140" width="100" height="70" rx="5" fill="#333" />
+                            <rect x="155" y="145" width="90" height="55" fill="#fff" />
+                            <text x="160" y="160" font-family="Arial" font-size="8" fill="#333">Artificial intelligence</text>
+                            <rect x="160" y="165" width="80" height="15" fill="#4B6EFB" opacity="0.3" />
+                            <text x="165" y="175" font-family="Arial" font-size="6" fill="#333">Deep learning</text>
+                            <rect x="165" y="168" width="70" height="10" fill="#4B6EFB" opacity="0.5" />
+                            <text x="170" y="175" font-family="Arial" font-size="5" fill="#333">Machine learning</text>
+                            <rect x="170" y="170" width="60" height="6" fill="#4B6EFB" opacity="0.7" />
+                            <text x="180" y="175" font-family="Arial" font-size="4" fill="#fff">Data science</text>
                         </svg>
-                        <p class="caption">The three main types of machine learning: supervised, unsupervised, and reinforcement learning.</p>
+                        <p class="caption">Machine Learning is a subset of AI, but the two terms are often used interchangeably.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>AI vs Machine Learning</h3>
+                        <p>Artificial Intelligence refers to the intelligence exhibited by software and machines. Machine learning, on the other hand, is a subset of AI. This means that while all machine learning is AI, not all AI involves machine learning.</p>
                     </div>
                 </section>
 
-                <section class="content-section" id="supervised">
-                    <h2>Supervised Learning: Learning with a Teacher</h2>
-                    <p>Supervised learning is like learning with a trainer who provides guidance and feedback. In this approach, algorithms are trained on labeled data, where both input data and expected output are provided.</p>
-                    
-                    <p>Consider learning to play football with a coach. The coach explains all the rules: when the ball enters the goal, you earn a point; when the ball goes out over the sideline, it must be thrown in by hand. The coach provides clear guidance and feedback on your performance.</p>
-                    
-                    <p>Similarly, in supervised learning, the algorithm learns to associate input patterns with correct outputs. It's then able to predict outcomes for new, unseen data based on what it learned during training.</p>
-                    
-                    <div class="info-box">
-                        <h3>Common Applications</h3>
-                        <ul>
-                            <li>Image classification</li>
-                            <li>Spam detection</li>
-                            <li>Sentiment analysis</li>
-                            <li>Medical diagnosis</li>
-                        </ul>
-                    </div>
+                <section class="content-section" id="differences">
+                    <h2>Distinguishing Between AI and Machine Learning</h2>
+                    <p>Machine learning is a type of AI where a machine learns from the data it has been given and can identify patterns in that data. It is also the process by which machines learn from data and improve their performance over time.</p>
                     
                     <div class="image-container">
-                        <svg width="400" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Football field background -->
-                            <rect x="50" y="70" width="200" height="150" fill="#e6ffe6" stroke="#4B6EFB" stroke-width="2"/>
+                        <svg width="400" height="180" viewBox="0 0 400 180">
+                            <!-- All ML is AI, but not all AI is ML -->
+                            <ellipse cx="150" cy="90" rx="100" ry="70" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" />
+                            <text x="75" y="40" font-family="Arial" font-size="12" fill="#333">Artificial Intelligence</text>
                             
-                            <!-- Goal posts -->
-                            <rect x="50" y="120" width="5" height="50" fill="#4B6EFB"/>
-                            <rect x="245" y="120" width="5" height="50" fill="#4B6EFB"/>
+                            <ellipse cx="150" cy="110" rx="50" ry="35" fill="#4B6EFB" opacity="0.6" stroke="#4B6EFB" />
+                            <text x="110" y="110" font-family="Arial" font-size="10" fill="#fff">Machine Learning</text>
                             
-                            <!-- Center circle -->
-                            <circle cx="150" cy="145" r="20" fill="none" stroke="#4B6EFB" stroke-width="1"/>
+                            <!-- Arrow pointer to the diagram -->
+                            <path d="M270 70 L220 70" fill="none" stroke="#333" stroke-width="2" />
+                            <polygon points="220,70 230,65 230,75" fill="#333" />
                             
-                            <!-- Coach and player -->
-                            <circle cx="90" cy="180" r="15" fill="#6E4BFB"/> <!-- Player -->
-                            <circle cx="200" cy="180" r="15" fill="#FB4B4B"/> <!-- Coach -->
+                            <!-- Explanation box -->
+                            <rect x="270" y="50" width="100" height="80" rx="5" fill="#fff" stroke="#333" />
+                            <text x="275" y="65" font-family="Arial" font-size="8" fill="#333">All machine learning</text>
+                            <text x="275" y="75" font-family="Arial" font-size="8" fill="#333">is AI, but not all AI</text>
+                            <text x="275" y="85" font-family="Arial" font-size="8" fill="#333">involves machine</text>
+                            <text x="275" y="95" font-family="Arial" font-size="8" fill="#333">learning.</text>
                             
-                            <!-- Clipboard (representing rules) -->
-                            <rect x="185" y="150" width="15" height="20" fill="#f3f4f6" stroke="#4B6EFB" stroke-width="1"/>
+                            <!-- Illustrations of Machine Learning -->
+                            <rect x="280" y="105" width="20" height="20" fill="#FB4B4B" opacity="0.6" rx="2" />
+                            <text x="285" y="120" font-family="Arial" font-size="10" fill="#fff">ML</text>
                             
-                            <!-- Ball -->
-                            <circle cx="120" cy="150" r="5" fill="#333"/>
-                            
-                            <!-- Labels -->
-                            <text x="90" y="210" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#6E4BFB">Algorithm</text>
-                            <text x="200" y="210" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#FB4B4B">Trainer</text>
+                            <rect x="310" y="105" width="20" height="20" fill="#FBD44B" opacity="0.6" rx="2" />
+                            <text x="315" y="120" font-family="Arial" font-size="10" fill="#fff">AI</text>
                         </svg>
-                        <p class="caption">In supervised learning, like in football training, guidance and feedback drive the learning process.</p>
+                        <p class="caption">The relationship between AI and Machine Learning: ML is a specific approach within the broader field of AI.</p>
+                    </div>
+                    
+                    <p>Machine learning uses different types of techniques such as supervised learning, unsupervised learning, and reinforcement learning. The term 'Machine Learning' was introduced by Arthur Samuel in 1959, who created a program that played draughts against itself.</p>
+                    
+                    <div class="info-box">
+                        <h3>Historical Origin</h3>
+                        <p>Arthur Samuel, an American pioneer in computer gaming and AI, created a program that played draughts. The machine analyzed the game through repetitive plays, identifying strategies to win and avoid losses. Through playing the game and learning what to do to win, it began to detect recurring patterns and would increasingly follow a pattern.</p>
                     </div>
                 </section>
 
-                <section class="content-section" id="unsupervised">
-                    <h2>Unsupervised Learning: Self-Directed Discovery</h2>
-                    <p>Unsupervised learning is like learning on your own, without explicit guidance. In this approach, algorithms work with unlabeled data and must discover patterns or relationships independently.</p>
+                <section class="content-section" id="learning-types">
+                    <h2>Types of Machine Learning</h2>
+                    <p>Machine learning can be divided into three main types: supervised learning, unsupervised learning, and reinforcement learning. Each approach has distinct characteristics and applications.</p>
                     
-                    <p>Imagine attending football games every Thursday and Sunday without knowing the rules. Initially, you're puzzled: Why are players using their hands from the sidelines in a game primarily played with feet? Why does the crowd cheer when the ball hits the net? As you keep watching, you start to recognize patterns and understand the game's dynamics.</p>
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Supervised Learning -->
+                            <rect x="50" y="50" width="100" height="120" rx="5" fill="#4B6EFB" opacity="0.2" />
+                            <text x="60" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Supervised learning</text>
+                            <circle cx="75" cy="100" r="15" fill="#4B6EFB" opacity="0.5" />
+                            <text x="70" y="103" font-family="Arial" font-size="10" fill="#333">X</text>
+                            <text x="90" y="100" font-family="Arial" font-size="8" fill="#333">Label: Cat</text>
+                            <circle cx="75" cy="140" r="15" fill="#FB4B4B" opacity="0.5" />
+                            <text x="70" y="143" font-family="Arial" font-size="10" fill="#333">Y</text>
+                            <text x="90" y="140" font-family="Arial" font-size="8" fill="#333">Label: Dog</text>
+                            
+                            <!-- Unsupervised Learning -->
+                            <rect x="170" y="50" width="100" height="120" rx="5" fill="#FB4B4B" opacity="0.2" />
+                            <text x="180" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Unsupervised learning</text>
+                            <circle cx="195" cy="100" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="215" cy="95" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="230" cy="105" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="195" cy="140" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="210" cy="150" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="225" cy="135" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <path d="M195 100 Q215 95, 230 105" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M195 140 Q210 150, 225 135" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Reinforcement Learning -->
+                            <rect x="290" y="50" width="100" height="120" rx="5" fill="#FBD44B" opacity="0.2" />
+                            <text x="300" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Reinforcement learning</text>
+                            <rect x="310" y="90" width="20" height="20" fill="#FBD44B" opacity="0.5" />
+                            <text x="315" y="105" font-family="Arial" font-size="12" fill="#333">+</text>
+                            <rect x="350" y="90" width="20" height="20" fill="#FB4B4B" opacity="0.5" />
+                            <text x="355" y="105" font-family="Arial" font-size="12" fill="#333">-</text>
+                            <path d="M320 120 L320 140 L350 140 L350 120" fill="none" stroke="#333" stroke-width="1" />
+                            <circle cx="335" cy="140" r="5" fill="#333" />
+                        </svg>
+                        <p class="caption">The three primary types of machine learning: supervised, unsupervised, and reinforcement learning.</p>
+                    </div>
                     
-                    <p>Similarly, unsupervised learning algorithms identify inherent structures in data without explicit labels, grouping similar data points or reducing data complexity to reveal hidden patterns.</p>
+                    <ul>
+                        <li><strong>Supervised Learning:</strong> The algorithm is trained on labeled data, where inputs are paired with correct outputs.</li>
+                        <li><strong>Unsupervised Learning:</strong> The algorithm is trained on unlabeled data and must find structure without guidance.</li>
+                        <li><strong>Reinforcement Learning:</strong> The algorithm learns by interacting with its environment and receiving rewards or penalties.</li>
+                    </ul>
+                </section>
+
+                <section class="content-section" id="math-concepts">
+                    <h2>Mathematical Foundations of Machine Learning</h2>
+                    <p>To achieve effective machine learning, Samuel had to use mathematics. Concepts such as linear algebra, calculus, probability, and statistics play a crucial role in understanding how machine learning algorithms learn from data and make predictions.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Whiteboard with Mathematical Equations -->
+                            <rect x="50" y="50" width="300" height="120" rx="5" fill="#fff" stroke="#333" />
+                            
+                            <!-- Linear Algebra -->
+                            <text x="60" y="70" font-family="Arial" font-size="10" fill="#333">Linear Algebra:</text>
+                            <text x="60" y="85" font-family="Arial" font-size="8" fill="#333">A = [a₁₁ a₁₂]</text>
+                            <text x="60" y="95" font-family="Arial" font-size="8" fill="#333">    [a₂₁ a₂₂]</text>
+                            
+                            <!-- Calculus -->
+                            <text x="180" y="70" font-family="Arial" font-size="10" fill="#333">Calculus:</text>
+                            <text x="180" y="85" font-family="Arial" font-size="8" fill="#333">f'(x) = lim Δx→0 [f(x+Δx) - f(x)]/Δx</text>
+                            
+                            <!-- Probability -->
+                            <text x="60" y="120" font-family="Arial" font-size="10" fill="#333">Probability:</text>
+                            <text x="60" y="135" font-family="Arial" font-size="8" fill="#333">P(A|B) = P(B|A)P(A)/P(B)</text>
+                            
+                            <!-- Statistics -->
+                            <text x="180" y="120" font-family="Arial" font-size="10" fill="#333">Statistics:</text>
+                            <text x="180" y="135" font-family="Arial" font-size="8" fill="#333">σ² = Σ(xᵢ - μ)²/n</text>
+                            
+                            <!-- Hand Drawing Equations -->
+                            <path d="M370 80 C365 75, 360 78, 365 82" fill="none" stroke="#333" />
+                            <path d="M365 82 L355 90" fill="none" stroke="#333" />
+                            <rect x="350" y="90" width="25" height="40" fill="#FB4B4B" opacity="0.1" rx="5" />
+                        </svg>
+                        <p class="caption">Mathematical concepts such as linear algebra, calculus, probability, and statistics form the foundation of machine learning algorithms.</p>
+                    </div>
+                    
+                    <p>These mathematical concepts help in optimizing the performance of the model, understanding the relationships within the data, and making accurate predictions. They are the building blocks that enable machines to learn from experience and improve over time.</p>
+                </section>
+
+                <section class="content-section" id="bicycle-analogy">
+                    <h2>The Bicycle Analogy: Learning from Experience</h2>
+                    <p>Need further clarity? Let's consider the analogy of learning to ride a bicycle to understand how machine learning works.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Training Wheels Stage -->
+                            <text x="50" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Training Phase</text>
+                            <circle cx="80" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <circle cx="150" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M80 120 L115 120 L150 120" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M115 120 L115 80" fill="none" stroke="#333" stroke-width="2" />
+                            <rect x="110" y="60" width="10" height="20" fill="#333" />
+                            <circle cx="115" cy="50" r="10" fill="#333" />
+                            <rect x="75" y="120" width="10" height="30" fill="#FB4B4B" opacity="0.7" />
+                            <rect x="145" y="120" width="10" height="30" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <!-- Without Training Wheels Stage -->
+                            <text x="200" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Learning Phase</text>
+                            <circle cx="230" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <circle cx="300" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M230 120 L265 120 L300 120" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M265 120 L265 80" fill="none" stroke="#333" stroke-width="2" />
+                            <rect x="260" y="60" width="10" height="20" fill="#333" />
+                            <circle cx="265" cy="50" r="10" fill="#333" />
+                            <path d="M265 50 L270 45 L275 48" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Adapted Rider Stage -->
+                            <text x="350" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Application Phase</text>
+                            <circle cx="365" cy="110" r="15" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M365 95 L365 85" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M365 85 L375 75" fill="none" stroke="#333" stroke-width="1" />
+                            <circle cx="380" cy="70" r="5" fill="#333" />
+                            
+                            <!-- Arrows Showing Progression -->
+                            <path d="M170 100 L200 100" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                            <polygon points="200,100 190,95 190,105" fill="#4B6EFB" />
+                            
+                            <path d="M320 100 L350 100" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                            <polygon points="350,100 340,95 340,105" fill="#4B6EFB" />
+                            
+                            <!-- Ground Line -->
+                            <path d="M50 150 L380 150" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+                        </svg>
+                        <p class="caption">The process of learning to ride a bicycle mirrors how machine learning models progress from initial training to independent performance.</p>
+                    </div>
                     
                     <div class="key-concept">
-                        <h3>Unsupervised Learning Methods</h3>
-                        <p>Common techniques in unsupervised learning include:</p>
-                        <ul>
-                            <li><strong>Clustering:</strong> Grouping similar data points together (e.g., customer segmentation)</li>
-                            <li><strong>Dimensionality Reduction:</strong> Simplifying data while preserving important patterns</li>
-                            <li><strong>Association:</strong> Discovering rules that describe large portions of data (e.g., market basket analysis)</li>
-                        </ul>
+                        <h3>Learning Through Experience</h3>
+                        <p>When you first learn to ride a bicycle, you might start with training wheels. These training wheels are like the initial data set that we feed into the machine learning model. They provide basic guidance and stability. As you practice more, you learn to balance, pedal, and steer. This mirrors how a machine learning model begins to recognize patterns during training.</p>
+                        <p>Eventually, the training wheels come off, and you adapt to different situations – riding on hills or through crowds. Similarly, a machine learning model applies what it has learned to new data and tasks, improving its performance based on experience.</p>
                     </div>
                     
-                    <div class="image-container">
-                        <svg width="400" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Spectator in stadium -->
-                            <rect x="50" y="50" width="200" height="150" fill="#f3f4f6" stroke="#4B6EFB" stroke-width="2"/>
-                            
-                            <!-- Stadium seats (clusters) -->
-                            <rect x="70" y="70" width="160" height="20" fill="#6E4BFB" stroke="#4B6EFB" stroke-width="1"/>
-                            <rect x="70" y="100" width="160" height="20" fill="#FB4B4B" stroke="#4B6EFB" stroke-width="1"/>
-                            <rect x="70" y="130" width="160" height="20" fill="#4BFB9D" stroke="#4B6EFB" stroke-width="1"/>
-                            <rect x="70" y="160" width="160" height="20" fill="#6E4BFB" stroke="#4B6EFB" stroke-width="1"/>
-                            
-                            <!-- Observer (learner) -->
-                            <circle cx="150" cy="220" r="15" fill="#FB4B4B"/>
-                            <text x="150" y="250" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#FB4B4B">Observer</text>
-                            
-                            <!-- Question marks representing confusion then understanding -->
-                            <text x="140" y="215" font-family="Montserrat" font-size="15" fill="#333">?</text>
-                            <text x="160" y="215" font-family="Montserrat" font-size="15" fill="#333">!</text>
-                        </svg>
-                        <p class="caption">In unsupervised learning, patterns are discovered through observation without explicit labeling.</p>
-                    </div>
-                </section>
-
-                <section class="content-section" id="reinforcement">
-                    <h2>Reinforcement Learning: Learning through Trial and Error</h2>
-                    <p>Reinforcement learning is like learning through trial and error, where actions lead to rewards or penalties. In this approach, algorithms learn to make decisions by interacting with an environment and receiving feedback on their actions.</p>
-                    
-                    <p>Consider practicing penalty kicks in football. Each time you score a goal, you experience a sense of achievement (positive reward). Each time you miss, you feel disappointment (negative reward). Over time, by trying different kicking techniques and learning from the rewards, you improve your ability to score.</p>
-                    
-                    <p>Similarly, reinforcement learning algorithms optimize their behavior based on rewards and penalties, developing strategies to maximize cumulative rewards over time.</p>
-                    
-                    <div class="info-box">
-                        <h3>Key Applications</h3>
-                        <ul>
-                            <li>Game playing (Chess, Go)</li>
-                            <li>Robotics navigation</li>
-                            <li>Autonomous vehicles</li>
-                            <li>Resource management</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="image-container">
-                        <svg width="400" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Goal post -->
-                            <rect x="75" y="50" width="150" height="5" fill="#333"/>
-                            <rect x="75" y="50" width="5" height="80" fill="#333"/>
-                            <rect x="220" y="50" width="5" height="80" fill="#333"/>
-                            
-                            <!-- Net -->
-                            <line x1="80" y1="60" x2="220" y2="60" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="70" x2="220" y2="70" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="80" x2="220" y2="80" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="90" x2="220" y2="90" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="100" x2="220" y2="100" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="110" x2="220" y2="110" stroke="#999" stroke-width="1"/>
-                            <line x1="80" y1="120" x2="220" y2="120" stroke="#999" stroke-width="1"/>
-                            
-                            <!-- Vertical net lines -->
-                            <line x1="100" y1="50" x2="100" y2="130" stroke="#999" stroke-width="1"/>
-                            <line x1="120" y1="50" x2="120" y2="130" stroke="#999" stroke-width="1"/>
-                            <line x1="140" y1="50" x2="140" y2="130" stroke="#999" stroke-width="1"/>
-                            <line x1="160" y1="50" x2="160" y2="130" stroke="#999" stroke-width="1"/>
-                            <line x1="180" y1="50" x2="180" y2="130" stroke="#999" stroke-width="1"/>
-                            <line x1="200" y1="50" x2="200" y2="130" stroke="#999" stroke-width="1"/>
-                            
-                            <!-- Ball and player -->
-                            <circle cx="150" cy="180" r="15" fill="#6E4BFB"/> <!-- Player -->
-                            <circle cx="150" cy="150" r="5" fill="#333"/> <!-- Ball -->
-                            
-                            <!-- Feedback indicators -->
-                            <text x="100" y="200" font-family="Montserrat" font-size="15" fill="#FB4B4B">👎</text> <!-- Negative -->
-                            <text x="200" y="200" font-family="Montserrat" font-size="15" fill="#4BFB9D">👍</text> <!-- Positive -->
-                            <text x="150" y="220" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#6E4BFB">Learning Agent</text>
-                        </svg>
-                        <p class="caption">Reinforcement learning involves trial and error with rewards and penalties to guide behavior.</p>
-                    </div>
-                </section>
-
-                <section class="content-section" id="deep-learning">
-                    <h2>Deep Learning: Advanced Machine Learning</h2>
-                    <p>Deep learning is a more advanced form of machine learning that takes the concepts of supervised, unsupervised, and reinforcement learning and applies them on a much larger scale using neural networks with multiple layers (hence "deep").</p>
-                    
-                    <p>Inspired by the structure and function of the human brain, deep learning uses artificial neural networks to learn complex patterns from vast amounts of data. As these networks have multiple layers, they can progressively extract higher-level features from the raw input.</p>
-                    
-                    <p>For instance, in image recognition, the first layer might detect edges, the second layer might detect shapes formed by these edges, and subsequent layers might identify more complex features like objects or faces.</p>
-                    
-                    <div class="key-concept">
-                        <h3>Deep Learning Revolution</h3>
-                        <p>Deep learning has revolutionized AI by enabling breakthroughs in areas like computer vision, natural language processing, and speech recognition. It powers technologies like facial recognition, language translation, and self-driving cars.</p>
-                    </div>
-                    
-                    <div class="image-container">
-                        <svg width="400" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Neural network layers -->
-                            <!-- Input layer -->
-                            <circle cx="60" cy="100" r="10" fill="#6E4BFB"/>
-                            <circle cx="60" cy="150" r="10" fill="#6E4BFB"/>
-                            <circle cx="60" cy="200" r="10" fill="#6E4BFB"/>
-                            
-                            <!-- Hidden layer 1 -->
-                            <circle cx="120" cy="80" r="10" fill="#4B6EFB"/>
-                            <circle cx="120" cy="120" r="10" fill="#4B6EFB"/>
-                            <circle cx="120" cy="160" r="10" fill="#4B6EFB"/>
-                            <circle cx="120" cy="200" r="10" fill="#4B6EFB"/>
-                            <circle cx="120" cy="240" r="10" fill="#4B6EFB"/>
-                            
-                            <!-- Hidden layer 2 -->
-                            <circle cx="180" cy="100" r="10" fill="#4BFB9D"/>
-                            <circle cx="180" cy="150" r="10" fill="#4BFB9D"/>
-                            <circle cx="180" cy="200" r="10" fill="#4BFB9D"/>
-                            
-                            <!-- Output layer -->
-                            <circle cx="240" cy="120" r="10" fill="#FB4B4B"/>
-                            <circle cx="240" cy="180" r="10" fill="#FB4B4B"/>
-                            
-                            <!-- Connections -->
-                            <!-- Input to Hidden 1 -->
-                            <line x1="70" y1="100" x2="110" y2="80" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="100" x2="110" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="100" x2="110" y2="160" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="100" x2="110" y2="200" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="100" x2="110" y2="240" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="70" y1="150" x2="110" y2="80" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="150" x2="110" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="150" x2="110" y2="160" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="150" x2="110" y2="200" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="150" x2="110" y2="240" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="70" y1="200" x2="110" y2="80" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="200" x2="110" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="200" x2="110" y2="160" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="200" x2="110" y2="200" stroke="#ccc" stroke-width="1"/>
-                            <line x1="70" y1="200" x2="110" y2="240" stroke="#ccc" stroke-width="1"/>
-                            
-                            <!-- Hidden 1 to Hidden 2 -->
-                            <line x1="130" y1="80" x2="170" y2="100" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="80" x2="170" y2="150" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="80" x2="170" y2="200" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="130" y1="120" x2="170" y2="100" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="120" x2="170" y2="150" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="120" x2="170" y2="200" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="130" y1="160" x2="170" y2="100" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="160" x2="170" y2="150" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="160" x2="170" y2="200" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="130" y1="200" x2="170" y2="100" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="200" x2="170" y2="150" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="200" x2="170" y2="200" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="130" y1="240" x2="170" y2="100" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="240" x2="170" y2="150" stroke="#ccc" stroke-width="1"/>
-                            <line x1="130" y1="240" x2="170" y2="200" stroke="#ccc" stroke-width="1"/>
-                            
-                            <!-- Hidden 2 to Output -->
-                            <line x1="190" y1="100" x2="230" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="190" y1="100" x2="230" y2="180" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="190" y1="150" x2="230" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="190" y1="150" x2="230" y2="180" stroke="#ccc" stroke-width="1"/>
-                            
-                            <line x1="190" y1="200" x2="230" y2="120" stroke="#ccc" stroke-width="1"/>
-                            <line x1="190" y1="200" x2="230" y2="180" stroke="#ccc" stroke-width="1"/>
-                            
-                            <!-- Layer labels -->
-                            <text x="60" y="270" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#6E4BFB">Input</text>
-                            <text x="120" y="270" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#4B6EFB">Hidden 1</text>
-                            <text x="180" y="270" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#4BFB9D">Hidden 2</text>
-                            <text x="240" y="270" font-family="Montserrat" font-size="10" text-anchor="middle" fill="#FB4B4B">Output</text>
-                        </svg>
-                        <p class="caption">Deep learning neural networks consist of multiple layers that progressively extract higher-level features.</p>
-                    </div>
+                    <p>This draughts game and bicycle learning analogy highlight the fundamental concepts of machine learning: learning from experience, replicating results, and improving performance. As we continue to explore AI and its capabilities, remember that all machine learning is AI, but not all AI is machine learning.</p>
                 </section>
             </div>
 
