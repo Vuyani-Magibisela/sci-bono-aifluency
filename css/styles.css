@@ -103,7 +103,15 @@ header {
 
 .logo h1 {
     font-size: 1.5rem;
-    margin-bottom: 0;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.logo img {
+    display: block;
+    margin: 0;
+    padding: 0;
+    height: 4.5rem; /* Adjust as needed */
 }
 
 .header-controls button {
