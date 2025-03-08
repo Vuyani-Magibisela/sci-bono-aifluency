@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Chapter 1.09: AI Algorithms</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <div class="module-badge">Module 1: AI Foundations</div>
+                <h1>Chapter 1.09: AI Algorithms</h1>
+                <p class="subtitle">Understanding the step-by-step instructions that power AI systems</p>
+            </div>
+
+            <div class="chapter-nav">
+                <div class="nav-buttons-container">
+                    <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+                    <a href="#classification" class="nav-tab"><i class="fas fa-tags"></i> Classification</a>
+                    <a href="#regression" class="nav-tab"><i class="fas fa-chart-line"></i> Regression</a>
+                    <a href="#clustering" class="nav-tab"><i class="fas fa-object-group"></i> Clustering</a>
+                    <a href="#optimization" class="nav-tab"><i class="fas fa-map-marked"></i> Optimization</a>
+                </div>
+            </div>
+
+            <div class="chapter-content">
+                <section class="content-section" id="introduction">
+                    <h2>How AI Algorithms Work</h2>
+                    <p>Ever wondered how your email knows what is junk mail and what is not? Or how does your music app always hit the right note with its recommendations? That happens thanks to something called AI algorithms.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Laptop with Algorithm Concept -->
+                            <rect x="150" y="80" width="100" height="70" rx="5" fill="#333" />
+                            <rect x="155" y="85" width="90" height="55" fill="#F0F0F0" />
+                            <rect x="150" y="150" width="100" height="10" rx="2" fill="#333" />
+                            
+                            <!-- AI Text on Screen -->
+                            <text x="190" y="115" font-family="Arial" font-weight="bold" font-size="20" fill="#4B6EFB">AI</text>
+                            
+                            <!-- Email Filtering Concept -->
+                            <rect x="50" y="90" width="60" height="40" rx="5" fill="#F0F0F0" stroke="#333" />
+                            <path d="M50 100 L80 115 L110 100" fill="none" stroke="#333" />
+                            <rect x="60" y="110" width="40" height="10" fill="#FBD44B" opacity="0.3" />
+                            
+                            <!-- Waste Basket -->
+                            <path d="M80 140 L70 160 L90 160 Z" fill="none" stroke="#333" />
+                            <path d="M75 140 L75 160" fill="none" stroke="#333" />
+                            <path d="M80 140 L80 160" fill="none" stroke="#333" />
+                            <path d="M85 140 L85 160" fill="none" stroke="#333" />
+                            
+                            <!-- Arrow Email to Trash -->
+                            <path d="M80 130 L80 140" fill="none" stroke="#FB4B4B" stroke-width="2" />
+                            <polygon points="80,140 77,135 83,135" fill="#FB4B4B" />
+                            
+                            <!-- Music Recommendation Concept -->
+                            <rect x="280" y="90" width="40" height="40" rx="5" fill="#F0F0F0" stroke="#333" />
+                            <circle cx="300" cy="110" r="15" fill="#4B6EFB" opacity="0.3" />
+                            <text x="295" y="115" font-family="Arial" font-weight="bold" font-size="15" fill="#333">♪</text>
+                            
+                            <!-- Recipe Concept for Algorithm -->
+                            <rect x="280" y="150" width="60" height="40" rx="5" fill="#F0F0F0" stroke="#333" />
+                            <text x="285" y="165" font-family="Arial" font-size="8" fill="#333">Butter</text>
+                            <text x="285" y="175" font-family="Arial" font-size="8" fill="#333">Flour</text>
+                            <text x="285" y="185" font-family="Arial" font-size="8" fill="#333">Eggs</text>
+                            
+                            <!-- Recipe Card -->
+                            <rect x="50" y="180" width="60" height="30" rx="3" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            <text x="55" y="195" font-family="Arial" font-weight="bold" font-size="8" fill="#333">Apricot Cake Recipe</text>
+                            <line x1="55" y1="200" x2="105" y2="200" stroke="#333" stroke-width="1" />
+                            <line x1="55" y1="205" x2="95" y2="205" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Connection Lines -->
+                            <path d="M80 110 L150 110" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M280 110 L250 110" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M210 170 L280 170" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M150 170 L80 170 L80 180" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                        </svg>
+                        <p class="caption">AI algorithms are like recipes that guide computers to solve problems, from filtering emails to recommending music.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>What Are AI Algorithms?</h3>
+                        <p>AI algorithms are step-by-step instructions given to a computer to solve specific problems or perform tasks. Imagine these algorithms as a set of instructions that guide a computer to solve a problem, much like a recipe guiding you to bake a cake.</p>
+                        <p>These algorithms form the backbone of AI systems, enabling them to process data, learn patterns, and make decisions or predictions.</p>
+                    </div>
+                    
+                    <p>Machine learning, a subset of AI, encompasses deep learning as one of its own subsets. These subsets represent different methodologies through which a computer system can learn from data to solve problems. Within these, there are different learning methods like supervised learning, unsupervised learning and reinforcement learning, and each one of these methods uses a specific set of instructions, or algorithms, which guides the computer on how to solve a problem. And depending on the problem, the algorithm might be quite different.</p>
+                </section>
+
+                <section class="content-section" id="classification">
+                    <h2>Classification Algorithms: Sorting and Categorizing</h2>
+                    <p>Imagine you are sifting through your emails. Some are important, others... not so much. How does your email service know which ones to put in your inbox and which ones to label as spam?</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Email Classification Visualization -->
+                            <rect x="50" y="70" width="300" height="120" fill="#F0F0F0" stroke="#333" rx="10" />
+                            
+                            <!-- Inbox Emails -->
+                            <rect x="70" y="90" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="75" y="105" font-family="Arial" font-size="8" fill="#333">Team Meeting</text>
+                            <circle cx="65" cy="102" r="5" fill="#4BFB9D" opacity="0.7" />
+                            <text x="63" y="105" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✓</text>
+                            
+                            <rect x="70" y="120" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="75" y="135" font-family="Arial" font-size="8" fill="#333">Client Report</text>
+                            <circle cx="65" cy="132" r="5" fill="#4BFB9D" opacity="0.7" />
+                            <text x="63" y="135" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✓</text>
+                            
+                            <rect x="70" y="150" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="75" y="165" font-family="Arial" font-size="8" fill="#333">Invoice #126</text>
+                            <circle cx="65" cy="162" r="5" fill="#4BFB9D" opacity="0.7" />
+                            <text x="63" y="165" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✓</text>
+                            
+                            <!-- Spam Emails -->
+                            <rect x="260" y="90" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="265" y="105" font-family="Arial" font-size="8" fill="#333">Win $1000000!</text>
+                            <circle cx="255" cy="102" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <text x="253" y="105" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✗</text>
+                            
+                            <rect x="260" y="120" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="265" y="135" font-family="Arial" font-size="8" fill="#333">Discount Pills</text>
+                            <circle cx="255" cy="132" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <text x="253" y="135" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✗</text>
+                            
+                            <rect x="260" y="150" width="70" height="25" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="265" y="165" font-family="Arial" font-size="8" fill="#333">Urgent: Help!</text>
+                            <circle cx="255" cy="162" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <text x="253" y="165" font-family="Arial" font-weight="bold" font-size="10" fill="#FFF">✗</text>
+                            
+                            <!-- Classification Engine -->
+                            <rect x="160" y="110" width="80" height="40" fill="#4B6EFB" opacity="0.2" stroke="#4B6EFB" rx="5" />
+                            <text x="170" y="130" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Classification</text>
+                            <text x="185" y="140" font-family="Arial" font-size="8" fill="#333">Algorithm</text>
+                            
+                            <!-- Sherlock Holmes -->
+                            <circle cx="200" cy="80" r="10" fill="#333" />
+                            <path d="M195 75 C195 70, 205 70, 205 75" fill="none" stroke="#333" />
+                            <path d="M195 85 L195 95" fill="none" stroke="#333" />
+                            <path d="M205 85 L205 95" fill="none" stroke="#333" />
+                            <path d="M195 95 L190 105" fill="none" stroke="#333" />
+                            <path d="M205 95 L210 105" fill="none" stroke="#333" />
+                            <rect x="192" y="80" width="16" height="5" fill="#333" rx="2" /> <!-- Hat -->
+                            <path d="M185 80 L215 80" fill="none" stroke="#333" /> <!-- Hat Brim -->
+                            <path d="M205 87 C215 80, 220 87, 220 95" fill="none" stroke="#333" stroke-width="2" /> <!-- Pipe -->
+                            
+                            <!-- Incoming Email Flow -->
+                            <rect x="100" y="40" width="50" height="20" fill="#FFF" stroke="#333" rx="3" />
+                            <text x="105" y="55" font-family="Arial" font-size="10" fill="#333">New Email</text>
+                            <path d="M125 60 L160 110" fill="none" stroke="#333" stroke-width="1" />
+                            <polygon points="160,110 153,105 159,102" fill="#333" />
+                            
+                            <!-- Outgoing Classifications -->
+                            <path d="M160 130 L100 130" fill="none" stroke="#333" stroke-width="1" />
+                            <polygon points="100,130 107,127 107,133" fill="#333" />
+                            
+                            <path d="M240 130 L260 130" fill="none" stroke="#333" stroke-width="1" />
+                            <polygon points="260,130 253,127 253,133" fill="#333" />
+                        </svg>
+                        <p class="caption">Classification algorithms act like detectives, sorting items like emails into categories such as "inbox" or "spam" based on learned patterns.</p>
+                    </div>
+                    
+                    <p>That is the work of a type of algorithm called classification. It is like a detective, sorting each email into spam or not spam based on characteristics it has learned to identify.</p>
+                    
+                    <div class="info-box">
+                        <h3>How Classification Works</h3>
+                        <p>Classification algorithms work by identifying patterns in data that distinguish different categories. They learn these patterns from labeled examples (supervised learning) and then apply what they've learned to categorize new, unseen data.</p>
+                        <p>Common classification algorithms include:</p>
+                        <ul>
+                            <li><strong>Decision Trees:</strong> Make decisions based on a series of questions</li>
+                            <li><strong>Support Vector Machines:</strong> Find the optimal boundary between categories</li>
+                            <li><strong>Random Forests:</strong> Combine multiple decision trees for better accuracy</li>
+                            <li><strong>Neural Networks:</strong> Learn complex patterns through interconnected layers</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="regression">
+                    <h2>Regression Algorithms: Predicting Values</h2>
+                    <p>Now, let's say you are house hunting. Ever wondered how real estate websites predict the price of a house?</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- House with Price Tag -->
+                            <rect x="70" y="120" width="60" height="50" fill="#F0F0F0" stroke="#333" />
+                            <polygon points="70,120 100,90 130,120" fill="#FB4B4B" opacity="0.3" stroke="#333" />
+                            <rect x="85" y="140" width="15" height="30" fill="#4B6EFB" opacity="0.2" stroke="#333" /> <!-- Door -->
+                            <rect x="100" y="130" width="15" height="15" fill="#FBD44B" opacity="0.2" stroke="#333" /> <!-- Window -->
+                            
+                            <!-- For Sale Sign -->
+                            <rect x="50" y="150" width="25" height="20" fill="#FFF" stroke="#333" />
+                            <text x="55" y="163" font-family="Arial" font-size="7" fill="#333">FOR</text>
+                            <text x="55" y="170" font-family="Arial" font-size="7" fill="#333">SALE</text>
+                            <rect x="50" y="145" width="25" height="5" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <!-- Price Tag -->
+                            <rect x="140" y="100" width="40" height="25" rx="2" fill="#FFF" stroke="#333" />
+                            <path d="M140 107 L137 110 L140 113" fill="none" stroke="#333" />
+                            <text x="145" y="115" font-family="Arial" font-weight="bold" font-size="10" fill="#333">$$$</text>
+                            
+                            <!-- Crystal Ball Prediction -->
+                            <circle cx="280" cy="130" r="25" fill="#4B6EFB" opacity="0.2" stroke="#333" />
+                            <circle cx="280" cy="130" r="20" fill="#FFF" opacity="0.5" />
+                            <text x="270" y="135" font-family="Arial" font-weight="bold" font-size="15" fill="#333">$</text>
+                            
+                            <!-- Hands Around Crystal Ball -->
+                            <path d="M255 130 C245 140, 245 160, 255 170" fill="none" stroke="#333" />
+                            <path d="M305 130 C315 140, 315 160, 305 170" fill="none" stroke="#333" />
+                            
+                            <!-- Regression Engine -->
+                            <rect x="180" y="110" width="60" height="40" fill="#FB4B4B" opacity="0.2" stroke="#FB4B4B" rx="5" />
+                            <text x="185" y="130" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Regression</text>
+                            <text x="190" y="140" font-family="Arial" font-size="8" fill="#333">Algorithm</text>
+                            
+                            <!-- House Features Input -->
+                            <path d="M130 130 L180 130" fill="none" stroke="#333" stroke-width="1" />
+                            <polygon points="180,130 175,127 175,133" fill="#333" />
+                            
+                            <!-- Prediction Output -->
+                            <path d="M240 130 L255 130" fill="none" stroke="#333" stroke-width="1" />
+                            <polygon points="255,130 250,127 250,133" fill="#333" />
+                            
+                            <!-- Feature List -->
+                            <rect x="150" y="150" width="120" height="60" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <text x="160" y="165" font-family="Arial" font-size="8" fill="#333">• Square Footage: 1,800</text>
+                            <text x="160" y="175" font-family="Arial" font-size="8" fill="#333">• Bedrooms: 3</text>
+                            <text x="160" y="185" font-family="Arial" font-size="8" fill="#333">• Bathrooms: 2</text>
+                            <text x="160" y="195" font-family="Arial" font-size="8" fill="#333">• Location: Downtown</text>
+                            <text x="160" y="205" font-family="Arial" font-size="8" fill="#333">• Year Built: 2010</text>
+                        </svg>
+                        <p class="caption">Regression algorithms predict continuous values, like house prices, based on multiple factors such as size, location, and features.</p>
+                    </div>
+                    
+                    <p>They use a type of algorithm called regression. It is like a fortune teller, predicting the future based on information like size, location, and other factors.</p>
+                    
+                    <div class="key-concept">
+                        <h3>Predictive Power</h3>
+                        <p>Regression algorithms analyze the relationship between variables to predict a numerical outcome. Unlike classification (which assigns categories), regression predicts a continuous value.</p>
+                        <p>These algorithms are essential for applications like:</p>
+                        <ul>
+                            <li>Price prediction for houses, stocks, or products</li>
+                            <li>Weather forecasting (temperature, rainfall)</li>
+                            <li>Estimating sales or revenue</li>
+                            <li>Predicting resource consumption (energy, bandwidth)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="clustering">
+                    <h2>Clustering Algorithms: Finding Patterns</h2>
+                    <p>Ever noticed how your favorite music app always knows just the right song to recommend?</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Music Player Background -->
+                            <rect x="50" y="50" width="300" height="150" fill="#F0F0F0" stroke="#333" rx="10" />
+                            
+                            <!-- Music Player Header -->
+                            <rect x="50" y="50" width="300" height="30" fill="#4B6EFB" opacity="0.7" rx="10" />
+                            <text x="165" y="70" font-family="Arial" font-weight="bold" font-size="12" fill="#FFF">Music Recommendations</text>
+                            
+                            <!-- Clustering Visualization -->
+                            <circle cx="100" cy="120" r="15" fill="#FB4B4B" opacity="0.3" stroke="#333" />
+                            <text x="95" y="123" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            <text x="85" y="140" font-family="Arial" font-size="8" fill="#333">Pop Rock</text>
+                            
+                            <circle cx="140" cy="100" r="15" fill="#FB4B4B" opacity="0.3" stroke="#333" />
+                            <text x="135" y="103" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            <text x="122" y="120" font-family="Arial" font-size="8" fill="#333">Alternative</text>
+                            
+                            <circle cx="120" cy="140" r="15" fill="#FB4B4B" opacity="0.3" stroke="#333" />
+                            <text x="115" y="143" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            <text x="105" y="160" font-family="Arial" font-size="8" fill="#333">Indie Rock</text>
+                            
+                            <!-- Pop Music Cluster -->
+                            <circle cx="240" cy="100" r="15" fill="#4BFB9D" opacity="0.3" stroke="#333" />
+                            <text x="235" y="103" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            
+                            <circle cx="270" cy="85" r="15" fill="#4BFB9D" opacity="0.3" stroke="#333" />
+                            <text x="265" y="88" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            
+                            <circle cx="280" cy="120" r="15" fill="#4BFB9D" opacity="0.3" stroke="#333" />
+                            <text x="275" y="123" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            <text x="260" y="140" font-family="Arial" font-size="8" fill="#333">Pop Music</text>
+                            
+                            <!-- Classical Music Cluster -->
+                            <circle cx="240" cy="180" r="15" fill="#FBD44B" opacity="0.3" stroke="#333" />
+                            <text x="235" y="183" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            
+                            <circle cx="270" cy="170" r="15" fill="#FBD44B" opacity="0.3" stroke="#333" />
+                            <text x="265" y="173" font-family="Arial" font-size="10" fill="#333">♪</text>
+                            <text x="245" y="190" font-family="Arial" font-size="8" fill="#333">Classical</text>
+                            
+                            <!-- DJ (Clustering Algorithm) -->
+                            <circle cx="185" cy="125" r="25" fill="#333" />
+                            <rect x="175" y="150" width="20" height="20" fill="#333" />
+                            <rect x="165" y="110" width="10" height="20" fill="#333" rx="5" /> <!-- Headphones L -->
+                            <rect x="195" y="110" width="10" height="20" fill="#333" rx="5" /> <!-- Headphones R -->
+                            <rect x="165" y="120" width="40" height="5" fill="#333" /> <!-- Headphone Band -->
+                            
+                            <!-- Grouping Circles -->
+                            <path d="M100 120 L120 140 L140 100 Z" fill="none" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="3,3" />
+                            <path d="M240 100 L270 85 L280 120 Z" fill="none" stroke="#4BFB9D" stroke-width="1" stroke-dasharray="3,3" />
+                            <path d="M240 180 L270 170" fill="none" stroke="#FBD44B" stroke-width="1" stroke-dasharray="3,3" />
+                            
+                            <!-- User Profile -->
+                            <circle cx="80" cy="80" r="10" fill="#666" />
+                            <text x="70" y="95" font-family="Arial" font-size="8" fill="#333">Your Taste</text>
+                            
+                            <!-- Connection to Algorithm -->
+                            <path d="M90 80 L165 110" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                        </svg>
+                        <p class="caption">Clustering algorithms group similar items together, like a DJ sorting songs into genres to recommend music you might enjoy.</p>
+                    </div>
+                    
+                    <p>That is clustering at work. It is like a party planner, grouping together songs you like so it can suggest similar ones.</p>
+                    
+                    <div class="info-box">
+                        <h3>Finding Natural Groupings</h3>
+                        <p>Clustering algorithms identify natural groups or patterns in data without being told in advance what those groups should be (unsupervised learning). They group items based on how similar they are to each other.</p>
+                        <p>Popular clustering algorithms include:</p>
+                        <ul>
+                            <li><strong>K-means:</strong> Divides data into a specified number of clusters</li>
+                            <li><strong>Hierarchical Clustering:</strong> Creates a tree of clusters</li>
+                            <li><strong>DBSCAN:</strong> Groups data based on density</li>
+                        </ul>
+                        <p>Beyond music recommendations, clustering is used for customer segmentation, image compression, anomaly detection, and document organization.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="optimization">
+                    <h2>Optimization Algorithms: Finding the Best Solution</h2>
+                    <p>And when you are hungry and waiting for your food delivery, an optimization algorithm is finding the quickest route to get your food to you.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Map Background -->
+                            <rect x="50" y="50" width="300" height="150" fill="#F0F0F0" stroke="#333" />
+                            
+                            <!-- Map Grid -->
+                            <line x1="100" y1="50" x2="100" y2="200" stroke="#DDD" />
+                            <line x1="150" y1="50" x2="150" y2="200" stroke="#DDD" />
+                            <line x1="200" y1="50" x2="200" y2="200" stroke="#DDD" />
+                            <line x1="250" y1="50" x2="250" y2="200" stroke="#DDD" />
+                            <line x1="300" y1="50" x2="300" y2="200" stroke="#DDD" />
+                            
+                            <line x1="50" y1="100" x2="350" y2="100" stroke="#DDD" />
+                            <line x1="50" y1="150" x2="350" y2="150" stroke="#DDD" />
+                            
+                            <!-- Pizza Restaurant -->
+                            <circle cx="100" cy="80" r="10" fill="#FB4B4B" opacity="0.7" />
+                            <path d="M95 80 L105 80" fill="none" stroke="#FFF" stroke-width="2" />
+                            <path d="M100 75 L100 85" fill="none" stroke="#FFF" stroke-width="2" />
+                            <text x="90" y="65" font-family="Arial" font-size="8" fill="#333">Pizza</text>
+                            
+                            <!-- Home Delivery -->
+                            <rect x="280" cy="170" width="20" height="20" fill="#4BFB9D" opacity="0.7" />
+                            <path d="M285 170 L285 160 L295 160 L295 170" fill="none" stroke="#333" /> <!-- Chimney -->
+                            <polygon points="275,170 305,170 290,155" fill="#4BFB9D" opacity="0.3" stroke="#333" /> <!-- Roof -->
+                            <text x="275" y="185" font-family="Arial" font-size="8" fill="#333">Home</text>
+                            
+                            <!-- Optimization Paths -->
+                            <path d="M110 80 L150 80 L200 100 L250 130 L280 170" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                            <path d="M110 80 L150 120 L200 140 L250 160 L280 170" fill="none" stroke="#FB4B4B" stroke-width="2" stroke-dasharray="3,3" />
+                            <path d="M110 80 L150 150 L200 170 L250 180 L280 170" fill="none" stroke="#FBD44B" stroke-width="2" stroke-dasharray="5,5" />
+                            
+                            <!-- Path Legend -->
+                            <rect x="60" y="170" width="100" height="50" fill="#FFF" stroke="#333" rx="5" />
+                            <line x1="70" y1="180" x2="90" y2="180" stroke="#4B6EFB" stroke-width="2" />
+                            <text x="95" y="182" font-family="Arial" font-size="6" fill="#333">Optimal Route (12 min)</text>
+                            
+                            <line x1="70" y1="190" x2="90" y2="190" stroke="#FB4B4B" stroke-width="2" stroke-dasharray="3,3" />
+                            <text x="95" y="192" font-family="Arial" font-size="6" fill="#333">Alternative 1 (18 min)</text>
+                            
+                            <line x1="70" y1="200" x2="90" y2="200" stroke="#FBD44B" stroke-width="2" stroke-dasharray="5,5" />
+                            <text x="95" y="202" font-family="Arial" font-size="6" fill="#333">Alternative 2 (25 min)</text>
+                            
+                            <!-- Delivery Person -->
+                            <circle cx="120" cy="85" r="5" fill="#333" />
+                            <path d="M120 90 L120 100" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M115 95 L125 95" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M120 100 L115 110" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M120 100 L125 110" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Compass -->
+                            <circle cx="320" cy="70" r="15" fill="#FFF" stroke="#333" />
+                            <path d="M320 55 L320 85" fill="none" stroke="#333" />
+                            <path d="M305 70 L335 70" fill="none" stroke="#333" />
+                            <text x="319" y="65" font-family="Arial" font-size="8" fill="#333">N</text>
+                            <text x="319" y="80" font-family="Arial" font-size="8" fill="#333">S</text>
+                            <text x="330" y="73" font-family="Arial" font-size="8" fill="#333">E</text>
+                            <text x="307" y="73" font-family="Arial" font-size="8" fill="#333">W</text>
+                        </svg>
+                        <p class="caption">Optimization algorithms find the most efficient solution, like determining the fastest delivery route among multiple possibilities.</p>
+                    </div>
+                    
+                    <p>It is like a navigator, always searching for the best solution. These optimization algorithms don't just find any solution - they find the best one according to specific criteria, such as the shortest time or distance.</p>
+                    
+                    <div class="key-concept">
+                        <h3>Finding the Optimal Solution</h3>
+                        <p>Optimization algorithms aim to find the best possible solution to a problem from a range of possible solutions. They are essential for problems with many possible answers where we need to find the "best" one based on certain criteria.</p>
+                        <p>Common applications include:</p>
+                        <ul>
+                            <li>Route planning for deliveries or transportation</li>
+                            <li>Resource allocation in manufacturing</li>
+                            <li>Schedule optimization for staff, flights, or classes</li>
+                            <li>Portfolio optimization in finance</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Data scientists use these and other types of algorithms to make sense of the world around us. They are like the secret superheroes of the digital age, using their powers to make our lives easier and more convenient. And the best part? These algorithms are getting more advanced every day, learning from the vast amounts of data we generate.</p>
+                </section>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="chapter10.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+                <a href="chapter11.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

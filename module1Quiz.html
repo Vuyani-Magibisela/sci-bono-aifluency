@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Module 1 Quiz</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .question-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid var(--grey-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .option:hover {
+            background-color: var(--grey-light);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .option label {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 2rem auto;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--background-light);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feedback {
+            margin-bottom: 1rem;
+        }
+        
+        .restart-btn {
+            background-color: var(--accent-color);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        
+        .restart-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .correct {
+            background-color: rgba(75, 251, 157, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .incorrect {
+            background-color: rgba(251, 75, 75, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--background-light);
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 0.5rem;
+        }
+        
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--white);
+            border: 1px solid var(--grey-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--grey-light);
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                padding: 1rem;
+            }
+            
+            .question-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="backToModule"><i class="fas fa-arrow-left"></i> Back to Module</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div class="module-badge">Module 1: AI Foundations</div>
+                <h1>Knowledge Check Quiz</h1>
+                <p class="subtitle">Test your understanding of AI fundamentals</p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+            
+            <form id="quiz-form">
+                <!-- Questions will be dynamically loaded here -->
+                <div id="questions-container"></div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be added here -->
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submit-btn">Submit Quiz</button>
+            </form>
+            
+            <div class="results" id="results">
+                <div class="score" id="score">Your Score: <span id="score-value">0/10</span></div>
+                <div class="feedback" id="feedback">Great job! You've demonstrated a solid understanding of AI fundamentals.</div>
+                <button class="restart-btn" id="restart-btn">Take Quiz Again</button>
+                <button class="restart-btn" id="review-btn">Review Answers</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // This data structure would typically come from a database
+        // It's structured here to be easily transferable to a backend system
+        const quizData = [
+            {
+                id: 1,
+                question: "What is artificial intelligence (AI)?",
+                options: [
+                    "A computer program that can only perform predetermined tasks",
+                    "The ability of a computer system to learn from past data and errors, enabling it to make increasingly accurate predictions",
+                    "A robot with human-like characteristics",
+                    "Software that allows computers to connect to the internet"
+                ],
+                correctAnswer: 1, // Index of correct answer (0-based)
+                explanation: "AI is the ability of a computer system to learn from past data and errors, enabling it to make increasingly accurate predictions for future behavior."
+            },
+            {
+                id: 2,
+                question: "What is the relationship between AI and machine learning?",
+                options: [
+                    "They are completely different technologies with no relation",
+                    "AI and machine learning are exactly the same thing",
+                    "Machine learning is a subset of AI",
+                    "AI is a subset of machine learning"
+                ],
+                correctAnswer: 2,
+                explanation: "Machine learning is a subset of artificial intelligence. All machine learning is AI, but not all AI involves machine learning."
+            },
+            {
+                id: 3,
+                question: "What are patterns in data?",
+                options: [
+                    "Random occurrences with no significance",
+                    "Identifiable repetitive behaviors or structures in data",
+                    "Mistakes in data collection",
+                    "Visualization tools for data presentation"
+                ],
+                correctAnswer: 1,
+                explanation: "Patterns are identifiable repetitive behaviors or structures that occur within data. AI models are particularly good at recognizing these patterns."
+            },
+            {
+                id: 4,
+                question: "What is supervised learning?",
+                options: [
+                    "Learning that requires a human supervisor present at all times",
+                    "Learning that happens without any data labels or guidance",
+                    "An algorithm trained on labeled data with correct outputs",
+                    "Learning that occurs by trial and error with rewards and penalties"
+                ],
+                correctAnswer: 2,
+                explanation: "In supervised learning, the algorithm is trained on labeled data, where inputs are paired with correct outputs, allowing it to learn the relationship between them."
+            },
+            {
+                id: 5,
+                question: "What is deep learning?",
+                options: [
+                    "Learning that happens deep under water",
+                    "A subfield of machine learning inspired by the structure and function of the brain",
+                    "Learning that requires deep concentration",
+                    "A type of learning that only works with very large datasets"
+                ],
+                correctAnswer: 1,
+                explanation: "Deep learning is a subfield of machine learning concerned with algorithms inspired by the structure and function of the brain called artificial neural networks."
+            },
+            {
+                id: 6,
+                question: "What is Natural Language Processing (NLP)?",
+                options: [
+                    "A programming language used to create AI applications",
+                    "The ability of computers to understand and speak natural human languages",
+                    "An application of AI which enables machines to process and comprehend human language",
+                    "A system that translates computer code into human language"
+                ],
+                correctAnswer: 2,
+                explanation: "Natural Language Processing (NLP) is an application of AI which enables machines to both process and comprehend human language in the way it is written."
+            },
+            {
+                id: 7,
+                question: "What is a classification algorithm used for?",
+                options: [
+                    "Organizing files on a computer",
+                    "Sorting items into categories based on learned patterns",
+                    "Creating classifications for new types of data",
+                    "Ranking items by importance"
+                ],
+                correctAnswer: 1,
+                explanation: "Classification algorithms are used for sorting items into categories based on learned patterns, such as distinguishing spam from legitimate emails."
+            },
+            {
+                id: 8,
+                question: "What is reinforcement learning?",
+                options: [
+                    "Learning that involves positive reinforcement only",
+                    "Learning through online courses and tutorials",
+                    "An algorithm trained by interacting with its environment to achieve a goal, receiving rewards or penalties",
+                    "Learning that reinforces existing knowledge without adding new information"
+                ],
+                correctAnswer: 2,
+                explanation: "Reinforcement learning is where an algorithm learns by interacting with its environment, taking actions to maximize rewards and minimize penalties, similar to how we learn from experience."
+            },
+            {
+                id: 9,
+                question: "What is the Internet of Things (IoT)?",
+                options: [
+                    "A network of internet websites",
+                    "A vast network of interconnected physical devices that collect and share data",
+                    "A special internet connection for smart devices",
+                    "The underlying structure of the internet"
+                ],
+                correctAnswer: 1,
+                explanation: "The Internet of Things (IoT) is a vast network of interconnected physical devices, ranging from everyday household items to wearable devices, that collect and share data via the internet."
+            },
+            {
+                id: 10,
+                question: "How do AI algorithms like regression differ from classification algorithms?",
+                options: [
+                    "Regression algorithms are older than classification algorithms",
+                    "Classification algorithms sort data into categories while regression algorithms predict continuous values",
+                    "Regression algorithms are simpler and less accurate",
+                    "Classification algorithms require more data to function properly"
+                ],
+                correctAnswer: 1,
+                explanation: "While classification algorithms sort data into discrete categories (like spam/not spam), regression algorithms predict continuous numerical values, such as prices or temperatures."
+            }
+        ];
+
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const pagination = document.getElementById('pagination');
+        const progressBar = document.getElementById('progress');
+        const quizForm = document.getElementById('quiz-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreValue = document.getElementById('score-value');
+        const feedback = document.getElementById('feedback');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewBtn = document.getElementById('review-btn');
+        const backToModuleBtn = document.getElementById('backToModule');
+
+        // State variables
+        let currentPage = 0;
+        const questionsPerPage = 5;
+        const totalPages = Math.ceil(quizData.length / questionsPerPage);
+        let userAnswers = new Array(quizData.length).fill(null);
+        let quizSubmitted = false;
+
+        // Initialize the quiz
+        function initQuiz() {
+            createPagination();
+            showPage(0);
+            updateProgressBar();
+        }
+
+        // Create pagination buttons
+        function createPagination() {
+            pagination.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.type = 'button';
+                pageBtn.className = 'page-btn';
+                pageBtn.textContent = i + 1;
+                pageBtn.addEventListener('click', () => showPage(i));
+                pagination.appendChild(pageBtn);
+            }
+        }
+
+        // Show a specific page of questions
+        function showPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex >= totalPages) return;
+            
+            currentPage = pageIndex;
+            questionsContainer.innerHTML = '';
+            
+            const startIndex = pageIndex * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, quizData.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const question = quizData[i];
+                createQuestionElement(question, i);
+            }
+            
+            // Update active page button
+            const pageButtons = pagination.querySelectorAll('.page-btn');
+            pageButtons.forEach((btn, index) => {
+                if (index === pageIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            updateProgressBar();
+        }
+
+        // Create HTML for a question
+        function createQuestionElement(question, index) {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container';
+            questionDiv.id = `question-${index}`;
+            
+            const questionTitle = document.createElement('div');
+            questionTitle.className = 'question';
+            questionTitle.textContent = `${index + 1}. ${question.question}`;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            
+            question.options.forEach((option, optionIndex) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                
+                // Add classes if quiz is submitted
+                if (quizSubmitted) {
+                    if (optionIndex === question.correctAnswer) {
+                        optionDiv.classList.add('correct');
+                    } else if (userAnswers[index] === optionIndex && userAnswers[index] !== question.correctAnswer) {
+                        optionDiv.classList.add('incorrect');
+                    }
+                }
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `question-${index}`;
+                radio.id = `question-${index}-option-${optionIndex}`;
+                radio.value = optionIndex;
+                radio.checked = userAnswers[index] === optionIndex;
+                radio.disabled = quizSubmitted;
+                
+                radio.addEventListener('change', () => {
+                    userAnswers[index] = optionIndex;
+                    updateProgressBar();
+                });
+                
+                const label = document.createElement('label');
+                label.htmlFor = `question-${index}-option-${optionIndex}`;
+                label.textContent = option;
+                
+                optionDiv.appendChild(radio);
+                optionDiv.appendChild(label);
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            questionDiv.appendChild(questionTitle);
+            questionDiv.appendChild(optionsDiv);
+            
+            // Add explanation if the quiz is submitted
+            if (quizSubmitted) {
+                const explanationDiv = document.createElement('div');
+                explanationDiv.className = 'explanation';
+                explanationDiv.style.display = 'block';
+                explanationDiv.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+                questionDiv.appendChild(explanationDiv);
+            }
+            
+            questionsContainer.appendChild(questionDiv);
+        }
+
+        // Update the progress bar
+        function updateProgressBar() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const progressPercentage = (answeredCount / quizData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        // Calculate the score
+        function calculateScore() {
+            let score = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === quizData[index].correctAnswer) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        // Generate feedback based on score
+        function generateFeedback(score, total) {
+            const percentage = (score / total) * 100;
+            
+            if (percentage >= 90) {
+                return "Outstanding! You have an excellent understanding of AI fundamentals!";
+            } else if (percentage >= 80) {
+                return "Great job! You've demonstrated a solid understanding of AI fundamentals.";
+            } else if (percentage >= 70) {
+                return "Good work! You have a good grasp of the basics of AI.";
+            } else if (percentage >= 60) {
+                return "Not bad! You're on the right track, but might want to review some concepts.";
+            } else {
+                return "It looks like you might need to revisit the module content. Keep learning!";
+            }
+        }
+
+        // Show quiz results
+        function showResults() {
+            const score = calculateScore();
+            scoreValue.textContent = `${score}/${quizData.length}`;
+            feedback.textContent = generateFeedback(score, quizData.length);
+            resultsDiv.style.display = 'block';
+            submitBtn.style.display = 'none';
+        }
+
+        // Review answers
+        function reviewAnswers() {
+            resultsDiv.style.display = 'none';
+            showPage(0);
+        }
+
+        // Restart the quiz
+        function restartQuiz() {
+            userAnswers = new Array(quizData.length).fill(null);
+            quizSubmitted = false;
+            resultsDiv.style.display = 'none';
+            submitBtn.style.display = 'block';
+            showPage(0);
+            updateProgressBar();
+        }
+
+        // Event listeners
+        quizForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            quizSubmitted = true;
+            showPage(currentPage); // Refresh current page to show correct/incorrect answers
+            showResults();
+        });
+
+        restartBtn.addEventListener('click', restartQuiz);
+        reviewBtn.addEventListener('click', reviewAnswers);
+        backToModuleBtn.addEventListener('click', () => {
+            window.location.href = 'module1.html';
+        });
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
