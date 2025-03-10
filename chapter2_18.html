@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Chapter 3.18: How Does a Search Engine Work?</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main>
+<div class="chapter-container">
+<div class="chapter-header">
+    <div class="module-badge">Module 3: Search and AI</div>
+    <h1>Chapter 3.18: How Does a Search Engine Work?</h1>
+    <p class="subtitle">Exploring the mechanics behind search engines</p>
+</div>
+
+<div class="chapter-nav">
+    <div class="nav-buttons-container">
+        <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+        <a href="#crawling" class="nav-tab"><i class="fas fa-spider"></i> Crawling</a>
+        <a href="#indexing" class="nav-tab"><i class="fas fa-database"></i> Indexing</a>
+        <a href="#ranking" class="nav-tab"><i class="fas fa-sort-amount-up"></i> Ranking</a>
+    </div>
+</div>
+
+<div class="chapter-content">
+    <section class="content-section" id="introduction">
+        <h2>Introduction to Search Engines</h2>
+        <p>Search engines have become an integral part of our daily lives, helping us find information from simple facts to detailed research. They also allow us to stay informed on the latest news, shop online, or plan trips by providing keywords and straightforward queries.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Person with headphones -->
+                <circle cx="100" cy="80" r="20" fill="#FB4B4B" />
+                <rect x="90" y="100" width="20" height="30" fill="#6E4BFB" />
+                <!-- Headphones -->
+                <path d="M 80 80 C 70 60, 130 60, 120 80" stroke="#333" stroke-width="2" fill="none" />
+                <rect x="70" y="80" width="10" height="15" rx="3" fill="#333" />
+                <rect x="120" y="80" width="10" height="15" rx="3" fill="#333" />
+                
+                <!-- Laptop -->
+                <rect x="130" y="90" width="50" height="40" rx="5" fill="#f0f0f0" stroke="#333" />
+                <rect x="135" y="95" width="40" height="30" fill="#fff" />
+                
+                <!-- Cloud with icons -->
+                <circle cx="230" cy="80" r="30" fill="#f9f9f9" stroke="#4B6EFB" />
+                <circle cx="260" cy="70" r="20" fill="#f9f9f9" stroke="#4B6EFB" />
+                <circle cx="270" cy="100" r="25" fill="#f9f9f9" stroke="#4B6EFB" />
+                <circle cx="240" cy="110" r="22" fill="#f9f9f9" stroke="#4B6EFB" />
+                <circle cx="210" cy="100" r="18" fill="#f9f9f9" stroke="#4B6EFB" />
+                
+                <!-- Icons inside cloud -->
+                <circle cx="230" cy="75" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="230" y="79" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-globe"></i></text>
+                
+                <circle cx="255" cy="95" r="10" fill="#6E4BFB" opacity="0.7" />
+                <text x="255" y="99" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-clock"></i></text>
+                
+                <circle cx="230" cy="105" r="10" fill="#4BFB9D" opacity="0.7" />
+                <text x="230" y="109" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-cog"></i></text>
+                
+                <rect x="315" y="70" width="35" height="60" rx="5" fill="#f0f0f0" stroke="#333" />
+                <rect x="320" y="75" width="25" height="45" fill="#fff" />
+                <circle cx="332.5" cy="125" r="3" fill="#333" />
+            </svg>
+            <p class="caption">Search engines connect users to a vast world of information with just a few keywords.</p>
+        </div>
+        
+        <p>There's a world of information at your fingertips, but what really goes on behind the scenes when you use a search engine? It all starts with three fundamental tasks: crawling, indexing, and ranking.</p>
+    </section>
+
+    <section class="content-section" id="crawling">
+        <h2>Crawling: Discovering Web Content</h2>
+        <p>Search engines deploy programs known as crawlers or web spiders to find new or updated web pages. These crawlers explore the web by following links from one page to another, discovering new or updated pages to add to the search index.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Web structure -->
+                <circle cx="200" cy="100" r="25" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="200" y="104" font-family="Arial" font-size="12" fill="#6E4BFB" text-anchor="middle">Page A</text>
+                
+                <circle cx="120" cy="150" r="25" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="120" y="154" font-family="Arial" font-size="12" fill="#6E4BFB" text-anchor="middle">Page B</text>
+                
+                <circle cx="280" cy="150" r="25" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="280" y="154" font-family="Arial" font-size="12" fill="#6E4BFB" text-anchor="middle">Page C</text>
+                
+                <circle cx="70" cy="80" r="25" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="70" y="84" font-family="Arial" font-size="12" fill="#6E4BFB" text-anchor="middle">Page D</text>
+                
+                <circle cx="330" cy="80" r="25" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="330" y="84" font-family="Arial" font-size="12" fill="#6E4BFB" text-anchor="middle">Page E</text>
+                
+                <!-- Connections between pages -->
+                <line x1="200" y1="100" x2="120" y2="150" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="200" y1="100" x2="280" y2="150" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="200" y1="100" x2="70" y2="80" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="200" y1="100" x2="330" y2="80" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="120" y1="150" x2="70" y2="80" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="280" y1="150" x2="330" y2="80" stroke="#6E4BFB" stroke-width="1" />
+                
+                <!-- Spider -->
+                <circle cx="200" cy="60" r="15" fill="#FB4B4B" opacity="0.7" />
+                <line x1="185" y1="60" x2="170" y2="50" stroke="#FB4B4B" stroke-width="2" />
+                <line x1="185" y1="60" x2="170" y2="70" stroke="#FB4B4B" stroke-width="2" />
+                <line x1="215" y1="60" x2="230" y2="50" stroke="#FB4B4B" stroke-width="2" />
+                <line x1="215" y1="60" x2="230" y2="70" stroke="#FB4B4B" stroke-width="2" />
+                
+                <!-- Spider web threads -->
+                <path d="M 200 75 L 200 100" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,2" />
+                <path d="M 190 65 L 120 150" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,2" />
+                <path d="M 210 65 L 280 150" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,2" />
+                <path d="M 185 60 L 70 80" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,2" />
+                <path d="M 215 60 L 330 80" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,2" />
+            </svg>
+            <p class="caption">Web crawlers (or spiders) navigate from one webpage to another by following links, discovering new content to index.</p>
+        </div>
+        
+        <div class="key-concept">
+            <h3>Web Crawlers</h3>
+            <p>Web crawlers, sometimes called spiders or bots, are automated programs that systematically browse the World Wide Web. They visit web pages, read their content, and follow links to discover new pages. This process is essential for search engines to maintain an up-to-date database of available web content.</p>
+        </div>
+        
+        <p>As crawlers visit websites, they collect information about each page's content, links, and structure. This information is then passed to the next stage of the search engine process: indexing.</p>
+    </section>
+
+    <section class="content-section" id="indexing">
+        <h2>Indexing: Organizing the Data</h2>
+        <p>Once the content is found through crawling, it's time for indexing. Here, the data found is catalogued in a massive database called the search index.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Filing System -->
+                <rect x="100" y="50" width="200" height="120" rx="5" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                
+                <!-- File folders -->
+                <rect x="110" y="60" width="40" height="30" fill="#FBD44B" opacity="0.7" />
+                <rect x="115" y="60" width="30" height="8" fill="#FBD44B" opacity="0.9" />
+                
+                <rect x="160" y="60" width="40" height="30" fill="#FB4B4B" opacity="0.7" />
+                <rect x="165" y="60" width="30" height="8" fill="#FB4B4B" opacity="0.9" />
+                
+                <rect x="210" y="60" width="40" height="30" fill="#4BFB9D" opacity="0.7" />
+                <rect x="215" y="60" width="30" height="8" fill="#4BFB9D" opacity="0.9" />
+                
+                <rect x="260" y="60" width="30" height="30" fill="#6E4BFB" opacity="0.7" />
+                <rect x="265" y="60" width="20" height="8" fill="#6E4BFB" opacity="0.9" />
+                
+                <!-- Binders -->
+                <rect x="110" y="100" width="15" height="60" rx="2" fill="#FB4B4B" opacity="0.8" />
+                <rect x="130" y="100" width="15" height="60" rx="2" fill="#FB4B4B" opacity="0.8" />
+                <rect x="150" y="100" width="15" height="60" rx="2" fill="#FB4B4B" opacity="0.8" />
+                
+                <rect x="175" y="100" width="15" height="60" rx="2" fill="#6E4BFB" opacity="0.8" />
+                <rect x="195" y="100" width="15" height="60" rx="2" fill="#6E4BFB" opacity="0.8" />
+                <rect x="215" y="100" width="15" height="60" rx="2" fill="#6E4BFB" opacity="0.8" />
+                
+                <rect x="240" y="100" width="15" height="60" rx="2" fill="#4BFB9D" opacity="0.8" />
+                <rect x="260" y="100" width="15" height="60" rx="2" fill="#4BFB9D" opacity="0.8" />
+                <rect x="280" y="100" width="15" height="60" rx="2" fill="#4BFB9D" opacity="0.8" />
+                
+                <!-- Search Index Label -->
+                <rect x="160" y="30" width="80" height="20" rx="10" fill="#4B6EFB" opacity="0.8" />
+                <text x="200" y="45" font-family="Arial" font-size="12" fill="white" text-anchor="middle">Search Index</text>
+            </svg>
+            <p class="caption">The indexing process organizes web content like a vast library catalog for quick retrieval.</p>
+        </div>
+        
+        <p>Like a librarian organizing books on shelves, search engines categorize and organize the collected information in a way that makes it easily retrievable. This organization is crucial because it allows the search engine to quickly find relevant information when a user submits a query.</p>
+        
+        <div class="info-box">
+            <h3>How Indexing Works</h3>
+            <p>The search index is like a detailed map of the internet. It contains information about each webpage, including:</p>
+            <ul>
+                <li>The words and phrases that appear on the page</li>
+                <li>The frequency and location of these words</li>
+                <li>The structure of the page (headings, links, etc.)</li>
+                <li>Metadata about the page (title, description, etc.)</li>
+                <li>Links to and from the page</li>
+            </ul>
+            <p>This information is stored in a highly optimized database that enables rapid searching and retrieval.</p>
+        </div>
+        
+        <p>Without proper indexing, finding relevant information would be like searching for a specific book in a library with no organizational system. The indexing process transforms raw web data into a structured format that makes the final stage of search—ranking—possible.</p>
+    </section>
+
+    <section class="content-section" id="ranking">
+        <h2>Ranking: Delivering Relevant Results</h2>
+        <p>When you ask a question or enter a search query, the search engine sifts through its indexed content, prioritizing pages to ensure you get the most relevant answers. This process is known as ranking.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Search bar -->
+                <rect x="50" y="70" width="300" height="40" rx="20" fill="#f9f9f9" stroke="#4B6EFB" stroke-width="2" />
+                <text x="80" y="95" font-family="Arial" font-size="14" fill="#6E4BFB">What are the best pizza restaurants in Seattle?</text>
+                <circle cx="330" cy="90" r="15" fill="#4B6EFB" opacity="0.7" />
+                <text x="330" y="95" font-family="Arial" font-size="14" fill="white" text-anchor="middle"><i class="fas fa-search"></i></text>
+                
+                <!-- Search results -->
+                <rect x="50" y="120" width="300" height="25" rx="5" fill="#f9f9f9" stroke="#ccc" />
+                <text x="65" y="137" font-family="Arial" font-size="12" fill="#4B6EFB">1. 20 best pizza restaurants in Seattle</text>
+                
+                <rect x="50" y="150" width="300" height="25" rx="5" fill="#f9f9f9" stroke="#ccc" />
+                <text x="65" y="167" font-family="Arial" font-size="12" fill="#4B6EFB">2. Where to get the best pizza in Seattle</text>
+                
+                <rect x="50" y="180" width="300" height="25" rx="5" fill="#f9f9f9" stroke="#ccc" />
+                <text x="65" y="197" font-family="Arial" font-size="12" fill="#4B6EFB">3. Seattle food guide - pizza edition</text>
+            </svg>
+            <p class="caption">Search engines rank results based on relevance, placing the most useful answers at the top.</p>
+        </div>
+        
+        <p>Ranking involves complex algorithms that consider factors such as the frequency and location of keywords within the web page, the overall quality of the content, and the analysis of links. The goal is to present users with the most relevant and useful information for their specific query.</p>
+        
+        <div class="key-concept">
+            <h3>Ranking Factors</h3>
+            <p>Modern search engines consider hundreds of factors when ranking search results, including:</p>
+            <ul>
+                <li>Relevance of content to the search query</li>
+                <li>Quality and authority of the webpage</li>
+                <li>User location and search history</li>
+                <li>Device type (mobile vs. desktop)</li>
+                <li>Page load speed and user experience</li>
+                <li>Freshness of content (especially for time-sensitive topics)</li>
+            </ul>
+        </div>
+        
+        <p>Let's put this into perspective with a practical example. Say you're searching for "Italian restaurants in my city." The search engine springs into action, suggesting a list of websites. This selection is not random; it's the result of precise ranking, where each page's relevance is assessed based on your search.</p>
+        
+        <p>From the moment you type in your query to how quickly the results appear, you're seeing the seamless dance of crawling, indexing, and ranking. It's a journey that brings knowledge to your fingertips, all in the blink of an eye.</p>
+    </section>
+</div>
+
+<div class="nav-buttons">
+    <a href="chapter1_17.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+    <a href="chapter3_19.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

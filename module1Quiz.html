@@ -18,6 +18,13 @@
             margin-bottom: 2rem;
         }
         
+        .quiz-instructions {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
         .question-container {
             background-color: var(--white);
             border-radius: 10px;
@@ -114,6 +121,7 @@
             cursor: pointer;
             transition: var(--transition);
             margin-top: 1rem;
+            margin-right: 0.5rem;
         }
         
         .restart-btn:hover {
@@ -124,11 +132,33 @@
         .correct {
             background-color: rgba(75, 251, 157, 0.2);
             border-color: var(--accent-green);
+            border-width: 2px;
+            position: relative;
+        }
+        
+        .correct::after {
+            content: "✓";
+            color: #2C9E5F;
+            position: absolute;
+            right: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
         
         .incorrect {
             background-color: rgba(251, 75, 75, 0.2);
             border-color: var(--accent-color);
+            border-width: 2px;
+            position: relative;
+        }
+        
+        .incorrect::after {
+            content: "✗";
+            color: #E53935;
+            position: absolute;
+            right: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
         
         .explanation {
@@ -164,20 +194,56 @@
             color: var(--white);
         }
         
+        /* Sticky Progress Bar Styles */
         .progress-container {
+            position: sticky;
+            top: 0;
             width: 100%;
-            height: 10px;
-            background-color: var(--grey-light);
-            border-radius: 5px;
+            background-color: var(--white);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
             margin-bottom: 2rem;
-            overflow: hidden;
         }
         
         .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
             height: 100%;
             background-color: var(--primary-color);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-percentage {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        #quizContent {
+            padding-top: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -215,26 +281,52 @@
                 <p class="subtitle">Test your understanding of AI fundamentals</p>
             </div>
             
-            <div class="progress-container">
-                <div class="progress-bar" id="progress"></div>
+            <!-- Sticky Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-info">
+                    <span>Your Progress</span>
+                    <span class="progress-percentage" id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-labels">
+                    <span id="questionLabel">Page 1 of 2</span>
+                    <span id="answeredCount">0 answered</span>
+                </div>
             </div>
             
-            <form id="quiz-form">
-                <!-- Questions will be dynamically loaded here -->
-                <div id="questions-container"></div>
-                
-                <div class="pagination" id="pagination">
-                    <!-- Pagination buttons will be added here -->
+            <div id="quizContent">
+                <!-- Quiz Instructions -->
+                <div class="quiz-instructions">
+                    <h2><i class="fas fa-info-circle"></i> Instructions</h2>
+                    <p>This quiz contains 10 multiple-choice questions to assess your understanding of Module 1: AI Foundations. Read each question carefully and select the best answer from the options provided.</p>
+                    <ul>
+                        <li>You can navigate between pages using the pagination buttons below</li>
+                        <li>Each question is worth 1 point, for a total of 10 points</li>
+                        <li>Your progress will be saved as you answer questions</li>
+                        <li>After submission, you can review your answers with explanations</li>
+                    </ul>
+                    <p>Good luck!</p>
                 </div>
                 
-                <button type="submit" class="submit-btn" id="submit-btn">Submit Quiz</button>
-            </form>
-            
-            <div class="results" id="results">
-                <div class="score" id="score">Your Score: <span id="score-value">0/10</span></div>
-                <div class="feedback" id="feedback">Great job! You've demonstrated a solid understanding of AI fundamentals.</div>
-                <button class="restart-btn" id="restart-btn">Take Quiz Again</button>
-                <button class="restart-btn" id="review-btn">Review Answers</button>
+                <form id="quiz-form">
+                    <!-- Questions will be dynamically loaded here -->
+                    <div id="questions-container"></div>
+                    
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination buttons will be added here -->
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submit-btn">Submit Quiz</button>
+                </form>
+                
+                <div class="results" id="results">
+                    <div class="score" id="score">Your Score: <span id="score-value">0/10</span></div>
+                    <div class="feedback" id="feedback">Great job! You've demonstrated a solid understanding of AI fundamentals.</div>
+                    <button class="restart-btn" id="restart-btn">Take Quiz Again</button>
+                    <button class="restart-btn" id="review-btn">Review Answers</button>
+                </div>
             </div>
         </div>
     </main>
@@ -379,7 +471,10 @@
         // DOM elements
         const questionsContainer = document.getElementById('questions-container');
         const pagination = document.getElementById('pagination');
-        const progressBar = document.getElementById('progress');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const answeredCount = document.getElementById('answeredCount');
+        const questionLabel = document.getElementById('questionLabel');
         const quizForm = document.getElementById('quiz-form');
         const submitBtn = document.getElementById('submit-btn');
         const resultsDiv = document.getElementById('results');
@@ -388,6 +483,7 @@
         const restartBtn = document.getElementById('restart-btn');
         const reviewBtn = document.getElementById('review-btn');
         const backToModuleBtn = document.getElementById('backToModule');
+        const progressContainer = document.getElementById('progressContainer');
 
         // State variables
         let currentPage = 0;
@@ -400,7 +496,7 @@
         function initQuiz() {
             createPagination();
             showPage(0);
-            updateProgressBar();
+            updateProgress();
         }
 
         // Create pagination buttons
@@ -441,7 +537,10 @@
                 }
             });
             
-            updateProgressBar();
+            // Update question label in progress bar
+            questionLabel.textContent = `Page ${pageIndex + 1} of ${totalPages}`;
+            
+            updateProgress();
         }
 
         // Create HTML for a question
@@ -480,7 +579,7 @@
                 
                 radio.addEventListener('change', () => {
                     userAnswers[index] = optionIndex;
-                    updateProgressBar();
+                    updateProgress();
                 });
                 
                 const label = document.createElement('label');
@@ -507,12 +606,26 @@
             questionsContainer.appendChild(questionDiv);
         }
 
-        // Update the progress bar
-        function updateProgressBar() {
-            const answeredCount = userAnswers.filter(answer => answer !== null).length;
-            const progressPercentage = (answeredCount / quizData.length) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
+        // Update the progress
+        function updateProgress() {
+            const answeredQuestionsCount = userAnswers.filter(answer => answer !== null).length;
+            const progressPercent = (answeredQuestionsCount / quizData.length) * 100;
+            
+            progressFill.style.width = `${progressPercent}%`;
+            progressPercentage.textContent = `${Math.round(progressPercent)}%`;
+            answeredCount.textContent = `${answeredQuestionsCount} of ${quizData.length} answered`;
         }
+
+        // Make progress bar sticky on scroll
+        window.addEventListener('scroll', function() {
+            const headerHeight = document.querySelector('header').offsetHeight;
+            
+            if (window.pageYOffset > headerHeight) {
+                progressContainer.style.top = '0';
+            } else {
+                progressContainer.style.top = `${headerHeight - window.pageYOffset}px`;
+            }
+        });
 
         // Calculate the score
         function calculateScore() {
@@ -549,12 +662,21 @@
             feedback.textContent = generateFeedback(score, quizData.length);
             resultsDiv.style.display = 'block';
             submitBtn.style.display = 'none';
+            progressContainer.style.display = 'none'; // Hide progress bar when showing results
         }
 
         // Review answers
         function reviewAnswers() {
             resultsDiv.style.display = 'none';
-            showPage(0);
+            submitBtn.style.display = 'none';
+            progressContainer.style.display = 'flex'; // Show progress bar again
+            
+            // Set quizSubmitted to true to ensure answers are highlighted
+            if (!quizSubmitted) {
+                quizSubmitted = true;
+            }
+            
+            showPage(0); // Start review from the first page
         }
 
         // Restart the quiz
@@ -563,13 +685,22 @@
             quizSubmitted = false;
             resultsDiv.style.display = 'none';
             submitBtn.style.display = 'block';
+            progressContainer.style.display = 'flex'; // Show progress bar again
             showPage(0);
-            updateProgressBar();
+            updateProgress();
         }
 
         // Event listeners
         quizForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Check if all questions are answered
+            const unansweredCount = userAnswers.filter(answer => answer === null).length;
+            if (unansweredCount > 0) {
+                alert(`You have ${unansweredCount} unanswered questions. Please answer all questions before submitting.`);
+                return;
+            }
+            
             quizSubmitted = true;
             showPage(currentPage); // Refresh current page to show correct/incorrect answers
             showResults();
