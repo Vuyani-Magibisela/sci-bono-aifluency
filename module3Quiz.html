@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Module 3 Quiz: Advanced Search</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<style>
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .quiz-instructions {
+        background-color: var(--background-light);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .question-container {
+        background-color: var(--white);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .question {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.8rem;
+        border-radius: 8px;
+        background-color: var(--background-light);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+    
+    .option:hover {
+        background-color: rgba(75, 110, 251, 0.1);
+    }
+    
+    .option input {
+        margin-top: 0.3rem;
+    }
+    
+    .option label {
+        flex-grow: 1;
+        cursor: pointer;
+    }
+    
+    .option.correct {
+        background-color: rgba(75, 251, 157, 0.2);
+        border: 2px solid var(--accent-green);
+    }
+    
+    .option.correct::after {
+        content: "✓";
+        color: #2C9E5F;
+        position: absolute;
+        right: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .option.incorrect {
+        background-color: rgba(251, 75, 75, 0.2);
+        border: 2px solid var(--accent-color);
+    }
+    
+    .option.incorrect::after {
+        content: "✗";
+        color: #E53935;
+        position: absolute;
+        right: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+    
+    .quiz-button {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .quiz-button:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .quiz-button.secondary {
+        background-color: var(--text-light);
+    }
+    
+    .quiz-button.secondary:hover {
+        background-color: var(--text-dark);
+    }
+    
+    .results-container {
+        display: none;
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        box-shadow: var(--shadow);
+        text-align: center;
+    }
+    
+    .results-title {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .score {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 1.5rem 0;
+    }
+    
+    .feedback {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Progress bar styles */
+    .progress-container {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background-color: var(--white);
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+    
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .progress-percentage {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    /* Add some padding to the top of the quiz content to account for the sticky bar */
+    #quizContent {
+        padding-top: 1rem;
+    }
+    
+    .explanation {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: rgba(110, 75, 251, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid var(--secondary-color);
+    }
+</style>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main>
+<div class="quiz-container">
+    <div class="quiz-header">
+        <div class="module-badge">Module 3: Advanced Search</div>
+        <h1>Module Quiz: Advanced Search</h1>
+        <p class="subtitle">Test your understanding of search engines, reasoning engines, and prompt engineering</p>
+    </div>
+    
+    <!-- Progress Bar (Sticky) -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-info">
+            <span>Your Progress</span>
+            <span class="progress-percentage" id="progressPercentage">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-labels">
+            <span>Question 1 of 10</span>
+            <span id="answeredCount">0 answered</span>
+        </div>
+    </div>
+    
+    <div id="quizContent">
+    <div class="quiz-instructions">
+        <h2><i class="fas fa-info-circle"></i> Instructions</h2>
+        <p>This quiz contains 10 multiple-choice questions to assess your understanding of Module 3: Advanced Search. Read each question carefully and select the best answer from the options provided.</p>
+        <ul>
+            <li>You will have 20 minutes to complete the quiz</li>
+            <li>Each question is worth 1 point, for a total of 10 points</li>
+            <li>A passing score is 7 out of 10 points (70%)</li>
+            <li>You can review your answers before submitting</li>
+        </ul>
+        <p>Good luck!</p>
+    </div>
+    
+    <form id="quizForm">
+        <div class="question-container">
+            <div class="question">1. What are the three main tasks performed by search engines?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q1a" name="q1" value="a">
+                    <label for="q1a">Analyzing, processing, and reporting</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1b" name="q1" value="b">
+                    <label for="q1b">Crawling, indexing, and ranking</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1c" name="q1" value="c">
+                    <label for="q1c">Searching, finding, and displaying</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1d" name="q1" value="d">
+                    <label for="q1d">Querying, filtering, and sorting</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q1" style="display: none;">
+                <strong>Explanation:</strong> Search engines operate through three fundamental tasks: crawling (discovering web content), indexing (categorizing and storing content), and ranking (determining which content best answers a query).
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">2. What is the main difference between a search engine and a reasoning engine?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q2a" name="q2" value="a">
+                    <label for="q2a">Search engines are faster while reasoning engines are more thorough</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2b" name="q2" value="b">
+                    <label for="q2b">Search engines find information while reasoning engines apply logic to draw conclusions</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2c" name="q2" value="c">
+                    <label for="q2c">Search engines are text-based while reasoning engines are image-based</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2d" name="q2" value="d">
+                    <label for="q2d">Search engines require internet access while reasoning engines work offline</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q2" style="display: none;">
+                <strong>Explanation:</strong> While search engines primarily locate and present existing information, reasoning engines go a step further by applying logic and inference to analyze, interpret, and draw conclusions from that information.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">3. What is prompt engineering?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q3a" name="q3" value="a">
+                    <label for="q3a">The process of designing hardware prompts for digital assistants</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3b" name="q3" value="b">
+                    <label for="q3b">The art of crafting prompts that guide an LLM-based generative AI to produce a desired response</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3c" name="q3" value="c">
+                    <label for="q3c">The technical process of programming AI to respond to basic commands</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3d" name="q3" value="d">
+                    <label for="q3d">The engineering process behind creating visual prompts for search engines</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q3" style="display: none;">
+                <strong>Explanation:</strong> Prompt engineering is the skill of designing effective instructions (prompts) for AI systems to generate desired outputs. It involves understanding how to communicate clearly with AI to achieve specific results.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">4. What are the two main components of an effective prompt?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q4a" name="q4" value="a">
+                    <label for="q4a">Question and keywords</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4b" name="q4" value="b">
+                    <label for="q4b">Instruction and context</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4c" name="q4" value="c">
+                    <label for="q4c">Subject and predicate</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4d" name="q4" value="d">
+                    <label for="q4d">Format and length</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q4" style="display: none;">
+                <strong>Explanation:</strong> Effective prompts consist of clear instructions (what you want the AI to do) and relevant context (additional information that helps the AI understand your specific needs, such as audience, tone, or purpose).
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">5. Which of the following is NOT one of the conversation styles available in Microsoft Copilot?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q5a" name="q5" value="a">
+                    <label for="q5a">More Creative</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5b" name="q5" value="b">
+                    <label for="q5b">More Balanced</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5c" name="q5" value="c">
+                    <label for="q5c">More Technical</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5d" name="q5" value="d">
+                    <label for="q5d">More Precise</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q5" style="display: none;">
+                <strong>Explanation:</strong> Microsoft Copilot offers three conversation styles: More Creative (for imaginative content), More Balanced (for everyday tasks), and More Precise (for factual information). "More Technical" is not an available style.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">6. When Microsoft Copilot processes text, it breaks it down into what?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q6a" name="q6" value="a">
+                    <label for="q6a">Bytes</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6b" name="q6" value="b">
+                    <label for="q6b">Characters</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6c" name="q6" value="c">
+                    <label for="q6c">Tokens</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6d" name="q6" value="d">
+                    <label for="q6d">Strings</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q6" style="display: none;">
+                <strong>Explanation:</strong> Copilot processes text by breaking it into tokens, which can be as short as a single character or as long as a word. Understanding tokenization helps users craft more efficient prompts, as there are often limits to how many tokens can be processed at once.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">7. What methodology does Microsoft Copilot use to combine search and AI capabilities?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q7a" name="q7" value="a">
+                    <label for="q7a">Reinforcement learning with human feedback</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7b" name="q7" value="b">
+                    <label for="q7b">Retrieval-augmented generation</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7c" name="q7" value="c">
+                    <label for="q7c">Neural network optimization</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7d" name="q7" value="d">
+                    <label for="q7d">Multi-modal integration</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q7" style="display: none;">
+                <strong>Explanation:</strong> Microsoft Copilot uses retrieval-augmented generation (RAG), combining the knowledge from its large language model with real-time information retrieved from the web, ensuring responses are both intelligent and up-to-date.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">8. Which of the following is a best practice for crafting effective prompts?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q8a" name="q8" value="a">
+                    <label for="q8a">Keep prompts vague to allow AI more creative freedom</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8b" name="q8" value="b">
+                    <label for="q8b">Always use the same conversation style regardless of task</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8c" name="q8" value="c">
+                    <label for="q8c">Be specific and provide relevant context</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8d" name="q8" value="d">
+                    <label for="q8d">Limit prompts to single-word commands</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q8" style="display: none;">
+                <strong>Explanation:</strong> Specificity in prompts leads to more accurate and relevant responses. By providing clear instructions with detailed context about what you want, the AI can better understand your needs and deliver more useful results.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">9. What is the purpose of the "More Creative" conversation style in Microsoft Copilot?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q9a" name="q9" value="a">
+                    <label for="q9a">To provide strictly factual information with references</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9b" name="q9" value="b">
+                    <label for="q9b">To assist with mathematical calculations and data analysis</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9c" name="q9" value="c">
+                    <label for="q9c">To generate novel ideas, help with brainstorming, and assist with creative content</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9d" name="q9" value="d">
+                    <label for="q9d">To translate text between different languages</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q9" style="display: none;">
+                <strong>Explanation:</strong> The "More Creative" style is designed for ideation, storytelling, and content creation. It encourages more imaginative and novel responses, making it ideal for brainstorming sessions and creative writing tasks.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">10. How can critical thinking be applied when using AI search tools?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q10a" name="q10" value="a">
+                    <label for="q10a">By accepting all AI-generated information as factual</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10b" name="q10" value="b">
+                    <label for="q10b">By avoiding AI tools completely for research purposes</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10c" name="q10" value="c">
+                    <label for="q10c">By verifying facts, questioning sources, and considering a range of viewpoints</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10d" name="q10" value="d">
+                    <label for="q10d">By using only the most complex prompts possible</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q10" style="display: none;">
+                <strong>Explanation:</strong> Critical thinking involves evaluating AI-generated information by verifying facts from multiple sources, questioning the reliability of information, and considering different perspectives rather than accepting AI outputs at face value.
+            </div>
+        </div>
+        
+        <div class="quiz-controls">
+            <button type="button" class="quiz-button secondary" id="resetQuiz">Reset Quiz</button>
+            <button type="button" class="quiz-button" id="submitQuiz">Submit Answers</button>
+        </div>
+    </form>
+
+    <div class="results-container" id="resultsContainer">
+        <h2 class="results-title">Quiz Results</h2>
+        <div class="score" id="scoreDisplay">0/10</div>
+        <div class="feedback" id="feedbackMessage">Complete the quiz to see your results.</div>
+        <div class="quiz-controls">
+            <button type="button" class="quiz-button secondary" id="reviewQuiz">Review Answers</button>
+            <button type="button" class="quiz-button" id="returnToModule">Return to Module</button>
+        </div>
+    </div>
+</div>
+</div>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+
+<script>
+// Quiz functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const quizForm = document.getElementById('quizForm');
+    const submitButton = document.getElementById('submitQuiz');
+    const resetButton = document.getElementById('resetQuiz');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const reviewButton = document.getElementById('reviewQuiz');
+    const returnButton = document.getElementById('returnToModule');
+    
+    // Progress bar elements
+    const progressFill = document.getElementById('progressFill');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const answeredCount = document.getElementById('answeredCount');
+    
+    // Correct answers
+    const correctAnswers = {
+        q1: 'b',
+        q2: 'b',
+        q3: 'b',
+        q4: 'b',
+        q5: 'c',
+        q6: 'c',
+        q7: 'b',
+        q8: 'c',
+        q9: 'c',
+        q10: 'c'
+    };
+    
+    // Total number of questions
+    const totalQuestions = Object.keys(correctAnswers).length;
+    
+    // Update progress function
+    function updateProgress() {
+        let answered = 0;
+        
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            
+            if (selectedOption) {
+                answered++;
+            }
+        }
+        
+        const progressPercent = (answered / totalQuestions) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        progressPercentage.textContent = `${Math.round(progressPercent)}%`;
+        answeredCount.textContent = `${answered} answered`;
+    }
+    
+    // Add event listeners to all radio buttons to update progress
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+    });
+    
+    // Make progress bar sticky on scroll
+    window.addEventListener('scroll', function() {
+        const progressContainer = document.getElementById('progressContainer');
+        const headerHeight = document.querySelector('header').offsetHeight;
+        
+        if (window.pageYOffset > headerHeight) {
+            progressContainer.style.top = '0';
+        } else {
+            progressContainer.style.top = `${headerHeight - window.pageYOffset}px`;
+        }
+    });
+    
+    // Submit quiz
+    submitButton.addEventListener('click', function() {
+        let score = 0;
+        let answeredAll = true;
+        
+        // Check answers
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            
+            if (selectedOption) {
+                if (selectedOption.value === correctAnswers[questionName]) {
+                    score++;
+                }
+            } else {
+                answeredAll = false;
+            }
+        }
+        
+        if (!answeredAll) {
+            alert('Please answer all questions before submitting.');
+            return;
+        }
+        
+        // Display results
+        scoreDisplay.textContent = `${score}/${totalQuestions}`;
+        
+        if (score >= 7) {
+            feedbackMessage.textContent = 'Congratulations! You passed the quiz. You have a good understanding of advanced search concepts.';
+        } else {
+            feedbackMessage.textContent = 'You didn\'t pass this time. We recommend reviewing the module content before trying again.';
+        }
+        
+        quizForm.style.display = 'none';
+        resultsContainer.style.display = 'block';
+        document.getElementById('progressContainer').style.display = 'none'; // Hide progress bar on results
+        
+        // Mark all questions as submitted
+        markSubmittedAnswers();
+    });
+    
+    // Function to mark correct and incorrect answers
+    function markSubmittedAnswers() {
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const options = document.querySelectorAll(`input[name="${questionName}"]`);
+            const explanationElement = document.getElementById(`explanation-${questionName}`);
+            
+            // Show the explanation
+            if (explanationElement) {
+                explanationElement.style.display = 'block';
+            }
+            
+            options.forEach(option => {
+                const optionDiv = option.closest('.option');
+                const isSelected = option.checked;
+                const isCorrect = option.value === correctAnswers[questionName];
+                
+                if (isCorrect) {
+                    optionDiv.classList.add('correct');
+                } else if (isSelected && !isCorrect) {
+                    optionDiv.classList.add('incorrect');
+                }
+                
+                option.disabled = true;
+            });
+        }
+    }
+    
+    // Reset quiz
+    resetButton.addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset the quiz? All your answers will be cleared.')) {
+            quizForm.reset();
+            updateProgress(); // Reset progress bar
+        }
+    });
+    
+    // Review answers
+    reviewButton.addEventListener('click', function() {
+        resultsContainer.style.display = 'none';
+        quizForm.style.display = 'block';
+        document.getElementById('progressContainer').style.display = 'flex'; // Show progress bar again
+    });
+    
+    // Return to module
+    returnButton.addEventListener('click', function() {
+        window.location.href = 'module3.html';
+    });
+    
+    // Initialize progress
+    updateProgress();
+});
+</script>
+</body>
+</html>
