@@ -83,6 +83,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// PWA Installation
+let deferredPrompt;
+const installButton = document.createElement('button');
+installButton.style.display = 'none';
+installButton.className = 'install-button';
+installButton.textContent = 'Install AI Fluency';
+
+document.addEventListener('DOMContentLoaded', function() {
+  const headerControls = document.querySelector('.header-controls');
+  if (headerControls) {
+    headerControls.prepend(installButton);
+  }
+});
+
+// Wait for the beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  // Show the install button
+  installButton.style.display = 'block';
+  
+  installButton.addEventListener('click', async () => {
+    // Hide the install button
+    installButton.style.display = 'none';
+    // Show the installation prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to installation: ${outcome}`);
+    // Clear the deferred prompt variable
+    deferredPrompt = null;
+  });
+});
+
+// Handle installed PWA
+window.addEventListener('appinstalled', (e) => {
+  console.log('AI Fluency has been installed');
+  // Hide the install button
+  installButton.style.display = 'none';
+});
+
 // Generate PDF function
 function generatePDF() {
     // Set up the PDF document

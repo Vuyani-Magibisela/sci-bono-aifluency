@@ -95,6 +95,24 @@ header {
     z-index: 100;
 }
 
+.install-button {
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-right: 1rem;
+  }
+  
+  .install-button:hover {
+    background-color: #e53935;
+    transform: translateY(-2px);
+  }
+
 .logo {
     display: flex;
     align-items: center;
