@@ -4,7 +4,6 @@ const urlsToCache = [
   '/index.html',
   '/css/styles.css',
   '/css/stylesModules.css',
-  '/js/script.js',
   // Chapter files
   '/chapter1.html',
   '/chapter1_17.html',

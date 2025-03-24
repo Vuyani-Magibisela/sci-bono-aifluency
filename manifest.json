@@ -6,6 +6,8 @@
     "display": "standalone",
     "background_color": "#F9F9FF",
     "theme_color": "#4B6EFB",
+    "id": "/index.html",
+   
     "icons": [
       {
         "src": "/images/android-chrome-192x192.png",
@@ -19,5 +21,20 @@
         "type": "image/png",
         "purpose": "any maskable"
       }
+    ],
+
+    "screenshots": [
+      {
+        "src": "/images/screenshot-desktop.png",
+        "sizes": "1280x720",
+        "type": "image/png",
+        "form_factor": "wide"
+      },
+      {
+        "src": "/images/screenshot-mobile.png",
+        "sizes": "390x844",
+        "type": "image/png"
+      }
     ]
+
   }
