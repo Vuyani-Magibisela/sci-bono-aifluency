@@ -83,17 +83,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// PWA Installation
+ // PWA Installation
 let deferredPrompt;
 const installButton = document.createElement('button');
 installButton.style.display = 'none';
 installButton.className = 'install-button';
 installButton.textContent = 'Install AI Fluency';
+installButton.setAttribute('aria-label', 'Install AI Fluency app');
 
 document.addEventListener('DOMContentLoaded', function() {
   const headerControls = document.querySelector('.header-controls');
   if (headerControls) {
     headerControls.prepend(installButton);
+  }
+  
+  // Special handling for mobile
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Add a floating install button for mobile
+    const mobileInstallBtn = document.createElement('button');
+    mobileInstallBtn.className = 'mobile-install-button';
+    mobileInstallBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+    mobileInstallBtn.style.display = 'none';
+    document.body.appendChild(mobileInstallBtn);
+    
+    // Use the same event listener for both buttons
+    mobileInstallBtn.addEventListener('click', promptInstall);
   }
 });
 
@@ -103,27 +117,49 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   // Stash the event so it can be triggered later
   deferredPrompt = e;
-  // Show the install button
+  // Show install buttons
   installButton.style.display = 'block';
   
-  installButton.addEventListener('click', async () => {
-    // Hide the install button
-    installButton.style.display = 'none';
-    // Show the installation prompt
-    deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to installation: ${outcome}`);
-    // Clear the deferred prompt variable
-    deferredPrompt = null;
-  });
+  // Also show mobile button if it exists
+  const mobileInstallBtn = document.querySelector('.mobile-install-button');
+  if (mobileInstallBtn) {
+    mobileInstallBtn.style.display = 'block';
+  }
+  
+  installButton.addEventListener('click', promptInstall);
 });
+
+// Function to handle installation
+async function promptInstall() {
+  if (!deferredPrompt) return;
+  
+  // Hide the install buttons
+  installButton.style.display = 'none';
+  const mobileInstallBtn = document.querySelector('.mobile-install-button');
+  if (mobileInstallBtn) {
+    mobileInstallBtn.style.display = 'none';
+  }
+  
+  // Show the installation prompt
+  deferredPrompt.prompt();
+  
+  // Wait for the user to respond to the prompt
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log(`User response to installation: ${outcome}`);
+  
+  // Clear the deferred prompt variable
+  deferredPrompt = null;
+}
 
 // Handle installed PWA
 window.addEventListener('appinstalled', (e) => {
   console.log('AI Fluency has been installed');
-  // Hide the install button
+  // Hide the install buttons
   installButton.style.display = 'none';
+  const mobileInstallBtn = document.querySelector('.mobile-install-button');
+  if (mobileInstallBtn) {
+    mobileInstallBtn.style.display = 'none';
+  }
 });
 
 // Generate PDF function

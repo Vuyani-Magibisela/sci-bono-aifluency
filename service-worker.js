@@ -2,6 +2,7 @@ const CACHE_NAME = 'ai-fluency-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/offline.html', // Add this here, not at the bottom
   '/css/styles.css',
   '/css/stylesModules.css',
   // Chapter files
@@ -69,6 +70,7 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
+
 // Install event - cache all initial resources
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -81,59 +83,6 @@ self.addEventListener('install', event => {
 });
 
 // Fetch event - serve from cache first, then network
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(response => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          // Add to cache
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-            
-          return response;
-        });
-      })
-  );
-});
-
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
-
-// Add this to the urlsToCache array at the top
-'/offline.html',
-
-// Update the fetch event handler to show the offline page when there's no connection
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
@@ -171,5 +120,21 @@ self.addEventListener('fetch', event => {
             }
           });
       })
+  );
+});
+
+// Activate event - clean up old caches
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });
