@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startCourseBtn = document.getElementById('startCourse');
     if (startCourseBtn) {
         startCourseBtn.addEventListener('click', function() {
-            window.location.href = 'chapter1.html';
+            window.location.href = 'aifluencystart.html';
         });
     }
 
@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewContentsBtn = document.getElementById('viewContents');
     if (viewContentsBtn) {
         viewContentsBtn.addEventListener('click', function() {
-            document.getElementById('tableOfContents').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
+            const coursesSection = document.getElementById('courses');
+            if (coursesSection) {
+                coursesSection.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     }
 
@@ -45,6 +48,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 behavior: 'smooth'
             });
         });
+    });
+
+    // Mobile menu toggle functionality
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    // Open mobile menu
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            mobileMenu.classList.add('active');
+            document.body.classList.add('menu-open');
+        });
+    }
+
+    // Close mobile menu
+    if (closeMenu) {
+        closeMenu.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        });
+    }
+
+    // Close menu when clicking on a link
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        });
+    });
+
+    // Close menu when clicking on backdrop
+    document.body.addEventListener('click', function(e) {
+        if (document.body.classList.contains('menu-open')) {
+            // Check if click is on the backdrop (not on the menu itself or hamburger)
+            if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        }
     });
 
     // For chapter pages: Highlight current section in navigation

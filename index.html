@@ -52,12 +52,39 @@
     <header>
         <div class="logo">
             <img src="images/logo.svg" alt="Logo of Sci-Bono Discovery Center on a blue circular background">
-            <h1>AI Fluency</h1>
+            <h1>Sci-Bono AI Fluency</h1>
         </div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="projects.html" class="nav-link">Projects</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="header-controls">
-            <!-- <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button> -->
+            <a href="login.html" class="header-btn login-btn">Login</a>
+            <a href="signup.html" class="header-btn signup-btn">Sign Up</a>
         </div>
     </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-menu" id="closeMenu" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+            <li><a href="courses.html" class="mobile-nav-link">Courses</a></li>
+            <li><a href="projects.html" class="mobile-nav-link">Projects</a></li>
+            <li><a href="#about" class="mobile-nav-link">About</a></li>
+        </ul>
+    </div>
 
     <main>
 
@@ -79,7 +106,7 @@
             <div class="hero">
                 <h1>AI <span class="highlight">Fluency</span></h1>
                 <h2>Understanding the world of Artificial Intelligence</h2>
-                <p>An interactive guide for students in grades 8-12</p>
+                <p>An interactive guide for All</p>
                 <div class="cta-buttons">
                     <button id="startCourse">Start Learning</button>
                     <button id="viewContents">View Contents</button>
@@ -119,38 +146,26 @@
             </div>
         </section>
 
-        <section class="toc" id="tableOfContents">
-            <h2>Course Modules</h2>
-            <div class="toc-container">
-                <div class="toc-unit">
-                    <h3>Module 1: AI Foundations</h3>
-                    <p>Learn about the history of AI, key concepts, and fundamental principles.</p>
-                    <a href="module1.html" class="toc-link">Explore Module</a>
+        <section class="courses-section" id="courses">
+            <h2>Courses</h2>
+            <div class="course-cards">
+                <div class="course-card">
+                    <div class="course-image">
+                        <!-- <i class="fas fa-robot"></i> -->
+                        <img src="images/AIFluency.png" alt="">
+                    </div>
+                    <h3>AI Fluency Course</h3>
+                    <p>A comprehensive introduction to Artificial Intelligence covering foundations, generative AI, advanced search, responsible AI practices, Microsoft Copilot, and the broader impact of AI on society.</p>
+                    <a href="aifluencystart.html" class="course-btn">View Course</a>
                 </div>
-                <div class="toc-unit">
-                    <h3>Module 2: Generative AI</h3>
-                    <p>Discover generative AI models and their capabilities in content creation.</p>
-                    <a href="module2.html" class="toc-link">Explore Module</a>
-                </div>
-                <div class="toc-unit">
-                    <h3>Module 3: Advanced Search</h3>
-                    <p>Explore how AI transforms search capabilities and reasoning engines.</p>
-                    <a href="module3.html" class="toc-link">Explore Module</a>
-                </div>
-                <div class="toc-unit">
-                    <h3>Module 4: Responsible AI</h3>
-                    <p>Understand the ethical considerations and principles of responsible AI.</p>
-                    <a href="module4.html" class="toc-link">Explore Module</a>
-                </div>
-                <div class="toc-unit">
-                    <h3>Module 5: Microsoft Copilot</h3>
-                    <p>Learn about Microsoft Copilot and how it enhances productivity and creativity.</p>
-                    <a href="module5.html" class="toc-link">Explore Module</a>
-                </div>
-                <div class="toc-unit">
-                    <h3>Module 6: AI Impact</h3>
-                    <p>Explore the broader impacts of AI on society, accessibility, and humanitarian efforts.</p>
-                    <a href="module6.html" class="toc-link">Explore Module</a>
+                <div class="course-card">
+                    <div class="course-image">
+                        <!-- <i class="fas fa-code"></i> -->
+                         <img src="images/Course image.jpg" alt="">
+                    </div>
+                    <h3>Ai For Youth</h3>
+                    <p>Learn the basics of programming and computational thinking. Build a strong foundation in coding principles and problem-solving techniques essential for the digital age.</p>
+                    <a href="#" class="course-btn">View Course</a>
                 </div>
             </div>
         </section>
