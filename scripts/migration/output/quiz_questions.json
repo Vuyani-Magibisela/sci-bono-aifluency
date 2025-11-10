@@ -1,0 +1,102 @@
+[
+    {
+        "quiz_id": 1,
+        "question_text": "What is artificial intelligence (AI)?",
+        "options": "[\"A computer program that can only perform predetermined tasks\",\"The ability of a computer system to learn from past data and errors, enabling it to make increasingly accurate predictions\",\"A robot with human-like characteristics\",\"Software that allows computers to connect to the internet\"]",
+        "correct_option": 1,
+        "explanation": "AI is the ability of a computer system to learn from past data and errors, enabling it to make increasingly accurate predictions for future behavior.",
+        "points": 1,
+        "order_index": 1,
+        "source_id": 1
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is the relationship between AI and machine learning?",
+        "options": "[\"They are completely different technologies with no relation\",\"AI and machine learning are exactly the same thing\",\"Machine learning is a subset of AI\",\"AI is a subset of machine learning\"]",
+        "correct_option": 2,
+        "explanation": "Machine learning is a subset of artificial intelligence. All machine learning is AI, but not all AI involves machine learning.",
+        "points": 1,
+        "order_index": 2,
+        "source_id": 2
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What are patterns in data?",
+        "options": "[\"Random occurrences with no significance\",\"Identifiable repetitive behaviors or structures in data\",\"Mistakes in data collection\",\"Visualization tools for data presentation\"]",
+        "correct_option": 1,
+        "explanation": "Patterns are identifiable repetitive behaviors or structures that occur within data. AI models are particularly good at recognizing these patterns.",
+        "points": 1,
+        "order_index": 3,
+        "source_id": 3
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is supervised learning?",
+        "options": "[\"Learning that requires a human supervisor present at all times\",\"Learning that happens without any data labels or guidance\",\"An algorithm trained on labeled data with correct outputs\",\"Learning that occurs by trial and error with rewards and penalties\"]",
+        "correct_option": 2,
+        "explanation": "In supervised learning, the algorithm is trained on labeled data, where inputs are paired with correct outputs, allowing it to learn the relationship between them.",
+        "points": 1,
+        "order_index": 4,
+        "source_id": 4
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is deep learning?",
+        "options": "[\"Learning that happens deep under water\",\"A subfield of machine learning inspired by the structure and function of the brain\",\"Learning that requires deep concentration\",\"A type of learning that only works with very large datasets\"]",
+        "correct_option": 1,
+        "explanation": "Deep learning is a subfield of machine learning concerned with algorithms inspired by the structure and function of the brain called artificial neural networks.",
+        "points": 1,
+        "order_index": 5,
+        "source_id": 5
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is Natural Language Processing (NLP)?",
+        "options": "[\"A programming language used to create AI applications\",\"The ability of computers to understand and speak natural human languages\",\"An application of AI which enables machines to process and comprehend human language\",\"A system that translates computer code into human language\"]",
+        "correct_option": 2,
+        "explanation": "Natural Language Processing (NLP) is an application of AI which enables machines to both process and comprehend human language in the way it is written.",
+        "points": 1,
+        "order_index": 6,
+        "source_id": 6
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is a classification algorithm used for?",
+        "options": "[\"Organizing files on a computer\",\"Sorting items into categories based on learned patterns\",\"Creating classifications for new types of data\",\"Ranking items by importance\"]",
+        "correct_option": 1,
+        "explanation": "Classification algorithms are used for sorting items into categories based on learned patterns, such as distinguishing spam from legitimate emails.",
+        "points": 1,
+        "order_index": 7,
+        "source_id": 7
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is reinforcement learning?",
+        "options": "[\"Learning that involves positive reinforcement only\",\"Learning through online courses and tutorials\",\"An algorithm trained by interacting with its environment to achieve a goal, receiving rewards or penalties\",\"Learning that reinforces existing knowledge without adding new information\"]",
+        "correct_option": 2,
+        "explanation": "Reinforcement learning is where an algorithm learns by interacting with its environment, taking actions to maximize rewards and minimize penalties, similar to how we learn from experience.",
+        "points": 1,
+        "order_index": 8,
+        "source_id": 8
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "What is the Internet of Things (IoT)?",
+        "options": "[\"A network of internet websites\",\"A vast network of interconnected physical devices that collect and share data\",\"A special internet connection for smart devices\",\"The underlying structure of the internet\"]",
+        "correct_option": 1,
+        "explanation": "The Internet of Things (IoT) is a vast network of interconnected physical devices, ranging from everyday household items to wearable devices, that collect and share data via the internet.",
+        "points": 1,
+        "order_index": 9,
+        "source_id": 9
+    },
+    {
+        "quiz_id": 1,
+        "question_text": "How do AI algorithms like regression differ from classification algorithms?",
+        "options": "[\"Regression algorithms are older than classification algorithms\",\"Classification algorithms sort data into categories while regression algorithms predict continuous values\",\"Regression algorithms are simpler and less accurate\",\"Classification algorithms require more data to function properly\"]",
+        "correct_option": 1,
+        "explanation": "While classification algorithms sort data into discrete categories (like spam/not spam), regression algorithms predict continuous numerical values, such as prices or temperatures.",
+        "points": 1,
+        "order_index": 10,
+        "source_id": 10
+    }
+]

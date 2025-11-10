@@ -1,0 +1,67 @@
+VALIDATION REPORT
+=================
+Generated: 2025-11-04 14:55:16
+
+FILES VALIDATED
+---------------
+Lessons: 44 records
+Quizzes: 1 records
+Quiz Questions: 10 records
+Total Records: 55
+
+VALIDATION RESULTS
+------------------
+⚠ WARNING [LESSONS]: Lesson #1 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #2 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #3 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #4 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #5 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #6 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #7 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #8 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #9 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #10 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #11 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #12 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #13 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #14 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #15 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #16 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #17 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #18 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #19 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #20 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #21 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #22 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #23 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #24 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #25 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #26 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #27 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #28 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #29 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #30 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #31 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #32 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #33 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #34 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #35 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #36 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #37 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #38 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #39 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #40 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #41 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #42 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #43 has malformed HTML: Tag section invalid
+⚠ WARNING [LESSONS]: Lesson #44 has malformed HTML: Tag section invalid
+✓ [QUIZZES]: All 1 quizzes validated successfully
+✓ [QUESTIONS]: All 10 questions validated successfully
+✓ [INTEGRITY]: All foreign key relationships valid
+
+SUMMARY
+-------
+Errors: 0
+Warnings: 44
+
+✓ VALIDATION PASSED - Safe to import to database

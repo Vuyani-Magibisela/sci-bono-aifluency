@@ -345,7 +345,7 @@ All documentation must:
 ## Recent Changes
 
 Based on git history:
-- Holiday program feature work in progress
+- PWA installation improvements (iOS install banner, mobile install button enhancements)
 - Download button removed from index and module pages (only on lesson pages)
 - PWA manifest and screenshots added
 - Chapter 6 modifications

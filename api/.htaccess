@@ -1,0 +1,54 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Set base directory
+RewriteBase /api/
+
+# Block access to sensitive files and directories
+RedirectMatch 403 ^/api/\.env$
+RedirectMatch 403 ^/api/config/
+RedirectMatch 403 ^/api/vendor/
+RedirectMatch 403 ^/api/composer\.(json|lock)$
+RedirectMatch 403 ^/api/\.git
+
+# Allow access to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route all requests to index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Set security headers
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+
+    # Enable XSS protection
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Referrer policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Content Security Policy
+    Header set Content-Security-Policy "default-src 'self'"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# Set default charset
+AddDefaultCharset UTF-8
+
+# Enable CORS (will be handled more granularly in PHP)
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header always set Access-Control-Max-Age "3600"
+</IfModule>
+
+# Handle OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ index.php [QSA,L]

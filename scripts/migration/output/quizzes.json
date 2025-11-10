@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "module_id": 1,
+        "title": "Knowledge Check Quiz",
+        "description": "Test your knowledge of module 1 concepts",
+        "passing_score": 70,
+        "time_limit_minutes": 30,
+        "question_count": 10,
+        "source_file": "module1Quiz.html"
+    }
+]
