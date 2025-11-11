@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Chapter 1.10: AI in Action</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <div class="module-badge">Module 1: AI Foundations</div>
+                <h1>Chapter 1.10: AI in Action</h1>
+                <p class="subtitle">Exploring how AI systems work together in real-world applications</p>
+            </div>
+
+            <div class="chapter-nav">
+                <div class="nav-buttons-container">
+                    <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+                    <a href="#internet-of-things" class="nav-tab"><i class="fas fa-network-wired"></i> Internet of Things</a>
+                    <a href="#robots" class="nav-tab"><i class="fas fa-robot"></i> Robotics</a>
+                    <a href="#smart-homes" class="nav-tab"><i class="fas fa-home"></i> Smart Homes</a>
+                    <a href="#self-driving" class="nav-tab"><i class="fas fa-car"></i> Autonomous Vehicles</a>
+                </div>
+            </div>
+
+            <div class="chapter-content">
+                <section class="content-section" id="introduction">
+                    <h2>AI Systems Working Together</h2>
+                    <p>Machine learning and deep learning use specific algorithms to learn from vast amounts of data and complete tasks. But how does it all fit together in AI systems like robots, and self-driving cars? Let's explore.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Robot Illustration -->
+                            <rect x="80" y="80" width="40" height="50" rx="5" fill="#333" />
+                            <rect x="85" y="85" width="30" height="20" rx="3" fill="#4B6EFB" opacity="0.7" />
+                            <rect x="90" y="95" width="5" height="5" fill="#FB4B4B" />
+                            <rect x="105" y="95" width="5" height="5" fill="#FB4B4B" />
+                            <rect x="95" y="105" width="10" height="3" fill="#333" />
+                            <rect x="70" y="95" width="10" height="30" fill="#333" rx="3" />
+                            <rect x="120" y="95" width="10" height="30" fill="#333" rx="3" />
+                            <rect x="75" y="130" width="50" height="10" fill="#333" />
+                            <rect x="80" y="140" width="10" height="20" fill="#333" />
+                            <rect x="110" y="140" width="10" height="20" fill="#333" />
+                            
+                            <!-- Smartwatch Illustration -->
+                            <rect x="200" y="100" width="30" height="40" rx="5" fill="#333" />
+                            <rect x="205" y="105" width="20" height="30" rx="3" fill="#FBD44B" opacity="0.5" />
+                            <path d="M195 120 L200 120" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M230 120 L235 120" fill="none" stroke="#333" stroke-width="2" />
+                            <text x="210" y="125" font-family="Arial" font-size="10" fill="#333">AI</text>
+                            
+                            <!-- Car Illustration -->
+                            <rect x="280" y="130" width="70" height="30" rx="10" fill="#4BFB9D" opacity="0.5" stroke="#333" />
+                            <rect x="290" y="110" width="50" height="20" rx="5" fill="#4BFB9D" opacity="0.7" stroke="#333" />
+                            <circle cx="295" cy="160" r="10" fill="#333" />
+                            <circle cx="295" cy="160" r="5" fill="#F0F0F0" />
+                            <circle cx="335" cy="160" r="10" fill="#333" />
+                            <circle cx="335" cy="160" r="5" fill="#F0F0F0" />
+                            
+                            <!-- Central AI Hub -->
+                            <circle cx="200" cy="50" r="20" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" />
+                            <text x="190" y="55" font-family="Arial" font-weight="bold" font-size="15" fill="#4B6EFB">AI</text>
+                            
+                            <!-- Connections -->
+                            <path d="M200 70 L100 80" fill="none" stroke="#4B6EFB" stroke-dasharray="3,3" />
+                            <path d="M200 70 L215 100" fill="none" stroke="#4B6EFB" stroke-dasharray="3,3" />
+                            <path d="M200 70 L315 110" fill="none" stroke="#4B6EFB" stroke-dasharray="3,3" />
+                            
+                            <!-- Data Flow Arrows -->
+                            <circle cx="150" cy="75" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <polygon points="150,75 145,70 155,70" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <circle cx="207" cy="85" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <polygon points="207,85 202,80 212,80" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <circle cx="260" cy="90" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <polygon points="260,90 255,85 265,85" fill="#FB4B4B" opacity="0.7" />
+                        </svg>
+                        <p class="caption">AI systems like robots, smartwatches, and autonomous vehicles use interconnected AI technologies to function.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>Integrated AI Systems</h3>
+                        <p>In real-world applications, multiple AI components often work together to create sophisticated systems. These integrated systems combine various AI technologies:</p>
+                        <ul>
+                            <li><strong>Machine Learning Models:</strong> For pattern recognition and prediction</li>
+                            <li><strong>Computer Vision:</strong> To interpret visual information</li>
+                            <li><strong>Natural Language Processing:</strong> To understand and generate human language</li>
+                            <li><strong>Sensors and IoT Devices:</strong> To collect real-world data</li>
+                            <li><strong>Decision-Making Algorithms:</strong> To determine appropriate actions</li>
+                        </ul>
+                    </div>
+                    
+                    <p>You have probably heard of robots and self-driving cars, but what about the Internet of Things? Simply put, the IoT is a vast network of interconnected physical devices, ranging from everyday household items like smart door locks and smart thermostats to wearable devices such as smart watches.</p>
+                </section>
+
+                <section class="content-section" id="internet-of-things">
+                    <h2>The Internet of Things (IoT)</h2>
+                    <p>These devices are connected to the internet, collecting, and sharing data. This connectivity allows these devices to communicate with each other and us, streamlining our lives in the process.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- House with IoT Devices -->
+                            <rect x="150" y="100" width="100" height="80" fill="#F0F0F0" stroke="#333" />
+                            <polygon points="150,100 200,50 250,100" fill="#4B6EFB" opacity="0.3" stroke="#333" />
+                            <rect x="180" y="130" width="40" height="50" fill="#FFF" stroke="#333" /> <!-- Door -->
+                            <circle cx="210" cy="155" r="3" fill="#333" /> <!-- Doorknob -->
+                            
+                            <!-- Windows -->
+                            <rect x="165" y="115" width="20" height="20" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            <rect x="215" y="115" width="20" height="20" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            
+                            <!-- Smart Lock -->
+                            <rect x="205" cy="140" width="10" height="15" fill="#4B6EFB" opacity="0.7" stroke="#333" />
+                            <circle cx="210" cy="147" r="3" fill="#FB4B4B" />
+                            
+                            <!-- Smart Thermostat -->
+                            <rect x="160" y="140" width="15" height="15" fill="#FBD44B" opacity="0.7" stroke="#333" />
+                            <text x="164" y="150" font-family="Arial" font-weight="bold" font-size="8" fill="#333">72°</text>
+                            
+                            <!-- Smart Watch -->
+                            <rect x="90" y="140" width="20" height="25" rx="5" fill="#333" />
+                            <rect x="95" y="145" width="10" height="15" rx="2" fill="#4BFB9D" opacity="0.7" />
+                            <path d="M90 150 L85 150" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M110 150 L115 150" fill="none" stroke="#333" stroke-width="2" />
+                            <text x="97" y="155" font-family="Arial" font-size="6" fill="#333">IoT</text>
+                            
+                            <!-- Smart Laptop -->
+                            <rect x="280" y="150" width="40" height="30" fill="#333" />
+                            <rect x="280" y="145" width="40" height="5" fill="#333" />
+                            <rect x="285" y="155" width="30" height="20" fill="#F0F0F0" />
+                            <text x="290" y="170" font-family="Arial" font-size="10" fill="#333">IoT</text>
+                            
+                            <!-- Connection Signal from House -->
+                            <path d="M200 80 C190 70, 180 65, 165 65" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M200 80 C210 70, 220 65, 235 65" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M200 80 C200 70, 200 60, 200 50" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            
+                            <!-- IoT Devices -->
+                            <circle cx="165" cy="65" r="10" fill="#FB4B4B" opacity="0.7" />
+                            <text x="161" y="68" font-family="Arial" font-weight="bold" font-size="8" fill="#FFF">C</text>
+                            <text x="150" y="80" font-family="Arial" font-size="8" fill="#333">Camera</text>
+                            
+                            <circle cx="235" cy="65" r="10" fill="#4BFB9D" opacity="0.7" />
+                            <text x="231" y="68" font-family="Arial" font-weight="bold" font-size="8" fill="#FFF">L</text>
+                            <text x="225" y="80" font-family="Arial" font-size="8" fill="#333">Lights</text>
+                            
+                            <circle cx="200" cy="50" r="10" fill="#FBD44B" opacity="0.7" />
+                            <text x="196" y="53" font-family="Arial" font-weight="bold" font-size="8" fill="#FFF">T</text>
+                            <text x="180" y="40" font-family="Arial" font-size="8" fill="#333">Thermostat</text>
+                            
+                            <!-- Connection to External Devices -->
+                            <path d="M165 80 L100 140" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M235 80 L300 150" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            
+                            <!-- Fridge with Notification -->
+                            <rect x="270" y="90" width="30" height="40" fill="#F0F0F0" stroke="#333" />
+                            <rect x="270" y="90" width="30" height="10" fill="#333" />
+                            <rect x="275" y="105" width="20" height="20" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            <text x="260" y="125" font-family="Arial" font-size="8" fill="#333">Low on milk</text>
+                            
+                            <rect x="310" y="110" width="15" height="20" fill="#FFF" stroke="#333" />
+                            <text x="312" y="123" font-family="Arial" font-size="8" fill="#333">Milk</text>
+                        </svg>
+                        <p class="caption">The Internet of Things (IoT) connects smart devices in homes and wearables, allowing them to communicate and share data.</p>
+                    </div>
+                    
+                    <p>The internet is not just about your smartphone or laptop. It is much more expansive. The internet has woven itself into our everyday lives. From connected homes to smart appliances, the internet is everywhere.</p>
+                    
+                    <div class="info-box">
+                        <h3>Smart Appliances</h3>
+                        <p>Imagine a refrigerator equipped with technology that knows exactly when you are running low on milk and sends you a reminder to pick some up on your way home. That is the power of IoT.</p>
+                        <p>These smart devices collect vast amounts of data about their surroundings and usage patterns. AI algorithms then process this data to:</p>
+                        <ul>
+                            <li>Predict when maintenance might be needed</li>
+                            <li>Optimize energy consumption</li>
+                            <li>Automate routine tasks</li>
+                            <li>Provide personalized recommendations</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="robots">
+                    <h2>Robotics and AI</h2>
+                    <p>Robots are often seen performing repetitive tasks and interacting with humans. But they are also a goldmine of data! Every movement, interaction and task a robot performs can be translated into valuable data.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- Factory Setting Background -->
+                            <rect x="50" y="50" width="300" height="150" fill="#F0F0F0" stroke="#333" />
+                            <line x1="50" y1="180" x2="350" y2="180" stroke="#333" stroke-width="2" /> <!-- Floor Line -->
+                            
+                            <!-- Assembly Line -->
+                            <rect x="70" y="170" width="260" height="10" fill="#333" />
+                            <rect x="80" y="165" width="20" height="5" fill="#333" />
+                            <rect x="120" y="165" width="20" height="5" fill="#333" />
+                            <rect x="160" y="165" width="20" height="5" fill="#333" />
+                            <rect x="200" y="165" width="20" height="5" fill="#333" />
+                            <rect x="240" y="165" width="20" height="5" fill="#333" />
+                            <rect x="280" y="165" width="20" height="5" fill="#333" />
+                            
+                            <!-- Products on Line -->
+                            <rect x="85" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            <rect x="125" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            <rect x="165" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            <rect x="205" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            <rect x="245" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            <rect x="285" y="155" width="10" height="10" fill="#FBD44B" opacity="0.7" />
+                            
+                            <!-- Robotic Arms -->
+                            <rect x="100" y="120" width="10" height="40" fill="#4B6EFB" opacity="0.7" />
+                            <rect x="95" y="110" width="20" height="10" fill="#4B6EFB" opacity="0.7" />
+                            <path d="M105 110 L105 90 L115 90" fill="none" stroke="#4B6EFB" stroke-width="5" />
+                            <circle cx="120" cy="90" r="5" fill="#FB4B4B" />
+                            
+                            <rect x="220" y="120" width="10" height="40" fill="#4B6EFB" opacity="0.7" />
+                            <rect x="215" y="110" width="20" height="10" fill="#4B6EFB" opacity="0.7" />
+                            <path d="M225 110 L225 90 L215 90" fill="none" stroke="#4B6EFB" stroke-width="5" />
+                            <circle cx="210" cy="90" r="5" fill="#FB4B4B" />
+                            
+                            <!-- Foreman with Laptop -->
+                            <circle cx="300" cy="130" r="15" fill="#666" />
+                            <rect x="295" y="145" width="10" height="20" fill="#666" />
+                            <line x1="295" y1="150" x2="285" y2="160" stroke="#666" stroke-width="2" />
+                            <line x1="305" y1="150" x2="315" y2="160" stroke="#666" stroke-width="2" />
+                            <rect x="290" y="165" width="20" height="15" fill="#666" />
+                            
+                            <rect x="320" y="145" width="30" height="20" fill="#333" />
+                            <rect x="320" y="140" width="30" height="5" fill="#333" />
+                            <rect x="325" y="145" width="20" height="15" fill="#F0F0F0" />
+                            
+                            <!-- Robot Data Collection -->
+                            <path d="M105 90 C120 70, 150 70, 165 90" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M225 90 C210 70, 180 70, 165 90" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            
+                            <rect x="150" y="60" width="30" height="30" fill="#FFF" stroke="#333" />
+                            <text x="155" y="80" font-family="Arial" font-size="12" fill="#333">AI</text>
+                            
+                            <!-- Data Flow to Laptop -->
+                            <path d="M180 75 C220 75, 280 100, 320 150" fill="none" stroke="#4B6EFB" stroke-dasharray="2,2" />
+                            <path d="M330 215 L350 215" fill="none" stroke="#333" />
+                            <polygon points="350,215 345,212 345,218" fill="#333" />
+                            
+                            <!-- Production Stats -->
+                            <rect x="70" y="200" width="260" height="30" fill="#FFF" stroke="#333" rx="5" />
+                            <text x="80" y="215" font-family="Arial" font-size="8" fill="#333">Production Rate: 120 units/hour</text>
+                            <text x="80" y="225" font-family="Arial" font-size="8" fill="#333">Quality Control: 99.8% pass rate</text>
+                            <text x="210" y="215" font-family="Arial" font-size="8" fill="#333">Maintenance Needed: No</text>
+                            <text x="210" y="225" font-family="Arial" font-size="8" fill="#333">Efficiency: 94.5%</text>
+                        </svg>
+                        <p class="caption">Robotic systems in manufacturing collect data from every movement and interaction, which AI algorithms use to optimize operations.</p>
+                    </div>
+                    
+                    <p>Every movement, interaction, and task a robot performs can be translated into valuable data. The internet is not just about your smartphone or laptop. It is much more expansive.</p>
+                    
+                    <div class="key-concept">
+                        <h3>Robots as Data Collectors and Actors</h3>
+                        <p>Modern robots are not just mechanical devices - they are sophisticated AI systems that:</p>
+                        <ul>
+                            <li><strong>Collect data</strong> through sensors (cameras, microphones, pressure sensors, etc.)</li>
+                            <li><strong>Process information</strong> using machine learning algorithms</li>
+                            <li><strong>Make decisions</strong> based on programming and learned patterns</li>
+                            <li><strong>Take physical actions</strong> in the real world</li>
+                            <li><strong>Adapt over time</strong> as they gather more experience data</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="smart-homes">
+                    <h2>Smart Home Automation</h2>
+                    <p>From connected homes to smart appliances, the internet is everywhere. The Internet of Things has woven itself into our everyday lives, making our homes smarter and more responsive to our needs.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- House Outline -->
+                            <rect x="100" y="100" width="200" height="100" fill="#F0F0F0" stroke="#333" />
+                            <polygon points="100,100 200,50 300,100" fill="#F0F0F0" stroke="#333" />
+                            <rect x="140" y="150" width="40" height="50" fill="#FFF" stroke="#333" /> <!-- Door -->
+                            <circle cx="170" cy="175" r="3" fill="#333" /> <!-- Doorknob -->
+                            
+                            <!-- Windows -->
+                            <rect x="120" y="120" width="30" height="20" fill="#4B6EFB" opacity="0.2" stroke="#333" />
+                            <rect x="250" y="120" width="30" height="20" fill="#4B6EFB" opacity="0.2" stroke="#333" />
+                            
+                            <!-- Smart Devices -->
+                            <!-- Smart Thermostat -->
+                            <rect x="220" y="140" width="20" height="20" fill="#FBD44B" opacity="0.7" stroke="#333" />
+                            <text x="225" y="155" font-family="Arial" font-weight="bold" font-size="10" fill="#333">T</text>
+                            
+                            <!-- Smart Camera -->
+                            <rect x="260" y="90" width="15" height="10" fill="#FB4B4B" opacity="0.7" stroke="#333" />
+                            <circle cx="267" cy="95" r="3" fill="#333" />
+                            
+                            <!-- Smart Vacuum -->
+                            <circle cx="150" cy="130" r="10" fill="#4BFB9D" opacity="0.5" stroke="#333" />
+                            <line x1="145" y1="130" x2="155" y2="130" stroke="#333" />
+                            <line x1="150" y1="125" x2="150" y2="135" stroke="#333" />
+                            
+                            <!-- Smart Speaker -->
+                            <rect x="220" y="170" width="15" height="20" fill="#4B6EFB" opacity="0.5" stroke="#333" rx="2" />
+                            <circle cx="227" cy="175" r="3" fill="#333" />
+                            <path d="M222 180 L232 180" fill="none" stroke="#333" />
+                            <path d="M222 183" fill="none" stroke="#333" />
+                            <path d="M222 183 L232 183" fill="none" stroke="#333" />
+                            <path d="M222 186 L232 186" fill="none" stroke="#333" />
+                            
+                            <!-- Smart Lightbulb -->
+                            <circle cx="200" cy="80" r="8" fill="#FBD44B" stroke="#333" />
+                            <path d="M196 85 L204 85" fill="none" stroke="#333" />
+                            <path d="M200 88 L200 92" fill="none" stroke="#333" />
+                            
+                            <!-- AI Hub -->
+                            <circle cx="200" cy="130" r="15" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" />
+                            <text x="193" y="134" font-family="Arial" font-weight="bold" font-size="10" fill="#4B6EFB">Hub</text>
+                            
+                            <!-- Connections to Hub -->
+                            <path d="M200 115 L200 80" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M185 130 L150 130" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M215 130 L220 140" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M213 125 L260 95" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M210 140 L220 170" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Smartphone Control -->
+                            <rect x="50" y="150" width="30" height="50" rx="5" fill="#333" />
+                            <rect x="55" y="155" width="20" height="35" fill="#F0F0F0" />
+                            <circle cx="65" cy="195" r="3" fill="#F0F0F0" />
+                            
+                            <!-- Connection to Phone -->
+                            <path d="M80 170 L185 130" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="3,3" />
+                            
+                            <!-- Smart Fridge with Notification -->
+                            <rect x="320" y="120" width="30" height="50" fill="#F0F0F0" stroke="#333" />
+                            <rect x="320" y="120" width="30" height="10" fill="#333" />
+                            <rect x="325" y="135" width="20" height="30" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            <text x="330" y="155" font-family="Arial" font-size="6" fill="#333">Order</text>
+                            <text x="330" y="163" font-family="Arial" font-size="6" fill="#333">Milk</text>
+                            
+                            <!-- Connection to Outside -->
+                            <path d="M215 115 L320 145" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="3,3" />
+                            
+                            <!-- Caption for Devices -->
+                            <text x="145" y="200" font-family="Arial" font-size="6" fill="#333">Smart Vacuum</text>
+                            <text x="227" y="200" font-family="Arial" font-size="6" fill="#333">Speaker</text>
+                            <text x="225" y="135" font-family="Arial" font-size="6" fill="#333">Thermostat</text>
+                            <text x="250" y="85" font-family="Arial" font-size="6" fill="#333">Camera</text>
+                            <text x="200" y="70" font-family="Arial" font-size="6" fill="#333">Light</text>
+                            <text x="335" y="180" font-family="Arial" font-size="6" fill="#333">Fridge</text>
+                        </svg>
+                        <p class="caption">Smart homes connect multiple IoT devices through a central hub, allowing them to work together and respond to user preferences.</p>
+                    </div>
+                    
+                    <p>This data not only enriches our AI models but also empowers us to drive innovation and efficiency. So, the next time you think about the physical world connecting with the virtual world, remember, it is not just about convenience. It is about harnessing the power of data to make our AI models smarter and our lives better.</p>
+                    
+                    <div class="info-box">
+                        <h3>The Connected Home Ecosystem</h3>
+                        <p>Modern smart homes demonstrate how different AI technologies work together as an integrated system:</p>
+                        <ul>
+                            <li><strong>Voice Recognition:</strong> Smart speakers use NLP to understand commands</li>
+                            <li><strong>Learning Algorithms:</strong> Thermostats learn your schedule and preferences</li>
+                            <li><strong>Computer Vision:</strong> Security cameras identify people and unusual activities</li>
+                            <li><strong>Predictive Analytics:</strong> Systems anticipate your needs based on patterns</li>
+                        </ul>
+                        <p>These systems constantly collect and analyze data, becoming more personalized and helpful over time.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="self-driving">
+                    <h2>Autonomous Vehicles</h2>
+                    <p>Consider self-driving cars. These vehicles collect vast amounts of data about their surroundings and use this information to navigate the roads safely and efficiently.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- Road Background -->
+                            <rect x="50" y="130" width="300" height="60" fill="#333" />
+                            <rect x="60" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="100" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="140" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="180" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="220" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="260" y="159" width="20" height="2" fill="#FFF" />
+                            <rect x="300" y="159" width="20" height="2" fill="#FFF" />
+                            
+                            <!-- Self-driving Car -->
+                            <rect x="130" y="140" width="60" height="20" rx="5" fill="#4B6EFB" opacity="0.7" />
+                            <rect x="140" y="130" width="40" height="10" rx="5" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="140" cy="160" r="5" fill="#333" />
+                            <circle cx="140" cy="160" r="2" fill="#F0F0F0" />
+                            <circle cx="180" cy="160" r="5" fill="#333" />
+                            <circle cx="180" cy="160" r="2" fill="#F0F0F0" />
+                            
+                            <!-- Other Cars -->
+                            <rect x="220" y="145" width="40" height="15" rx="3" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="225" cy="160" r="4" fill="#333" />
+                            <circle cx="255" cy="160" r="4" fill="#333" />
+                            
+                            <rect x="80" y="145" width="30" height="15" rx="3" fill="#FBD44B" opacity="0.5" />
+                            <circle cx="85" cy="160" r="4" fill="#333" />
+                            <circle cx="105" cy="160" r="4" fill="#333" />
+                            
+                            <!-- Trees -->
+                            <rect x="70" y="100" width="5" height="20" fill="#8B4513" />
+                            <circle cx="72" cy="90" r="10" fill="#4BFB9D" opacity="0.7" />
+                            
+                            <rect x="270" y="100" width="5" height="20" fill="#8B4513" />
+                            <circle cx="272" cy="90" r="10" fill="#4BFB9D" opacity="0.7" />
+                            
+                            <!-- Pedestrian -->
+                            <circle cx="230" cy="110" r="5" fill="#666" />
+                            <rect x="228" y="115" width="5" height="10" fill="#666" />
+                            <line x1="228" y1="120" x2="223" y2="125" stroke="#666" stroke-width="1" />
+                            <line x1="233" y1="120" x2="238" y2="125" stroke="#666" stroke-width="1" />
+                            
+                            <!-- Sensor Detection -->
+                            <path d="M160 140 L230 110" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M160 140 L220 145" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M160 140 L80 145" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M160 140 L70 100" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            <path d="M160 140 L270 100" fill="none" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="2,2" />
+                            
+                            <!-- Detection Boxes -->
+                            <rect x="225" y="105" width="10" height="15" fill="none" stroke="#FB4B4B" stroke-width="1" />
+                            <rect x="220" y="145" width="40" height="15" fill="none" stroke="#FB4B4B" stroke-width="1" />
+                            <rect x="80" y="145" width="30" height="15" fill="none" stroke="#FB4B4B" stroke-width="1" />
+                            <rect x="67" y="80" width="10" height="30" fill="none" stroke="#4BFB9D" stroke-width="1" />
+                            <rect x="267" y="80" width="10" height="30" fill="none" stroke="#4BFB9D" stroke-width="1" />
+                            
+                            <!-- AI Processing -->
+                            <rect x="50" y="50" width="300" height="30" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <text x="60" y="70" font-family="Arial" font-size="10" fill="#333">AI System: Object Detection | Path Planning | Decision Making</text>
+                            
+                            <!-- Decision Output -->
+                            <path d="M160 130 L160 80" fill="none" stroke="#333" />
+                            <polygon points="160,80 157,85 163,85" fill="#333" />
+                            
+                            <!-- Scenario Info -->
+                            <rect x="50" y="200" width="300" height="30" fill="#FFF" stroke="#333" rx="5" />
+                            <text x="60" y="215" font-family="Arial" font-size="8" fill="#333">Detected: 2 vehicles, 1 pedestrian, 2 trees</text>
+                            <text x="60" y="225" font-family="Arial" font-size="8" fill="#333">Decision: Maintain speed, monitor pedestrian</text>
+                            <text x="220" y="215" font-family="Arial" font-size="8" fill="#333">Path: Clear ahead</text>
+                            <text x="220" y="225" font-family="Arial" font-size="8" fill="#333">Safety Rating: 98%</text>
+                        </svg>
+                        <p class="caption">Self-driving cars use sensors and AI to detect objects, plan routes, and make driving decisions in real-time.</p>
+                    </div>
+                    
+                    <p>This data not only enriches our AI models but also empowers us to drive innovation and efficiency. As we continue to explore and innovate, AI technology is playing an increasingly important role in solving complex problems and enhancing our daily lives.</p>
+                    
+                    <div class="key-concept">
+                        <h3>AI System Integration in Autonomous Vehicles</h3>
+                        <p>Self-driving cars represent one of the most sophisticated applications of AI, combining multiple systems:</p>
+                        <ul>
+                            <li><strong>Perception:</strong> Using cameras, radar, and lidar to understand the environment</li>
+                            <li><strong>Localization:</strong> Determining precise position using GPS and map data</li>
+                            <li><strong>Prediction:</strong> Anticipating how other road users will behave</li>
+                            <li><strong>Planning:</strong> Determining the safest and most efficient route</li>
+                            <li><strong>Control:</strong> Converting decisions into steering, acceleration, and braking</li>
+                        </ul>
+                        <p>These systems must work together seamlessly and make split-second decisions that ensure safety while navigating complex environments.</p>
+                    </div>
+                    
+                    <p>The integration of AI into everyday objects and systems is transforming how we interact with technology. From smart homes to self-driving cars, AI is becoming an invisible but powerful force that enhances our capabilities and makes our lives more efficient.</p>
+                </section>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="chapter10.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+                <a href="module1Quiz.html" class="nav-button next">Module 1 Quiz <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+    <!-- Manifest and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My School Data Detective - Project Guide</title>
+    <meta name="description" content="Step-by-step guide for the My School Data Detective project. Learn data collection, visualization, and pattern recognition.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <style>
+        .project-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-meta-header {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .meta-item i {
+            font-size: 1.2rem;
+        }
+
+        .project-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .project-overview {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .overview-box {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .overview-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .overview-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .overview-box li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .overview-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .week-section {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .week-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--grey-light);
+        }
+
+        .week-number {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .week-title h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .week-title p {
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .activity {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-icon {
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity h3 {
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .activity-content {
+            margin-left: 3rem;
+        }
+
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: step-counter;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            margin-bottom: 1rem;
+            padding-left: 2.5rem;
+            position: relative;
+        }
+
+        .steps-list li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .tip-box {
+            background-color: rgba(75, 251, 157, 0.15);
+            border-left: 4px solid #00D084;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .tip-box strong {
+            color: #00D084;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-box {
+            background-color: rgba(75, 110, 251, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .example-box strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .resources-section {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .resource-card {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .assessment-section {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .rubric-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: collapse;
+        }
+
+        .rubric-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .rubric-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .rubric-table tr:hover {
+            background-color: var(--background-light);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--text-light);
+            color: var(--white);
+            border-radius: 30px;
+            text-decoration: none;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background-color: var(--text-dark);
+            color: var(--white);
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .project-hero h1 {
+                font-size: 2rem;
+            }
+
+            .project-meta-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .week-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .activity-content {
+                margin-left: 0;
+            }
+
+            .steps-list li {
+                padding-left: 2rem;
+            }
+
+            .rubric-table {
+                font-size: 0.9rem;
+            }
+
+            .rubric-table th,
+            .rubric-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.svg" alt="Logo of Sci-Bono Discovery Center on a blue circular background">
+            <h1>Sci-Bono AI Fluency</h1>
+        </div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="projects.html" class="nav-link active">Projects</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="header-controls">
+            <a href="login.html" class="header-btn login-btn">Login</a>
+            <a href="signup.html" class="header-btn signup-btn">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-menu" id="closeMenu" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+            <li><a href="courses.html" class="mobile-nav-link">Courses</a></li>
+            <li><a href="projects.html" class="mobile-nav-link">Projects</a></li>
+            <li><a href="index.html#about" class="mobile-nav-link">About</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="project-hero">
+            <h1>📊 My School Data Detective</h1>
+            <p>Collect and visualize simple data about school life to discover interesting patterns</p>
+            <div class="project-meta-header">
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span>Ages 10-13 (Inspire)</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Duration: 2-3 weeks</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-signal"></i>
+                    <span>Difficulty: Beginner</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Domain: Statistical Data</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="project-container">
+            <a href="projects.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+
+            <!-- Project Overview -->
+            <section class="project-overview">
+                <h2>Project Overview</h2>
+                <p>
+                    In this project, you'll become a data detective at your school! You'll learn to collect information,
+                    organize it, and create colorful charts that tell interesting stories. By the end, you'll be able
+                    to spot patterns and share your discoveries with others.
+                </p>
+
+                <div class="overview-grid">
+                    <div class="overview-box">
+                        <h3><i class="fas fa-target"></i> Learning Objectives</h3>
+                        <ul>
+                            <li>Learn basic data collection techniques</li>
+                            <li>Create simple visualizations</li>
+                            <li>Identify patterns in everyday data</li>
+                            <li>Present findings to peers</li>
+                        </ul>
+                    </div>
+
+                    <div class="overview-box">
+                        <h3><i class="fas fa-trophy"></i> Skills You'll Gain</h3>
+                        <ul>
+                            <li>Data Collection</li>
+                            <li>Basic Charts</li>
+                            <li>Pattern Recognition</li>
+                            <li>Presentation Skills</li>
+                        </ul>
+                    </div>
+
+                    <div class="overview-box">
+                        <h3><i class="fas fa-check-circle"></i> Expected Outcomes</h3>
+                        <ul>
+                            <li>Understanding of data collection methods</li>
+                            <li>Basic visualization skills</li>
+                            <li>Pattern recognition abilities</li>
+                            <li>Presentation confidence</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Week 1 -->
+            <section class="week-section">
+                <div class="week-header">
+                    <div class="week-number">W1</div>
+                    <div class="week-title">
+                        <h2>Week 1: Choosing Your Topic & Planning</h2>
+                        <p>Decide what you want to investigate and create a plan</p>
+                    </div>
+                </div>
+
+                <!-- Activity 1.1 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Activity 1.1: Brainstorming Topics</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Think about things at your school that you're curious about. Here are some ideas to get you started:</p>
+
+                        <div class="example-box">
+                            <strong>Example Topics:</strong>
+                            <ul>
+                                <li>What are students' favorite subjects?</li>
+                                <li>How do students get to school? (walk, bus, car, bike)</li>
+                                <li>What types of lunch do students prefer?</li>
+                                <li>How many books do students read per month?</li>
+                                <li>What sports or activities are most popular?</li>
+                                <li>What time do students usually wake up on school days?</li>
+                            </ul>
+                        </div>
+
+                        <ol class="steps-list">
+                            <li>Write down 3-5 questions you'd like to answer about your school</li>
+                            <li>Choose ONE question that interests you most</li>
+                            <li>Make sure your question can be answered with simple data (numbers or categories)</li>
+                            <li>Share your chosen topic with your teacher for approval</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            Pick a topic that your classmates will find interesting too! This will make it easier to collect data.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 1.2 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <h3>Activity 1.2: Creating Your Survey</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Now that you have your topic, it's time to create a survey to collect data from your classmates.</p>
+
+                        <ol class="steps-list">
+                            <li>Write your main question clearly at the top of your survey</li>
+                            <li>Create 3-5 answer choices (keep them simple and clear)</li>
+                            <li>Add space for respondents to write their name or mark anonymous</li>
+                            <li>Test your survey on 2-3 friends to make sure it's easy to understand</li>
+                            <li>Make any needed changes based on feedback</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <strong>Example Survey:</strong>
+                            <p><strong>Question:</strong> What is your favorite school subject?</p>
+                            <p><strong>Answer Choices:</strong></p>
+                            <ul>
+                                <li>☐ Mathematics</li>
+                                <li>☐ Science</li>
+                                <li>☐ English/Language Arts</li>
+                                <li>☐ Social Studies</li>
+                                <li>☐ Arts (Music, Drama, Visual Arts)</li>
+                                <li>☐ Physical Education</li>
+                                <li>☐ Other: ___________</li>
+                            </ul>
+                        </div>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            You can create your survey on paper OR use Google Forms if you have computer access. Digital surveys are easier to collect and count!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 1.3 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <h3>Activity 1.3: Planning Your Data Collection</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Create a plan for how and when you'll collect your data.</p>
+
+                        <ol class="steps-list">
+                            <li>Decide how many people you want to survey (aim for at least 30 responses)</li>
+                            <li>Plan where you'll collect data (classroom, playground, cafeteria)</li>
+                            <li>Ask your teacher for permission to survey during appropriate times</li>
+                            <li>Create a schedule: When will you collect data each day?</li>
+                            <li>Prepare materials: Make enough copies of your survey</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            The more people you survey, the more interesting patterns you might find! Try to get responses from different grades if possible.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Week 2 -->
+            <section class="week-section">
+                <div class="week-header">
+                    <div class="week-number">W2</div>
+                    <div class="week-title">
+                        <h2>Week 2: Collecting & Organizing Data</h2>
+                        <p>Gather your survey responses and put them in order</p>
+                    </div>
+                </div>
+
+                <!-- Activity 2.1 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-users"></i></div>
+                        <h3>Activity 2.1: Collecting Data</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>It's time to survey your classmates and collect responses!</p>
+
+                        <ol class="steps-list">
+                            <li>Introduce yourself and explain your project to each person</li>
+                            <li>Ask them to complete your survey honestly</li>
+                            <li>Thank each person for participating</li>
+                            <li>Keep your surveys organized in a folder or envelope</li>
+                            <li>Check off each response on your collection tracker</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            Be polite and respectful! If someone doesn't want to participate, that's okay. Move on to the next person.
+                        </div>
+
+                        <div class="example-box">
+                            <strong>What to Say:</strong>
+                            <p>"Hi! I'm doing a data science project about [your topic]. Would you be willing to answer one quick question for my survey? It will only take 10 seconds!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 2.2 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-table"></i></div>
+                        <h3>Activity 2.2: Organizing Data in a Spreadsheet</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Learn to use a spreadsheet (like Google Sheets or Excel) to organize your data.</p>
+
+                        <ol class="steps-list">
+                            <li>Open Google Sheets or Excel on a computer</li>
+                            <li>Create column headers: "Response Number", "Answer Choice", "Date Collected"</li>
+                            <li>Enter each survey response as a new row</li>
+                            <li>Use data validation to avoid typos (create a dropdown list of your answer choices)</li>
+                            <li>Double-check your entries for accuracy</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <strong>Example Spreadsheet Layout:</strong>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                                <tr style="background-color: var(--primary-color); color: white;">
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Response #</th>
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Favorite Subject</th>
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Date</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">1</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">Mathematics</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">2025-01-15</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">2</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">Science</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">2025-01-15</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">3</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">Science</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">2025-01-16</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            Save your work frequently! Use File → Save or press Ctrl+S (Cmd+S on Mac) every few minutes.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 2.3 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-calculator"></i></div>
+                        <h3>Activity 2.3: Counting and Summarizing</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Learn to count how many times each answer was chosen and calculate percentages.</p>
+
+                        <ol class="steps-list">
+                            <li>Create a summary table with two columns: "Answer" and "Count"</li>
+                            <li>Use the COUNTIF function to count each answer automatically</li>
+                            <li>Add up all counts to get your total number of responses</li>
+                            <li>Calculate the percentage for each answer: (Count ÷ Total) × 100</li>
+                            <li>Round percentages to one decimal place</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <strong>Example Summary Table:</strong>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                                <tr style="background-color: var(--primary-color); color: white;">
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Subject</th>
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Count</th>
+                                    <th style="padding: 0.5rem; border: 1px solid var(--grey-light);">Percentage</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">Mathematics</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">8</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">26.7%</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">Science</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">12</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">40.0%</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">English</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">10</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">33.3%</td>
+                                </tr>
+                                <tr style="background-color: var(--background-light); font-weight: bold;">
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">TOTAL</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">30</td>
+                                    <td style="padding: 0.5rem; border: 1px solid var(--grey-light);">100%</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="tip-box">
+                            <strong>Formula Tip:</strong>
+                            In Google Sheets, use: =COUNTIF(B2:B31,"Science") to count how many times "Science" appears in column B.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Week 3 -->
+            <section class="week-section">
+                <div class="week-header">
+                    <div class="week-number">W3</div>
+                    <div class="week-title">
+                        <h2>Week 3: Creating Charts & Presenting</h2>
+                        <p>Visualize your data with charts and share your findings</p>
+                    </div>
+                </div>
+
+                <!-- Activity 3.1 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h3>Activity 3.1: Creating Your First Chart</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Learn to create colorful charts that show your data visually.</p>
+
+                        <ol class="steps-list">
+                            <li>Select your summary table data (Answer and Count columns)</li>
+                            <li>Click on "Insert" → "Chart" in your spreadsheet</li>
+                            <li>Choose a chart type:
+                                <ul style="margin-top: 0.5rem; margin-left: 2rem;">
+                                    <li>Bar Chart: Great for comparing categories</li>
+                                    <li>Pie Chart: Good for showing percentages of a whole</li>
+                                    <li>Column Chart: Similar to bar chart but vertical</li>
+                                </ul>
+                            </li>
+                            <li>Add a title to your chart that explains what it shows</li>
+                            <li>Customize colors to make your chart attractive</li>
+                            <li>Add labels so people can understand the numbers</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            Try creating both a bar chart AND a pie chart with your data. Which one tells your story better?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 3.2 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-search"></i></div>
+                        <h3>Activity 3.2: Finding Patterns & Insights</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Look at your data carefully and discover what it tells you.</p>
+
+                        <ol class="steps-list">
+                            <li>Study your chart and summary table carefully</li>
+                            <li>Write down 3-5 observations about what you see</li>
+                            <li>Identify the most popular and least popular answers</li>
+                            <li>Think about WHY the patterns exist</li>
+                            <li>Consider if the results surprise you or match what you expected</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <strong>Example Observations:</strong>
+                            <ul>
+                                <li>"Science is the most popular subject with 40% of students choosing it."</li>
+                                <li>"Mathematics and English are almost equally popular."</li>
+                                <li>"More than half the class (73.3%) prefers either Science or English."</li>
+                                <li>"Science might be popular because we recently did fun experiments."</li>
+                            </ul>
+                        </div>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            Good data detectives ask "Why?" - Think about reasons behind the patterns you see!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 3.3 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-presentation"></i></div>
+                        <h3>Activity 3.3: Creating Your Presentation</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Prepare to share your findings with your class.</p>
+
+                        <ol class="steps-list">
+                            <li>Create a simple presentation (Google Slides or PowerPoint) with 5-6 slides:
+                                <ul style="margin-top: 0.5rem; margin-left: 2rem;">
+                                    <li><strong>Slide 1:</strong> Title (Your question + Your name)</li>
+                                    <li><strong>Slide 2:</strong> Why you chose this topic</li>
+                                    <li><strong>Slide 3:</strong> How you collected data (number of people, methods)</li>
+                                    <li><strong>Slide 4:</strong> Your chart(s) showing the results</li>
+                                    <li><strong>Slide 5:</strong> Key findings and patterns</li>
+                                    <li><strong>Slide 6:</strong> What you learned from this project</li>
+                                </ul>
+                            </li>
+                            <li>Use large, easy-to-read fonts</li>
+                            <li>Add your colorful charts</li>
+                            <li>Keep text short and use bullet points</li>
+                            <li>Practice presenting to a friend or family member</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Presentation Tips:</strong>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Speak clearly and look at your audience</li>
+                                <li>Explain your charts - don't just read the slides</li>
+                                <li>Be ready to answer questions</li>
+                                <li>Practice timing - aim for 3-5 minutes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 3.4 -->
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-comments"></i></div>
+                        <h3>Activity 3.4: Presenting to Your Class</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Share your data detective work with your classmates!</p>
+
+                        <ol class="steps-list">
+                            <li>Set up your presentation on the classroom computer/projector</li>
+                            <li>Take a deep breath and smile!</li>
+                            <li>Introduce yourself and your topic</li>
+                            <li>Go through each slide, explaining your findings</li>
+                            <li>Point out interesting patterns in your charts</li>
+                            <li>Ask if anyone has questions</li>
+                            <li>Thank your audience for listening</li>
+                        </ol>
+
+                        <div class="tip-box">
+                            <strong>Tip:</strong>
+                            It's okay to be nervous! Remember, your classmates are interested in what you discovered. You're the expert on YOUR data!
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources Section -->
+            <section class="resources-section">
+                <h2><i class="fas fa-toolbox"></i> Resources & Tools</h2>
+                <p>Here are the tools and resources you'll need for this project:</p>
+
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <h4><i class="fas fa-table"></i> Spreadsheet Software</h4>
+                        <ul>
+                            <li><strong>Google Sheets</strong> (Free, online)</li>
+                            <li><strong>Microsoft Excel</strong> (Desktop or online)</li>
+                            <li><strong>LibreOffice Calc</strong> (Free, open source)</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; color: var(--text-light); font-size: 0.9rem;">
+                            We recommend Google Sheets because it's free and easy to share!
+                        </p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4><i class="fas fa-file-alt"></i> Survey Tools</h4>
+                        <ul>
+                            <li><strong>Paper surveys</strong> (Print and distribute)</li>
+                            <li><strong>Google Forms</strong> (Free, digital surveys)</li>
+                            <li><strong>Microsoft Forms</strong> (Free with school account)</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; color: var(--text-light); font-size: 0.9rem;">
+                            Digital surveys save time on data entry!
+                        </p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4><i class="fas fa-desktop"></i> Presentation Software</h4>
+                        <ul>
+                            <li><strong>Google Slides</strong> (Free, online)</li>
+                            <li><strong>Microsoft PowerPoint</strong></li>
+                            <li><strong>Canva</strong> (Free design tool)</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; color: var(--text-light); font-size: 0.9rem;">
+                            Choose the one you're most comfortable with!
+                        </p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4><i class="fas fa-video"></i> Tutorial Videos</h4>
+                        <ul>
+                            <li><strong>How to use Google Sheets</strong></li>
+                            <li><strong>Creating charts in Excel</strong></li>
+                            <li><strong>Making great presentations</strong></li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; color: var(--text-light); font-size: 0.9rem;">
+                            Search YouTube for beginner tutorials!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assessment Section -->
+            <section class="assessment-section">
+                <h2><i class="fas fa-clipboard-check"></i> Assessment Rubric</h2>
+                <p>Your project will be evaluated based on these criteria:</p>
+
+                <table class="rubric-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Criteria</th>
+                            <th style="width: 15%;">Points</th>
+                            <th>What This Means</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Data Collection</strong></td>
+                            <td>25 points</td>
+                            <td>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                    <li>Survey is clear and well-designed</li>
+                                    <li>At least 30 responses collected</li>
+                                    <li>Data collection was systematic</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Organization</strong></td>
+                            <td>20 points</td>
+                            <td>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                    <li>Data entered accurately in spreadsheet</li>
+                                    <li>Summary table created correctly</li>
+                                    <li>Percentages calculated properly</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Visualization</strong></td>
+                            <td>25 points</td>
+                            <td>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                    <li>Chart(s) created and properly labeled</li>
+                                    <li>Appropriate chart type chosen</li>
+                                    <li>Chart is attractive and easy to read</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Analysis & Insights</strong></td>
+                            <td>15 points</td>
+                            <td>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                    <li>Identifies patterns in the data</li>
+                                    <li>Makes meaningful observations</li>
+                                    <li>Explains possible reasons for results</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Presentation</strong></td>
+                            <td>15 points</td>
+                            <td>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                    <li>Clear and organized slides</li>
+                                    <li>Presents confidently to class</li>
+                                    <li>Answers questions effectively</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr style="background-color: var(--background-light); font-weight: bold;">
+                            <td>TOTAL</td>
+                            <td>100 points</td>
+                            <td>Great work, Data Detective!</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="tip-box" style="margin-top: 2rem;">
+                    <strong>Success Tips:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Start early - don't wait until the last minute!</li>
+                        <li>Ask for help if you get stuck with the technology</li>
+                        <li>Double-check your data for accuracy</li>
+                        <li>Make your charts colorful and clear</li>
+                        <li>Practice your presentation multiple times</li>
+                        <li>Have fun being a data detective!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Bonus Challenges -->
+            <section class="resources-section">
+                <h2><i class="fas fa-star"></i> Bonus Challenges (Optional)</h2>
+                <p>Want to go further? Try these additional activities:</p>
+
+                <div class="activity" style="margin-bottom: 1rem;">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-plus"></i></div>
+                        <h3>Compare Different Groups</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Collect the same data from different grades and compare the results. Do younger and older students have different preferences?</p>
+                    </div>
+                </div>
+
+                <div class="activity" style="margin-bottom: 1rem;">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Track Changes Over Time</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Survey the same question at the beginning and end of the month. Has anything changed? Create a line graph to show the trend!</p>
+                    </div>
+                </div>
+
+                <div class="activity" style="margin-bottom: 1rem;">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-code"></i></div>
+                        <h3>Create an Interactive Chart</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Learn to use Chart.js or Google Charts to create an interactive chart on a website. Share it online with your class!</p>
+                    </div>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-header">
+                        <div class="activity-icon"><i class="fas fa-users-cog"></i></div>
+                        <h3>Collaborate with Other Data Detectives</h3>
+                    </div>
+                    <div class="activity-content">
+                        <p>Team up with classmates who chose different topics and create a "Data Detective Gallery" showcasing all your findings!</p>
+                    </div>
+                </div>
+            </section>
+
+            <a href="projects.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to All Projects
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,8 +1,17 @@
-const CACHE_NAME = 'ai-fluency-cache-v1';
+const CACHE_NAME = 'ai-fluency-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/offline.html', // Add this here, not at the bottom
+  '/offline.html',
+  '/login.html',
+  '/signup.html',
+  // Dashboard and Profile pages (Phase 1)
+  '/student-dashboard.html',
+  '/instructor-dashboard.html',
+  '/admin-dashboard.html',
+  '/profile.html',
+  '/403.html',
+  // CSS files
   '/css/styles.css',
   '/css/stylesModules.css',
   // Chapter files
@@ -60,9 +69,14 @@ const urlsToCache = [
   '/module4Quiz.html',
   '/module5Quiz.html',
   '/module6Quiz.html',
-  // JavaScript files
+  // JavaScript files (Phase 1)
   '/js/script.js',
-  // Images (add all your image paths here)
+  '/js/storage.js',
+  '/js/api.js',
+  '/js/auth.js',
+  '/js/header-template.js',
+  '/js/footer-template.js',
+  // Images
   '/images/favicon.ico',
   // External resources
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css',
@@ -82,40 +96,83 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event - serve from cache first, then network
+// Fetch event - different strategies for API vs static content
 self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Network-first strategy for API requests (always get fresh data)
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          // Clone and cache successful API responses (except auth endpoints)
+          if (response && response.status === 200 && !url.pathname.includes('/auth/')) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(error => {
+          // Network failed, try cache as fallback for GET requests
+          if (request.method === 'GET') {
+            return caches.match(request).then(cached => {
+              if (cached) {
+                return cached;
+              }
+              // No cache available, return error response
+              return new Response(
+                JSON.stringify({
+                  success: false,
+                  message: 'Network error. Please check your connection.'
+                }),
+                {
+                  status: 503,
+                  headers: { 'Content-Type': 'application/json' }
+                }
+              );
+            });
+          }
+          throw error;
+        })
+    );
+    return;
+  }
+
+  // Cache-first strategy for static content (offline-first PWA)
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then(response => {
-        // Cache hit - return response
+        // Cache hit - return cached response
         if (response) {
           return response;
         }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
+
+        // Not in cache - fetch from network
+        const fetchRequest = request.clone();
+
         return fetch(fetchRequest)
           .then(response => {
             // Check if valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-            
-            // Clone the response
+
+            // Clone and cache the response
             const responseToCache = response.clone();
-            
-            // Add to cache
+
             caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
+                cache.put(request, responseToCache);
               });
-              
+
             return response;
           })
           .catch(error => {
             // Network request failed, show offline page for HTML requests
-            if (event.request.headers.get('accept').includes('text/html')) {
+            if (request.headers.get('accept') && request.headers.get('accept').includes('text/html')) {
               return caches.match('/offline.html');
             }
           });

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Chapter 3.20: A New Way to Search: Microsoft Copilot</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main>
+<div class="chapter-container">
+<div class="chapter-header">
+    <div class="module-badge">Module 3: Search and AI</div>
+    <h1>Chapter 3.20: A New Way to Search: Microsoft Copilot</h1>
+    <p class="subtitle">Exploring Microsoft Copilot's capabilities as an AI-powered search companion</p>
+</div>
+
+<div class="chapter-nav">
+    <div class="nav-buttons-container">
+        <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+        <a href="#technology" class="nav-tab"><i class="fas fa-microchip"></i> Technology</a>
+        <a href="#features" class="nav-tab"><i class="fas fa-lightbulb"></i> Key Features</a>
+        <a href="#examples" class="nav-tab"><i class="fas fa-project-diagram"></i> Practical Examples</a>
+    </div>
+</div>
+
+<div class="chapter-content">
+    <section class="content-section" id="introduction">
+        <h2>Introduction to Microsoft Copilot</h2>
+        <p>Microsoft Copilot is changing the way we interact with digital information, transforming the traditional search experience into a comprehensive one. It combines the power of a large language model with the vast knowledge of the internet to provide an AI-powered companion that helps users find information, solve problems, and create content more efficiently.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Copilot logo symbol -->
+                <circle cx="200" cy="100" r="40" fill="#4B6EFB" opacity="0.2" />
+                <circle cx="200" cy="100" r="30" fill="#4B6EFB" opacity="0.3" />
+                <text x="200" y="115" font-family="Arial" font-weight="bold" font-size="30" fill="#4B6EFB" text-anchor="middle">AI</text>
+                
+                <!-- Web of connections -->
+                <line x1="160" y1="100" x2="130" y2="70" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="160" y1="100" x2="130" y2="130" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="240" y1="100" x2="270" y2="70" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="240" y1="100" x2="270" y2="130" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="200" y1="60" x2="200" y2="30" stroke="#6E4BFB" stroke-width="1" />
+                <line x1="200" y1="140" x2="200" y2="170" stroke="#6E4BFB" stroke-width="1" />
+                
+                <!-- Connected elements -->
+                <circle cx="130" cy="70" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="130" y="75" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-graduation-cap"></i></text>
+                
+                <circle cx="130" cy="130" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="130" y="135" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-lightbulb"></i></text>
+                
+                <circle cx="270" cy="70" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="270" y="75" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-chart-bar"></i></text>
+                
+                <circle cx="270" cy="130" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="270" y="135" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-wrench"></i></text>
+                
+                <circle cx="200" cy="30" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="200" y="35" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-search"></i></text>
+                
+                <circle cx="200" cy="170" r="10" fill="#FB4B4B" opacity="0.7" />
+                <text x="200" y="175" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-pencil-alt"></i></text>
+            </svg>
+            <p class="caption">Microsoft Copilot connects AI capabilities with various tasks and knowledge domains.</p>
+        </div>
+        
+        <div class="key-concept">
+            <h3>Retrieval-Augmented Generation</h3>
+            <p>Microsoft Copilot uses a method called retrieval-augmented generation, which combines the analytical power of large language models with real-time information retrieval from the internet. This ensures you receive the best assistance while searching, providing both up-to-date information and intelligent synthesis of that information.</p>
+        </div>
+        
+        <p>As an AI-powered companion, Copilot adapts to your needs, enabling you to work smarter and build faster. It's designed to be your everyday AI companion, helping with a wide range of tasks from answering complex questions to generating creative content.</p>
+    </section>
+
+    <section class="content-section" id="technology">
+        <h2>The Technology Behind Copilot</h2>
+        <p>Microsoft Copilot combines the power of a large language model (LLM) with the vast knowledge of the internet. This combination enables Copilot to provide responses that are both informed by the latest information and shaped by sophisticated AI understanding.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- LLM and Web Knowledge Integration -->
+                <rect x="50" y="70" width="120" height="80" rx="10" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="2" />
+                <text x="110" y="115" font-family="Arial" font-size="14" fill="#6E4BFB" text-anchor="middle">Large Language</text>
+                <text x="110" y="135" font-family="Arial" font-size="14" fill="#6E4BFB" text-anchor="middle">Model</text>
+                
+                <rect x="230" y="70" width="120" height="80" rx="10" fill="#f9f9f9" stroke="#4B6EFB" stroke-width="2" />
+                <circle cx="290" cy="110" r="30" fill="#4B6EFB" opacity="0.2" />
+                <text x="290" y="115" font-family="Arial" font-size="14" fill="#4B6EFB" text-anchor="middle">Web</text>
+                <text x="290" y="135" font-family="Arial" font-size="14" fill="#4B6EFB" text-anchor="middle">Knowledge</text>
+                
+                <!-- Integration arrows -->
+                <path d="M 175 110 L 225 110" stroke="#FB4B4B" stroke-width="2" marker-end="url(#arrowhead)" />
+                
+                <!-- Combined output -->
+                <rect x="140" y="160" width="120" height="40" rx="5" fill="#4BFB9D" opacity="0.5" />
+                <text x="200" y="185" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Microsoft Copilot</text>
+                
+                <!-- Output arrows -->
+                <path d="M 110 155 L 160 160" stroke="#6E4BFB" stroke-width="1" stroke-dasharray="3,3" />
+                <path d="M 290 155 L 240 160" stroke="#4B6EFB" stroke-width="1" stroke-dasharray="3,3" />
+                
+                <!-- Arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#FB4B4B" />
+                    </marker>
+                </defs>
+                
+                <!-- Labels -->
+                <text x="200" y="50" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Retrieval-Augmented Generation</text>
+            </svg>
+            <p class="caption">Copilot combines large language models with web knowledge retrieval for comprehensive responses.</p>
+        </div>
+        
+        <p>Unlike traditional search engines that simply match keywords to web pages, Copilot goes deeper by understanding the context and intent behind your queries. This contextual understanding allows it to provide results that are not just relevant but tailored to the specific task at hand.</p>
+        
+        <div class="info-box">
+            <h3>How Copilot Processes Your Queries</h3>
+            <ol>
+                <li><strong>Understanding</strong>: Copilot analyzes your query to understand your intent and the context</li>
+                <li><strong>Retrieval</strong>: It searches the web for the most relevant and up-to-date information</li>
+                <li><strong>Processing</strong>: The large language model processes this information, applying reasoning and synthesis</li>
+                <li><strong>Response</strong>: Copilot generates a comprehensive, contextual response that addresses your specific needs</li>
+                <li><strong>Learning</strong>: It improves over time by learning from interactions, becoming more helpful and accurate</li>
+            </ol>
+        </div>
+        
+        <p>This advanced integration of technologies enables Copilot to offer a fundamentally different search experience—one that doesn't just find information but helps you understand, use, and act on that information more effectively.</p>
+    </section>
+
+    <section class="content-section" id="features">
+        <h2>Key Features of Microsoft Copilot</h2>
+        <p>Microsoft Copilot offers a range of capabilities that elevate it beyond traditional search engines. These features are designed to make finding and using information more intuitive, efficient, and productive.</p>
+        
+        <div class="key-concept">
+            <h3>Contextual Understanding</h3>
+            <p>Copilot goes beyond keyword matching to understand the context and intent behind your queries. This means it can provide results that are not just relevant but tailored to the specific task at hand, such as planning a trip, researching a topic, or solving a problem.</p>
+        </div>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Feature grid -->
+                <!-- Row 1 -->
+                <rect x="50" y="50" width="140" height="60" rx="5" fill="#f9f9f9" stroke="#6E4BFB" />
+                <text x="120" y="75" font-family="Arial" font-weight="bold" font-size="12" fill="#6E4BFB" text-anchor="middle">Improved Accuracy</text>
+                <text x="120" y="95" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Precise, relevant results</text>
+                
+                <rect x="210" y="50" width="140" height="60" rx="5" fill="#f9f9f9" stroke="#6E4BFB" />
+                <text x="280" y="75" font-family="Arial" font-weight="bold" font-size="12" fill="#6E4BFB" text-anchor="middle">Clear Communication</text>
+                <text x="280" y="95" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Easy-to-understand answers</text>
+                
+                <!-- Row 2 -->
+                <rect x="50" y="130" width="140" height="60" rx="5" fill="#f9f9f9" stroke="#6E4BFB" />
+                <text x="120" y="155" font-family="Arial" font-weight="bold" font-size="12" fill="#6E4BFB" text-anchor="middle">Content Generation</text>
+                <text x="120" y="175" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Create text, code, and visuals</text>
+                
+                <rect x="210" y="130" width="140" height="60" rx="5" fill="#f9f9f9" stroke="#6E4BFB" />
+                <text x="280" y="155" font-family="Arial" font-weight="bold" font-size="12" fill="#6E4BFB" text-anchor="middle">Problem Solving</text>
+                <text x="280" y="175" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Solutions backed by data</text>
+                
+                <!-- Icons -->
+                <circle cx="70" cy="75" r="15" fill="#FB4B4B" opacity="0.7" />
+                <text x="70" y="80" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-check"></i></text>
+                
+                <circle cx="230" cy="75" r="15" fill="#FB4B4B" opacity="0.7" />
+                <text x="230" y="80" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-comment"></i></text>
+                
+                <circle cx="70" cy="155" r="15" fill="#FB4B4B" opacity="0.7" />
+                <text x="70" y="160" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-pen"></i></text>
+                
+                <circle cx="230" cy="155" r="15" fill="#FB4B4B" opacity="0.7" />
+                <text x="230" y="160" font-family="Arial" font-size="12" fill="white" text-anchor="middle"><i class="fas fa-puzzle-piece"></i></text>
+            </svg>
+            <p class="caption">Microsoft Copilot offers a suite of powerful features that transform how we search for and use information.</p>
+        </div>
+        
+        <p>Additional key features of Microsoft Copilot include:</p>
+        
+        <ul>
+            <li><strong>Summarization</strong>: Copilot can condense large volumes of information into concise summaries, saving you time and helping you quickly grasp the key takeaways.</li>
+            <li><strong>Question Answering</strong>: From simple factual queries to complex problem-solving, Copilot provides clear, accurate answers to help you make informed decisions.</li>
+            <li><strong>Creative Content</strong>: Copilot can generate poems, stories, or other creative content based on prompts, making it a valuable tool for writers and creatives.</li>
+            <li><strong>Fine-tuning</strong>: If you have existing content that needs refining, Copilot can help rewrite, improve, or optimize it, ensuring your message is clear and impactful.</li>
+            <li><strong>Visual Insights</strong>: Copilot can create and analyze images, providing insights and generating visual content that aligns with your goals.</li>
+        </ul>
+        
+        <p>With these capabilities, Copilot serves as a versatile assistant that can help you with a wide range of tasks, from research and writing to creative exploration and problem-solving.</p>
+    </section>
+
+    <section class="content-section" id="examples">
+        <h2>Practical Examples of Using Copilot</h2>
+        <p>To better understand how Microsoft Copilot can enhance your information-seeking experience, let's explore some practical examples of how it can be used in everyday scenarios.</p>
+        
+        <div class="info-box">
+            <h3>Example 1: Trip Planning</h3>
+            <p>Imagine you're planning a trip to Japan in spring. You might ask Copilot:</p>
+            <p><em>"I am planning a trip to Japan next spring. What should I know about spring in Japan before my visit?"</em></p>
+            <p>Instead of receiving a list of websites to visit, Copilot might provide a comprehensive response like:</p>
+            <p><em>"Spring in Japan is famous for its cherry blossom season. It's a great time to visit parks and temples and take part in Hanami festivals. Make sure to check the local bloom forecasts, as the timing can vary each year."</em></p>
+            <p>This direct answer saves you time and provides precisely the information you need.</p>
+        </div>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Solar panel scenario -->
+                <rect x="50" y="60" width="300" height="100" rx="10" fill="#f9f9f9" stroke="#6E4BFB" />
+                
+                <!-- House with solar panels -->
+                <rect x="80" y="100" width="50" height="40" fill="#FBD44B" opacity="0.5" />
+                <polygon points="80,100 105,70 130,100" fill="#FBD44B" opacity="0.7" />
+                <rect x="95" y="120" width="15" height="20" fill="#FB4B4B" opacity="0.5" />
+                
+                <!-- Solar panels -->
+                <rect x="70" y="85" width="15" height="10" fill="#4B6EFB" opacity="0.7" />
+                <rect x="90" y="85" width="15" height="10" fill="#4B6EFB" opacity="0.7" />
+                <rect x="110" y="85" width="15" height="10" fill="#4B6EFB" opacity="0.7" />
+                
+                <!-- Copilot response bubble -->
+                <rect x="150" y="80" width="180" height="60" rx="10" fill="#4B6EFB" opacity="0.1" />
+                <polygon points="150,110 140,115 150,120" fill="#4B6EFB" opacity="0.1" />
+                <text x="240" y="100" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Recent studies have shown that</text>
+                <text x="240" y="115" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">perovskite solar cells are achieving</text>
+                <text x="240" y="130" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">efficiencies above 25%...</text>
+            </svg>
+            <p class="caption">Copilot provides up-to-date, relevant information on topics like solar energy efficiency.</p>
+        </div>
+        
+        <p>Other practical examples include:</p>
+        
+        <div class="key-concept">
+            <h3>Example 2: Research Assistance</h3>
+            <p>When researching solar energy efficiency, you might ask: <em>"What is the latest research on solar energy efficiency?"</em></p>
+            <p>Copilot would provide a concise summary of recent developments, such as: <em>"Recent studies have shown that perovskite solar cells are achieving efficiencies above 25%, making them a promising technology for future panels."</em></p>
+        </div>
+        
+        <div class="key-concept">
+            <h3>Example 3: Meeting Notes Summarization</h3>
+            <p>After a sales meeting, you could provide Copilot with your notes and ask: <em>"Summarize the key points shared from the Sales meeting on July 13."</em></p>
+            <p>Copilot would organize the information into a clear summary: <em>"Sales Meeting Summary - July 13: Q1 revenue increased by 15%, 25 new clients acquired, next quarter goals include expanding into the European market."</em></p>
+        </div>
+        
+        <p>These examples demonstrate how Copilot transforms the search experience from simply finding information to actively helping you understand and use that information. It's not just a tool for answering questions, but a companion for achieving your goals more efficiently and effectively.</p>
+    </section>
+</div>
+
+<div class="nav-buttons">
+    <a href="chapter3_19.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+    <a href="chapter5_21.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

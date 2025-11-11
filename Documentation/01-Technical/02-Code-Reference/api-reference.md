@@ -957,19 +957,22 @@ curl -X PUT http://localhost/api/courses/1 \
 
 ## Module Endpoints
 
-### 14. List Modules by Course
+### 14. List Modules
 
-Retrieve all modules for a specific course.
+Retrieve modules with optional filtering by course and published status.
 
-**Endpoint**: `GET /courses/:courseId/modules`
-**Authentication**: Not required
-**Roles**: Public
+**Endpoint**: `GET /modules`
+**Authentication**: Optional (shows unpublished to admin/instructor)
+**Roles**: Public (published only), Admin/Instructor (all)
 
-#### URL Parameters
+#### Query Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| courseId | integer | Course ID |
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| course_id | integer | null | Filter by course ID |
+| published | boolean | true | Filter by published status |
+| page | integer | 1 | Page number for pagination |
+| pageSize | integer | 20 | Number of items per page (max 100) |
 
 #### Success Response (200 OK)
 
@@ -985,9 +988,17 @@ Retrieve all modules for a specific course.
         "title": "AI Foundations",
         "slug": "ai-foundations",
         "description": "Introduction to artificial intelligence concepts",
+        "objectives": "Understand AI history, key concepts, and applications",
         "order_index": 1,
-        "lessons_count": 11,
-        "estimated_duration": "8 hours"
+        "duration_hours": 8,
+        "is_published": true,
+        "created_at": "2025-11-04 14:58:16",
+        "updated_at": "2025-11-04 14:58:16",
+        "statistics": {
+          "lesson_count": 11,
+          "enrolled_students": 0,
+          "completion_rate": 0
+        }
       },
       {
         "id": 2,
@@ -996,29 +1007,53 @@ Retrieve all modules for a specific course.
         "slug": "generative-ai",
         "description": "Understanding generative AI models",
         "order_index": 2,
-        "lessons_count": 8,
-        "estimated_duration": "6 hours"
+        "duration_hours": 6,
+        "is_published": true,
+        "statistics": {
+          "lesson_count": 8,
+          "enrolled_students": 0,
+          "completion_rate": 0
+        }
       }
-    ]
+    ],
+    "pagination": {
+      "total": 6,
+      "page": 1,
+      "pageSize": 20,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
   }
 }
 ```
 
-#### cURL Example
+#### cURL Examples
 
 ```bash
-curl -X GET http://localhost/api/courses/1/modules
+# List all published modules
+curl -X GET "http://localhost/api/modules"
+
+# List modules for specific course
+curl -X GET "http://localhost/api/modules?course_id=1"
+
+# List all modules including unpublished (admin/instructor only)
+curl -X GET "http://localhost/api/modules?published=false" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Paginated request
+curl -X GET "http://localhost/api/modules?page=1&pageSize=5"
 ```
 
 ---
 
 ### 15. Get Module by ID
 
-Retrieve detailed information about a specific module.
+Retrieve detailed information about a specific module including all lessons.
 
 **Endpoint**: `GET /modules/:id`
-**Authentication**: Not required
-**Roles**: Public
+**Authentication**: Optional (access to unpublished requires admin/instructor)
+**Roles**: Public (published only), Admin/Instructor (all)
 
 #### URL Parameters
 
@@ -1039,32 +1074,282 @@ Retrieve detailed information about a specific module.
       "title": "AI Foundations",
       "slug": "ai-foundations",
       "description": "Introduction to artificial intelligence concepts",
+      "objectives": "Understand AI history, key concepts, and applications",
       "order_index": 1,
-      "created_at": "2025-10-28 23:17:00"
-    },
-    "lessons": [
-      {
+      "duration_hours": 8,
+      "is_published": true,
+      "created_at": "2025-11-04 14:58:16",
+      "updated_at": "2025-11-04 14:58:16",
+      "lessons": [
+        {
+          "id": 1,
+          "module_id": 1,
+          "title": "What is AI?",
+          "subtitle": "Introduction to Artificial Intelligence",
+          "slug": "what-is-ai",
+          "order_index": 1,
+          "duration_minutes": 30,
+          "is_published": true
+        },
+        {
+          "id": 2,
+          "module_id": 1,
+          "title": "History of AI",
+          "subtitle": "From Turing to Modern AI",
+          "slug": "history-of-ai",
+          "order_index": 2,
+          "duration_minutes": 45,
+          "is_published": true
+        }
+      ],
+      "course": {
         "id": 1,
-        "title": "What is AI?",
-        "slug": "what-is-ai",
-        "order_index": 1,
-        "estimated_duration": "30 minutes"
+        "title": "AI Fluency",
+        "slug": "ai-fluency",
+        "is_published": true
+      },
+      "statistics": {
+        "lesson_count": 11,
+        "enrolled_students": 0,
+        "completion_rate": 0
       }
-    ],
-    "quiz": {
-      "id": 1,
-      "title": "AI Foundations Quiz",
-      "questions_count": 10,
-      "passing_score": 70
     }
   }
+}
+```
+
+#### Error Responses
+
+**404 Not Found** - Module does not exist
+```json
+{
+  "success": false,
+  "message": "Module not found"
+}
+```
+
+**403 Forbidden** - Unpublished module (not admin/instructor)
+```json
+{
+  "success": false,
+  "message": "This module is not published"
 }
 ```
 
 #### cURL Example
 
 ```bash
-curl -X GET http://localhost/api/modules/1
+curl -X GET "http://localhost/api/modules/1"
+```
+
+---
+
+### 16. Create Module
+
+Create a new module within a course.
+
+**Endpoint**: `POST /modules`
+**Authentication**: Required
+**Roles**: Admin, Instructor
+
+#### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| course_id | integer | Yes | Parent course ID |
+| title | string | Yes | Module title (max 255 chars) |
+| slug | string | Yes | URL-friendly slug (max 255 chars) |
+| description | text | No | Module description |
+| objectives | text | No | Learning objectives |
+| order_index | integer | No | Display order (default: 0) |
+| duration_hours | integer | No | Estimated duration (default: 0) |
+| is_published | boolean | No | Published status (default: false) |
+
+#### Request Example
+
+```json
+{
+  "course_id": 1,
+  "title": "Advanced AI Topics",
+  "slug": "advanced-ai-topics",
+  "description": "Explore advanced concepts in artificial intelligence",
+  "objectives": "Master neural networks, deep learning, and AI ethics",
+  "order_index": 7,
+  "duration_hours": 12,
+  "is_published": false
+}
+```
+
+#### Success Response (201 Created)
+
+```json
+{
+  "success": true,
+  "message": "Module created successfully",
+  "data": {
+    "module": {
+      "id": 7,
+      "course_id": 1,
+      "title": "Advanced AI Topics",
+      "slug": "advanced-ai-topics",
+      "description": "Explore advanced concepts in artificial intelligence",
+      "objectives": "Master neural networks, deep learning, and AI ethics",
+      "order_index": 7,
+      "duration_hours": 12,
+      "is_published": false,
+      "created_at": "2025-11-11 15:30:00",
+      "updated_at": "2025-11-11 15:30:00"
+    }
+  }
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized** - Missing or invalid token
+**403 Forbidden** - Insufficient permissions (not admin/instructor)
+**404 Not Found** - Course does not exist
+**409 Conflict** - Slug already exists in this course
+**422 Validation Error** - Invalid input data
+
+#### cURL Example
+
+```bash
+curl -X POST "http://localhost/api/modules" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "course_id=1" \
+  -d "title=Advanced AI Topics" \
+  -d "slug=advanced-ai-topics" \
+  -d "description=Explore advanced concepts in artificial intelligence" \
+  -d "objectives=Master neural networks, deep learning, and AI ethics" \
+  -d "order_index=7" \
+  -d "duration_hours=12" \
+  -d "is_published=false"
+```
+
+---
+
+### 17. Update Module
+
+Update an existing module.
+
+**Endpoint**: `PUT /modules/:id`
+**Authentication**: Required
+**Roles**: Admin, Instructor
+
+#### URL Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | integer | Module ID |
+
+#### Request Body
+
+All fields are optional. Only include fields you want to update.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| title | string | Module title (max 255 chars) |
+| slug | string | URL-friendly slug (max 255 chars) |
+| description | text | Module description |
+| objectives | text | Learning objectives |
+| order_index | integer | Display order |
+| duration_hours | integer | Estimated duration |
+| is_published | boolean | Published status |
+
+#### Request Example
+
+```json
+{
+  "title": "Advanced AI & Machine Learning",
+  "duration_hours": 15,
+  "is_published": true
+}
+```
+
+#### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Module updated successfully",
+  "data": {
+    "module": {
+      "id": 7,
+      "course_id": 1,
+      "title": "Advanced AI & Machine Learning",
+      "slug": "advanced-ai-topics",
+      "description": "Explore advanced concepts in artificial intelligence",
+      "objectives": "Master neural networks, deep learning, and AI ethics",
+      "order_index": 7,
+      "duration_hours": 15,
+      "is_published": true,
+      "created_at": "2025-11-11 15:30:00",
+      "updated_at": "2025-11-11 16:45:00"
+    }
+  }
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized** - Missing or invalid token
+**403 Forbidden** - Insufficient permissions
+**404 Not Found** - Module does not exist
+**409 Conflict** - Slug already exists in this course
+
+#### cURL Example
+
+```bash
+curl -X PUT "http://localhost/api/modules/7" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "title=Advanced AI & Machine Learning" \
+  -d "duration_hours=15" \
+  -d "is_published=true"
+```
+
+---
+
+### 18. Delete Module
+
+Delete a module and all associated lessons.
+
+**Endpoint**: `DELETE /modules/:id`
+**Authentication**: Required
+**Roles**: Admin
+
+#### URL Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | integer | Module ID |
+
+#### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Module deleted successfully",
+  "data": {
+    "deleted_module_id": 7,
+    "deleted_module_title": "Advanced AI Topics"
+  }
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized** - Missing or invalid token
+**403 Forbidden** - Insufficient permissions (not admin)
+**404 Not Found** - Module does not exist
+
+#### cURL Example
+
+```bash
+curl -X DELETE "http://localhost/api/modules/7" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 ---

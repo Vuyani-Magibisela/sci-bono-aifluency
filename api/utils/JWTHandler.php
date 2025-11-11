@@ -103,17 +103,23 @@ class JWTHandler
      */
     public static function extractTokenFromHeader(): ?string
     {
-        $headers = getallheaders();
-
-        if (!isset($headers['Authorization'])) {
-            return null;
+        // Try getallheaders() first (available in Apache SAPI)
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+                if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+                    return $matches[1];
+                }
+            }
         }
 
-        $authHeader = $headers['Authorization'];
-
-        // Check for Bearer token format
-        if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
-            return $matches[1];
+        // Fallback to $_SERVER for CLI and other environments
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+            if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+                return $matches[1];
+            }
         }
 
         return null;

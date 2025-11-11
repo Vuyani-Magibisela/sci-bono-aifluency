@@ -60,6 +60,33 @@ Each module has:
 - **Main Script** (`js/script.js`): Handles navigation, PDF generation, PWA installation
 - **Quiz Logic**: Embedded in quiz HTML files (no separate quiz.js file)
 
+### Frontend Stack Policy
+**⚠️ CRITICAL: This project uses NO frameworks - vanilla web technologies only.**
+
+This is a strict architectural requirement that must be followed:
+
+- **HTML**: Pure HTML5 only (no JSX, no templating frameworks, no preprocessors)
+- **CSS**: Pure CSS3 only (no Bootstrap, Tailwind, Foundation, Bulma, or any CSS frameworks)
+- **JavaScript**: Vanilla ES6+ only (no React, Vue, Angular, Svelte, jQuery, or any JS frameworks/libraries except those listed below)
+- **Progressive Enhancement**: Build with standards-based web technologies that work across all browsers
+- **Zero Build Process**: No webpack, Vite, Parcel, or build tools - works directly in browser
+
+**Why No Frameworks?**
+- Maximum compatibility across devices and browsers
+- Minimal dependencies and attack surface
+- Educational transparency - students can view source and learn
+- Offline-first PWA that works without any bundling
+- Faster load times and better performance
+- Future-proof - no framework deprecation concerns
+
+**Allowed External Libraries** (CDN only, no npm):
+- Font Awesome (icons)
+- Google Fonts (typography)
+- jsPDF (PDF generation)
+- html2canvas (screenshot capture)
+
+Any frontend integration with the backend API must use native `fetch()` API, not axios or other HTTP libraries.
+
 ### External Dependencies
 - Font Awesome 6.1.1 (icons)
 - Google Fonts (Montserrat, Poppins)
@@ -344,7 +371,18 @@ All documentation must:
 
 ## Recent Changes
 
-Based on git history:
+**November 2025 - LMS Backend Infrastructure Complete:**
+- ✅ Full backend API implementation (26 RESTful endpoints)
+- ✅ 9 controllers: Auth, User, Course, Enrollment, Lesson, Quiz, Project, Certificate
+- ✅ 13 models with Active Record pattern
+- ✅ JWT authentication with token blacklist
+- ✅ Role-based access control (student, instructor, admin)
+- ✅ Automatic progress tracking and certificate generation
+- ✅ Quiz validation and grading system
+- ✅ Project submission and grading workflow
+- ~21,400 lines of production PHP code
+
+**Previous Changes (Based on git history):**
 - PWA installation improvements (iOS install banner, mobile install button enhancements)
 - Download button removed from index and module pages (only on lesson pages)
 - PWA manifest and screenshots added

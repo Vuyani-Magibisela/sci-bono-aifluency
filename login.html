@@ -145,21 +145,150 @@
     </footer>
 
     <script src="js/script.js"></script>
+
+    <!-- Authentication Modules -->
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+
     <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (Auth.isAuthenticated()) {
+                // Already logged in, redirect to dashboard
+                window.location.href = Auth.getDashboardUrl();
+            }
+        });
+
         // Handle login form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const email = document.getElementById('email').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            // Here you would normally send this to a backend server
-            console.log('Login attempt:', { email, password });
+            // Clear any previous error messages
+            clearError();
 
-            // For now, just redirect to the courses page
-            alert('Login functionality will be implemented with backend integration.');
-            // window.location.href = 'aifluencystart.html';
+            // Validate inputs
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+            try {
+                // Attempt login
+                const result = await Auth.login(email, password);
+
+                if (result.success) {
+                    // Show success message
+                    showSuccess('Login successful! Redirecting...');
+
+                    // Small delay for user to see success message
+                    setTimeout(() => {
+                        Auth.handleLoginRedirect();
+                    }, 500);
+
+                } else {
+                    // Show error message
+                    showError(result.message || 'Login failed. Please check your credentials.');
+
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHTML;
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('An unexpected error occurred. Please try again.');
+
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
         });
+
+        /**
+         * Display error message to user
+         */
+        function showError(message) {
+            clearMessages();
+
+            let errorDiv = document.getElementById('error-message');
+
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'error-message';
+                errorDiv.className = 'alert alert-error';
+
+                const form = document.getElementById('loginForm');
+                form.insertBefore(errorDiv, form.firstChild);
+            }
+
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            `;
+            errorDiv.style.display = 'flex';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        /**
+         * Display success message to user
+         */
+        function showSuccess(message) {
+            clearMessages();
+
+            let successDiv = document.getElementById('success-message');
+
+            if (!successDiv) {
+                successDiv = document.createElement('div');
+                successDiv.id = 'success-message';
+                successDiv.className = 'alert alert-success';
+
+                const form = document.getElementById('loginForm');
+                form.insertBefore(successDiv, form.firstChild);
+            }
+
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            successDiv.style.display = 'flex';
+        }
+
+        /**
+         * Clear all messages
+         */
+        function clearMessages() {
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (successDiv) successDiv.style.display = 'none';
+        }
+
+        /**
+         * Clear error message
+         */
+        function clearError() {
+            const errorDiv = document.getElementById('error-message');
+            if (errorDiv) errorDiv.style.display = 'none';
+        }
+
+        // Clear error on input focus
+        document.getElementById('email').addEventListener('focus', clearError);
+        document.getElementById('password').addEventListener('focus', clearError);
     </script>
 </body>
 </html>

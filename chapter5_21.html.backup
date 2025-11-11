@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Chapter 3.21: Prompt Engineering</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main>
+<div class="chapter-container">
+<div class="chapter-header">
+    <div class="module-badge">Module 3: Search and AI</div>
+    <h1>Chapter 3.21: Prompt Engineering</h1>
+    <p class="subtitle">Mastering the art of crafting effective prompts for AI systems</p>
+</div>
+
+<div class="chapter-nav">
+    <div class="nav-buttons-container">
+        <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+        <a href="#what-is-prompt" class="nav-tab"><i class="fas fa-question-circle"></i> What is a Prompt?</a>
+        <a href="#crafting-prompts" class="nav-tab"><i class="fas fa-edit"></i> Crafting Prompts</a>
+        <a href="#prompt-processing" class="nav-tab"><i class="fas fa-cogs"></i> Prompt Processing</a>
+    </div>
+</div>
+
+<div class="chapter-content">
+    <section class="content-section" id="introduction">
+        <h2>Introduction to Prompt Engineering</h2>
+        <p>The way we interact with AI has transformed. We have moved beyond simple commands and queries to a more sophisticated method of communication known as prompt engineering.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Command prompt style screen -->
+                <rect x="50" y="50" width="130" height="100" rx="5" fill="#000" />
+                <text x="60" y="70" font-family="monospace" font-size="10" fill="#0f0">C:\> search weather</text>
+                <text x="60" y="85" font-family="monospace" font-size="10" fill="#0f0">C:\> find restaurants</text>
+                <text x="60" y="100" font-family="monospace" font-size="10" fill="#0f0">C:\> locate nearest gas</text>
+                <text x="60" y="115" font-family="monospace" font-size="10" fill="#0f0">C:\> _</text>
+                
+                <!-- Arrow indicating evolution -->
+                <path d="M 200 100 L 220 100" stroke="#FB4B4B" stroke-width="2" marker-end="url(#arrowhead)" />
+                
+                <!-- Modern prompt interface -->
+                <rect x="240" y="50" width="130" height="100" rx="10" fill="#f9f9f9" stroke="#6E4BFB" />
+                <text x="250" y="70" font-family="Arial" font-size="10" fill="#333">Create a detailed weekend</text>
+                <text x="250" y="85" font-family="Arial" font-size="10" fill="#333">itinerary for Seattle with</text>
+                <text x="250" y="100" font-family="Arial" font-size="10" fill="#333">outdoor activities, considering</text>
+                <text x="250" y="115" font-family="Arial" font-size="10" fill="#333">possible rain and a toddler.</text>
+                
+                <!-- Title headers -->
+                <text x="115" y="35" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">Simple Commands</text>
+                <text x="305" y="35" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">Engineered Prompt</text>
+                
+                <!-- Arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#FB4B4B" />
+                    </marker>
+                </defs>
+            </svg>
+            <p class="caption">The evolution from simple commands to sophisticated, contextual prompts in AI interaction.</p>
+        </div>
+        
+        <div class="key-concept">
+            <h3>What is Prompt Engineering?</h3>
+            <p>Prompt engineering is the art of crafting prompts that guide an LLM-based generative AI to produce a desired response. It's about communicating with AI systems in a way that helps them understand exactly what you're looking for, resulting in more accurate, useful, and tailored responses.</p>
+        </div>
+        
+        <p>Much like a sculptor working with marble to reveal a masterpiece within, prompt engineers craft their queries to bring out the best possible responses from AI systems. As we advance in the use of LLM-based generative AI, the art of prompt engineering becomes increasingly important. It's not just about asking; it's about how we ask.</p>
+    </section>
+
+    <section class="content-section" id="what-is-prompt">
+        <h2>Understanding Prompts</h2>
+        <p>A prompt is the input you give to a generative AI experience, like Microsoft Copilot, telling it what you want it to do and how. Think of it as your communication tool with the AI system.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Prompt components diagram -->
+                <circle cx="200" cy="110" r="80" fill="none" stroke="#6E4BFB" stroke-width="2" />
+                
+                <!-- Instruction component -->
+                <circle cx="200" cy="60" r="30" fill="#FB4B4B" opacity="0.7" />
+                <text x="200" y="65" font-family="Arial" font-weight="bold" font-size="12" fill="white" text-anchor="middle">Instruction</text>
+                
+                <!-- Context component -->
+                <circle cx="200" cy="160" r="30" fill="#4BFB9D" opacity="0.7" />
+                <text x="200" y="165" font-family="Arial" font-weight="bold" font-size="12" fill="white" text-anchor="middle">Context</text>
+                
+                <!-- Description arrows -->
+                <line x1="240" y1="60" x2="330" y2="60" stroke="#FB4B4B" stroke-width="1" />
+                <text x="335" y="63" font-family="Arial" font-size="10" fill="#333">What to do</text>
+                
+                <line x1="240" y1="160" x2="330" y2="160" stroke="#4BFB9D" stroke-width="1" />
+                <text x="335" y="163" font-family="Arial" font-size="10" fill="#333">How to do it</text>
+                
+                <!-- Envelope metaphor -->
+                <rect x="70" y="90" width="60" height="40" rx="5" fill="#f9f9f9" stroke="#6E4BFB" />
+                <path d="M 70 90 L 100 110 L 130 90" fill="none" stroke="#6E4BFB" />
+                <path d="M 70 130 L 95 110 L 130 130" fill="none" stroke="#6E4BFB" />
+            </svg>
+            <p class="caption">A prompt consists of two main components: instruction (what to do) and context (how to do it).</p>
+        </div>
+        
+        <p>A prompt consists of two main components:</p>
+        
+        <div class="info-box">
+            <h3>Components of a Prompt</h3>
+            <ul>
+                <li><strong>Instruction</strong>: The written part of the prompt that states the task and the objective. It should be clear and specific, so the AI knows exactly what you expect from it.</li>
+                <li><strong>Context</strong>: Provides information for the response such as the intended audience and the desired tone. It should be relevant and appropriate, so the AI can tailor its response to your needs.</li>
+            </ul>
+        </div>
+        
+        <p>Once a prompt is submitted, the AI reads the text in chunks called tokens, which can be as short as a single character or a word. This is important because every model has a limit on the amount of text it can process at once. This is why it's important to keep our prompts concise and to the point.</p>
+        
+        <div class="key-concept">
+            <h3>Example of a Well-Structured Prompt</h3>
+            <p><strong>Instruction:</strong> "Create a comprehensive, professional guide for adult learners"</p>
+            <p><strong>Context:</strong> "on how to effectively network in their industry, with a focus on digital platforms"</p>
+            <p>This prompt clearly states what is needed (a comprehensive guide) and provides context about the audience (adult learners), the topic (networking in their industry), and a specific focus (digital platforms).</p>
+        </div>
+    </section>
+
+    <section class="content-section" id="crafting-prompts">
+        <h2>Crafting Effective Prompts</h2>
+        <p>Crafting effective prompts is both an art and a science. It requires understanding what you want to achieve and communicating it clearly to the AI system.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="250" viewBox="0 0 400 250">
+                <!-- Marble block to statue metaphor -->
+                <rect x="70" y="80" width="100" height="100" fill="#f9f9f9" stroke="#333" />
+                
+                <!-- Arrow -->
+                <path d="M 180 130 L 220 130" stroke="#FB4B4B" stroke-width="2" marker-end="url(#arrowhead)" />
+                
+                <!-- Statue outline -->
+                <path d="M 280 80 L 270 85 Q 260 100, 270 120 L 270 160 Q 280 180, 300 170 Q 320 180, 330 160 L 330 120 Q 340 100, 330 85 L 320 80 Z" fill="#f9f9f9" stroke="#333" />
+                <ellipse cx="300" cy="70" rx="20" ry="25" fill="#f9f9f9" stroke="#333" />
+                
+                <!-- Chisel and hammer -->
+                <rect x="130" y="50" width="40" height="10" fill="#FBD44B" transform="rotate(45, 130, 50)" />
+                <circle cx="160" cy="30" r="15" fill="#6E4BFB" opacity="0.8" />
+                <rect x="155" y="25" width="30" height="10" fill="#6E4BFB" opacity="0.8" transform="rotate(45, 155, 25)" />
+                
+                <!-- Labels -->
+                <text x="120" y="210" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Raw Query</text>
+                <text x="300" y="210" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Refined Result</text>
+                
+                <!-- Arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#FB4B4B" />
+                    </marker>
+                </defs>
+            </svg>
+            <p class="caption">Prompt engineering is like sculpting: starting with raw material and refining it to reveal the desired form.</p>
+        </div>
+        
+        <p>When you're prepared to engage with an AI system like Copilot, it's important to select the appropriate style for your task and craft your prompt carefully. Here's a step-by-step guide to crafting effective prompts:</p>
+        
+        <div class="info-box">
+            <h3>Steps for Crafting Effective Prompts</h3>
+            <ol>
+                <li><strong>Define Your Objective</strong>: Clearly identify what you want to achieve with your prompt. Are you looking for information, creative content, technical assistance, or something else?</li>
+                <li><strong>Choose the Right Style</strong>: Select the appropriate conversation style based on your needs:
+                    <ul>
+                        <li><strong>More Creative</strong>: For brainstorming, storytelling, or creative content</li>
+                        <li><strong>More Balanced</strong>: For everyday queries requiring both information and creativity</li>
+                        <li><strong>More Precise</strong>: For factual information, technical questions, or academic research</li>
+                    </ul>
+                </li>
+                <li><strong>Craft Clear Instructions</strong>: Explicitly state what you want the AI to do. Use action verbs like "create," "analyze," "explain," or "summarize."</li>
+                <li><strong>Provide Relevant Context</strong>: Include any necessary background information, audience considerations, format requirements, or tone preferences.</li>
+                <li><strong>Review and Refine</strong>: Before submitting, review your prompt to ensure it clearly communicates your intent and includes all necessary information.</li>
+            </ol>
+        </div>
+        
+        <p>Let's examine a sample prompt to see these principles in action:</p>
+        
+        <div class="key-concept">
+            <h3>Sample Prompt Analysis</h3>
+            <p><em>"Please create a comprehensive, professional guide for adult learners on how to effectively network in their industry, with a focus on digital platforms."</em></p>
+            <ul>
+                <li><strong>Instruction</strong>: "Create a comprehensive, professional guide" (Clear action with quality specifications)</li>
+                <li><strong>Context</strong>: "for adult learners" (Target audience)
+                <br>"on how to effectively network in their industry" (Main topic)
+                <br>"with a focus on digital platforms" (Specific emphasis)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="content-section" id="prompt-processing">
+        <h2>How AI Processes Prompts</h2>
+        <p>Understanding how AI systems process prompts can help you craft more effective ones. When you submit a prompt, the AI breaks it down into tokens and analyzes it before generating a response.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="180" viewBox="0 0 400 180">
+                <!-- Tokenization visualization -->
+                <rect x="50" y="60" width="300" height="60" rx="5" fill="#f9f9f9" stroke="#6E4BFB" stroke-width="1" />
+                
+                <!-- Sample text with token boundaries -->
+                <text x="60" y="85" font-family="Arial" font-size="14" fill="#333">Create a guide for networking</text>
+                
+                <!-- Token boundaries -->
+                <rect x="60" y="90" width="40" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="80" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">Create</text>
+                
+                <rect x="105" y="90" width="10" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="110" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">a</text>
+                
+                <rect x="120" y="90" width="35" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="137" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">guide</text>
+                
+                <rect x="160" y="90" width="20" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="170" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">for</text>
+                
+                <rect x="185" y="90" width="45" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="207" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">network</text>
+                
+                <rect x="235" y="90" width="25" height="20" fill="#FB4B4B" opacity="0.2" rx="2" />
+                <text x="247" y="105" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">ing</text>
+                
+                <!-- Processing step labels -->
+                <text x="200" y="40" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Tokenization Process</text>
+                <text x="200" y="145" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">The AI breaks your prompt into tokens for processing</text>
+            </svg>
+            <p class="caption">AI systems process prompts by breaking them into tokens, which may be whole words or parts of words.</p>
+        </div>
+        
+        <p>Tokens are the segments of text that the model uses to comprehend and formulate responses. They can be complete words or fragments of words. For example, "network" is one token, while "networking" may be divided into "network" and "ing" based on the model's tokenization method.</p>
+        
+        <div class="info-box">
+            <h3>The Prompt Processing Workflow</h3>
+            <ol>
+                <li><strong>Tokenization</strong>: The AI divides your prompt into tokens (words or word parts)</li>
+                <li><strong>Interpretation</strong>: It analyzes these tokens to understand your request</li>
+                <li><strong>Context Building</strong>: It establishes the context based on your prompt</li>
+                <li><strong>Response Generation</strong>: It creates a response that addresses your specific needs</li>
+                <li><strong>Review</strong>: It checks the response for relevance and accuracy</li>
+            </ol>
+        </div>
+        
+        <p>Once Copilot delivers its output, examine it to verify it aligns with your objectives. If it doesn't quite hit the mark, you can refine your prompt and resubmit it to achieve a more precise outcome. This process helps you collaborate more effectively with AI systems over time.</p>
+        
+        <div class="key-concept">
+            <h3>Tips for Optimizing Prompt Processing</h3>
+            <ul>
+                <li>Keep your prompts clear and direct to minimize misinterpretation</li>
+                <li>Use specific language to guide the AI toward your desired outcome</li>
+                <li>Break complex requests into simpler components</li>
+                <li>If the response isn't what you expected, try rephrasing your prompt</li>
+                <li>Learn from successful prompts and apply those patterns to future interactions</li>
+            </ul>
+        </div>
+        
+        <p>By understanding how AI processes your prompts, you can craft them more effectively to get the best possible results. The key to a successful interaction lies in the clarity of your instruction and the relevance of your context.</p>
+    </section>
+</div>
+
+<div class="nav-buttons">
+    <a href="chapter3_20.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+    <a href="chapter6_22.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

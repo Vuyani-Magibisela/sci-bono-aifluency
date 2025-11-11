@@ -17,11 +17,12 @@ class User extends BaseModel
         'name',
         'role',
         'is_active',
-        'profile_picture',
-        'bio',
-        'school',
-        'grade',
-        'last_login'
+        'profile_picture_url',
+        'is_verified',
+        'verification_token',
+        'reset_token',
+        'reset_token_expires',
+        'last_login_at'
     ];
     protected array $hidden = ['password_hash'];
 
@@ -124,7 +125,7 @@ class User extends BaseModel
     public function updateLastLogin(int $userId): bool
     {
         try {
-            $stmt = $this->pdo->prepare("UPDATE {$this->table} SET last_login = NOW() WHERE id = :id");
+            $stmt = $this->pdo->prepare("UPDATE {$this->table} SET last_login_at = NOW() WHERE id = :id");
             return $stmt->execute(['id' => $userId]);
         } catch (\PDOException $e) {
             error_log("Database error in updateLastLogin: " . $e->getMessage());
@@ -255,7 +256,7 @@ class User extends BaseModel
             $completedLessonsStmt = $this->pdo->prepare("
                 SELECT COUNT(*) as total
                 FROM lesson_progress
-                WHERE user_id = :user_id AND completed = TRUE
+                WHERE user_id = :user_id AND status = 'completed'
             ");
             $completedLessonsStmt->execute(['user_id' => $userId]);
             $completedLessons = $completedLessonsStmt->fetch(PDO::FETCH_ASSOC);
@@ -311,8 +312,8 @@ class User extends BaseModel
     {
         try {
             $sql = "SELECT * FROM {$this->table}
-                    WHERE last_login >= DATE_SUB(NOW(), INTERVAL :days DAY)
-                    ORDER BY last_login DESC";
+                    WHERE last_login_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+                    ORDER BY last_login_at DESC";
 
             if ($limit !== null) {
                 $sql .= " LIMIT {$limit}";

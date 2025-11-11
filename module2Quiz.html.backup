@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Module 2 Quiz: Generative AI</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<style>
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .quiz-instructions {
+        background-color: var(--background-light);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .question-container {
+        background-color: var(--white);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .question {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.8rem;
+        border-radius: 8px;
+        background-color: var(--background-light);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+    
+    .option:hover {
+        background-color: rgba(75, 110, 251, 0.1);
+    }
+    
+    .option input {
+        margin-top: 0.3rem;
+    }
+    
+    .option label {
+        flex-grow: 1;
+        cursor: pointer;
+    }
+    
+    .option.correct {
+        background-color: rgba(75, 251, 157, 0.2);
+        border: 2px solid var(--accent-green);
+    }
+    
+    .option.correct::after {
+        content: "✓";
+        color: #2C9E5F;
+        position: absolute;
+        right: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .option.incorrect {
+        background-color: rgba(251, 75, 75, 0.2);
+        border: 2px solid var(--accent-color);
+    }
+    
+    .option.incorrect::after {
+        content: "✗";
+        color: #E53935;
+        position: absolute;
+        right: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+    
+    .quiz-button {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .quiz-button:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .quiz-button.secondary {
+        background-color: var(--text-light);
+    }
+    
+    .quiz-button.secondary:hover {
+        background-color: var(--text-dark);
+    }
+    
+    .results-container {
+        display: none;
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        box-shadow: var(--shadow);
+        text-align: center;
+    }
+    
+    .results-title {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .score {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 1.5rem 0;
+    }
+    
+    .feedback {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Progress bar styles */
+    .progress-container {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background-color: var(--white);
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+    
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .progress-percentage {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    /* Add some padding to the top of the quiz content to account for the sticky bar */
+    #quizContent {
+        padding-top: 1rem;
+    }
+</style>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<!-- <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button> -->
+</div>
+</header>
+
+<main>
+<div class="quiz-container">
+    <div class="quiz-header">
+        <div class="module-badge">Module 2: Generative AI</div>
+        <h1>Module Quiz: Generative AI</h1>
+        <p class="subtitle">Test your understanding of generative AI concepts and applications</p>
+    </div>
+    
+    <!-- Progress Bar (Sticky) -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-info">
+            <span>Your Progress</span>
+            <span class="progress-percentage" id="progressPercentage">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-labels">
+            <span>Question 1 of 10</span>
+            <span id="answeredCount">0 answered</span>
+        </div>
+    </div>
+    
+    <div id="quizContent">
+    <div class="quiz-instructions">
+        <h2><i class="fas fa-info-circle"></i> Instructions</h2>
+        <p>This quiz contains 10 multiple-choice questions to assess your understanding of Module 2: Generative AI. Read each question carefully and select the best answer from the options provided.</p>
+        <ul>
+            <li>You will have 20 minutes to complete the quiz</li>
+            <li>Each question is worth 1 point, for a total of 10 points</li>
+            <li>A passing score is 7 out of 10 points (70%)</li>
+            <li>You can review your answers before submitting</li>
+        </ul>
+        <p>Good luck!</p>
+    </div>
+    
+    <form id="quizForm">
+        <div class="question-container">
+            <div class="question">1. What is generative AI?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q1a" name="q1" value="a">
+                    <label for="q1a">A type of AI focused solely on analyzing existing data</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1b" name="q1" value="b">
+                    <label for="q1b">A category of AI algorithms that generate new outputs based on the data they have been trained on</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1c" name="q1" value="c">
+                    <label for="q1c">AI systems that can only produce text-based responses</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1d" name="q1" value="d">
+                    <label for="q1d">Technology designed exclusively for graphic designers</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q1" style="display: none;">
+                <strong>Explanation:</strong> Generative AI refers to AI algorithms that can create new content (like text, images, audio) based on patterns learned from training data, not just analyze existing data.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">2. What does GPT stand for in the context of AI?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q2a" name="q2" value="a">
+                    <label for="q2a">Global Processing Technology</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2b" name="q2" value="b">
+                    <label for="q2b">General Purpose Transformer</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2c" name="q2" value="c">
+                    <label for="q2c">Generative Pre-trained Transformer</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2d" name="q2" value="d">
+                    <label for="q2d">Graphical Processing Tool</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q2" style="display: none;">
+                <strong>Explanation:</strong> GPT stands for Generative Pre-trained Transformer. It's a neural network model that uses transformer architecture and is pre-trained on large datasets to generate text.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">3. Which of the following is NOT a type of generative AI?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q3a" name="q3" value="a">
+                    <label for="q3a">Text-based generative AI</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3b" name="q3" value="b">
+                    <label for="q3b">Audio generative AI</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3c" name="q3" value="c">
+                    <label for="q3c">Diagnostic generative AI</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3d" name="q3" value="d">
+                    <label for="q3d">Video generative AI</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q3" style="display: none;">
+                <strong>Explanation:</strong> While text, audio, and video are all common types of generative AI, "Diagnostic generative AI" is not a standard classification. Diagnostic systems typically fall under predictive or analytical AI categories.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">4. How can Microsoft Copilot assist with content creation?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q4a" name="q4" value="a">
+                    <label for="q4a">It can only check spelling and grammar</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4b" name="q4" value="b">
+                    <label for="q4b">It can help draft emails, provide writing assistance, and generate creative content based on prompts</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4c" name="q4" value="c">
+                    <label for="q4c">It can only translate between languages</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4d" name="q4" value="d">
+                    <label for="q4d">It can only create spreadsheets and databases</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q4" style="display: none;">
+                <strong>Explanation:</strong> Microsoft Copilot is versatile and can help create various types of content including drafting emails, writing documents, suggesting ideas, and generating creative content based on user prompts.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">5. DALL·E is an example of which type of generative AI?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q5a" name="q5" value="a">
+                    <label for="q5a">Text-to-image generation</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5b" name="q5" value="b">
+                    <label for="q5b">Text-to-speech generation</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5c" name="q5" value="c">
+                    <label for="q5c">Video generation</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5d" name="q5" value="d">
+                    <label for="q5d">Music composition</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q5" style="display: none;">
+                <strong>Explanation:</strong> DALL·E is a text-to-image generative AI model that creates images from text descriptions. It can generate detailed and creative visual content based on textual prompts.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">6. How is generative AI helping transform the workforce?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q6a" name="q6" value="a">
+                    <label for="q6a">By completely replacing human workers with machines</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6b" name="q6" value="b">
+                    <label for="q6b">By creating new job categories and opportunities while enhancing existing roles</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6c" name="q6" value="c">
+                    <label for="q6c">By eliminating the need for creativity in the workplace</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q6d" name="q6" value="d">
+                    <label for="q6d">By making all work remote and digital</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q6" style="display: none;">
+                <strong>Explanation:</strong> Rather than just replacing jobs, generative AI is creating entirely new job categories and enhancing existing roles. It's transforming how people work by automating routine tasks and allowing humans to focus on more creative and strategic work.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">7. Which of the following is a characteristic of a large language model (LLM)?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q7a" name="q7" value="a">
+                    <label for="q7a">It can only process small amounts of data</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7b" name="q7" value="b">
+                    <label for="q7b">It works solely with numerical calculations</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7c" name="q7" value="c">
+                    <label for="q7c">It can generate text that appears to be written by a human</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q7d" name="q7" value="d">
+                    <label for="q7d">It requires a physical keyboard to function</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q7" style="display: none;">
+                <strong>Explanation:</strong> Large Language Models (LLMs) can generate human-like text based on patterns learned from large datasets. They understand context and can produce coherent, contextually appropriate responses that mimic human writing.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">8. How can generative AI assist in education and learning?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q8a" name="q8" value="a">
+                    <label for="q8a">By replacing teachers entirely</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8b" name="q8" value="b">
+                    <label for="q8b">By creating personalized learning experiences and identifying knowledge gaps</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8c" name="q8" value="c">
+                    <label for="q8c">By eliminating the need for textbooks only</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q8d" name="q8" value="d">
+                    <label for="q8d">By making students memorize more information</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q8" style="display: none;">
+                <strong>Explanation:</strong> Generative AI can analyze a learner's progress, create personalized learning paths, identify knowledge gaps, and provide tailored content and exercises. It helps make learning more adaptive to individual needs rather than replacing teachers.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">9. What distinguishes NLG (Natural Language Generation) from LLMs (Large Language Models)?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q9a" name="q9" value="a">
+                    <label for="q9a">NLG focuses on generating new text from structured data, while LLMs are designed to produce text that is meaningful and contextually fitting</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9b" name="q9" value="b">
+                    <label for="q9b">NLG can only translate languages, while LLMs can only summarize text</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9c" name="q9" value="c">
+                    <label for="q9c">NLG is always more accurate than LLMs</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q9d" name="q9" value="d">
+                    <label for="q9d">NLG is used for entertainment, while LLMs are used for business purposes only</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q9" style="display: none;">
+                <strong>Explanation:</strong> NLG systems traditionally convert structured data into natural language text following predefined templates, while LLMs generate text based on patterns learned from vast amounts of training data, allowing them to create more contextually varied and nuanced responses.
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">10. How can generative AI help in career development?</div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q10a" name="q10" value="a">
+                    <label for="q10a">By automatically applying for jobs on behalf of users</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10b" name="q10" value="b">
+                    <label for="q10b">By guaranteeing employment in the technology sector</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10c" name="q10" value="c">
+                    <label for="q10c">By analyzing available jobs, suggesting relevant skills to learn, and helping identify career opportunities that match one's abilities</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q10d" name="q10" value="d">
+                    <label for="q10d">By eliminating the need for interviews</label>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-q10" style="display: none;">
+                <strong>Explanation:</strong> Generative AI can analyze job market trends, identify skills gaps, suggest learning resources, and help match individuals with career opportunities that align with their abilities and interests. It serves as a career compass rather than replacing the job search process.
+            </div>
+        </div>
+        
+        <div class="quiz-controls">
+            <button type="button" class="quiz-button secondary" id="resetQuiz">Reset Quiz</button>
+            <button type="button" class="quiz-button" id="submitQuiz">Submit Answers</button>
+        </div>
+    </form>
+
+    <div class="results-container" id="resultsContainer">
+        <h2 class="results-title">Quiz Results</h2>
+        <div class="score" id="scoreDisplay">0/10</div>
+        <div class="feedback" id="feedbackMessage">Complete the quiz to see your results.</div>
+        <div class="quiz-controls">
+            <button type="button" class="quiz-button secondary" id="reviewQuiz">Review Answers</button>
+            <button type="button" class="quiz-button" id="returnToModule">Return to Module</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Quiz functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const quizForm = document.getElementById('quizForm');
+    const submitButton = document.getElementById('submitQuiz');
+    const resetButton = document.getElementById('resetQuiz');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const reviewButton = document.getElementById('reviewQuiz');
+    const returnButton = document.getElementById('returnToModule');
+    
+    // Progress bar elements
+    const progressFill = document.getElementById('progressFill');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const answeredCount = document.getElementById('answeredCount');
+    
+    // Correct answers
+    const correctAnswers = {
+        q1: 'b',
+        q2: 'c',
+        q3: 'c',
+        q4: 'b',
+        q5: 'a',
+        q6: 'b',
+        q7: 'c',
+        q8: 'b',
+        q9: 'a',
+        q10: 'c'
+    };
+    
+    // Total number of questions
+    const totalQuestions = Object.keys(correctAnswers).length;
+    
+    // Update progress function
+    function updateProgress() {
+        let answered = 0;
+        
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            
+            if (selectedOption) {
+                answered++;
+            }
+        }
+        
+        const progressPercent = (answered / totalQuestions) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        progressPercentage.textContent = `${Math.round(progressPercent)}%`;
+        answeredCount.textContent = `${answered} answered`;
+    }
+    
+    // Add event listeners to all radio buttons to update progress
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+    });
+    
+    // Make progress bar sticky on scroll
+    window.addEventListener('scroll', function() {
+        const progressContainer = document.getElementById('progressContainer');
+        const headerHeight = document.querySelector('header').offsetHeight;
+        
+        if (window.pageYOffset > headerHeight) {
+            progressContainer.style.top = '0';
+        } else {
+            progressContainer.style.top = `${headerHeight - window.pageYOffset}px`;
+        }
+    });
+    
+    // Submit quiz
+    submitButton.addEventListener('click', function() {
+        let score = 0;
+        let answeredAll = true;
+        
+        // Check answers
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            
+            if (selectedOption) {
+                if (selectedOption.value === correctAnswers[questionName]) {
+                    score++;
+                }
+            } else {
+                answeredAll = false;
+            }
+        }
+        
+        if (!answeredAll) {
+            alert('Please answer all questions before submitting.');
+            return;
+        }
+        
+        // Display results
+        scoreDisplay.textContent = `${score}/${totalQuestions}`;
+        
+        if (score >= 7) {
+            feedbackMessage.textContent = 'Congratulations! You passed the quiz. You have a good understanding of generative AI concepts.';
+        } else {
+            feedbackMessage.textContent = 'You didn\'t pass this time. We recommend reviewing the module content before trying again.';
+        }
+        
+        quizForm.style.display = 'none';
+        resultsContainer.style.display = 'block';
+        document.getElementById('progressContainer').style.display = 'none'; // Hide progress bar on results
+        
+        // Mark all questions as submitted
+        markSubmittedAnswers();
+    });
+    
+    // Function to mark correct and incorrect answers
+    function markSubmittedAnswers() {
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionName = `q${i}`;
+            const options = document.querySelectorAll(`input[name="${questionName}"]`);
+            const explanationElement = document.getElementById(`explanation-${questionName}`);
+            
+            // Show the explanation
+            if (explanationElement) {
+                explanationElement.style.display = 'block';
+            }
+            
+            options.forEach(option => {
+                const optionDiv = option.closest('.option');
+                const isSelected = option.checked;
+                const isCorrect = option.value === correctAnswers[questionName];
+                
+                if (isCorrect) {
+                    optionDiv.classList.add('correct');
+                } else if (isSelected && !isCorrect) {
+                    optionDiv.classList.add('incorrect');
+                }
+                
+                option.disabled = true;
+            });
+        }
+    }
+    
+    // Reset quiz
+    resetButton.addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset the quiz? All your answers will be cleared.')) {
+            quizForm.reset();
+            updateProgress(); // Reset progress bar
+        }
+    });
+    
+    // Review answers
+    reviewButton.addEventListener('click', function() {
+        resultsContainer.style.display = 'none';
+        quizForm.style.display = 'block';
+        document.getElementById('progressContainer').style.display = 'flex'; // Show progress bar again
+    });
+    
+    // Return to module
+    returnButton.addEventListener('click', function() {
+        window.location.href = 'module2.html';
+    });
+    
+    // Initialize progress
+    updateProgress();
+});
+</script>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+<a href="#">About</a>
+<a href="#">Privacy Policy</a>
+<a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fluency - Chapter 5.30: Language and Accessibility Support in Copilot</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<header>
+<div class="logo">
+<a href="index.html">
+    <svg width="50" height="50" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+        <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+    </svg>
+</a>
+<h1>AI Fluency</h1>
+</div>
+<div class="header-controls">
+<button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main>
+<div class="chapter-container">
+<div class="chapter-header">
+    <div class="module-badge">Module 5: Microsoft Copilot</div>
+    <h1>Chapter 5.30: Language and Accessibility Support in Copilot</h1>
+    <p class="subtitle">How Microsoft Copilot breaks down language barriers and enhances accessibility</p>
+</div>
+
+<div class="chapter-nav">
+    <div class="nav-buttons-container">
+        <a href="#language-support" class="nav-tab active"><i class="fas fa-language"></i> Language Support</a>
+        <a href="#voice-features" class="nav-tab"><i class="fas fa-microphone"></i> Voice Features</a>
+        <a href="#visual-search" class="nav-tab"><i class="fas fa-camera"></i> Visual Search</a>
+        <a href="#accessibility" class="nav-tab"><i class="fas fa-universal-access"></i> Accessibility</a>
+    </div>
+</div>
+
+<div class="chapter-content">
+    <section class="content-section" id="language-support">
+        <h2>Multilingual Capabilities</h2>
+        <p>Microsoft Copilot is a multilingual AI companion designed to break down language barriers and make access to information easier across the globe. It currently supports an experience in several languages including Simplified Chinese, English, French, German, Italian, Japanese, Brazilian Portuguese, and Spanish.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Copilot logo with brick wall behind -->
+                <rect x="150" y="70" width="100" height="80" fill="#e0e0e0" stroke="#333" />
+                <path d="M150,70 L150,150 M160,70 L160,150 M170,70 L170,150 M180,70 L180,150 M190,70 L190,150" stroke="#a52a2a" stroke-width="1" opacity="0.3" />
+                <path d="M150,80 L250,80 M150,90 L250,90 M150,100 L250,100 M150,110 L250,110 M150,120 L250,120" stroke="#a52a2a" stroke-width="1" opacity="0.3" />
+                
+                <!-- Hammer breaking wall -->
+                <rect x="190" y="110" width="40" height="10" fill="#333" />
+                <rect x="230" y="100" width="15" height="30" fill="#6E4BFB" />
+                
+                <!-- Globe with connection points emerging -->
+                <circle cx="300" cy="120" r="50" fill="#4B6EFB" opacity="0.2" />
+                <circle cx="300" cy="120" r="48" fill="none" stroke="#4B6EFB" stroke-width="0.5" stroke-dasharray="2,2" />
+                
+                <!-- Simplified continents -->
+                <path d="M280,90 Q295,80 310,90 Q320,100 310,110 Q295,115 280,110 Q275,100 280,90" fill="#4BFB9D" opacity="0.7" />
+                <path d="M325,100 Q335,95 340,105 Q342,115 335,120 Q328,122 325,115 Q323,105 325,100" fill="#4BFB9D" opacity="0.7" />
+                <path d="M280,140 Q290,135 300,145 Q305,155 295,160 Q285,157 280,150 Q278,145 280,140" fill="#4BFB9D" opacity="0.7" />
+                
+                <!-- Connection points and lines -->
+                <circle cx="290" cy="100" r="3" fill="#FB4B4B" />
+                <circle cx="330" cy="110" r="3" fill="#FB4B4B" />
+                <circle cx="290" cy="150" r="3" fill="#FB4B4B" />
+                <circle cx="260" cy="120" r="3" fill="#FB4B4B" />
+                <circle cx="340" cy="140" r="3" fill="#FB4B4B" />
+                
+                <line x1="250" y1="110" x2="260" y2="120" stroke="#333" stroke-width="1" stroke-dasharray="3,2" />
+                <line x1="240" y1="105" x2="290" y2="100" stroke="#333" stroke-width="1" stroke-dasharray="3,2" />
+                <line x1="245" y1="120" x2="290" y2="150" stroke="#333" stroke-width="1" stroke-dasharray="3,2" />
+            </svg>
+            <p class="caption">Microsoft Copilot breaks through language barriers to provide a globally accessible AI experience.</p>
+        </div>
+
+        <p>If you encounter an error message indicating that a language isn't supported while using Copilot, it may come as a surprise, particularly if Bing is available in your language. This can happen because language support for Copilot does not extend as far as Bing's language support quite yet.</p>
+        
+        <div class="key-concept">
+            <h3>Currently Supported Languages in Copilot</h3>
+            <ul>
+                <li>English</li>
+                <li>Chinese (Simplified)</li>
+                <li>French</li>
+                <li>German</li>
+                <li>Italian</li>
+                <li>Japanese</li>
+                <li>Portuguese (Brazil)</li>
+                <li>Spanish</li>
+            </ul>
+            <p>Microsoft continues to expand language support, so this list will grow over time.</p>
+        </div>
+        
+        <div class="info-box">
+            <h3>Adjusting Language Settings</h3>
+            <p>To adjust language settings in Microsoft Copilot, click the icon with three horizontal lines at the top right corner and select 'Settings'. In the settings menu, navigate to 'language' to set your preferred language for Bing. Here you can also set the language you want Copilot to use for search results and responses.</p>
+        </div>
+        
+        <p>It's important to note that Copilot currently only accepts prompts in the languages previously mentioned. If you submit a prompt in an unsupported language, Copilot will notify you with an error message.</p>
+    </section>
+
+    <section class="content-section" id="voice-features">
+        <h2>Voice Capabilities in Copilot</h2>
+        <p>Aside from languages, Copilot was also built with accessibility in mind. Copilot voice is a feature that brings ease and efficiency to your conversations.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Copilot logo -->
+                <circle cx="200" cy="100" r="30" fill="#4B6EFB" opacity="0.3" />
+                <path d="M185,100 C185,91.7 191.7,85 200,85 C208.3,85 215,91.7 215,100 C215,108.3 208.3,115 200,115 C191.7,115 185,108.3 185,100 Z" fill="#4B6EFB" />
+                <path d="M194,92 L206,92 L206,108 L194,108 Z" fill="#fff" />
+                <path d="M191,95 L194,100 L191,105 Z" fill="#fff" />
+                <path d="M209,95 L206,100 L209,105 Z" fill="#fff" />
+                
+                <!-- Microphone icon -->
+                <circle cx="140" cy="100" r="20" fill="#FB4B4B" opacity="0.7" />
+                <rect x="135" y="90" width="10" height="20" rx="5" fill="#fff" />
+                <rect x="135" y="80" width="10" height="10" rx="2" fill="#fff" />
+                
+                <!-- Sound waves emanating from microphone -->
+                <path d="M115,100 Q110,90 115,80" stroke="#FB4B4B" stroke-width="2" fill="none" />
+                <path d="M110,100 Q100,85 110,70" stroke="#FB4B4B" stroke-width="2" fill="none" />
+                <path d="M115,100 Q110,110 115,120" stroke="#FB4B4B" stroke-width="2" fill="none" />
+                <path d="M110,100 Q100,115 110,130" stroke="#FB4B4B" stroke-width="2" fill="none" />
+                
+                <!-- Dotted line connection -->
+                <line x1="160" y1="100" x2="185" y2="100" stroke="#333" stroke-width="1" stroke-dasharray="3,2" />
+                
+                <!-- Person speaking -->
+                <circle cx="70" cy="100" r="15" fill="#333" />
+                <rect x="65" y="115" width="10" height="20" fill="#333" />
+                <line x1="75" y1="125" x2="85" y2="115" stroke="#333" stroke-width="2" />
+                <line x1="65" y1="125" x2="55" y2="115" stroke="#333" stroke-width="2" />
+                
+                <!-- Curved speaking line -->
+                <path d="M85,95 C95,90 105,90 115,95" stroke="#333" stroke-width="1" stroke-dasharray="2,1" fill="none" />
+            </svg>
+            <p class="caption">Copilot voice enables hands-free interaction through speech recognition and response.</p>
+        </div>
+        
+        <p>It's perfect for those moments when typing is not the best option, or for users who find speech more accessible than text. To access Copilot voice, simply open Copilot on your device, click the microphone icon, and speak into your device. Copilot will then listen and respond, all in real-time.</p>
+        
+        <div class="key-concept">
+            <h3>Copilot Read Aloud</h3>
+            <p>Copilot read aloud is another accessibility feature that enhances your experience by reading responses aloud. With Copilot open, send an inquiry either through voice or text. Once Copilot provides a response, look for the read aloud icon, which is represented by a speaker image. Click on this icon, and Copilot will read aloud its response.</p>
+        </div>
+        
+        <p>These voice features make Copilot more accessible to those with visual impairments, reading difficulties, or situations where hands-free operation is necessary. They also provide flexibility in how you interact with the AI, allowing you to choose the method that works best for your current situation.</p>
+    </section>
+
+    <section class="content-section" id="visual-search">
+        <h2>Visual Search Features</h2>
+        <p>Visual search is another feature that empowers you to explore and understand the world around you. Whether you're curious about a mysterious plant in your garden or the species of a bird perched outside your window, visual search is there to assist.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="220" viewBox="0 0 400 220">
+                <!-- Phone with camera -->
+                <rect x="170" y="60" width="60" height="100" rx="5" fill="#e0e0e0" stroke="#333" />
+                <rect x="175" y="65" width="50" height="80" fill="#fff" stroke="#333" />
+                <circle cx="200" cy="155" r="5" fill="#ccc" stroke="#333" />
+                
+                <!-- Camera lens -->
+                <circle cx="200" cy="90" r="15" fill="#333" />
+                <circle cx="200" cy="90" r="12" fill="#666" />
+                <circle cx="200" cy="90" r="8" fill="#333" />
+                <circle cx="200" cy="90" r="4" fill="#111" />
+                <circle cx="196" cy="86" r="2" fill="#fff" opacity="0.7" />
+                
+                <!-- Subject being photographed (flower) -->
+                <circle cx="100" cy="90" r="20" fill="#FB4B4B" opacity="0.7" />
+                <circle cx="100" cy="90" r="10" fill="#FFC107" />
+                <path d="M90,70 Q100,60 110,70 L100,90 Z" fill="#4BFB9D" opacity="0.7" />
+                <path d="M110,80 Q120,80 115,95 L100,90 Z" fill="#4BFB9D" opacity="0.7" />
+                <path d="M105,105 Q115,115 95,115 L100,90 Z" fill="#4BFB9D" opacity="0.7" />
+                <path d="M85,95 Q80,115 95,115 L100,90 Z" fill="#4BFB9D" opacity="0.7" />
+                <path d="M85,80 Q75,80 90,70 L100,90 Z" fill="#4BFB9D" opacity="0.7" />
+                
+                <!-- Dotted lines showing image capture -->
+                <line x1="120" y1="70" x2="175" y2="75" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                <line x1="120" y1="110" x2="175" y2="105" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                
+                <!-- Copilot logo -->
+                <circle cx="300" cy="90" r="25" fill="#4B6EFB" opacity="0.3" />
+                <path d="M285,90 C285,82 291,75 300,75 C309,75 315,82 315,90 C315,98 309,105 300,105 C291,105 285,98 285,90 Z" fill="#4B6EFB" />
+                <path d="M294,82 L306,82 L306,98 L294,98 Z" fill="#fff" />
+                <path d="M291,85 L294,90 L291,95 Z" fill="#fff" />
+                <path d="M309,85 L306,90 L309,95 Z" fill="#fff" />
+                
+                <!-- Connection between phone and Copilot -->
+                <line x1="230" y1="90" x2="275" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="3,2" />
+                
+                <!-- Response text -->
+                <rect x="265" y="120" width="70" height="40" rx="5" fill="#f5f5f5" stroke="#ccc" />
+                <text x="300" y="135" font-family="Arial" font-size="8" text-anchor="middle" fill="#333">This is a</text>
+                <text x="300" y="145" font-family="Arial" font-size="8" text-anchor="middle" fill="#333">Red Dahlia</text>
+                <text x="300" y="155" font-family="Arial" font-size="8" text-anchor="middle" fill="#333">flower</text>
+            </svg>
+            <p class="caption">Visual search in Copilot allows you to identify objects, plants, landmarks, and more using your device's camera.</p>
+        </div>
+        
+        <p>With a simple image, Copilot becomes your guide, transforming images into knowledge. With Copilot open on your device, tap the camera icon and either upload an image or snap a new one. Next, click the speech bubble to start a conversation about your image. Once you've finished, click the submit icon. Copilot then analyzes the image and provides insights based on your enquiry.</p>
+        
+        <div class="info-box">
+            <h3>Visual Search Applications</h3>
+            <p>Visual search can be used in numerous ways:</p>
+            <ul>
+                <li>Identifying plants, animals, or insects</li>
+                <li>Recognizing landmarks or buildings</li>
+                <li>Reading and translating text in images</li>
+                <li>Understanding artwork or historical artifacts</li>
+                <li>Analyzing diagrams or visual information</li>
+                <li>Finding similar products or items</li>
+            </ul>
+        </div>
+        
+        <p>With the Copilot app, you can snap a photo in a moment and Copilot will analyze it on the spot. Stumbled upon a stunning building and curious about its history? Or maybe you've spotted a rare bird on a walk. Snap a picture, and let Copilot enlighten you with the information you're curious about.</p>
+    </section>
+
+    <section class="content-section" id="accessibility">
+        <h2>Accessibility Features Overview</h2>
+        <p>Microsoft has designed Copilot with accessibility as a priority, ensuring that its powerful AI capabilities are available to as many people as possible, regardless of abilities or preferences.</p>
+        
+        <div class="image-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Universal accessibility symbol at center -->
+                <circle cx="200" cy="100" r="40" fill="#4B6EFB" opacity="0.2" />
+                <circle cx="200" cy="100" r="30" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                <circle cx="200" cy="85" r="10" fill="#4B6EFB" />
+                <path d="M180,105 L220,105" stroke="#4B6EFB" stroke-width="3" />
+                <path d="M190,115 L180,140" stroke="#4B6EFB" stroke-width="3" />
+                <path d="M210,115 L220,140" stroke="#4B6EFB" stroke-width="3" />
+                <path d="M200,105 L200,125" stroke="#4B6EFB" stroke-width="3" />
+                
+                <!-- Voice features -->
+                <circle cx="120" cy="60" r="20" fill="#FB4B4B" opacity="0.5" />
+                <path d="M110,60 C110,45 130,45 130,60" stroke="#FB4B4B" stroke-width="2" fill="none" />
+                <path d="M105,60 C105,40 135,40 135,60" stroke="#FB4B4B" stroke-width="1" stroke-dasharray="2,1" fill="none" />
+                
+                <!-- Visual assistance -->
+                <circle cx="280" cy="60" r="20" fill="#4BFB9D" opacity="0.5" />
+                <path d="M270,60 L290,60" stroke="#4BFB9D" stroke-width="2" />
+                <circle cx="280" cy="60" r="5" fill="#fff" />
+                <path d="M265,50 L275,60 L265,70" stroke="#4BFB9D" stroke-width="1" fill="none" />
+                <path d="M295,50 L285,60 L295,70" stroke="#4BFB9D" stroke-width="1" fill="none" />
+                
+                <!-- Keyboard navigation -->
+                <rect x="120" y="140" width="40" height="30" rx="5" fill="#6E4BFB" opacity="0.5" />
+                <text x="140" y="160" font-family="Arial" font-size="12" text-anchor="middle" fill="#fff">Tab</text>
+                
+                <!-- Screen reader support -->
+                <rect x="240" y="140" width="40" height="30" rx="5" fill="#FFC107" opacity="0.5" />
+                <path d="M250,155 L260,145 L270,155" stroke="#fff" stroke-width="2" fill="none" />
+                <path d="M250,155 L260,165 L270,155" stroke="#fff" stroke-width="2" fill="none" />
+                
+                <!-- Connection lines -->
+                <line x1="135" y1="70" x2="175" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                <line x1="265" y1="70" x2="225" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                <line x1="140" y1="140" x2="175" y2="115" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                <line x1="260" y1="140" x2="225" y2="115" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+            </svg>
+            <p class="caption">Microsoft Copilot incorporates multiple accessibility features to ensure the AI is usable by everyone.</p>
+        </div>
+        
+        <div class="key-concept">
+            <h3>Comprehensive Accessibility Support</h3>
+            <p>Copilot's accessibility features include:</p>
+            <ul>
+                <li><strong>Voice Input:</strong> Speak your prompts instead of typing</li>
+                <li><strong>Text-to-Speech:</strong> Have Copilot read responses aloud</li>
+                <li><strong>Visual Recognition:</strong> Get descriptions of images or identify objects</li>
+                <li><strong>Keyboard Navigation:</strong> Full keyboard support for people who can't use a mouse</li>
+                <li><strong>Screen Reader Compatibility:</strong> Works with screen reading technologies</li>
+                <li><strong>High Contrast Support:</strong> Visual elements designed for visibility</li>
+                <li><strong>Language Simplification:</strong> Can explain complex topics in simpler terms</li>
+            </ul>
+        </div>
+        
+        <p>To fully leverage Copilot's potential, the best approach is to start using it and share your feedback to Microsoft. This practice not only enhances your experience but also contributes to narrowing the disability divide by helping Microsoft improve accessibility features over time.</p>
+        
+        <div class="info-box">
+            <h3>Accessibility Beyond Features</h3>
+            <p>Copilot's commitment to accessibility goes beyond technical features. It's designed with an inclusive approach to AI that:</p>
+            <ul>
+                <li>Simplifies complex tasks that might otherwise be barriers to technology</li>
+                <li>Provides multiple ways to interact with and receive information</li>
+                <li>Reduces cognitive load by presenting information clearly and concisely</li>
+                <li>Enables personalization to accommodate different needs and preferences</li>
+            </ul>
+        </div>
+        
+        <p>Copilot is not just a tool, it's a step towards an inclusive future where technology serves as a bridge to a world of possibilities, regardless of individual abilities or limitations.</p>
+    </section>
+</div>
+
+<div class="nav-buttons">
+    <a href="chapter2_29.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+    <a href="chapter4_31.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</main>
+
+<footer>
+<div class="footer-content">
+<p>&copy; 2025 AI Fluency Course</p>
+<div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+</div>
+</div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

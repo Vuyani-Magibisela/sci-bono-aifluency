@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - AI Fluency</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <main class="profile-main">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>My Profile</h1>
+                <p>View and manage your account information</p>
+            </div>
+
+            <div class="profile-content">
+                <!-- User Avatar -->
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-large" id="profile-avatar">
+                        <span id="avatar-initials">JD</span>
+                    </div>
+                    <button class="btn-secondary" disabled>
+                        <i class="fas fa-camera"></i> Change Photo
+                    </button>
+                    <p class="help-text">Photo upload coming in Phase 2</p>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="profile-info-section">
+                    <h2>Account Information</h2>
+
+                    <div class="info-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <p id="user-name">Loading...</p>
+                    </div>
+
+                    <div class="info-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <p id="user-email">Loading...</p>
+                    </div>
+
+                    <div class="info-group">
+                        <label><i class="fas fa-shield-alt"></i> Role</label>
+                        <p id="user-role">Loading...</p>
+                    </div>
+
+                    <div class="info-group">
+                        <label><i class="fas fa-calendar-alt"></i> Member Since</label>
+                        <p id="user-joined">Loading...</p>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn-primary" onclick="alert('Profile editing coming in Phase 2')">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                        <button class="btn-secondary" onclick="alert('Password change coming in Phase 2')">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="profile-stats-section">
+                    <h2>Quick Stats</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-book"></i>
+                            <h3 id="stat-courses">0</h3>
+                            <p>Courses Enrolled</p>
+                        </div>
+
+                        <div class="stat-item">
+                            <i class="fas fa-certificate"></i>
+                            <h3 id="stat-certificates">0</h3>
+                            <p>Certificates</p>
+                        </div>
+
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <h3 id="stat-achievements">0</h3>
+                            <p>Achievements</p>
+                        </div>
+
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <h3 id="stat-streak">0</h3>
+                            <p>Day Streak</p>
+                        </div>
+                    </div>
+
+                    <p class="help-text">Statistics will load dynamically in Phase 2</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Page Protection & Data Loading -->
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Load user data
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Auth.getUser();
+
+            if (user) {
+                // Display user information
+                document.getElementById('user-name').textContent = user.name || 'N/A';
+                document.getElementById('user-email').textContent = user.email || 'N/A';
+                document.getElementById('user-role').textContent = user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'N/A';
+
+                // Generate avatar initials
+                const initials = user.name
+                    ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                    : 'U';
+                document.getElementById('avatar-initials').textContent = initials;
+
+                // Format join date
+                if (user.created_at) {
+                    const joinDate = new Date(user.created_at);
+                    document.getElementById('user-joined').textContent = joinDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                } else {
+                    document.getElementById('user-joined').textContent = 'N/A';
+                }
+
+                console.log('Profile loaded for:', user.email);
+
+                // Phase 2: Load enrollments, certificates, achievements, streak data
+            }
+        });
+    </script>
+</body>
+</html>

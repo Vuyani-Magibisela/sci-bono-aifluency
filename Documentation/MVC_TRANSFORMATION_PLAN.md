@@ -31,50 +31,125 @@ Transform the static PWA (58 HTML files, 6 modules, 45+ chapters, 6 quizzes) int
 ## Phase 2: MVC Architecture Setup
 
 ### 2.1 Directory Structure
+
+**⚠️ ARCHITECTURE UPDATE: We use `/api` instead of `/app`**
+See `/Documentation/ARCHITECTURE_DECISION.md` for full rationale.
+
 ```
-/app
-  /controllers
+/api                                 ← Backend Application (MVC)
+  /controllers                       ← Request handlers
     AuthController.php
-    DashboardController.php
+    UserController.php
+    CourseController.php
+    EnrollmentController.php
     ModuleController.php
-    ChapterController.php
+    LessonController.php
     QuizController.php
     ProjectController.php
-    ProfileController.php
-    AdminController.php
-  /models
+    CertificateController.php
+  /models                            ← Data models (Active Record)
+    BaseModel.php
     User.php
+    Course.php
     Module.php
-    Chapter.php
+    Lesson.php
+    LessonProgress.php
     Quiz.php
+    QuizAttempt.php
     Project.php
-    Progress.php
-  /views
-    /auth (login, signup, forgot-password)
-    /dashboard (student, instructor, admin, super-admin)
-    /modules (list, detail)
-    /chapters (content viewer)
-    /quizzes (take-quiz, results)
-    /projects (list, submit, grade)
-    /profile (view, edit)
-    /layouts (header, footer, sidebar)
-/public
-  /css (migrate existing styles.css, stylesModules.css)
-  /js (migrate script.js + new GSAP animations)
-  /images (existing assets)
-  index.php (front controller)
-/config
-  database.php
-  routes.php
-  constants.php
-/vendor (Composer autoloading)
-/migrations
+    ProjectSubmission.php
+    Enrollment.php
+    Certificate.php
+  /views                             ← Server-rendered templates
+    /emails                          ← Email templates
+    /pdf                             ← PDF templates (certificates, reports)
+    /reports                         ← Report templates
+  /routes                            ← API routing definitions
+    api.php
+  /middleware                        ← Request middleware
+    AuthMiddleware.php
+    CorsMiddleware.php
+  /config                            ← Configuration
+    database.php
+    constants.php
+  /utils                             ← Utility classes
+    JWTHandler.php
+    Validator.php
+  /migrations                        ← Database migrations
+    001_create_users.sql
+    002_create_courses.sql
+    ...
+  /tests                             ← Backend tests
+    test_auth.php
+    test_users.php
+    run_all_tests.sh
+  /logs                              ← Application logs
+  /vendor                            ← Composer dependencies
+  index.php                          ← API front controller
+  .htaccess                          ← API routing rules
+  composer.json
+  .env
+
+/css                                 ← Public stylesheets
+  styles.css
+  stylesModules.css
+
+/js                                  ← Public JavaScript
+  storage.js                         ← LocalStorage abstraction
+  api.js                             ← API wrapper
+  auth.js                            ← Authentication module
+  header-template.js                 ← Dynamic header
+  script.js                          ← Legacy scripts
+
+/images                              ← Public images
+/assets                              ← Additional assets
+/scripts                             ← Build/deployment scripts
+/Documentation                       ← Project documentation
+
+*.html                               ← Frontend views (PWA pages)
+  index.html
+  login.html
+  signup.html
+  student-dashboard.html
+  instructor-dashboard.html
+  admin-dashboard.html
+  profile.html
+  module1.html
+  chapter1.html
+  ...
+
+service-worker.js                    ← PWA service worker
+manifest.json                        ← PWA manifest
+.htaccess                            ← Root routing rules
 ```
 
 ### 2.2 Routing System
-- Implement URL routing: `/module/ai-foundations`, `/quiz/take/1`, `/dashboard/student`
-- `.htaccess` for clean URLs
-- Route middleware for authentication/authorization
+
+**REST API Endpoints** (Backend - `/api/*`):
+- Authentication: `/api/auth/register`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/refresh`
+- Users: `/api/users`, `/api/users/:id`
+- Courses: `/api/courses`, `/api/courses/:id`
+- Modules: `/api/modules/:id`, `/api/modules/:id/lessons`
+- Lessons: `/api/lessons/:id`, `/api/lessons/:id/complete`
+- Quizzes: `/api/quizzes/:id`, `/api/quizzes/:id/submit`
+- Projects: `/api/projects/:id/submit`, `/api/projects/submissions/:id/grade`
+- Enrollments: `/api/enrollments`, `/api/enrollments/:id`
+- Certificates: `/api/certificates/:id`
+
+**Frontend Routes** (HTML Pages):
+- Landing: `/index.html`
+- Auth: `/login.html`, `/signup.html`
+- Dashboards: `/student-dashboard.html`, `/instructor-dashboard.html`, `/admin-dashboard.html`
+- Profile: `/profile.html`, `/profile-edit.html`
+- Modules: `/module1.html`, `/module2.html`, ...
+- Chapters: `/chapter1.html`, `/chapter1_17.html`, ...
+- Quizzes: `/module1Quiz.html`, `/module2Quiz.html`, ...
+
+**Configuration**:
+- API: `/api/.htaccess` for RESTful routing
+- Root: `/.htaccess` for static file serving
+- Route middleware: Authentication via JWT tokens
+- CORS middleware: Cross-origin request handling
 
 ## Phase 3: Authentication & Authorization
 

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Module 5: Microsoft Copilot</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/stylesModules.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <!-- <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button> -->
+        </div>
+    </header>
+
+    <main>
+        <div class="module-container">
+            <div class="module-header">
+                <h1>Module 5: Microsoft Copilot</h1>
+                <p class="subtitle">Enhancing productivity and creativity with AI</p>
+            </div>
+            
+            <div class="module-intro">
+                <div class="module-intro-content">
+                    <p>Welcome to Module 5 of the AI Fluency course! This module focuses on Microsoft Copilot, an AI-powered tool designed to enhance productivity, creativity, and problem-solving across various tasks and applications.</p>
+                    <p>You'll learn about Copilot's features, capabilities, and practical applications in different contexts. Choose a chapter below to start exploring this powerful AI assistant.</p>
+                </div>
+                <div class="module-intro-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Laptop -->
+                        <rect x="40" y="80" width="120" height="80" rx="5" fill="#333"/>
+                        <rect x="45" y="85" width="110" height="70" fill="#f0f0f0"/>
+                        <rect x="60" y="160" width="80" height="5" fill="#333"/>
+                        
+                        <!-- Copilot Screen -->
+                        <rect x="55" y="95" width="90" height="50" fill="#4B6EFB" opacity="0.7"/>
+                        
+                        <!-- Copilot Icon/Symbol -->
+                        <circle cx="75" cy="120" r="10" fill="#FBD44B"/>
+                        <text x="71" y="124" font-family="Arial" font-size="10" fill="#333">AI</text>
+                        
+                        <!-- Code/Text Lines -->
+                        <line x1="95" y1="105" x2="135" y2="105" stroke="white" stroke-width="2"/>
+                        <line x1="95" y1="115" x2="125" y2="115" stroke="white" stroke-width="2"/>
+                        <line x1="95" y1="125" x2="130" y2="125" stroke="white" stroke-width="2"/>
+                        <line x1="95" y1="135" x2="120" y2="135" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.28 - What is Microsoft Copilot?</h3>
+                        <p>An introduction to Microsoft's AI assistant and its capabilities.</p>
+                        <a href="chapter1_28.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.29 - Setting Up Copilot</h3>
+                        <p>How to set up and configure Copilot for different account types.</p>
+                        <a href="chapter2_29.html" class="chapter-link ">Begin chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.30 - Language Support</h3>
+                        <p>Language and accessibility features in Microsoft Copilot.</p>
+                        <a href="chapter3_30.html" class="chapter-link ">Begin chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.31 - Engaging Conversations</h3>
+                        <p>Tips for effective conversations with Copilot.</p>
+                        <a href="chapter4_31.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.32 - GPTs and Plugins</h3>
+                        <p>Exploring the specialized versions and extensions for Copilot.</p>
+                        <a href="chapter5_32.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.33 - Bringing Ideas to Life</h3>
+                        <p>How Copilot helps transform ideas into reality.</p>
+                        <a href="chapter6_33.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.34 - Time Management</h3>
+                        <p>Using Copilot to improve time management and productivity.</p>
+                        <a href="chapter7_34.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.35 - Job Search Assistance</h3>
+                        <p>How Copilot can enhance your job search process.</p>
+                        <a href="chapter8_35.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.36 - Skill Development</h3>
+                        <p>Developing new skills with the help of Copilot.</p>
+                        <a href="chapter9_36.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.37 - Document Analysis</h3>
+                        <p>Analyzing documents and images with Copilot.</p>
+                        <a href="chapter10_37.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.38 - Workplace Support</h3>
+                        <p>How Copilot can assist with various workplace tasks.</p>
+                        <a href="chapter11_38.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-window-maximize"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>5.39 - Copilot in Edge</h3>
+                        <p>Using Copilot integrated with the Microsoft Edge browser.</p>
+                        <a href="chapter12_39.html" class="chapter-link">Begin Chapter</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module-navigation">
+                <a href="module4.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Module</a>
+                <a href="module6Quiz.html" class="nav-button next">Next Module <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

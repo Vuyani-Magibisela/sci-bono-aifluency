@@ -35,6 +35,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <!-- Static Header (Disabled - Keep for rollback)
 <header>
 <div class="logo">
 <a href="index.html">
@@ -49,6 +53,7 @@
 <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
 </div>
 </header>
+    -->
 
 <main>
 <div class="chapter-container">
@@ -312,5 +317,12 @@
 </footer>
 
 <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Legacy Scripts -->
 </body>
 </html>

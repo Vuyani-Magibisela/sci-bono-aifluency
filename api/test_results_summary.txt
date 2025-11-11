@@ -1,0 +1,22 @@
+Test Suite Started: Tue Nov 11 12:15:09 SAST 2025
+================================================================================
+
+✗ FAILED: Routing system
+✗ FAILED: User registration
+✗ FAILED: User login
+✗ FAILED: Token refresh
+✗ FAILED: Get current user
+✗ FAILED: User logout
+✗ FAILED: List users
+✗ FAILED: Show user
+✗ FAILED: Update user
+
+================================================================================
+TEST SUMMARY
+================================================================================
+Total Tests:  9
+Passed:       0
+Failed:       9
+Success Rate: 0%
+================================================================================
+Test Suite Completed: Tue Nov 11 12:15:10 SAST 2025

@@ -93,7 +93,10 @@ abstract class BaseModel
 
             // Add ORDER BY
             if ($orderBy) {
-                $sql .= " ORDER BY {$orderBy}";
+                // Escape column names with backticks to handle reserved keywords
+                // Only escape ORDER, INDEX, KEY, GROUP - not ASC/DESC/LIMIT/OFFSET which are SQL keywords
+                $escapedOrderBy = preg_replace('/\b(order|index|key|group)(?=\s|$)/i', '`$1`', $orderBy);
+                $sql .= " ORDER BY {$escapedOrderBy}";
             }
 
             // Add LIMIT and OFFSET

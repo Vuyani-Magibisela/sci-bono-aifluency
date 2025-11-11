@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Chapter 1.06: Types of Machine Learning</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <div class="module-badge">Module 1: AI Foundations</div>
+                <h1>Chapter 1.06: Types of Machine Learning</h1>
+                <p class="subtitle">Exploring supervised, unsupervised, and reinforcement learning approaches</p>
+            </div>
+
+            <div class="chapter-nav">
+                <div class="nav-buttons-container">
+                    <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+                    <a href="#supervised" class="nav-tab"><i class="fas fa-chalkboard-teacher"></i> Supervised Learning</a>
+                    <a href="#unsupervised" class="nav-tab"><i class="fas fa-users"></i> Unsupervised Learning</a>
+                    <a href="#reinforcement" class="nav-tab"><i class="fas fa-trophy"></i> Reinforcement Learning</a>
+                    <a href="#deep-learning" class="nav-tab"><i class="fas fa-brain"></i> Deep Learning</a>
+                </div>
+            </div>
+
+            <div class="chapter-content">
+                <section class="content-section" id="introduction">
+                    <h2>Learning Methods in Machine Learning</h2>
+                    <p>Ever wondered how you learned to ride a bike or play an instrument? It's all about learning from experience, correct? Well, machines can do that, too! They can learn in three main ways: supervised learning, unsupervised learning and reinforcement learning.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Piano Hands -->
+                            <rect x="50" y="120" width="100" height="30" fill="#333" />
+                            <rect x="55" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="65" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="75" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="85" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="95" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="105" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="115" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="125" y="120" width="5" height="20" fill="#fff" />
+                            <rect x="135" y="120" width="5" height="20" fill="#fff" />
+                            <!-- Hands -->
+                            <circle cx="90" cy="100" r="10" fill="#FBD44B" opacity="0.7" />
+                            <circle cx="110" cy="100" r="10" fill="#FBD44B" opacity="0.7" />
+                            <!-- Fingers -->
+                            <rect x="85" y="105" width="2" height="15" fill="#FBD44B" opacity="0.9" />
+                            <rect x="90" y="105" width="2" height="15" fill="#FBD44B" opacity="0.9" />
+                            <rect x="95" y="105" width="2" height="15" fill="#FBD44B" opacity="0.9" />
+                            <rect x="107" y="105" width="2" height="15" fill="#FBD44B" opacity="0.9" />
+                            <rect x="112" y="105" width="2" height="15" fill="#FBD44B" opacity="0.9" />
+                            
+                            <!-- Bicycle Parent and Child -->
+                            <circle cx="280" cy="140" r="15" fill="none" stroke="#333" stroke-width="2" />
+                            <circle cx="330" cy="140" r="10" fill="none" stroke="#333" stroke-width="2" />
+                            <!-- Bicycle Frame -->
+                            <line x1="280" y1="140" x2="305" y2="140" stroke="#333" stroke-width="2" />
+                            <line x1="305" y1="140" x2="330" y2="140" stroke="#333" stroke-width="2" />
+                            <line x1="305" y1="140" x2="305" y2="110" stroke="#333" stroke-width="2" />
+                            <!-- People -->
+                            <circle cx="305" cy="95" r="8" fill="#666" />
+                            <rect x="300" y="103" width="10" height="12" fill="#666" />
+                            <line x1="300" y1="110" x2="290" y2="120" stroke="#666" stroke-width="2" />
+                            <line x1="310" y1="110" x2="320" y2="120" stroke="#666" stroke-width="2" />
+                            
+                            <circle cx="270" cy="95" r="10" fill="#666" />
+                            <rect x="265" y="105" width="10" height="15" fill="#666" />
+                            <line x1="265" y1="110" x2="260" y2="120" stroke="#666" stroke-width="2" />
+                            
+                            <!-- Learning Types Box -->
+                            <rect x="100" y="40" width="200" height="30" rx="5" fill="#fff" stroke="#333" />
+                            <text x="110" y="60" font-family="Arial" font-size="12" fill="#333">Supervised</text>
+                            <text x="190" y="60" font-family="Arial" font-size="12" fill="#333">Unsupervised</text>
+                            <text x="280" y="60" font-family="Arial" font-size="12" fill="#333">Reinforcement</text>
+                            
+                            <!-- AI Tiles -->
+                            <rect x="170" y="180" width="25" height="25" fill="#4B6EFB" opacity="0.7" />
+                            <text x="177" y="197" font-family="Arial" font-weight="bold" font-size="14" fill="#fff">AI</text>
+                            
+                            <rect x="205" y="180" width="25" height="25" fill="#4B6EFB" opacity="0.7" />
+                            <text x="212" y="197" font-family="Arial" font-weight="bold" font-size="14" fill="#fff">AI</text>
+                        </svg>
+                        <p class="caption">Learning from experience is fundamental to human learning and machine learning.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>Three Main Types of Machine Learning</h3>
+                        <p>Machine learning algorithms can be classified into three main types:</p>
+                        <ul>
+                            <li><strong>Supervised Learning:</strong> Algorithm is trained on data that's labeled with the correct answers</li>
+                            <li><strong>Unsupervised Learning:</strong> Algorithm is trained on unlabeled or raw data</li>
+                            <li><strong>Reinforcement Learning:</strong> Algorithm is trained by interacting with its environment to achieve a goal</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Let's break down each type with a simple analogy: learning to play football.</p>
+                </section>
+
+                <section class="content-section" id="supervised">
+                    <h2>Supervised Learning: Learning with a Trainer</h2>
+                    <p>In the first scenario of our football analogy, you have a trainer who supervises you and teaches you all the rules.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Football Field Background -->
+                            <rect x="50" y="50" width="300" height="150" fill="#4BFB9D" opacity="0.3" />
+                            <rect x="50" y="50" width="300" height="150" fill="none" stroke="#fff" stroke-width="2" />
+                            <circle cx="200" cy="125" r="30" fill="none" stroke="#fff" stroke-width="2" />
+                            <line x1="200" y1="50" x2="200" y2="200" stroke="#fff" stroke-width="2" />
+                            
+                            <!-- Goal Posts -->
+                            <rect x="50" y="100" width="10" height="50" fill="#fff" />
+                            <rect x="340" y="100" width="10" height="50" fill="#fff" />
+                            
+                            <!-- Football Player -->
+                            <circle cx="150" cy="125" r="15" fill="#666" />
+                            <rect x="145" y="140" width="10" height="20" fill="#666" />
+                            <line x1="145" y1="145" x2="135" y2="160" stroke="#666" stroke-width="2" />
+                            <line x1="155" y1="145" x2="165" y2="160" stroke="#666" stroke-width="2" />
+                            
+                            <!-- Football -->
+                            <circle cx="180" cy="165" r="8" fill="#fff" stroke="#333" />
+                            
+                            <!-- Trainer with Clipboard -->
+                            <circle cx="250" cy="125" r="15" fill="#666" />
+                            <rect x="245" y="140" width="10" height="20" fill="#666" />
+                            <line x1="245" y1="145" x2="235" y2="160" stroke="#666" stroke-width="2" />
+                            <line x1="255" y1="145" x2="265" y2="160" stroke="#666" stroke-width="2" />
+                            <rect x="260" y="120" width="15" height="20" fill="#fff" stroke="#333" />
+                            <line x1="265" y1="125" x2="270" y2="125" stroke="#333" stroke-width="1" />
+                            <line x1="265" y1="130" x2="270" y2="130" stroke="#333" stroke-width="1" />
+                            <line x1="265" y1="135" x2="270" y2="135" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Rules Book -->
+                            <rect x="300" y="80" width="30" height="40" fill="#fff" stroke="#333" />
+                            <text x="307" y="105" font-family="Arial" font-weight="bold" font-size="12" fill="#333">Rules</text>
+                            
+                            <!-- Scoreboard -->
+                            <rect x="80" y="70" width="50" height="30" fill="#333" />
+                            <rect x="85" y="75" width="40" height="20" fill="#FBD44B" opacity="0.7" />
+                            <text x="95" y="90" font-family="Arial" font-weight="bold" font-size="12" fill="#333">0:0</text>
+                            
+                            <!-- Play Diagram -->
+                            <rect x="80" y="170" width="40" height="30" fill="#333" />
+                            <line x1="85" y1="180" x2="115" y2="180" stroke="#fff" stroke-width="1" />
+                            <line x1="85" y1="190" x2="115" y2="190" stroke="#fff" stroke-width="1" />
+                            <circle cx="95" cy="185" r="3" fill="#FB4B4B" />
+                            <circle cx="105" cy="185" r="3" fill="#4B6EFB" />
+                            <path d="M95 185 L105 180" fill="none" stroke="#fff" stroke-dasharray="2,1" />
+                        </svg>
+                        <p class="caption">In supervised learning, like football training, the algorithm learns from labeled examples provided by a "trainer."</p>
+                    </div>
+                    
+                    <p>They carefully explain that when the ball enters the goal, you earn a point, and when the ball goes out of play over the sideline, it must be thrown in by hand. They explain all the rules, how many players there are, how long the game lasts, and so on. In this case, you have a person supervising you and teaching you all the rules of the game.</p>
+                    
+                    <div class="info-box">
+                        <h3>How Supervised Learning Works</h3>
+                        <p>In supervised learning, the algorithm is given a set of input data along with the correct output (labels). It learns by finding patterns that map the input to the output. This is similar to how a football coach might show a player exactly what to do, and the player learns by following these instructions.</p>
+                        <p>Examples of supervised learning applications include:</p>
+                        <ul>
+                            <li>Email spam detection (spam or not spam)</li>
+                            <li>Image recognition (identifying what's in an image)</li>
+                            <li>Weather forecasting (predicting future weather based on historical data)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="unsupervised">
+                    <h2>Unsupervised Learning: Figuring It Out on Your Own</h2>
+                    <p>In the second scenario of our football analogy, you are on your own. You start attending games every Thursday and Sunday without prior instruction.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Stadium Background -->
+                            <rect x="50" y="50" width="300" height="150" rx="20" fill="#f0f0f0" />
+                            <rect x="70" y="70" width="260" height="110" fill="#4BFB9D" opacity="0.3" />
+                            <rect x="70" y="70" width="260" height="110" fill="none" stroke="#fff" />
+                            
+                            <!-- Stadium Seats -->
+                            <rect x="50" y="50" width="300" height="20" fill="#FB4B4B" opacity="0.5" />
+                            <rect x="50" y="180" width="300" height="20" fill="#FB4B4B" opacity="0.5" />
+                            <rect x="50" y="70" width="20" height="110" fill="#FB4B4B" opacity="0.5" />
+                            <rect x="330" y="70" width="20" height="110" fill="#FB4B4B" opacity="0.5" />
+                            
+                            <!-- Fan Watching -->
+                            <circle cx="200" cy="40" r="10" fill="#666" />
+                            <rect x="195" y="50" width="10" height="15" fill="#666" />
+                            <line x1="195" y1="55" x2="190" y2="65" stroke="#666" stroke-width="1" />
+                            <line x1="205" y1="55" x2="210" y2="65" stroke="#666" stroke-width="1" />
+                            
+                            <!-- Question Mark -->
+                            <text x="215" y="45" font-family="Arial" font-weight="bold" font-size="20" fill="#FB4B4B">?</text>
+                            
+                            <!-- Players on Field -->
+                            <circle cx="120" cy="100" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="150" cy="120" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="180" cy="90" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="200" cy="130" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="230" cy="110" r="6" fill="#4B6EFB" opacity="0.7" />
+                            
+                            <circle cx="120" cy="140" r="6" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="160" cy="150" r="6" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="190" cy="120" r="6" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="220" cy="140" r="6" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="250" cy="120" r="6" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <!-- Football -->
+                            <circle cx="200" cy="125" r="4" fill="#fff" stroke="#333" />
+                            
+                            <!-- Pattern Recognition -->
+                            <path d="M120 100 L150 120 L180 90 L200 130 L230 110" fill="none" stroke="#4B6EFB" stroke-dasharray="2,2" />
+                            <path d="M120 140 L160 150 L190 120 L220 140 L250 120" fill="none" stroke="#FB4B4B" stroke-dasharray="2,2" />
+                            
+                            <!-- Crowd Reactions -->
+                            <text x="70" y="205" font-family="Arial" font-size="10" fill="#333">Cheering</text>
+                            <path d="M90 190 L100 175" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <text x="300" y="205" font-family="Arial" font-size="10" fill="#333">Groaning</text>
+                            <path d="M310 190 L300 175" fill="none" stroke="#333" stroke-width="1" />
+                        </svg>
+                        <p class="caption">In unsupervised learning, like watching football games without instruction, the algorithm identifies patterns without being told what to look for.</p>
+                    </div>
+                    
+                    <p>Initially, you are puzzled. Why are players using their hands from the sidelines in a game primarily played with feet? Why is the crowd cheering when the ball hits the net, and why do they groan when it does not? But as you keep watching, you start recognizing patterns and understanding the game's dynamics.</p>
+                    
+                    <div class="key-concept">
+                        <h3>Clustering and Association</h3>
+                        <p>Unsupervised learning algorithms find structure in data without explicit guidance. There are two main types:</p>
+                        <ul>
+                            <li><strong>Clustering:</strong> Grouping similar data points together (like recognizing that certain players on a team work together in specific formations)</li>
+                            <li><strong>Association:</strong> Discovering rules that describe relationships in the data (like understanding that when the ball goes into the net, the crowd cheers)</li>
+                        </ul>
+                        <p>Applications include customer segmentation, anomaly detection, and recommendation systems.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="reinforcement">
+                    <h2>Reinforcement Learning: Learning from Rewards</h2>
+                    <p>Now, let's consider a third scenario, which is like reinforcement learning. Imagine you are practicing penalty kicks.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Football Goal -->
+                            <rect x="150" y="60" width="100" height="60" fill="none" stroke="#333" stroke-width="2" />
+                            <line x1="150" y1="60" x2="250" y2="60" stroke="#333" stroke-width="3" />
+                            <line x1="150" y1="60" x2="150" y2="120" stroke="#333" stroke-width="3" />
+                            <line x1="250" y1="60" x2="250" y2="120" stroke="#333" stroke-width="3" />
+                            
+                            <!-- Field -->
+                            <rect x="100" y="120" width="200" height="80" fill="#4BFB9D" opacity="0.3" />
+                            
+                            <!-- Player -->
+                            <circle cx="200" cy="180" r="15" fill="#666" />
+                            <rect x="195" y="195" width="10" height="20" fill="#666" />
+                            <line x1="195" y1="200" x2="180" y2="210" stroke="#666" stroke-width="2" />
+                            <line x1="205" y1="200" x2="220" y2="210" stroke="#666" stroke-width="2" />
+                            
+                            <!-- Ball Path - Miss (X) -->
+                            <circle cx="200" cy="160" r="5" fill="#fff" stroke="#333" />
+                            <path d="M200 160 L170 80" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <line x1="165" y1="75" x2="175" y2="85" stroke="#FB4B4B" stroke-width="2" />
+                            <line x1="165" y1="85" x2="175" y2="75" stroke="#FB4B4B" stroke-width="2" />
+                            
+                            <!-- Ball Path - Goal (Stars) -->
+                            <path d="M200 160 L220 75" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            
+                            <!-- Stars (Success) -->
+                            <path d="M220 75 L222 67 L230 65 L224 60 L225 52 L218 56 L210 52 L212 60 L206 65 L214 67 Z" fill="#FBD44B" />
+                            <path d="M230 78 L232 72 L238 70 L233 66 L234 60 L228 63 L222 60 L224 66 L219 70 L225 72 Z" fill="#FBD44B" opacity="0.7" />
+                            <path d="M215 85 L217 79 L223 77 L218 73 L219 67 L213 70 L207 67 L209 73 L204 77 L210 79 Z" fill="#FBD44B" opacity="0.5" />
+                            <path d="M225 90 L227 84 L233 82 L228 78 L229 72 L223 75 L217 72 L219 78 L214 82 L220 84 Z" fill="#FBD44B" opacity="0.3" />
+                            
+                            <!-- Thumbs Down (Failure) -->
+                            <circle cx="170" cy="80" r="8" fill="#FB4B4B" opacity="0.7" />
+                            <rect x="167" y="80" width="6" height="10" rx="2" fill="#FB4B4B" opacity="0.7" />
+                            <rect x="165" y="87" width="10" height="5" rx="2" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <!-- Reinforcement Element -->
+                            <rect x="50" y="70" width="60" height="30" rx="5" fill="#FBD44B" opacity="0.2" />
+                            <text x="55" y="90" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Positive Reward</text>
+                            <line x1="110" y1="85" x2="140" y2="85" stroke="#333" stroke-width="1" />
+                            <polygon points="140,85 135,82 135,88" fill="#333" />
+                            
+                            <rect x="50" y="110" width="60" height="30" rx="5" fill="#FB4B4B" opacity="0.2" />
+                            <text x="55" y="130" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Negative Reward</text>
+                            <line x1="110" y1="125" x2="140" y2="125" stroke="#333" stroke-width="1" />
+                            <polygon points="140,125 135,122 135,128" fill="#333" />
+                        </svg>
+                        <p class="caption">In reinforcement learning, like practicing penalty kicks, the algorithm learns from positive and negative feedback.</p>
+                    </div>
+                    
+                    <p>Each time you score a goal, you feel a sense of achievement, which is a positive reward. Each time you miss, you feel disappointment, which is a negative reward. Over time, by trying different ways of kicking the ball and learning from the rewards, you improve your ability to score penalty kicks.</p>
+                    
+                    <div class="info-box">
+                        <h3>Reward-Based Learning</h3>
+                        <p>Reinforcement learning is based on an agent (the learner) that interacts with its environment, taking actions to maximize cumulative rewards. The key components are:</p>
+                        <ul>
+                            <li><strong>Agent:</strong> The decision-maker (like the football player)</li>
+                            <li><strong>Environment:</strong> The world in which the agent operates (the football field)</li>
+                            <li><strong>Actions:</strong> What the agent can do (different kick techniques)</li>
+                            <li><strong>Rewards:</strong> Feedback from the environment (scoring or missing)</li>
+                        </ul>
+                        <p>Applications include game playing, robotics, autonomous vehicles, and resource management.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="deep-learning">
+                    <h2>Deep Learning: Taking Machine Learning Further</h2>
+                    <p>Remember, all machine learning is AI, but not all AI involves machine learning. Machine learning can be broken down into these types: supervised, unsupervised, and reinforcement learning. But we can go even deeper.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Notepad with Light Bulb -->
+                            <rect x="100" y="70" width="80" height="100" fill="#fff" stroke="#333" />
+                            <line x1="115" y1="85" x2="165" y2="85" stroke="#333" stroke-width="1" />
+                            <line x1="115" y1="100" x2="165" y2="100" stroke="#333" stroke-width="1" />
+                            <line x1="115" y1="115" x2="165" y2="115" stroke="#333" stroke-width="1" />
+                            <line x1="115" y1="130" x2="165" y2="130" stroke="#333" stroke-width="1" />
+                            <line x1="115" y1="145" x2="165" y2="145" stroke="#333" stroke-width="1" />
+                            
+                            <circle cx="140" cy="50" r="20" fill="#FBD44B" opacity="0.7" />
+                            <path d="M140 30 L140 15" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M140 30 C130 35, 125 45, 130 50" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M140 30 C150 35, 155 45, 150 50" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Keyboard and Hand -->
+                            <rect x="220" y="120" width="100" height="40" rx="5" fill="#333" />
+                            <rect x="225" y="125" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="240" y="125" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="255" y="125" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="270" y="125" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="285" y="125" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="300" y="125" width="10" height="10" fill="#f0f0f0" />
+                            
+                            <rect x="225" y="140" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="240" y="140" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="255" y="140" width="10" height="10" fill="#f0f0f0" />
+                            <rect x="270" y="140" width="40" height="10" fill="#f0f0f0" />
+                            
+                            <circle cx="245" cy="100" r="8" fill="#FBD44B" opacity="0.8" />
+                            <rect x="242" y="105" width="6" height="15" fill="#FBD44B" opacity="0.8" />
+                            <line x1="242" y1="112" x2="235" y2="120" stroke="#FBD44B" opacity="0.8" stroke-width="2" />
+                            <line x1="248" y1="112" x2="255" y2="120" stroke="#FBD44B" opacity="0.8" stroke-width="2" />
+                            
+                            <!-- Neural Network Representation -->
+                            <circle cx="320" cy="60" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="320" cy="85" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="320" cy="110" r="8" fill="#4B6EFB" opacity="0.7" />
+                            
+                            <circle cx="350" cy="50" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="75" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="100" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="125" r="8" fill="#4B6EFB" opacity="0.7" />
+                            
+                            <circle cx="380" cy="70" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="380" cy="100" r="8" fill="#4B6EFB" opacity="0.7" />
+                            
+                            <!-- Connections -->
+                            <line x1="328" y1="60" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+                            
+                            <line x1="328" y1="85" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+                            
+                            <line x1="328" y1="110" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+                            
+                            <line x1="358" y1="50" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="75" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="100" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="125" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            
+                            <line x1="358" y1="50" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="75" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="100" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="125" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            
+                            <!-- Text Labels -->
+                            <text x="315" y="35" font-family="Arial" font-size="8" fill="#333">Input Layer</text>
+                            <text x="345" y="35" font-family="Arial" font-size="8" fill="#333">Hidden Layer</text>
+                            <text x="375" y="35" font-family="Arial" font-size="8" fill="#333">Output Layer</text>
+                            <!-- Neural Network Representation -->
+                            <circle cx="320" cy="60" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="320" cy="85" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="320" cy="110" r="8" fill="#4B6EFB" opacity="0.7" />
+
+                            <circle cx="350" cy="50" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="75" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="100" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="350" cy="125" r="8" fill="#4B6EFB" opacity="0.7" />
+
+                            <circle cx="380" cy="70" r="8" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="380" cy="100" r="8" fill="#4B6EFB" opacity="0.7" />
+
+                            <!-- Connections -->
+                            <line x1="328" y1="60" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="60" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+
+                            <line x1="328" y1="85" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="85" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+
+                            <line x1="328" y1="110" x2="342" y2="50" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="75" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="328" y1="110" x2="342" y2="125" stroke="#4B6EFB" opacity="0.5" />
+
+                            <line x1="358" y1="50" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="75" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="100" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="125" x2="372" y2="70" stroke="#4B6EFB" opacity="0.5" />
+
+                            <line x1="358" y1="50" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="75" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="100" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+                            <line x1="358" y1="125" x2="372" y2="100" stroke="#4B6EFB" opacity="0.5" />
+
+                            <!-- Text Labels -->
+                            <text x="315" y="35" font-family="Arial" font-size="8" fill="#333">Input Layer</text>
+                            <text x="345" y="35" font-family="Arial" font-size="8" fill="#333">Hidden Layer</text>
+                            <text x="375" y="35" font-family="Arial" font-size="8" fill="#333">Output Layer</text>
+                            </svg>
+            <p class="caption">Deep learning uses advanced neural networks with multiple layers to process complex information.</p>
+</div>
+
+<p>There are advanced forms of machine learning that mimic the human brain's own method of learning. They take the concepts of supervised, unsupervised, and reinforcement learning and apply them on a much larger scale. This is called deep learning.</p>
+
+<div class="key-concept">
+    <h3>Neural Networks and Deep Learning</h3>
+    <p>Deep learning is a subfield of machine learning inspired by the structure and function of the brain called artificial neural networks. Just as neurons in the brain are connected to form a vast network, deep learning uses artificial neural networks with several layers - hence the term 'deep'.</p>
+    <p>These networks can learn and make decisions on their own. They excel at tasks such as:</p>
+    <ul>
+        <li>Image and speech recognition</li>
+        <li>Natural language processing</li>
+        <li>Recommendation systems</li>
+        <li>Medical diagnoses</li>
+    </ul>
+</div>
+
+<p>In conclusion, machine learning approaches vary based on the task at hand and the available data. Understanding these different types helps us appreciate how AI systems learn and adapt to solve complex problems. As we move forward, we'll explore deep learning in more detail and see how these neural networks are revolutionizing artificial intelligence.</p>
+</section>
+</div>
+
+<div class="nav-buttons">
+    <a href="chapter6.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+    <a href="chapter8.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 AI Fluency Course</p>
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+        </div>
+    </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

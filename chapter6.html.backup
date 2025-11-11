@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Chapter 1.05: Machine Learning</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <div class="module-badge">Module 1: AI Foundations</div>
+                <h1>Chapter 1.05: Machine Learning</h1>
+                <p class="subtitle">Understanding the differences between AI and machine learning, and how machines learn from data</p>
+            </div>
+
+            <div class="chapter-nav">
+                <div class="nav-buttons-container">
+                    <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+                    <a href="#differences" class="nav-tab"><i class="fas fa-exchange-alt"></i> AI vs ML</a>
+                    <a href="#learning-types" class="nav-tab"><i class="fas fa-graduation-cap"></i> Learning Types</a>
+                    <a href="#math-concepts" class="nav-tab"><i class="fas fa-square-root-alt"></i> Mathematical Foundations</a>
+                    <a href="#bicycle-analogy" class="nav-tab"><i class="fas fa-bicycle"></i> Learning Analogy</a>
+                </div>
+            </div>
+
+            <div class="chapter-content">
+                <section class="content-section" id="introduction">
+                    <h2>Understanding Machine Learning</h2>
+                    <p>You might have heard the terms 'machine learning' and 'AI' used interchangeably, and you may be wondering, 'What is the difference?' Well, there is a difference, and it is important to understand how they are different.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- AI Speech Bubble Woman -->
+                            <circle cx="100" cy="110" r="20" fill="#666" />
+                            <rect x="95" y="130" width="10" height="25" fill="#666" />
+                            <rect x="85" y="155" width="30" height="15" rx="5" fill="#333" />
+                            <rect x="87" y="157" width="26" height="11" fill="#f0f0f0" />
+                            <path d="M130 70 Q150 60, 160 80 L160 90 Q160 100, 150 105 L110 105 Q100 105, 100 95 L100 80 Q100 70, 110 70 Z" fill="#fff" stroke="#333" />
+                            <text x="115" y="93" font-family="Arial" font-size="16" fill="#333">AI</text>
+                            
+                            <!-- ML Speech Bubble Woman -->
+                            <circle cx="300" cy="110" r="20" fill="#666" />
+                            <rect x="295" y="130" width="10" height="25" fill="#666" />
+                            <rect x="285" y="155" width="30" height="15" rx="5" fill="#333" />
+                            <rect x="287" y="157" width="26" height="11" fill="#f0f0f0" />
+                            <path d="M270 70 Q250 60, 240 80 L240 90 Q240 100, 250 105 L290 105 Q300 105, 300 95 L300 80 Q300 70, 290 70 Z" fill="#fff" stroke="#333" />
+                            <text x="255" y="93" font-family="Arial" font-size="16" fill="#333">ML</text>
+                            
+                            <!-- What's the difference? -->
+                            <rect x="170" y="30" width="60" height="25" rx="12" fill="#FB4B4B" opacity="0.7" />
+                            <text x="180" y="47" font-family="Arial" font-size="10" fill="#fff">What's the difference?</text>
+                            
+                            <!-- Laptop Screen with Concept Visualization -->
+                            <rect x="150" y="140" width="100" height="70" rx="5" fill="#333" />
+                            <rect x="155" y="145" width="90" height="55" fill="#fff" />
+                            <text x="160" y="160" font-family="Arial" font-size="8" fill="#333">Artificial intelligence</text>
+                            <rect x="160" y="165" width="80" height="15" fill="#4B6EFB" opacity="0.3" />
+                            <text x="165" y="175" font-family="Arial" font-size="6" fill="#333">Deep learning</text>
+                            <rect x="165" y="168" width="70" height="10" fill="#4B6EFB" opacity="0.5" />
+                            <text x="170" y="175" font-family="Arial" font-size="5" fill="#333">Machine learning</text>
+                            <rect x="170" y="170" width="60" height="6" fill="#4B6EFB" opacity="0.7" />
+                            <text x="180" y="175" font-family="Arial" font-size="4" fill="#fff">Data science</text>
+                        </svg>
+                        <p class="caption">Machine Learning is a subset of AI, but the two terms are often used interchangeably.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>AI vs Machine Learning</h3>
+                        <p>Artificial Intelligence refers to the intelligence exhibited by software and machines. Machine learning, on the other hand, is a subset of AI. This means that while all machine learning is AI, not all AI involves machine learning.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="differences">
+                    <h2>Distinguishing Between AI and Machine Learning</h2>
+                    <p>Machine learning is a type of AI where a machine learns from the data it has been given and can identify patterns in that data. It is also the process by which machines learn from data and improve their performance over time.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="180" viewBox="0 0 400 180">
+                            <!-- All ML is AI, but not all AI is ML -->
+                            <ellipse cx="150" cy="90" rx="100" ry="70" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" />
+                            <text x="75" y="40" font-family="Arial" font-size="12" fill="#333">Artificial Intelligence</text>
+                            
+                            <ellipse cx="150" cy="110" rx="50" ry="35" fill="#4B6EFB" opacity="0.6" stroke="#4B6EFB" />
+                            <text x="110" y="110" font-family="Arial" font-size="10" fill="#fff">Machine Learning</text>
+                            
+                            <!-- Arrow pointer to the diagram -->
+                            <path d="M270 70 L220 70" fill="none" stroke="#333" stroke-width="2" />
+                            <polygon points="220,70 230,65 230,75" fill="#333" />
+                            
+                            <!-- Explanation box -->
+                            <rect x="270" y="50" width="100" height="80" rx="5" fill="#fff" stroke="#333" />
+                            <text x="275" y="65" font-family="Arial" font-size="8" fill="#333">All machine learning</text>
+                            <text x="275" y="75" font-family="Arial" font-size="8" fill="#333">is AI, but not all AI</text>
+                            <text x="275" y="85" font-family="Arial" font-size="8" fill="#333">involves machine</text>
+                            <text x="275" y="95" font-family="Arial" font-size="8" fill="#333">learning.</text>
+                            
+                            <!-- Illustrations of Machine Learning -->
+                            <rect x="280" y="105" width="20" height="20" fill="#FB4B4B" opacity="0.6" rx="2" />
+                            <text x="285" y="120" font-family="Arial" font-size="10" fill="#fff">ML</text>
+                            
+                            <rect x="310" y="105" width="20" height="20" fill="#FBD44B" opacity="0.6" rx="2" />
+                            <text x="315" y="120" font-family="Arial" font-size="10" fill="#fff">AI</text>
+                        </svg>
+                        <p class="caption">The relationship between AI and Machine Learning: ML is a specific approach within the broader field of AI.</p>
+                    </div>
+                    
+                    <p>Machine learning uses different types of techniques such as supervised learning, unsupervised learning, and reinforcement learning. The term 'Machine Learning' was introduced by Arthur Samuel in 1959, who created a program that played draughts against itself.</p>
+                    
+                    <div class="info-box">
+                        <h3>Historical Origin</h3>
+                        <p>Arthur Samuel, an American pioneer in computer gaming and AI, created a program that played draughts. The machine analyzed the game through repetitive plays, identifying strategies to win and avoid losses. Through playing the game and learning what to do to win, it began to detect recurring patterns and would increasingly follow a pattern.</p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="learning-types">
+                    <h2>Types of Machine Learning</h2>
+                    <p>Machine learning can be divided into three main types: supervised learning, unsupervised learning, and reinforcement learning. Each approach has distinct characteristics and applications.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Supervised Learning -->
+                            <rect x="50" y="50" width="100" height="120" rx="5" fill="#4B6EFB" opacity="0.2" />
+                            <text x="60" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Supervised learning</text>
+                            <circle cx="75" cy="100" r="15" fill="#4B6EFB" opacity="0.5" />
+                            <text x="70" y="103" font-family="Arial" font-size="10" fill="#333">X</text>
+                            <text x="90" y="100" font-family="Arial" font-size="8" fill="#333">Label: Cat</text>
+                            <circle cx="75" cy="140" r="15" fill="#FB4B4B" opacity="0.5" />
+                            <text x="70" y="143" font-family="Arial" font-size="10" fill="#333">Y</text>
+                            <text x="90" y="140" font-family="Arial" font-size="8" fill="#333">Label: Dog</text>
+                            
+                            <!-- Unsupervised Learning -->
+                            <rect x="170" y="50" width="100" height="120" rx="5" fill="#FB4B4B" opacity="0.2" />
+                            <text x="180" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Unsupervised learning</text>
+                            <circle cx="195" cy="100" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="215" cy="95" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="230" cy="105" r="10" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="195" cy="140" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="210" cy="150" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="225" cy="135" r="10" fill="#FB4B4B" opacity="0.5" />
+                            <path d="M195 100 Q215 95, 230 105" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            <path d="M195 140 Q210 150, 225 135" fill="none" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Reinforcement Learning -->
+                            <rect x="290" y="50" width="100" height="120" rx="5" fill="#FBD44B" opacity="0.2" />
+                            <text x="300" y="70" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Reinforcement learning</text>
+                            <rect x="310" y="90" width="20" height="20" fill="#FBD44B" opacity="0.5" />
+                            <text x="315" y="105" font-family="Arial" font-size="12" fill="#333">+</text>
+                            <rect x="350" y="90" width="20" height="20" fill="#FB4B4B" opacity="0.5" />
+                            <text x="355" y="105" font-family="Arial" font-size="12" fill="#333">-</text>
+                            <path d="M320 120 L320 140 L350 140 L350 120" fill="none" stroke="#333" stroke-width="1" />
+                            <circle cx="335" cy="140" r="5" fill="#333" />
+                        </svg>
+                        <p class="caption">The three primary types of machine learning: supervised, unsupervised, and reinforcement learning.</p>
+                    </div>
+                    
+                    <ul>
+                        <li><strong>Supervised Learning:</strong> The algorithm is trained on labeled data, where inputs are paired with correct outputs.</li>
+                        <li><strong>Unsupervised Learning:</strong> The algorithm is trained on unlabeled data and must find structure without guidance.</li>
+                        <li><strong>Reinforcement Learning:</strong> The algorithm learns by interacting with its environment and receiving rewards or penalties.</li>
+                    </ul>
+                </section>
+
+                <section class="content-section" id="math-concepts">
+                    <h2>Mathematical Foundations of Machine Learning</h2>
+                    <p>To achieve effective machine learning, Samuel had to use mathematics. Concepts such as linear algebra, calculus, probability, and statistics play a crucial role in understanding how machine learning algorithms learn from data and make predictions.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Whiteboard with Mathematical Equations -->
+                            <rect x="50" y="50" width="300" height="120" rx="5" fill="#fff" stroke="#333" />
+                            
+                            <!-- Linear Algebra -->
+                            <text x="60" y="70" font-family="Arial" font-size="10" fill="#333">Linear Algebra:</text>
+                            <text x="60" y="85" font-family="Arial" font-size="8" fill="#333">A = [a₁₁ a₁₂]</text>
+                            <text x="60" y="95" font-family="Arial" font-size="8" fill="#333">    [a₂₁ a₂₂]</text>
+                            
+                            <!-- Calculus -->
+                            <text x="180" y="70" font-family="Arial" font-size="10" fill="#333">Calculus:</text>
+                            <text x="180" y="85" font-family="Arial" font-size="8" fill="#333">f'(x) = lim Δx→0 [f(x+Δx) - f(x)]/Δx</text>
+                            
+                            <!-- Probability -->
+                            <text x="60" y="120" font-family="Arial" font-size="10" fill="#333">Probability:</text>
+                            <text x="60" y="135" font-family="Arial" font-size="8" fill="#333">P(A|B) = P(B|A)P(A)/P(B)</text>
+                            
+                            <!-- Statistics -->
+                            <text x="180" y="120" font-family="Arial" font-size="10" fill="#333">Statistics:</text>
+                            <text x="180" y="135" font-family="Arial" font-size="8" fill="#333">σ² = Σ(xᵢ - μ)²/n</text>
+                            
+                            <!-- Hand Drawing Equations -->
+                            <path d="M370 80 C365 75, 360 78, 365 82" fill="none" stroke="#333" />
+                            <path d="M365 82 L355 90" fill="none" stroke="#333" />
+                            <rect x="350" y="90" width="25" height="40" fill="#FB4B4B" opacity="0.1" rx="5" />
+                        </svg>
+                        <p class="caption">Mathematical concepts such as linear algebra, calculus, probability, and statistics form the foundation of machine learning algorithms.</p>
+                    </div>
+                    
+                    <p>These mathematical concepts help in optimizing the performance of the model, understanding the relationships within the data, and making accurate predictions. They are the building blocks that enable machines to learn from experience and improve over time.</p>
+                </section>
+
+                <section class="content-section" id="bicycle-analogy">
+                    <h2>The Bicycle Analogy: Learning from Experience</h2>
+                    <p>Need further clarity? Let's consider the analogy of learning to ride a bicycle to understand how machine learning works.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="200" viewBox="0 0 400 200">
+                            <!-- Training Wheels Stage -->
+                            <text x="50" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Training Phase</text>
+                            <circle cx="80" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <circle cx="150" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M80 120 L115 120 L150 120" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M115 120 L115 80" fill="none" stroke="#333" stroke-width="2" />
+                            <rect x="110" y="60" width="10" height="20" fill="#333" />
+                            <circle cx="115" cy="50" r="10" fill="#333" />
+                            <rect x="75" y="120" width="10" height="30" fill="#FB4B4B" opacity="0.7" />
+                            <rect x="145" y="120" width="10" height="30" fill="#FB4B4B" opacity="0.7" />
+                            
+                            <!-- Without Training Wheels Stage -->
+                            <text x="200" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Learning Phase</text>
+                            <circle cx="230" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <circle cx="300" cy="120" r="20" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M230 120 L265 120 L300 120" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M265 120 L265 80" fill="none" stroke="#333" stroke-width="2" />
+                            <rect x="260" y="60" width="10" height="20" fill="#333" />
+                            <circle cx="265" cy="50" r="10" fill="#333" />
+                            <path d="M265 50 L270 45 L275 48" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Adapted Rider Stage -->
+                            <text x="350" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333">Application Phase</text>
+                            <circle cx="365" cy="110" r="15" fill="none" stroke="#333" stroke-width="2" />
+                            <path d="M365 95 L365 85" fill="none" stroke="#333" stroke-width="1" />
+                            <path d="M365 85 L375 75" fill="none" stroke="#333" stroke-width="1" />
+                            <circle cx="380" cy="70" r="5" fill="#333" />
+                            
+                            <!-- Arrows Showing Progression -->
+                            <path d="M170 100 L200 100" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                            <polygon points="200,100 190,95 190,105" fill="#4B6EFB" />
+                            
+                            <path d="M320 100 L350 100" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                            <polygon points="350,100 340,95 340,105" fill="#4B6EFB" />
+                            
+                            <!-- Ground Line -->
+                            <path d="M50 150 L380 150" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+                        </svg>
+                        <p class="caption">The process of learning to ride a bicycle mirrors how machine learning models progress from initial training to independent performance.</p>
+                    </div>
+                    
+                    <div class="key-concept">
+                        <h3>Learning Through Experience</h3>
+                        <p>When you first learn to ride a bicycle, you might start with training wheels. These training wheels are like the initial data set that we feed into the machine learning model. They provide basic guidance and stability. As you practice more, you learn to balance, pedal, and steer. This mirrors how a machine learning model begins to recognize patterns during training.</p>
+                        <p>Eventually, the training wheels come off, and you adapt to different situations – riding on hills or through crowds. Similarly, a machine learning model applies what it has learned to new data and tasks, improving its performance based on experience.</p>
+                    </div>
+                    
+                    <p>This draughts game and bicycle learning analogy highlight the fundamental concepts of machine learning: learning from experience, replicating results, and improving performance. As we continue to explore AI and its capabilities, remember that all machine learning is AI, but not all AI is machine learning.</p>
+                </section>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="chapter5.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+                <a href="chapter7.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Module 4: Responsible AI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/stylesModules.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <!-- <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button> -->
+        </div>
+    </header>
+
+    <main>
+        <div class="module-container">
+            <div class="module-header">
+                <h1>Module 4: Responsible AI</h1>
+                <p class="subtitle">Ethical considerations and principles in AI development</p>
+            </div>
+            
+            <div class="module-intro">
+                <div class="module-intro-content">
+                    <p>Welcome to Module 4 of the AI Fluency course! This module explores the critical importance of responsible AI development and use, including ethical considerations, security, and principles guiding AI systems.</p>
+                    <p>You'll learn about best practices, principles, copyright issues, and the broader implications of AI on society. Choose a chapter below to begin this important exploration.</p>
+                </div>
+                <div class="module-intro-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Balance Scale -->
+                        <line x1="100" y1="60" x2="100" y2="130" stroke="#333" stroke-width="4"/>
+                        <line x1="60" y1="70" x2="140" y2="70" stroke="#333" stroke-width="4"/>
+                        
+                        <!-- Scale Dishes -->
+                        <ellipse cx="60" cy="90" rx="20" ry="10" fill="#4B6EFB" opacity="0.7"/>
+                        <ellipse cx="140" cy="90" rx="20" ry="10" fill="#FB4B4B" opacity="0.7"/>
+                        
+                        <!-- Scale Chains -->
+                        <line x1="60" y1="70" x2="60" y2="80" stroke="#333" stroke-width="2"/>
+                        <line x1="140" y1="70" x2="140" y2="80" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Base -->
+                        <rect x="80" y="130" width="40" height="20" rx="5" fill="#333"/>
+                        <rect x="70" y="150" width="60" height="10" rx="2" fill="#333"/>
+                        
+                        <!-- AI Symbol in Balance -->
+                        <text x="55" y="95" font-family="Arial" font-size="12" fill="white">AI</text>
+                        <text x="128" y="95" font-family="Arial" font-size="12" fill="white">Ethics</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>4.24 - Using AI Responsibly</h3>
+                        <p>Best practices for the responsible use of AI technologies.</p>
+                        <a href="chapter1_24.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>4.25 - Principles of Responsible AI</h3>
+                        <p>The core principles that guide ethical AI development.</p>
+                        <a href="chapter2_25.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>4.26 - Deepfakes and Copyright</h3>
+                        <p>Understanding the challenges of synthetic media and copyright in AI.</p>
+                        <a href="chapter3_25.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+                
+                <div class="chapter-card">
+                    <div class="chapter-card-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="chapter-card-content">
+                        <h3>4.27 - Human-AI Interaction</h3>
+                        <p>Exploring the relationship between humans and AI systems.</p>
+                        <a href="chapter4_27.html" class="chapter-link ">Begin Chapter</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module-navigation">
+                <a href="module3.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Module</a>
+                <a href="module5.html" class="nav-button next">Next Module <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

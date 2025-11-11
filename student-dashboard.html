@@ -9,6 +9,8 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="dashboard-sidebar" id="sidebar">
@@ -235,6 +237,26 @@
                 sidebar.classList.toggle('mobile-open');
             });
         }
+    </script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Page Protection -->
+    <script>
+        // Require authentication - allow students, instructors, and admins
+        Auth.requireAuth(['student', 'instructor', 'admin']);
+
+        // Load user-specific data
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Auth.getUser();
+            if (user) {
+                console.log('Student dashboard loaded for:', user.email, '(Role:', user.role, ')');
+                // Phase 2: Load enrollment data, progress, certificates dynamically
+            }
+        });
     </script>
 </body>
 </html>

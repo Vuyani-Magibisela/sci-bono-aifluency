@@ -122,7 +122,7 @@ $routes = [
         'roles' => ['admin']
     ],
 
-    // Course Routes
+    // Course Routes (5 endpoints)
     [
         'method' => 'GET',
         'pattern' => '/courses',
@@ -149,11 +149,18 @@ $routes = [
         'auth' => true,
         'roles' => ['admin', 'instructor']
     ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/courses/:id',
+        'handler' => 'CourseController@delete',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
 
-    // Module Routes
+    // Module Routes (5 endpoints)
     [
         'method' => 'GET',
-        'pattern' => '/courses/:courseId/modules',
+        'pattern' => '/modules',
         'handler' => 'ModuleController@index',
         'auth' => false
     ],
@@ -163,11 +170,32 @@ $routes = [
         'handler' => 'ModuleController@show',
         'auth' => false
     ],
+    [
+        'method' => 'POST',
+        'pattern' => '/modules',
+        'handler' => 'ModuleController@create',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/modules/:id',
+        'handler' => 'ModuleController@update',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/modules/:id',
+        'handler' => 'ModuleController@delete',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
 
-    // Lesson Routes
+    // Lesson Routes (7 endpoints)
     [
         'method' => 'GET',
-        'pattern' => '/modules/:moduleId/lessons',
+        'pattern' => '/lessons',
         'handler' => 'LessonController@index',
         'auth' => false
     ],
@@ -177,56 +205,180 @@ $routes = [
         'handler' => 'LessonController@show',
         'auth' => false
     ],
+    [
+        'method' => 'POST',
+        'pattern' => '/lessons',
+        'handler' => 'LessonController@create',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/lessons/:id',
+        'handler' => 'LessonController@update',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/lessons/:id',
+        'handler' => 'LessonController@delete',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/lessons/:id/start',
+        'handler' => 'LessonController@startLesson',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/lessons/:id/complete',
+        'handler' => 'LessonController@completeLesson',
+        'auth' => true
+    ],
 
-    // Quiz Routes
+    // Quiz Routes (7 endpoints)
     [
         'method' => 'GET',
-        'pattern' => '/modules/:moduleId/quiz',
-        'handler' => 'QuizController@getByModule',
-        'auth' => true
+        'pattern' => '/quizzes',
+        'handler' => 'QuizController@index',
+        'auth' => false
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/quizzes/:id',
+        'handler' => 'QuizController@show',
+        'auth' => false
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/quizzes',
+        'handler' => 'QuizController@create',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/quizzes/:id',
+        'handler' => 'QuizController@update',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/quizzes/:id',
+        'handler' => 'QuizController@delete',
+        'auth' => true,
+        'roles' => ['admin']
     ],
     [
         'method' => 'POST',
         'pattern' => '/quizzes/:id/submit',
-        'handler' => 'QuizController@submit',
-        'auth' => true
-    ],
-
-    // Progress Routes
-    [
-        'method' => 'GET',
-        'pattern' => '/progress',
-        'handler' => 'ProgressController@index',
-        'auth' => true
-    ],
-    [
-        'method' => 'POST',
-        'pattern' => '/lessons/:id/progress',
-        'handler' => 'ProgressController@updateLesson',
+        'handler' => 'QuizController@submitAttempt',
         'auth' => true
     ],
     [
         'method' => 'GET',
-        'pattern' => '/courses/:id/progress',
-        'handler' => 'ProgressController@getCourseProgress',
+        'pattern' => '/quizzes/:id/attempts',
+        'handler' => 'QuizController@getAttempts',
         'auth' => true
     ],
 
-    // Enrollment Routes
+    // Project Routes (8 endpoints)
+    [
+        'method' => 'GET',
+        'pattern' => '/projects',
+        'handler' => 'ProjectController@index',
+        'auth' => false
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/projects/:id',
+        'handler' => 'ProjectController@show',
+        'auth' => false
+    ],
     [
         'method' => 'POST',
-        'pattern' => '/courses/:id/enroll',
-        'handler' => 'EnrollmentController@enroll',
+        'pattern' => '/projects',
+        'handler' => 'ProjectController@create',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/projects/:id',
+        'handler' => 'ProjectController@update',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/projects/:id',
+        'handler' => 'ProjectController@delete',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/projects/:id/submit',
+        'handler' => 'ProjectController@submitProject',
         'auth' => true
     ],
+    [
+        'method' => 'GET',
+        'pattern' => '/projects/:id/submissions',
+        'handler' => 'ProjectController@getSubmissions',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/projects/submissions/:id/grade',
+        'handler' => 'ProjectController@gradeSubmission',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+
+    // Enrollment Routes (6 endpoints)
     [
         'method' => 'GET',
         'pattern' => '/enrollments',
         'handler' => 'EnrollmentController@index',
         'auth' => true
     ],
+    [
+        'method' => 'GET',
+        'pattern' => '/enrollments/:id',
+        'handler' => 'EnrollmentController@show',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/enrollments',
+        'handler' => 'EnrollmentController@create',
+        'auth' => true
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/enrollments/:id',
+        'handler' => 'EnrollmentController@update',
+        'auth' => true
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/enrollments/:id',
+        'handler' => 'EnrollmentController@delete',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/enrollments/:id/calculate-progress',
+        'handler' => 'EnrollmentController@calculateProgress',
+        'auth' => true
+    ],
 
-    // Certificate Routes
+    // Certificate Routes (7 endpoints)
     [
         'method' => 'GET',
         'pattern' => '/certificates',
@@ -237,6 +389,39 @@ $routes = [
         'method' => 'GET',
         'pattern' => '/certificates/:id',
         'handler' => 'CertificateController@show',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/certificates',
+        'handler' => 'CertificateController@create',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/certificates/:id',
+        'handler' => 'CertificateController@update',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/certificates/:id',
+        'handler' => 'CertificateController@delete',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/certificates/verify/:certificate_number',
+        'handler' => 'CertificateController@verify',
+        'auth' => false
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/certificates/request',
+        'handler' => 'CertificateController@requestCertificate',
         'auth' => true
     ],
 ];

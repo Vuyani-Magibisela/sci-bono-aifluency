@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+<meta name="theme-color" content="#4B6EFB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+<!-- Manifest and Icons -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency - Chapter 2.12: What is a Generative AI Model?</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#4B6EFB" />
+                    <text x="30" y="68" fill="white" font-family="Arial" font-weight="bold" font-size="40">AI</text>
+                </svg>
+            </a>
+            <h1>AI Fluency</h1>
+        </div>
+        <div class="header-controls">
+            <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <div class="module-badge">Module 2: Generative AI</div>
+                <h1>Chapter 2.12: What is a Generative AI Model?</h1>
+                <p class="subtitle">Understanding the structure, types, and applications of AI models that generate content</p>
+            </div>
+
+            <div class="chapter-nav">
+                <div class="nav-buttons-container">
+                    <a href="#introduction" class="nav-tab active"><i class="fas fa-info-circle"></i> Introduction</a>
+                    <a href="#model-types" class="nav-tab"><i class="fas fa-sitemap"></i> Model Types</a>
+                    <a href="#model-architecture" class="nav-tab"><i class="fas fa-cogs"></i> Model Architecture</a>
+                    <a href="#user-interaction" class="nav-tab"><i class="fas fa-users"></i> User Interaction</a>
+                    <a href="#applications" class="nav-tab"><i class="fas fa-laptop-code"></i> Practical Uses</a>
+                </div>
+            </div>
+
+            <div class="chapter-content">
+                <section class="content-section" id="introduction">
+                    <h2>Understanding AI Models</h2>
+                    <p>Artificial intelligence can be designed to perform specific tasks. This includes everything from self-driving cars and weather forecasting to virtual assistants. AI models are like the brains of these AI systems.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- Brain with Network Structure -->
+                            <ellipse cx="200" cy="110" rx="80" ry="60" fill="#FBD44B" opacity="0.2" stroke="#333" />
+                            
+                            <!-- Brain Connections -->
+                            <circle cx="160" cy="90" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="190" cy="80" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="220" cy="90" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="150" cy="110" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="180" cy="115" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="210" cy="110" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="240" cy="115" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="160" cy="140" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="190" cy="140" r="6" fill="#4B6EFB" opacity="0.7" />
+                            <circle cx="220" cy="135" r="6" fill="#4B6EFB" opacity="0.7" />
+                            
+                            <!-- Neural Connections -->
+                            <line x1="160" y1="90" x2="190" y2="80" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="190" y1="80" x2="220" y2="90" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="160" y1="90" x2="150" y2="110" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="190" y1="80" x2="180" y2="115" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="220" y1="90" x2="210" y2="110" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="220" y1="90" x2="240" y2="115" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="150" y1="110" x2="160" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="180" y1="115" x2="190" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="210" y1="110" x2="220" y2="135" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="240" y1="115" x2="220" y2="135" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="150" y1="110" x2="180" y2="115" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="180" y1="115" x2="210" y2="110" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="210" y1="110" x2="240" y2="115" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="160" y1="140" x2="190" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                            <line x1="190" y1="140" x2="220" y2="135" stroke="#4B6EFB" stroke-width="1" />
+                            
+                            <!-- Different AI Applications -->
+                            <rect x="60" y="70" width="40" height="30" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <circle cx="80" cy="85" r="10" fill="#FB4B4B" opacity="0.3" />
+                            <text x="80" y="88" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">🚗</text>
+                            <text x="80" y="60" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Self-driving</text>
+                            
+                            <rect x="60" y="150" width="40" height="30" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <path d="M70 165 L90 165" stroke="#333" stroke-width="1" />
+                            <path d="M70 170 L85 170" stroke="#333" stroke-width="1" />
+                            <text x="80" y="190" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Weather</text>
+                            
+                            <rect x="300" y="70" width="40" height="30" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <circle cx="320" cy="85" r="12" fill="#4BFB9D" opacity="0.3" />
+                            <text x="320" y="88" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Siri</text>
+                            <text x="320" y="60" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Virtual Assistant</text>
+                            
+                            <rect x="300" y="150" width="40" height="30" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <circle cx="315" cy="165" r="3" fill="#333" />
+                            <circle cx="325" cy="165" r="3" fill="#333" />
+                            <path d="M315 172 L325 172" stroke="#333" stroke-width="1" />
+                            <text x="320" y="190" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Chat</text>
+                            
+                            <!-- Connections to Brain -->
+                            <path d="M100 85 C120 85, 130 85, 140 90" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M100 165 C120 140, 130 140, 140 130" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M300 85 C280 85, 270 85, 260 90" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            <path d="M300 165 C280 140, 270 140, 260 130" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                            
+                            <text x="200" y="30" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">AI Models</text>
+                            <text x="200" y="50" font-family="Arial" font-size="10" fill="#333" text-anchor="middle">The "brains" powering AI systems</text>
+                        </svg>
+                        <p class="caption">AI models serve as the brains of AI systems, enabling a wide range of applications from self-driving cars to virtual assistants.</p>
+                    </div>
+
+                    <p>These models are mathematical structures that learn patterns from data using algorithms. Interestingly, there are different types of AI models, and their capabilities vary significantly based on their design and training.</p>
+                    
+                    <div class="key-concept">
+                        <h3>What Makes a Model "Generative"?</h3>
+                        <p>AI models can be broadly classified into two main categories:</p>
+                        <ul>
+                            <li><strong>Discriminative Models:</strong> These models identify or classify existing information. They answer questions like "Which category does this data belong to?" or "Is this email spam or not?"</li>
+                            <li><strong>Generative Models:</strong> These models create new content based on patterns they've learned. They can generate text, images, music, code, and more that hasn't existed before.</li>
+                        </ul>
+                        <p>Generative AI models have the unique ability to create novel outputs that follow the patterns of their training data without directly copying it. This ability to "generate" new content is what sets them apart.</p>
+                    </div>
+                    
+                    <p>For example, when you interact with Siri on your mobile phone, it is not exhibiting intelligence in the same way a human would. Rather, humans have programmed it to respond to certain prompts and execute functions, such as providing the latest weather update in your area or letting you know your local news.</p>
+                </section>
+
+                <section class="content-section" id="model-types">
+                    <h2>Types of Generative AI Models</h2>
+                    <p>There are several important types of generative AI models, each with different approaches to content generation and specific strengths and applications.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- Central Element -->
+                            <rect x="150" y="100" width="100" height="40" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" rx="5" />
+                            <text x="200" y="125" font-family="Arial" font-weight="bold" font-size="14" fill="#4B6EFB" text-anchor="middle">Generative</text>
+                            <text x="200" y="140" font-family="Arial" font-weight="bold" font-size="14" fill="#4B6EFB" text-anchor="middle">AI Models</text>
+                            
+                            <!-- GPT Model -->
+                            <rect x="60" y="40" width="80" height="40" fill="#FBD44B" opacity="0.4" stroke="#333" rx="5" />
+                            <text x="100" y="65" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">GPT</text>
+                            <line x1="140" y1="60" x2="170" y2="100" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- GAN Model -->
+                            <rect x="60" y="160" width="80" height="40" fill="#FBD44B" opacity="0.4" stroke="#333" rx="5" />
+                            <text x="100" y="185" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">GAN</text>
+                            <line x1="140" y1="180" x2="170" y2="140" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Diffusion Model -->
+                            <rect x="260" y="40" width="80" height="40" fill="#FBD44B" opacity="0.4" stroke="#333" rx="5" />
+                            <text x="300" y="65" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">Diffusion</text>
+                            <line x1="260" y1="60" x2="230" y2="100" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- VAE Model -->
+                            <rect x="260" y="160" width="80" height="40" fill="#FBD44B" opacity="0.4" stroke="#333" rx="5" />
+                            <text x="300" y="185" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">VAE</text>
+                            <line x1="260" y1="180" x2="230" y2="140" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- GPT Details -->
+                            <rect x="30" y="20" width="35" height="20" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="47" y="34" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Text</text>
+                            
+                            <!-- GAN Details -->
+                            <circle cx="40" cy="160" r="10" fill="#F0F0F0" stroke="#333" />
+                            <text x="40" y="164" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">🖼️</text>
+                            
+                            <!-- Diffusion Details -->
+                            <rect x="340" y="20" width="35" height="20" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="357" y="34" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Image</text>
+                            
+                            <!-- VAE Details -->
+                            <rect x="340" y="160" width="35" height="20" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="357" y="174" font-family="Arial" font-size="7" fill="#333" text-anchor="middle">Compress</text>
+                            
+                            <!-- Model Title -->
+                            <text x="200" y="25" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Major Types of Generative AI Models</text>
+                        </svg>
+                        <p class="caption">Different types of generative AI models, each specialized for specific kinds of content generation.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>Major Generative AI Model Types</h3>
+                        <p>Several key types of generative models power today's AI applications:</p>
+                        <ul>
+                            <li><strong>Generative Pre-trained Transformers (GPT):</strong> Language models that generate natural, context-aware text based on prompts</li>
+                            <li><strong>Generative Adversarial Networks (GANs):</strong> Models consisting of two neural networks—a generator and discriminator—that compete to create realistic images</li>
+                            <li><strong>Diffusion Models:</strong> Create images by gradually removing noise from random data, now powering many image generation tools</li>
+                            <li><strong>Variational Autoencoders (VAEs):</strong> Models that compress data to its essential features and then generate new examples from this compressed representation</li>
+                        </ul>
+                    </div>
+                    
+                    <p>The Generative Pre-Trained Transformer, or GPT model is one such example. GPT models can understand context and make predictions, which is why they are used in applications like text completion, translation, and even coding assistance.</p>
+                    
+                    <div class="info-box">
+                        <h3>Spotlight: GPT Models</h3>
+                        <p>GPT (Generative Pre-trained Transformer) is a family of language models that use deep learning techniques to generate natural language text. These models are called "transformers" because of their architectural design, which uses a mechanism called "attention" to understand context across long passages of text.</p>
+                        <p>Key characteristics of GPT models include:</p>
+                        <ul>
+                            <li>They are pre-trained on vast amounts of text from the internet</li>
+                            <li>They can be fine-tuned for specific tasks</li>
+                            <li>They generate text by predicting the next word in a sequence</li>
+                            <li>Each new version (GPT-3, GPT-4, etc.) has increased size and capabilities</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-section" id="model-architecture">
+                    <h2>Model Architecture and Training</h2>
+                    <p>Understanding the architecture of generative AI models helps explain how they work and what makes them capable of creating such impressive outputs.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- Training Data -->
+                            <rect x="50" y="50" width="80" height="40" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <text x="90" y="75" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Training Data</text>
+                            
+                            <!-- Training Process -->
+                            <rect x="150" y="50" width="80" height="40" fill="#FB4B4B" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="190" y="75" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Training</text>
+                            
+                            <!-- AI Model -->
+                            <rect x="250" y="50" width="80" height="40" fill="#4B6EFB" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="290" y="75" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">AI Model</text>
+                            
+                            <!-- Model Layers -->
+                            <rect x="250" y="110" width="80" height="80" fill="#F0F0F0" stroke="#333" />
+                            
+                            <!-- Neural Network Layers -->
+                            <rect x="260" y="120" width="60" height="10" fill="#FBD44B" opacity="0.4" />
+                            <text x="290" y="128" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Input Layer</text>
+                            
+                            <rect x="260" y="140" width="60" height="10" fill="#FBD44B" opacity="0.4" />
+                            <text x="290" y="148" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Hidden Layer 1</text>
+                            
+                            <rect x="260" y="160" width="60" height="10" fill="#FBD44B" opacity="0.4" />
+                            <text x="290" y="168" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Hidden Layer 2</text>
+                            
+                            <rect x="260" y="180" width="60" height="10" fill="#FBD44B" opacity="0.4" />
+                            <text x="290" y="188" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Output Layer</text>
+                            
+                            <!-- Flow Arrows -->
+                            <line x1="130" y1="70" x2="150" y2="70" stroke="#333" stroke-width="1" />
+                            <polygon points="150,70 145,67 145,73" fill="#333" />
+                            
+                            <line x1="230" y1="70" x2="250" y2="70" stroke="#333" stroke-width="1" />
+                            <polygon points="250,70 245,67 245,73" fill="#333" />
+                            
+                            <line x1="290" y1="90" x2="290" y2="110" stroke="#333" stroke-width="1" />
+                            <polygon points="290,110 287,105 293,105" fill="#333" />
+                            
+                            <!-- Outputs -->
+                            <rect x="360" y="110" width="30" height="15" fill="#F0F0F0" stroke="#333" rx="3" />
+                            <text x="375" y="120" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Text</text>
+                            
+                            <rect x="360" y="135" width="30" height="15" fill="#F0F0F0" stroke="#333" rx="3" />
+                            <text x="375" y="145" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Image</text>
+                            
+                            <rect x="360" y="160" width="30" height="15" fill="#F0F0F0" stroke="#333" rx="3" />
+                            <text x="375" y="170" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Audio</text>
+                            
+                            <rect x="360" y="185" width="30" height="15" fill="#F0F0F0" stroke="#333" rx="3" />
+                            <text x="375" y="195" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Code</text>
+                            
+                            <!-- Output Arrows -->
+                            <line x1="330" y1="125" x2="360" y2="118" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                            <line x1="330" y1="145" x2="360" y2="142" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                            <line x1="330" y1="165" x2="360" y2="168" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                            <line x1="330" y1="185" x2="360" y2="192" stroke="#333" stroke-width="1" stroke-dasharray="2,2" />
+                            
+                            <!-- Data Examples -->
+                            <circle cx="65" cy="110" r="5" fill="#FB4B4B" opacity="0.5" />
+                            <circle cx="85" cy="110" r="5" fill="#4B6EFB" opacity="0.5" />
+                            <circle cx="105" cy="110" r="5" fill="#4BFB9D" opacity="0.5" />
+                            <text x="85" y="125" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Millions of Examples</text>
+                            
+                            <!-- Training Process Elements -->
+                            <path d="M170 100 L180 110 L160 110 Z" fill="#333" />
+                            <path d="M170 120 L180 130 L160 130 Z" fill="#333" />
+                            <path d="M170 140 L180 150 L160 150 Z" fill="#333" />
+                            <text x="190" y="130" font-family="Arial" font-size="6" fill="#333" text-anchor="middle">Pattern Recognition</text>
+                            
+                            <text x="200" y="25" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Generative AI Model Architecture</text>
+                        </svg>
+                        <p class="caption">Generative AI models process large amounts of training data through neural networks to learn patterns and create new content.</p>
+                    </div>
+
+                    <p>The way we use a generative AI model depends entirely on our technical knowledge. Let's use an analogy of gardening to illustrate this.</p>
+                    
+                    <div class="key-concept">
+                        <h3>The Gardening Analogy for Model Usage</h3>
+                        <p>There are different ways to engage with generative AI models, depending on your technical expertise:</p>
+                        <ul>
+                            <li><strong>The Landscape Designer (Expert Level):</strong> Just as a landscape designer uses their extensive knowledge of gardening to plan and cultivate a garden from the ground up, tech experts can create custom AI models for complex tasks.</li>
+                            <li><strong>The Home Gardener (Intermediate Level):</strong> Like a home gardener using seed packets and young plants, someone with basic tech knowledge might use pre-existing models from repositories like GitHub and adapt them for specific needs.</li>
+                            <li><strong>The Indoor Plant Enthusiast (Beginner Level):</strong> Similar to using a simple indoor plant kit with instructions, users can access services like Microsoft Copilot without needing technical expertise.</li>
+                        </ul>
+                    </div>
+                    
+                    <p>In all these scenarios, the level of control you want over the results from the generative AI model depends on your knowledge, resources, and specific needs. Each approach has its own benefits and can produce excellent results when used appropriately.</p>
+                </section>
+
+                <section class="content-section" id="user-interaction">
+                    <h2>User Interaction with Models</h2>
+                    <p>While we've discussed the structure and types of generative AI models, the way most people interact with them is through user-friendly interfaces that abstract away the technical complexity.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <!-- User -->
+                            <circle cx="70" cy="110" r="15" fill="#666" />
+                            <rect x="65" y="125" width="10" height="25" fill="#666" />
+                            <line x1="75" y1="135" x2="85" y2="145" stroke="#666" stroke-width="2" />
+                            <line x1="65" y1="135" x2="55" y2="145" stroke="#666" stroke-width="2" />
+                            <line x1="65" y1="150" x2="60" y2="170" stroke="#666" stroke-width="2" />
+                            <line x1="75" y1="150" x2="80" y2="170" stroke="#666" stroke-width="2" />
+                            
+                            <!-- Interface -->
+                            <rect x="120" y="80" width="80" height="60" fill="#F0F0F0" stroke="#333" rx="5" />
+                            <rect x="130" y="90" width="60" height="10" fill="#FBD44B" opacity="0.3" rx="2" />
+                            <text x="160" y="98" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Ask me anything</text>
+                            <rect x="130" y="110" width="60" height="20" fill="#FFF" stroke="#CCC" />
+                            <line x1="135" y1="120" x2="150" y2="120" stroke="#333" stroke-width="1" />
+                            <circle cx="180" cy="120" r="5" fill="#4B6EFB" opacity="0.5" />
+                            <polygon points="180,120 177,117 177,123" fill="#4B6EFB" />
+                            
+                            <!-- Model (Cloud) -->
+                            <rect x="250" y="60" width="100" height="100" fill="#4B6EFB" opacity="0.2" stroke="#4B6EFB" rx="10" />
+                            <text x="300" y="115" font-family="Arial" font-weight="bold" font-size="14" fill="#4B6EFB" text-anchor="middle">AI Model</text>
+                            
+                            <!-- Arrows -->
+                            <path d="M90 110 L120 110" fill="none" stroke="#333" stroke-width="2" />
+                            <polygon points="120,110 115,107 115,113" fill="#333" />
+                            
+                            <path d="M200 100 L250 100" fill="none" stroke="#FB4B4B" stroke-width="2" stroke-dasharray="3,3" />
+                            <polygon points="250,100 245,97 245,103" fill="#FB4B4B" />
+                            <text x="225" y="90" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Prompt</text>
+                            
+                            <path d="M250 120 L200 120" fill="none" stroke="#4BFB9D" stroke-width="2" stroke-dasharray="3,3" />
+                            <polygon points="200,120 205,117 205,123" fill="#4BFB9D" />
+                            <text x="225" y="135" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">Response</text>
+                            
+                            <!-- Model Internals -->
+                            <circle cx="270" cy="90" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="290" cy="80" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="310" cy="90" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="280" cy="100" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="300" cy="100" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <circle cx="320" cy="100" r="5" fill="#FB4B4B" opacity="0.7" />
+                            <line x1="270" y1="90" x2="290" y2="80" stroke="#333" stroke-width="0.5" />
+                            <line x1="290" y1="80" x2="310" y2="90" stroke="#333" stroke-width="0.5" />
+                            <line x1="270" y1="90" x2="280" y2="100" stroke="#333" stroke-width="0.5" />
+                            <line x1="290" y1="80" x2="300" y2="100" stroke="#333" stroke-width="0.5" />
+                            <line x1="310" y1="90" x2="320" y2="100" stroke="#333" stroke-width="0.5" />
+                            <line x1="280" y1="100" x2="300" y2="100" stroke="#333" stroke-width="0.5" />
+                            <line x1="300" y1="100" x2="320" y2="100" stroke="#333" stroke-width="0.5" />
+                            
+                            <!-- User Devices -->
+                            <rect x="40" y="50" width="20" height="30" rx="3" fill="#333" />
+                            <rect x="45" y="55" width="10" height="15" fill="#FFF" />
+                            <circle cx="50" cy="75" r="2" fill="#FFF" />
+                            
+                            <rect x="80" y="50" width="30" height="20" fill="#333" />
+                            <rect x="80" y="70" width="30" height="15" fill="#333" />
+                            <rect x="85" y="55" width="20" height="10" fill="#FFF" />
+                            
+                            <!-- Labels -->
+                            <text x="70" y="30" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">User</text>
+                            <text x="160" y="65" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">User Interface</text>
+                            <text x="300" y="40" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Generative AI Model</text>
+                            
+                            <text x="200" y="180" font-family="Arial" font-weight="bold" font-size="12" fill="#333" text-anchor="middle">User Interaction with Generative AI</text>
+                        </svg>
+                        <p class="caption">Users interact with generative AI models through intuitive interfaces that hide the model's complexity.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>How Users Engage with AI Models</h3>
+                        <p>Most people interact with generative AI models through:</p>
+                        <ul>
+                            <li><strong>Web Interfaces:</strong> Services like Microsoft Copilot, DALL-E, or ChatGPT provide easy-to-use web interfaces</li>
+                            <li><strong>Mobile Apps:</strong> Smartphone applications that provide access to AI capabilities</li>
+                            <li><strong>Integrated Tools:</strong> AI features built into software like Microsoft 365 or Google Workspace</li>
+                            <li><strong>API Access:</strong> For developers who want to build custom applications using AI models</li>
+                        </ul>
+                        <p>These interfaces typically allow users to provide prompts (instructions or questions) and receive the AI's generated responses, whether they're text, images, code, or other formats.</p>
+                    </div>
+                    
+                    <p>For those without technical expertise, generative AI is accessible through services like Microsoft Copilot, which handles the complex interactions with the underlying models. This approach allows anyone to benefit from AI capabilities without needing to understand the technical details of how the models work.</p>
+                </section>
+
+                <section class="content-section" id="applications">
+                    <h2>Practical Applications</h2>
+                    <p>Generative AI models have a wide range of practical applications across industries, creativity, and everyday tasks. Their ability to generate new content makes them valuable tools for numerous use cases.</p>
+                    
+                    <div class="image-container">
+                        <svg width="400" height="240" viewBox="0 0 400 240">
+                            <!-- Central AI Node -->
+                            <circle cx="200" cy="120" r="30" fill="#4B6EFB" opacity="0.3" stroke="#4B6EFB" />
+                            <text x="200" y="125" font-family="Arial" font-weight="bold" font-size="12" fill="#4B6EFB" text-anchor="middle">Generative</text>
+                            <text x="200" y="140" font-family="Arial" font-weight="bold" font-size="12" fill="#4B6EFB" text-anchor="middle">AI</text>
+                            
+                            <!-- Creative Applications - Top Left -->
+                            <rect x="60" y="50" width="80" height="50" fill="#FBD44B" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="100" y="65" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Creative</text>
+                            <text x="100" y="80" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Applications</text>
+                            <line x1="140" y1="75" x2="170" y2="120" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Text icon -->
+                            <rect x="70" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <line x1="73" y1="93" x2="82" y2="93" stroke="#333" stroke-width="1" />
+                            <line x1="73" y1="96" x2="79" y2="96" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Image icon -->
+                            <rect x="95" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <circle cx="102" cy="95" r="3" fill="#333" opacity="0.5" />
+                            <path d="M98 98 L102 96 L106 98" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Music icon -->
+                            <rect x="120" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <circle cx="124" cy="94" r="1" fill="#333" />
+                            <line x1="124" y1="94" x2="124" y2="99" stroke="#333" stroke-width="1" />
+                            <circle cx="127" cy="96" r="1" fill="#333" />
+                            <line x1="127" y1="96" x2="127" y2="99" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Education Applications - Top Right -->
+                            <rect x="260" y="50" width="80" height="50" fill="#FBD44B" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="300" y="65" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Education</text>
+                            <text x="300" y="80" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Applications</text>
+                            <line x1="260" y1="75" x2="230" y2="120" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Book icon -->
+                            <rect x="270" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" />
+                            <line x1="277" y1="90" x2="277" y2="100" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Quiz icon -->
+                            <rect x="295" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="303" y="98" font-family="Arial" font-weight="bold" font-size="8" fill="#333" text-anchor="middle">?</text>
+                            
+                            <!-- Tutorial icon -->
+                            <rect x="320" y="90" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <line x1="325" y1="93" x2="330" y2="93" stroke="#333" stroke-width="1" />
+                            <line x1="325" y1="96" x2="330" y2="96" stroke="#333" stroke-width="1" />
+                            <line x1="325" y1="99" x2="330" y2="99" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Business Applications - Bottom Left -->
+                            <rect x="60" y="170" width="80" height="50" fill="#FBD44B" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="100" y="185" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Business</text>
+                            <text x="100" y="200" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Applications</text>
+                            <line x1="140" y1="195" x2="170" y2="150" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Email icon -->
+                            <rect x="70" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <path d="M70 150 L77 155 L85 150" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Report icon -->
+                            <rect x="95" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" />
+                            <line x1="98" y1="153" x2="107" y2="153" stroke="#333" stroke-width="1" />
+                            <line x1="98" y1="156" x2="107" y2="156" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Chart icon -->
+                            <rect x="120" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <path d="M123 156 L125 152 L127 154 L130 148" fill="none" stroke="#333" stroke-width="1" />
+                            
+                            <!-- Development Applications - Bottom Right -->
+                            <rect x="260" y="170" width="80" height="50" fill="#FBD44B" opacity="0.3" stroke="#333" rx="5" />
+                            <text x="300" y="185" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Development</text>
+                            <text x="300" y="200" font-family="Arial" font-weight="bold" font-size="10" fill="#333" text-anchor="middle">Applications</text>
+                            <line x1="260" y1="195" x2="230" y2="150" stroke="#333" stroke-dasharray="2,2" />
+                            
+                            <!-- Code icon -->
+                            <rect x="270" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="277" y="158" font-family="Arial" font-size="8" fill="#333" text-anchor="middle">{}</text>
+                            
+                            <!-- Debug icon -->
+                            <rect x="295" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" rx="2" />
+                            <text x="303" y="158" font-family="Arial" font-weight="bold" font-size="8" fill="#333" text-anchor="middle">!</text>
+                            
+                            <!-- Document icon -->
+                            <rect x="320" y="150" width="15" height="10" fill="#F0F0F0" stroke="#333" />
+                            <line x1="323" y1="153" x2="332" y2="153" stroke="#333" stroke-width="1" />
+                            <line x1="323" y1="156" x2="332" y2="156" stroke="#333" stroke-width="1" />
+                            
+                            <text x="200" y="25" font-family="Arial" font-weight="bold" font-size="14" fill="#333" text-anchor="middle">Practical Applications of Generative AI</text>
+                        </svg>
+                        <p class="caption">Generative AI models have applications across creative, educational, business, and development domains.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h3>Major Application Areas</h3>
+                        <p>Generative AI models are transforming work and creation across multiple domains:</p>
+                        <ul>
+                            <li><strong>Creative Content:</strong> Generating art, writing, music, and design concepts</li>
+                            <li><strong>Education:</strong> Creating personalized learning materials, explanations, and practice problems</li>
+                            <li><strong>Business:</strong> Drafting emails, reports, marketing copy, and data analysis</li>
+                            <li><strong>Software Development:</strong> Writing code, debugging existing programs, and generating documentation</li>
+                            <li><strong>Science and Research:</strong> Suggesting hypotheses, analyzing data patterns, and generating research summaries</li>
+                        </ul>
+                    </div>
+                    
+                    <p>The Microsoft Copilot Copyright Commitment is an example of an initiative created to address potential intellectual property concerns around AI-generated content. This commitment extends existing IP security support to commercial Copilot services, addressing potential infringement liability that could arise from the use of the output of Microsoft's Copilots and Azure OpenAI Service.</p>
+                    
+                    <div class="info-box">
+                        <h3>Example: Microsoft Copilot</h3>
+                        <p>Microsoft Copilot is an AI-powered productivity tool designed to enhance daily life by leveraging the power of generative AI models. It can:</p>
+                        <ul>
+                            <li>Boost productivity through automated task handling</li>
+                            <li>Unlock creativity by suggesting ideas and generating content</li>
+                            <li>Enhance understanding through summaries and explanations</li>
+                            <li>Create images based on text prompts using DALL·E</li>
+                            <li>Assist software developers with code generation and analysis</li>
+                        </ul>
+                        <p>Copilot integrates with various Microsoft products and services, making AI assistance available across work and personal contexts.</p>
+                    </div>
+                    
+                    <p>As generative AI models continue to evolve, their applications will likely expand into new domains and become more sophisticated. The most effective use of these models often involves human-AI collaboration, where the AI generates content that humans then refine and enhance with their unique perspectives and expertise.</p>
+                </section>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="chapter1_11.html" class="nav-button previous"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+                <a href="chapter3_13.html" class="nav-button next">Next Chapter <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Fluency Course</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
