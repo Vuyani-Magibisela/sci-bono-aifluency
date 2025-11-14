@@ -83,12 +83,13 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
+            <!-- Dashboard Content (Phase 4: Dynamic Loading) -->
+            <div class="dashboard-content" id="dashboard-content">
                 <!-- Welcome Banner -->
                 <div class="welcome-banner">
-                    <h2>Welcome back, John!</h2>
+                    <h2 id="welcome-message">Welcome back!</h2>
                     <p>Continue your learning journey and achieve your goals</p>
+                    <button id="refresh-dashboard" class="btn-secondary btn-sm">↻ Refresh</button>
                 </div>
 
                 <!-- Statistics Cards -->
@@ -97,46 +98,46 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Enrolled Courses</div>
-                                <div class="card-value">4</div>
+                                <div class="card-value" id="total-courses">0</div>
                             </div>
                             <div class="card-icon blue">
                                 <i class="fas fa-book"></i>
                             </div>
                         </div>
-                        <div class="card-description">2 in progress</div>
+                        <div class="card-description">Active enrollments</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Completed</div>
-                                <div class="card-value">2</div>
+                                <div class="card-title">Lessons Completed</div>
+                                <div class="card-value" id="completed-lessons">0/0</div>
                             </div>
                             <div class="card-icon green">
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-                        <div class="card-description">50% completion rate</div>
+                        <div class="card-description">Overall progress</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Total Hours</div>
-                                <div class="card-value">24</div>
+                                <div class="card-title">Quiz Average</div>
+                                <div class="card-value" id="quiz-average">0%</div>
                             </div>
                             <div class="card-icon orange">
-                                <i class="fas fa-clock"></i>
+                                <i class="fas fa-chart-line"></i>
                             </div>
                         </div>
-                        <div class="card-description">Learning time</div>
+                        <div class="card-description">Average score</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Certificates</div>
-                                <div class="card-value">2</div>
+                                <div class="card-value" id="certificates-earned">0</div>
                             </div>
                             <div class="card-icon red">
                                 <i class="fas fa-certificate"></i>
@@ -146,81 +147,44 @@
                     </div>
                 </div>
 
-                <!-- Course Progress Section -->
+                <!-- Enrolled Courses Section (Dynamic) -->
                 <div class="dashboard-card" style="margin-bottom: 2rem;">
-                    <h3 style="margin-bottom: 1.5rem;">Continue Learning</h3>
-                    <div class="course-list">
-                        <div class="course-item">
-                            <div class="course-thumbnail">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="course-details">
-                                <h3>AI Fluency Course</h3>
-                                <p>Master the fundamentals of Artificial Intelligence</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-book"></i> 6 Modules</span>
-                                    <span><i class="fas fa-clock"></i> 12 Hours</span>
-                                </div>
-                                <div class="course-progress">Progress: 65%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 65%;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="course-item">
-                            <div class="course-thumbnail">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="course-details">
-                                <h3>Programming Fundamentals</h3>
-                                <p>Learn the basics of programming and computational thinking</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-book"></i> 8 Modules</span>
-                                    <span><i class="fas fa-clock"></i> 16 Hours</span>
-                                </div>
-                                <div class="course-progress">Progress: 30%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 30%;"></div>
-                                </div>
-                            </div>
-                        </div>
+                    <h3 style="margin-bottom: 1.5rem;">My Courses</h3>
+                    <div id="enrolled-courses">
+                        <!-- Populated by dashboard.js -->
+                        <div class="loading-spinner">Loading courses...</div>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="data-table">
-                    <h3>Recent Activity</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Activity</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>AI Fluency Course</td>
-                                <td>Completed Module 4</td>
-                                <td>Today</td>
-                                <td><span class="status-badge active">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>AI Fluency Course</td>
-                                <td>Quiz: Responsible AI</td>
-                                <td>Yesterday</td>
-                                <td><span class="status-badge active">Passed</span></td>
-                            </tr>
-                            <tr>
-                                <td>Programming Fundamentals</td>
-                                <td>Started Module 2</td>
-                                <td>2 days ago</td>
-                                <td><span class="status-badge pending">In Progress</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Recent Quiz Attempts Section (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0;">Recent Quiz Attempts</h3>
+                        <a href="quiz-history.html" class="btn-secondary" style="text-decoration: none;">
+                            <i class="fas fa-history"></i> View All History
+                        </a>
+                    </div>
+                    <div id="recent-quiz-attempts">
+                        <!-- Populated by dashboard.js -->
+                        <div class="loading-spinner">Loading quiz results...</div>
+                    </div>
+                </div>
+
+                <!-- Certificates Section (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">My Certificates</h3>
+                    <div id="certificates">
+                        <!-- Populated by dashboard.js -->
+                        <div class="loading-spinner">Loading certificates...</div>
+                    </div>
+                </div>
+
+                <!-- Progress Chart (Optional) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Overall Progress</h3>
+                    <div id="progress-chart">
+                        <!-- Populated by dashboard.js -->
+                    </div>
                 </div>
             </div>
         </main>
@@ -244,19 +208,13 @@
     <script src="/js/auth.js"></script>
     <script src="/js/header-template.js"></script>
 
+    <!-- Student Dashboard Module (Phase 4) -->
+    <script src="/js/dashboard.js"></script>
+
     <!-- Page Protection -->
     <script>
         // Require authentication - allow students, instructors, and admins
         Auth.requireAuth(['student', 'instructor', 'admin']);
-
-        // Load user-specific data
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = Auth.getUser();
-            if (user) {
-                console.log('Student dashboard loaded for:', user.email, '(Role:', user.role, ')');
-                // Phase 2: Load enrollment data, progress, certificates dynamically
-            }
-        });
     </script>
 </body>
 </html>

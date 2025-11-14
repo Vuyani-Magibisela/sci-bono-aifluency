@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+    <!-- Manifest and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency - Module</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/stylesModules.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <div class="module-container">
+            <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+            <div id="breadcrumb-container"></div>
+
+            <!-- Module header will be populated dynamically -->
+            <div class="module-header">
+                <h1 id="module-title">Loading module...</h1>
+                <p class="subtitle" id="module-subtitle"></p>
+            </div>
+
+            <div class="module-intro">
+                <div class="module-intro-content" id="module-intro">
+                    <div class="loading-spinner">Loading module information...</div>
+                </div>
+                <div class="module-intro-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Brain with network connections -->
+                        <ellipse cx="100" cy="100" rx="70" ry="60" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <path d="M70 80 Q100 40, 130 80" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <path d="M70 120 Q100 160, 130 120" fill="none" stroke="#4B6EFB" stroke-width="2" />
+                        <line x1="70" y1="100" x2="130" y2="100" stroke="#4B6EFB" stroke-width="2" />
+
+                        <!-- Nodes -->
+                        <circle cx="70" cy="80" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="80" r="5" fill="#FB4B4B" />
+                        <circle cx="70" cy="120" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="120" r="5" fill="#FB4B4B" />
+                        <circle cx="70" cy="100" r="5" fill="#FB4B4B" />
+                        <circle cx="130" cy="100" r="5" fill="#FB4B4B" />
+                        <circle cx="100" cy="60" r="5" fill="#FB4B4B" />
+                        <circle cx="100" cy="140" r="5" fill="#FB4B4B" />
+
+                        <!-- Connect all nodes -->
+                        <line x1="70" y1="80" x2="70" y2="100" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="100" x2="70" y2="120" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="80" x2="130" y2="100" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="100" x2="130" y2="120" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="80" x2="100" y2="60" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="80" x2="100" y2="60" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="70" y1="120" x2="100" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                        <line x1="130" y1="120" x2="100" y2="140" stroke="#4B6EFB" stroke-width="1" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Lessons grid will be populated dynamically -->
+            <div class="chapters-grid" id="lessons-container">
+                <div class="loading-spinner">Loading lessons...</div>
+            </div>
+
+            <!-- Quiz link -->
+            <div class="module-quiz-section" id="quiz-section" style="display: none;">
+                <h2>Test Your Knowledge</h2>
+                <p>Ready to test what you've learned? Take the module quiz!</p>
+                <a href="#" id="quiz-link" class="btn-primary">Take Module Quiz</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Sci-Bono AI Fluency Course. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Content Loader (Phase 5C) -->
+    <script src="/js/content-loader.js"></script>
+
+    <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+    <script src="/js/breadcrumb.js"></script>
+
+    <!-- Module Page Logic -->
+    <script>
+        (async function() {
+            // Get module ID from URL parameter (e.g., ?module_id=1)
+            const moduleId = ContentLoader.getUrlParam('module_id');
+
+            if (!moduleId) {
+                ContentLoader.showError('#lessons-container', 'No module specified. Please select a module from the home page.');
+                return;
+            }
+
+            try {
+                // Load module and lessons from API
+                const moduleData = await ContentLoader.loadModule(moduleId);
+
+                // Update page title
+                document.title = `AI Fluency - ${moduleData.module.title}`;
+                document.getElementById('page-title').textContent = document.title;
+
+                // Render breadcrumb (Phase 5D Priority 2)
+                Breadcrumb.render('breadcrumb-container', {
+                    course: { id: 1, title: 'AI Fluency Course' },
+                    module: { id: moduleId, title: moduleData.module.title }
+                });
+
+                // Render module content
+                ContentLoader.renderModulePage(moduleData, {
+                    title: '#module-title',
+                    subtitle: '#module-subtitle',
+                    lessonsContainer: '#lessons-container'
+                });
+
+                // Update intro text
+                const introContainer = document.getElementById('module-intro');
+                if (moduleData.module.description) {
+                    introContainer.innerHTML = `
+                        <p>Welcome to ${moduleData.module.title}! ${moduleData.module.description}</p>
+                        <p>Choose a lesson below to begin your learning journey.</p>
+                    `;
+                }
+
+                // Check if quiz exists for this module
+                try {
+                    const quizData = await ContentLoader.loadQuiz(moduleId);
+                    if (quizData && quizData.questions.length > 0) {
+                        document.getElementById('quiz-section').style.display = 'block';
+                        document.getElementById('quiz-link').href = `quiz-dynamic.html?module_id=${moduleId}`;
+                    }
+                } catch (error) {
+                    console.log('No quiz available for this module');
+                }
+
+            } catch (error) {
+                console.error('Error loading module:', error);
+                ContentLoader.showError('#lessons-container', 'Failed to load module content. Please try again later.');
+            }
+        })();
+    </script>
+</body>
+</html>

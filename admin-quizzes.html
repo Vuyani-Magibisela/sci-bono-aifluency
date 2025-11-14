@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Management - AI Fluency Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-name">Admin User</div>
+                <div class="profile-role">System Administrator</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="admin-courses.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Courses</span>
+                </a>
+                <a href="admin-modules.html" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Modules</span>
+                </a>
+                <a href="admin-lessons.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Lessons</span>
+                </a>
+                <a href="admin-quizzes.html" class="nav-item active">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quizzes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Bar -->
+            <div class="dashboard-topbar">
+                <div class="topbar-left">
+                    <h1>Quiz Management</h1>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-primary" id="create-quiz-btn">
+                        <i class="fas fa-plus"></i> Create Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content" id="dashboard-content">
+                <!-- Filters -->
+                <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filter-module">Filter by Module:</label>
+                            <select id="filter-module" class="filter-select">
+                                <option value="">Loading modules...</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-search">Search Quizzes:</label>
+                            <input type="text" id="filter-search" class="filter-input" placeholder="Search quizzes...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quizzes List -->
+                <div class="dashboard-card">
+                    <div id="quizzes-list">
+                        <div class="loading-spinner">Loading quizzes...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quiz Form Modal -->
+    <div id="quiz-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Quiz</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="quiz-form">
+                    <input type="hidden" id="quiz-id" name="id">
+
+                    <div class="form-group">
+                        <label for="quiz-module">Module *</label>
+                        <select id="quiz-module" name="module_id" required>
+                            <option value="">Select a module...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quiz-title">Quiz Title *</label>
+                        <input type="text" id="quiz-title" name="title" required maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quiz-description">Description</label>
+                        <textarea id="quiz-description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quiz-passing-score">Passing Score (%) *</label>
+                            <input type="number" id="quiz-passing-score" name="passing_score" required min="0" max="100" value="70">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quiz-time-limit">Time Limit (minutes)</label>
+                            <input type="number" id="quiz-time-limit" name="time_limit_minutes" min="1" max="180">
+                            <small>Leave empty for no time limit</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quiz-max-attempts">Max Attempts</label>
+                        <input type="number" id="quiz-max-attempts" name="max_attempts" min="1" max="10" value="3">
+                        <small>Maximum number of attempts allowed</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="quiz-published" name="is_published" checked>
+                            <span>Publish Quiz</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn-primary" id="save-quiz-btn">Save Quiz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Form Modal -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 id="question-modal-title">Add Question</h2>
+                <button class="modal-close" id="close-question-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="question-form">
+                    <input type="hidden" id="question-id" name="id">
+                    <input type="hidden" id="question-quiz-id" name="quiz_id">
+
+                    <div class="form-group">
+                        <label for="question-text">Question Text *</label>
+                        <textarea id="question-text" name="question" required rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Answer Options *</label>
+                        <div id="options-container">
+                            <div class="option-input-group">
+                                <input type="text" class="option-input" placeholder="Option 1" maxlength="255" required>
+                                <input type="radio" name="correct_option" value="0" required>
+                                <label>Correct</label>
+                            </div>
+                            <div class="option-input-group">
+                                <input type="text" class="option-input" placeholder="Option 2" maxlength="255" required>
+                                <input type="radio" name="correct_option" value="1">
+                                <label>Correct</label>
+                            </div>
+                            <div class="option-input-group">
+                                <input type="text" class="option-input" placeholder="Option 3" maxlength="255" required>
+                                <input type="radio" name="correct_option" value="2">
+                                <label>Correct</label>
+                            </div>
+                            <div class="option-input-group">
+                                <input type="text" class="option-input" placeholder="Option 4" maxlength="255" required>
+                                <input type="radio" name="correct_option" value="3">
+                                <label>Correct</label>
+                            </div>
+                        </div>
+                        <small>Select which option is correct</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question-explanation">Explanation</label>
+                        <textarea id="question-explanation" name="explanation" rows="3"></textarea>
+                        <small>Shown after answer is submitted</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question-points">Points *</label>
+                        <input type="number" id="question-points" name="points" required min="1" max="100" value="1">
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-question-btn">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Question</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Quiz Management Module (Phase 5B) -->
+    <script src="/js/admin-quizzes.js"></script>
+
+    <!-- Page Protection -->
+    <script>
+        // Require authentication - admins only
+        Auth.requireAuth(['admin']);
+    </script>
+</body>
+</html>

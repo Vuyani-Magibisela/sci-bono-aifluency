@@ -424,6 +424,82 @@ $routes = [
         'handler' => 'CertificateController@requestCertificate',
         'auth' => true
     ],
+
+    // Student Notes Routes (Phase 5D Priority 4)
+    [
+        'method' => 'GET',
+        'pattern' => '/notes',
+        'handler' => 'NotesController@getAllNotes',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/notes/lesson/:lessonId',
+        'handler' => 'NotesController@getNotesByLesson',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/notes',
+        'handler' => 'NotesController@createOrUpdateNote',
+        'auth' => true
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/notes/:noteId',
+        'handler' => 'NotesController@deleteNote',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/notes/search',
+        'handler' => 'NotesController@searchNotes',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/notes/stats',
+        'handler' => 'NotesController@getNoteStats',
+        'auth' => true
+    ],
+
+    // Bookmarks Routes (Phase 5D Priority 5)
+    [
+        'method' => 'GET',
+        'pattern' => '/bookmarks',
+        'handler' => 'BookmarksController@index',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/bookmarks/check/:lessonId',
+        'handler' => 'BookmarksController@checkBookmark',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/bookmarks',
+        'handler' => 'BookmarksController@create',
+        'auth' => true
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/bookmarks/:lessonId',
+        'handler' => 'BookmarksController@delete',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/bookmarks/toggle',
+        'handler' => 'BookmarksController@toggle',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/bookmarks/stats',
+        'handler' => 'BookmarksController@stats',
+        'auth' => true
+    ],
 ];
 
 // Match route

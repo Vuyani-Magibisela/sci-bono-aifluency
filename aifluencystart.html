@@ -161,6 +161,28 @@
     <script src="/js/auth.js"></script>
     <script src="/js/header-template.js"></script>
 
-    <!-- Legacy Scripts -->
+    <!-- Phase 5D: Progressive Enhancement - Update links to dynamic pages -->
+    <script>
+        // Update module links to use dynamic pages
+        (function() {
+            const moduleLinks = document.querySelectorAll('.toc-link');
+
+            // Map module links to their IDs (in order they appear)
+            const moduleIds = [1, 2, 3, 4, 5, 6];
+
+            moduleLinks.forEach((link, index) => {
+                const moduleId = moduleIds[index];
+                if (moduleId) {
+                    // Update href to dynamic page
+                    link.href = `module-dynamic.html?module_id=${moduleId}`;
+
+                    // Add data attribute for fallback
+                    link.setAttribute('data-static-fallback', `module${moduleId}.html`);
+                }
+            });
+
+            console.log('Module links updated to dynamic pages (Phase 5D)');
+        })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+    <!-- Manifest and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency - Quiz</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-instructions {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .quiz-info-item {
+            text-align: center;
+        }
+
+        .quiz-info-item strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .question-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .question-number {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid var(--grey-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .option:hover {
+            background-color: var(--grey-light);
+        }
+
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: var(--primary-color);
+        }
+
+        .option.correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .option label {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #3a5bdb;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        .pass {
+            color: #4caf50;
+        }
+
+        .fail {
+            color: #f44336;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .timer-display {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .timer-display.warning {
+            color: #ff9800;
+        }
+
+        .timer-display.danger {
+            color: #f44336;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <div class="quiz-container">
+            <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+            <div id="breadcrumb-container"></div>
+
+            <!-- Quiz header -->
+            <div class="quiz-header">
+                <h1 id="quiz-title">Loading quiz...</h1>
+                <p id="quiz-description"></p>
+            </div>
+
+            <!-- Timer (if applicable) -->
+            <div id="timer-display" class="timer-display" style="display: none;">
+                <i class="fas fa-clock"></i> <span id="timer">00:00</span>
+            </div>
+
+            <!-- Quiz instructions -->
+            <div class="quiz-instructions">
+                <h2>Instructions</h2>
+                <p>Answer all questions to the best of your ability. You can review and change your answers before submitting.</p>
+                <div class="quiz-info">
+                    <div class="quiz-info-item">
+                        <strong id="question-count">0</strong>
+                        <span>Questions</span>
+                    </div>
+                    <div class="quiz-info-item">
+                        <strong id="passing-score">70%</strong>
+                        <span>Passing Score</span>
+                    </div>
+                    <div class="quiz-info-item">
+                        <strong id="time-limit">No Limit</strong>
+                        <span>Time Limit</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions container -->
+            <div id="questions-container">
+                <div class="loading-spinner">Loading quiz questions...</div>
+            </div>
+
+            <!-- Submit button -->
+            <button class="submit-btn" id="submit-quiz" style="display: none;">
+                <i class="fas fa-check-circle"></i> Submit Quiz
+            </button>
+
+            <!-- Results container -->
+            <div class="results-container" id="results-container">
+                <h2>Quiz Results</h2>
+                <div class="score-display" id="score-display">0%</div>
+                <p id="results-message"></p>
+                <div id="results-details"></div>
+                <div class="results-actions">
+                    <a href="#" id="retake-quiz" class="btn-secondary">Retake Quiz</a>
+                    <a href="#" id="back-to-module" class="btn-primary">Back to Module</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Sci-Bono AI Fluency Course. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Content Loader (Phase 5C) -->
+    <script src="/js/content-loader.js"></script>
+
+    <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+    <script src="/js/breadcrumb.js"></script>
+
+    <!-- Quiz Page Logic -->
+    <script>
+        let quizData = null;
+        let moduleId = null;
+        let timerInterval = null;
+        let timeRemaining = null;
+
+        (async function() {
+            // Get module ID from URL parameter
+            moduleId = ContentLoader.getUrlParam('module_id');
+
+            if (!moduleId) {
+                ContentLoader.showError('#questions-container', 'No module specified. Please select a quiz from a module page.');
+                return;
+            }
+
+            try {
+                // Load quiz from API
+                quizData = await ContentLoader.loadQuiz(moduleId);
+
+                // Randomize quiz questions and options (Phase 5D Priority 3)
+                quizData = ContentLoader.randomizeQuiz(quizData, true, true);
+
+                // Update page title
+                document.title = `AI Fluency - ${quizData.title}`;
+                document.getElementById('page-title').textContent = document.title;
+
+                // Render quiz
+                renderQuiz();
+
+                // Render breadcrumb (Phase 5D Priority 2)
+                try {
+                    const moduleResponse = await API.get(`/courses/1/modules/${moduleId}`);
+                    Breadcrumb.render('breadcrumb-container', {
+                        course: { id: 1, title: 'AI Fluency Course' },
+                        module: { id: moduleId, title: moduleResponse.data?.title || 'Module' },
+                        quiz: { id: quizData.id, title: quizData.title }
+                    });
+                } catch (error) {
+                    console.error('Failed to load module for breadcrumb:', error);
+                }
+
+                // Show submit button
+                document.getElementById('submit-quiz').style.display = 'block';
+
+                // Setup submit handler
+                setupSubmitHandler();
+
+                // Start timer if applicable
+                if (quizData.time_limit_minutes) {
+                    startTimer(quizData.time_limit_minutes);
+                }
+
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                ContentLoader.showError('#questions-container', 'Failed to load quiz. This module may not have a quiz yet.');
+            }
+        })();
+
+        /**
+         * Render quiz content
+         */
+        function renderQuiz() {
+            // Update header
+            document.getElementById('quiz-title').textContent = quizData.title;
+            if (quizData.description) {
+                document.getElementById('quiz-description').textContent = quizData.description;
+            }
+
+            // Update quiz info
+            document.getElementById('question-count').textContent = quizData.questions.length;
+            document.getElementById('passing-score').textContent = `${quizData.passing_score}%`;
+
+            if (quizData.time_limit_minutes) {
+                document.getElementById('time-limit').textContent = `${quizData.time_limit_minutes} min`;
+            }
+
+            // Render questions
+            ContentLoader.renderQuizPage(quizData, {
+                title: '#quiz-title',
+                description: '#quiz-description',
+                questionsContainer: '#questions-container'
+            });
+
+            // Add click handlers for options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.checked = true;
+
+                    // Highlight selected option
+                    const questionContainer = this.closest('.question-container');
+                    questionContainer.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        }
+
+        /**
+         * Start quiz timer
+         */
+        function startTimer(minutes) {
+            timeRemaining = minutes * 60; // Convert to seconds
+            const timerDisplay = document.getElementById('timer-display');
+            const timerElement = document.getElementById('timer');
+
+            timerDisplay.style.display = 'block';
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+
+                const mins = Math.floor(timeRemaining / 60);
+                const secs = timeRemaining % 60;
+                timerElement.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+                // Warning at 5 minutes
+                if (timeRemaining === 300) {
+                    timerDisplay.classList.add('warning');
+                }
+
+                // Danger at 1 minute
+                if (timeRemaining === 60) {
+                    timerDisplay.classList.remove('warning');
+                    timerDisplay.classList.add('danger');
+                }
+
+                // Time's up
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Your quiz will be submitted automatically.');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        /**
+         * Setup submit handler
+         */
+        function setupSubmitHandler() {
+            document.getElementById('submit-quiz').addEventListener('click', function() {
+                // Check if all questions are answered
+                const totalQuestions = quizData.questions.length;
+                const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+
+                if (answeredQuestions < totalQuestions) {
+                    if (!confirm(`You have only answered ${answeredQuestions} of ${totalQuestions} questions. Submit anyway?`)) {
+                        return;
+                    }
+                }
+
+                submitQuiz();
+            });
+        }
+
+        /**
+         * Submit quiz
+         */
+        async function submitQuiz() {
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // Disable submit button
+            const submitBtn = document.getElementById('submit-quiz');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            // Collect answers
+            const answers = [];
+            quizData.questions.forEach((question, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    answers.push({
+                        question_id: question.id,
+                        selected_answer: parseInt(selectedOption.value)
+                    });
+                }
+            });
+
+            try {
+                // Submit quiz
+                const results = await ContentLoader.submitQuiz(quizData.id, answers);
+
+                // Display results
+                displayResults(results);
+
+                // Hide questions and submit button
+                document.getElementById('questions-container').style.display = 'none';
+                submitBtn.style.display = 'none';
+                document.getElementById('timer-display').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                alert('Failed to submit quiz. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Submit Quiz';
+            }
+        }
+
+        /**
+         * Display quiz results
+         */
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('results-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const resultsMessage = document.getElementById('results-message');
+
+            // Show results container
+            resultsContainer.classList.add('show');
+
+            // Display score
+            scoreDisplay.textContent = `${results.score}%`;
+            scoreDisplay.className = 'score-display ' + (results.passed ? 'pass' : 'fail');
+
+            // Display message
+            resultsMessage.innerHTML = `
+                <p>You answered <strong>${results.correct_count}</strong> out of <strong>${results.total_questions}</strong> questions correctly.</p>
+                <p>${results.passed ?
+                    '<strong style="color: #4caf50;">Congratulations! You passed the quiz!</strong>' :
+                    '<strong style="color: #f44336;">You did not pass this time. Please review the material and try again.</strong>'
+                }</p>
+            `;
+
+            // Setup action buttons
+            document.getElementById('retake-quiz').href = `quiz-dynamic.html?module_id=${moduleId}`;
+            document.getElementById('back-to-module').href = `module-dynamic.html?module_id=${moduleId}`;
+
+            // Show explanations in questions
+            if (results.results) {
+                results.results.forEach((result, index) => {
+                    const questionContainer = document.querySelectorAll('.question-container')[index];
+                    if (questionContainer && result.explanation) {
+                        const explanation = document.createElement('div');
+                        explanation.className = 'explanation show';
+                        explanation.innerHTML = `<strong>Explanation:</strong> ${result.explanation}`;
+                        questionContainer.appendChild(explanation);
+                    }
+
+                    // Highlight correct/incorrect answers
+                    const options = questionContainer.querySelectorAll('.option');
+                    options.forEach((option, optIndex) => {
+                        const question = quizData.questions[index];
+                        if (optIndex === question.correctAnswer) {
+                            option.classList.add('correct');
+                        }
+                        if (option.classList.contains('selected') && !result.is_correct) {
+                            option.classList.add('incorrect');
+                        }
+                    });
+                });
+
+                // Show questions again for review
+                document.getElementById('questions-container').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v3';
+const CACHE_NAME = 'ai-fluency-cache-v12';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -11,6 +11,16 @@ const urlsToCache = [
   '/admin-dashboard.html',
   '/profile.html',
   '/403.html',
+  // Admin Content Management pages (Phase 5B)
+  '/admin-courses.html',
+  '/admin-modules.html',
+  '/admin-lessons.html',
+  '/admin-quizzes.html',
+  // Dynamic Content Pages (Phase 5C)
+  '/module-dynamic.html',
+  '/lesson-dynamic.html',
+  '/quiz-dynamic.html',
+  '/quiz-history.html',
   // CSS files
   '/css/styles.css',
   '/css/stylesModules.css',
@@ -76,12 +86,34 @@ const urlsToCache = [
   '/js/auth.js',
   '/js/header-template.js',
   '/js/footer-template.js',
+  // Dashboard JavaScript files (Phase 4)
+  '/js/dashboard.js',
+  '/js/instructor.js',
+  '/js/admin.js',
+  // Admin Content Management JavaScript files (Phase 5B)
+  '/js/admin-courses.js',
+  '/js/admin-modules.js',
+  '/js/admin-lessons.js',
+  '/js/admin-quizzes.js',
+  // Content Loader (Phase 5C)
+  '/js/content-loader.js',
+  // Breadcrumb Navigation (Phase 5D Priority 2)
+  '/js/breadcrumb.js',
+  // Quiz History (Phase 5D Priority 3)
+  '/js/quiz-history.js',
+  // Achievements (Phase 6)
+  '/js/achievements.js',
+  '/achievements.html',
+  '/certificates.html',
   // Images
   '/images/favicon.ico',
   // External resources
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  // Quill.js (Phase 5B - Rich text editor)
+  'https://cdn.quilljs.com/1.3.6/quill.js',
+  'https://cdn.quilljs.com/1.3.6/quill.snow.css'
 ];
 
 

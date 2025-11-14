@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Management - AI Fluency Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-name">Admin User</div>
+                <div class="profile-role">System Administrator</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="admin-courses.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Courses</span>
+                </a>
+                <a href="admin-modules.html" class="nav-item active">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Modules</span>
+                </a>
+                <a href="admin-lessons.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Lessons</span>
+                </a>
+                <a href="admin-quizzes.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quizzes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Bar -->
+            <div class="dashboard-topbar">
+                <div class="topbar-left">
+                    <h1>Module Management</h1>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-primary" id="create-module-btn">
+                        <i class="fas fa-plus"></i> Create Module
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content" id="dashboard-content">
+                <!-- Course Filter -->
+                <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                    <div class="filters-bar">
+                        <div class="filter-group" style="flex: 2;">
+                            <label for="filter-course">Filter by Course:</label>
+                            <select id="filter-course" class="filter-select">
+                                <option value="">Loading courses...</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-search">Search Modules:</label>
+                            <input type="text" id="filter-search" class="filter-input" placeholder="Search modules...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modules List -->
+                <div class="dashboard-card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0;">Modules</h3>
+                        <small style="color: #666;">Drag to reorder modules</small>
+                    </div>
+                    <div id="modules-list">
+                        <div class="loading-spinner">Loading modules...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Module Form Modal -->
+    <div id="module-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Module</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="module-form">
+                    <input type="hidden" id="module-id" name="id">
+
+                    <div class="form-group">
+                        <label for="module-course">Course *</label>
+                        <select id="module-course" name="course_id" required>
+                            <option value="">Select a course...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module-title">Module Title *</label>
+                        <input type="text" id="module-title" name="title" required maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module-slug">URL Slug *</label>
+                        <input type="text" id="module-slug" name="slug" required maxlength="255" pattern="[a-z0-9-]+">
+                        <small>Lowercase letters, numbers, and hyphens only (e.g., ai-foundations)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module-description">Description</label>
+                        <textarea id="module-description" name="description" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module-order">Order Index *</label>
+                        <input type="number" id="module-order" name="order_index" required min="1" value="1">
+                        <small>Module position in the course (1, 2, 3, etc.)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="module-published" name="is_published" checked>
+                            <span>Publish Module</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn-primary" id="save-module-btn">Save Module</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Module Management Module (Phase 5B) -->
+    <script src="/js/admin-modules.js"></script>
+
+    <!-- Page Protection -->
+    <script>
+        // Require authentication - admins only
+        Auth.requireAuth(['admin']);
+    </script>
+</body>
+</html>

@@ -91,12 +91,13 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
+            <!-- Dashboard Content (Phase 4: Dynamic Loading) -->
+            <div class="dashboard-content" id="dashboard-content">
                 <!-- Welcome Banner -->
                 <div class="welcome-banner">
-                    <h2>Welcome back, Dr. Johnson!</h2>
+                    <h2 id="welcome-message">Welcome, Instructor!</h2>
                     <p>Manage your courses and engage with your students</p>
+                    <button id="refresh-dashboard" class="btn-secondary btn-sm">↻ Refresh</button>
                 </div>
 
                 <!-- Statistics Cards -->
@@ -105,7 +106,7 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Active Courses</div>
-                                <div class="card-value">3</div>
+                                <div class="card-value" id="total-courses">0</div>
                             </div>
                             <div class="card-icon blue">
                                 <i class="fas fa-book"></i>
@@ -118,7 +119,7 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Total Students</div>
-                                <div class="card-value">156</div>
+                                <div class="card-value" id="total-students">0</div>
                             </div>
                             <div class="card-icon green">
                                 <i class="fas fa-users"></i>
@@ -131,7 +132,7 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Pending Grading</div>
-                                <div class="card-value">12</div>
+                                <div class="card-value" id="pending-grading">0</div>
                             </div>
                             <div class="card-icon orange">
                                 <i class="fas fa-clipboard-check"></i>
@@ -144,7 +145,7 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Avg. Completion</div>
-                                <div class="card-value">78%</div>
+                                <div class="card-value" id="completion-rate">0%</div>
                             </div>
                             <div class="card-icon red">
                                 <i class="fas fa-chart-line"></i>
@@ -154,139 +155,22 @@
                     </div>
                 </div>
 
-                <!-- Course Management Section -->
+                <!-- My Courses Section (Dynamic) -->
                 <div class="dashboard-card" style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3>My Courses</h3>
-                        <button class="action-btn edit" style="padding: 0.6rem 1.2rem;">
-                            <i class="fas fa-plus"></i> Create New Course
-                        </button>
-                    </div>
-                    <div class="course-list">
-                        <div class="course-item">
-                            <div class="course-thumbnail">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="course-details">
-                                <h3>AI Fluency Course</h3>
-                                <p>Introduction to Artificial Intelligence concepts</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-users"></i> 82 Students</span>
-                                    <span><i class="fas fa-book"></i> 6 Modules</span>
-                                </div>
-                                <div class="course-progress">Avg. Progress: 65%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 65%;"></div>
-                                </div>
-                                <div style="margin-top: 1rem;">
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="course-item">
-                            <div class="course-thumbnail">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <div class="course-details">
-                                <h3>Machine Learning Basics</h3>
-                                <p>Understanding ML algorithms and applications</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-users"></i> 45 Students</span>
-                                    <span><i class="fas fa-book"></i> 8 Modules</span>
-                                </div>
-                                <div class="course-progress">Avg. Progress: 42%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 42%;"></div>
-                                </div>
-                                <div style="margin-top: 1rem;">
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="course-item">
-                            <div class="course-thumbnail">
-                                <i class="fas fa-network-wired"></i>
-                            </div>
-                            <div class="course-details">
-                                <h3>Data Science Fundamentals</h3>
-                                <p>Data analysis and visualization techniques</p>
-                                <div class="course-meta">
-                                    <span><i class="fas fa-users"></i> 29 Students</span>
-                                    <span><i class="fas fa-book"></i> 5 Modules</span>
-                                </div>
-                                <div class="course-progress">Avg. Progress: 55%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 55%;"></div>
-                                </div>
-                                <div style="margin-top: 1rem;">
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="action-btn edit">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <h3 style="margin-bottom: 1.5rem;">My Courses</h3>
+                    <div id="my-courses">
+                        <!-- Populated by instructor.js -->
+                        <div class="loading-spinner">Loading courses...</div>
                     </div>
                 </div>
 
-                <!-- Recent Student Activity -->
-                <div class="data-table">
-                    <h3>Recent Student Activity</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Course</th>
-                                <th>Activity</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>AI Fluency Course</td>
-                                <td>Submitted Assignment 4</td>
-                                <td>1 hour ago</td>
-                                <td><span class="status-badge pending">Pending Review</span></td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>Machine Learning Basics</td>
-                                <td>Completed Quiz 3</td>
-                                <td>3 hours ago</td>
-                                <td><span class="status-badge active">Score: 95%</span></td>
-                            </tr>
-                            <tr>
-                                <td>Mike Johnson</td>
-                                <td>Data Science Fundamentals</td>
-                                <td>Started Module 4</td>
-                                <td>Yesterday</td>
-                                <td><span class="status-badge active">In Progress</span></td>
-                            </tr>
-                            <tr>
-                                <td>Emily Brown</td>
-                                <td>AI Fluency Course</td>
-                                <td>Submitted Assignment 3</td>
-                                <td>Yesterday</td>
-                                <td><span class="status-badge pending">Pending Review</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Grading Queue Section (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Grading Queue</h3>
+                    <div id="grading-queue">
+                        <!-- Populated by instructor.js -->
+                        <div class="loading-spinner">Loading grading queue...</div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -310,19 +194,13 @@
     <script src="/js/auth.js"></script>
     <script src="/js/header-template.js"></script>
 
+    <!-- Instructor Dashboard Module (Phase 4) -->
+    <script src="/js/instructor.js"></script>
+
     <!-- Page Protection -->
     <script>
         // Require authentication - instructors and admins only
         Auth.requireAuth(['instructor', 'admin']);
-
-        // Load instructor-specific data
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = Auth.getUser();
-            if (user) {
-                console.log('Instructor dashboard loaded for:', user.email, '(Role:', user.role, ')');
-                // Phase 2: Load assigned courses, grading queue, student lists
-            }
-        });
     </script>
 </body>
 </html>

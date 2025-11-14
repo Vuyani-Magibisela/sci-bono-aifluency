@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - Sci-Bono AI Fluency</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        .achievements-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .achievements-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .achievements-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .achievements-header p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .points-summary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .points-summary .points-value,
+        .points-summary .count-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .points-summary .points-label,
+        .points-summary .count-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .tier-breakdown {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tier-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .tier-item i {
+            font-size: 1.5rem;
+        }
+
+        .achievement-category {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .achievement-badge {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .achievement-badge.locked {
+            opacity: 0.6;
+        }
+
+        .badge-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .badge-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .badge-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-tier {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-tier.bronze {
+            background: #CD7F32;
+            color: white;
+        }
+
+        .badge-tier.silver {
+            background: #C0C0C0;
+            color: #333;
+        }
+
+        .badge-tier.gold {
+            background: #FFD700;
+            color: #333;
+        }
+
+        .badge-tier.platinum {
+            background: #E5E4E2;
+            color: #333;
+        }
+
+        .badge-points {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .badge-description {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .badge-unlocked-date {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .leaderboard-entry:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-entry:hover {
+            background: var(--background-light);
+        }
+
+        .leaderboard-entry.rank-1,
+        .leaderboard-entry.rank-2,
+        .leaderboard-entry.rank-3 {
+            font-weight: bold;
+        }
+
+        .leaderboard-entry .rank {
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .leaderboard-entry .user-info {
+            flex: 1;
+        }
+
+        .leaderboard-entry .user-name {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .leaderboard-entry .user-achievements {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .leaderboard-entry .user-points {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            max-width: 350px;
+            z-index: 10000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .achievement-notification-content {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .achievement-notification .achievement-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .achievement-notification .achievement-icon.bronze {
+            background: #CD7F32;
+        }
+
+        .achievement-notification .achievement-icon.silver {
+            background: #C0C0C0;
+        }
+
+        .achievement-notification .achievement-icon.gold {
+            background: #FFD700;
+        }
+
+        .achievement-notification .achievement-icon.platinum {
+            background: #E5E4E2;
+        }
+
+        .achievement-notification .achievement-title {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .achievement-notification .achievement-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.25rem 0;
+        }
+
+        .achievement-notification .achievement-points {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading,
+        .error,
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .achievements-container {
+                padding: 1rem;
+            }
+
+            .achievements-header h1 {
+                font-size: 2rem;
+            }
+
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .achievement-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="achievements-container">
+        <div class="achievements-header">
+            <h1><i class="fas fa-trophy"></i> Achievements</h1>
+            <p>Unlock badges and earn points as you progress through the AI Fluency course</p>
+        </div>
+
+        <div id="points-summary-container" class="stat-card">
+            <div class="loading">Loading your achievements...</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="my-achievements">
+                <i class="fas fa-award"></i> My Achievements
+            </button>
+            <button class="tab" data-tab="all-achievements">
+                <i class="fas fa-list"></i> All Achievements
+            </button>
+            <button class="tab" data-tab="leaderboard">
+                <i class="fas fa-ranking-star"></i> Leaderboard
+            </button>
+        </div>
+
+        <div id="my-achievements" class="tab-content active">
+            <h2>Your Unlocked Achievements</h2>
+            <div id="user-achievements-grid"></div>
+        </div>
+
+        <div id="all-achievements" class="tab-content">
+            <h2>All Available Achievements</h2>
+            <div id="all-achievements-grid"></div>
+        </div>
+
+        <div id="leaderboard" class="tab-content">
+            <h2>Top Achievers</h2>
+            <div id="leaderboard-container"></div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+    <script src="/js/footer-template.js"></script>
+    <script src="/js/achievements.js"></script>
+
+    <script>
+        // Check authentication
+        if (!isAuthenticated()) {
+            window.location.href = '/login.html';
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+
+                // Update tab buttons
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Initialize page
+        async function initializePage() {
+            try {
+                // Render points summary
+                await AchievementsManager.renderPointsSummary('points-summary-container');
+
+                // Load user's achievements
+                const userAchievements = await AchievementsManager.loadUserAchievements();
+                const userAchievementsContainer = document.getElementById('user-achievements-grid');
+
+                if (userAchievements.length === 0) {
+                    userAchievementsContainer.innerHTML = `
+                        <div class="no-data">
+                            <i class="fas fa-trophy" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                            <p>You haven't unlocked any achievements yet!</p>
+                            <p>Complete lessons, take quizzes, and engage with the platform to earn badges.</p>
+                        </div>
+                    `;
+                } else {
+                    // Group by category
+                    const categories = {};
+                    userAchievements.forEach(achievement => {
+                        const catName = achievement.category_name || 'Other';
+                        if (!categories[catName]) {
+                            categories[catName] = {
+                                icon: achievement.category_icon,
+                                achievements: []
+                            };
+                        }
+                        categories[catName].achievements.push(achievement);
+                    });
+
+                    let html = '';
+                    for (const [categoryName, data] of Object.entries(categories)) {
+                        html += `
+                            <div class="achievement-category">
+                                <h3 class="category-title">
+                                    <i class="${data.icon || 'fas fa-trophy'}"></i>
+                                    ${categoryName}
+                                </h3>
+                                <div class="achievement-grid">
+                                    ${data.achievements.map(a => AchievementsManager.renderBadge(a, true)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    userAchievementsContainer.innerHTML = html;
+                }
+
+                // Render all achievements
+                await AchievementsManager.renderAchievementGrid('all-achievements-grid');
+
+                // Render leaderboard
+                await AchievementsManager.renderLeaderboard('leaderboard-container', 20);
+
+            } catch (error) {
+                console.error('Error initializing achievements page:', error);
+            }
+        }
+
+        initializePage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI Fluency">
+
+    <!-- Manifest and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency - Lesson</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <div class="chapter-container">
+            <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+            <div id="breadcrumb-container"></div>
+
+            <!-- Chapter header will be populated dynamically -->
+            <div class="chapter-header">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                    <div style="flex: 1;">
+                        <div class="module-badge" id="module-badge">Loading...</div>
+                        <h1 id="lesson-title">Loading lesson...</h1>
+                        <p class="subtitle" id="lesson-subtitle"></p>
+                    </div>
+                    <button id="bookmark-button" class="bookmark-button" style="display: none;" title="Bookmark this lesson">
+                        <i class="far fa-bookmark"></i>
+                        <span class="bookmark-text">Bookmark</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chapter content will be populated dynamically -->
+            <div class="chapter-content" id="lesson-content">
+                <div class="loading-spinner">Loading lesson content...</div>
+            </div>
+
+            <!-- Student Notes Section (Phase 5D Priority 4) -->
+            <div class="student-notes-section" id="notes-section" style="display: none;">
+                <div class="notes-header">
+                    <h3><i class="fas fa-sticky-note"></i> My Notes</h3>
+                    <button class="btn-secondary" id="toggle-notes-editor">
+                        <i class="fas fa-edit"></i> <span id="notes-button-text">Add Note</span>
+                    </button>
+                </div>
+                <div class="notes-editor" id="notes-editor" style="display: none;">
+                    <div id="quill-editor" style="height: 200px;"></div>
+                    <div class="notes-actions">
+                        <button class="btn-primary" id="save-note">
+                            <i class="fas fa-save"></i> Save Note
+                        </button>
+                        <button class="btn-secondary" id="cancel-note">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+                <div class="notes-display" id="notes-display">
+                    <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--text-light);">
+                        <i class="fas fa-sticky-note" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>No notes yet. Click "Add Note" to get started!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation buttons -->
+            <div class="nav-buttons" id="nav-buttons" style="display: none;">
+                <a href="#" class="nav-button previous" id="prev-lesson" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Previous Lesson
+                </a>
+                <a href="#" class="nav-button next" id="next-lesson" style="display: none;">
+                    Next Lesson <i class="fas fa-arrow-right"></i>
+                </a>
+                <button class="nav-button complete" id="complete-lesson" style="display: none;">
+                    <i class="fas fa-check"></i> Mark as Complete
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Sci-Bono AI Fluency Course. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Content Loader (Phase 5C) -->
+    <script src="/js/content-loader.js"></script>
+
+    <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
+    <script src="/js/breadcrumb.js"></script>
+
+    <!-- Lesson Page Logic -->
+    <script>
+        let currentLesson = null;
+        let allLessons = [];
+
+        (async function() {
+            // Get lesson ID from URL parameter (e.g., ?lesson_id=1)
+            const lessonId = ContentLoader.getUrlParam('lesson_id');
+
+            if (!lessonId) {
+                ContentLoader.showError('#lesson-content', 'No lesson specified. Please select a lesson from a module page.');
+                return;
+            }
+
+            try {
+                // Load lesson from API
+                currentLesson = await ContentLoader.loadLesson(lessonId);
+
+                // Update page title
+                document.title = `AI Fluency - ${currentLesson.title}`;
+                document.getElementById('page-title').textContent = document.title;
+
+                // Render lesson content
+                ContentLoader.renderLessonPage(currentLesson, {
+                    moduleBadge: '#module-badge',
+                    title: '#lesson-title',
+                    subtitle: '#lesson-subtitle',
+                    content: '#lesson-content'
+                });
+
+                // Render breadcrumb (Phase 5D Priority 2)
+                if (currentLesson.module_id) {
+                    try {
+                        const moduleResponse = await API.get(`/courses/1/modules/${currentLesson.module_id}`);
+                        Breadcrumb.render('breadcrumb-container', {
+                            course: { id: 1, title: 'AI Fluency Course' },
+                            module: { id: currentLesson.module_id, title: moduleResponse.data?.title || 'Module' },
+                            lesson: { id: lessonId, title: currentLesson.title }
+                        });
+                    } catch (error) {
+                        console.error('Failed to load module for breadcrumb:', error);
+                    }
+                }
+
+                // Track lesson start
+                await ContentLoader.trackLessonStart(parseInt(lessonId));
+
+                // Load all lessons in this module for navigation
+                if (currentLesson.module_id) {
+                    const lessonsResponse = await API.get(`/lessons?module_id=${currentLesson.module_id}`);
+                    allLessons = (lessonsResponse.data?.items || []).sort((a, b) => a.order_index - b.order_index);
+
+                    // Setup navigation buttons
+                    setupNavigation();
+                }
+
+                // Setup complete button
+                setupCompleteButton();
+
+                // Initialize notes system (Phase 5D Priority 4)
+                if (Auth.isAuthenticated()) {
+                    initializeNotes(lessonId);
+                    // Initialize bookmarks system (Phase 5D Priority 5)
+                    initializeBookmarks(lessonId);
+                }
+
+            } catch (error) {
+                console.error('Error loading lesson:', error);
+                ContentLoader.showError('#lesson-content', 'Failed to load lesson content. Please try again later.');
+            }
+        })();
+
+        /**
+         * Setup navigation buttons
+         */
+        function setupNavigation() {
+            if (!currentLesson || allLessons.length === 0) return;
+
+            const currentIndex = allLessons.findIndex(l => l.id === currentLesson.id);
+            if (currentIndex === -1) return;
+
+            const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+            const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+
+            // Show navigation buttons container
+            document.getElementById('nav-buttons').style.display = 'flex';
+
+            // Setup previous button
+            if (prevLesson) {
+                const prevBtn = document.getElementById('prev-lesson');
+                prevBtn.href = `lesson-dynamic.html?lesson_id=${prevLesson.id}`;
+                prevBtn.style.display = 'inline-flex';
+            }
+
+            // Setup next button
+            if (nextLesson) {
+                const nextBtn = document.getElementById('next-lesson');
+                nextBtn.href = `lesson-dynamic.html?lesson_id=${nextLesson.id}`;
+                nextBtn.style.display = 'inline-flex';
+            }
+        }
+
+        /**
+         * Setup complete lesson button
+         */
+        function setupCompleteButton() {
+            const completeBtn = document.getElementById('complete-lesson');
+            const user = Auth.getUser();
+
+            // Only show complete button for authenticated users
+            if (user) {
+                completeBtn.style.display = 'inline-flex';
+
+                completeBtn.addEventListener('click', async function() {
+                    try {
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                        await ContentLoader.trackLessonComplete(currentLesson.id);
+
+                        this.innerHTML = '<i class="fas fa-check"></i> Completed!';
+                        this.classList.add('completed');
+
+                        // Show success message
+                        setTimeout(() => {
+                            const nextBtn = document.getElementById('next-lesson');
+                            if (nextBtn.style.display !== 'none') {
+                                if (confirm('Lesson marked as complete! Continue to next lesson?')) {
+                                    window.location.href = nextBtn.href;
+                                }
+                            } else {
+                                alert('Lesson marked as complete! You\'ve finished this module.');
+                            }
+                        }, 1000);
+
+                    } catch (error) {
+                        console.error('Error marking lesson as complete:', error);
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-check"></i> Mark as Complete';
+                        alert('Failed to mark lesson as complete. Please try again.');
+                    }
+                });
+            }
+        }
+
+        /**
+         * Initialize notes system (Phase 5D Priority 4)
+         */
+        let quillEditor = null;
+        let currentNoteContent = '';
+
+        async function initializeNotes(lessonId) {
+            // Show notes section
+            document.getElementById('notes-section').style.display = 'block';
+
+            // Initialize Quill editor
+            if (typeof Quill !== 'undefined') {
+                quillEditor = new Quill('#quill-editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline'],
+                            ['link', 'blockquote', 'code-block'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Write your notes here...'
+                });
+            }
+
+            // Load existing notes
+            await loadNotes(lessonId);
+
+            // Setup event listeners
+            document.getElementById('toggle-notes-editor').addEventListener('click', toggleNotesEditor);
+            document.getElementById('save-note').addEventListener('click', () => saveNote(lessonId));
+            document.getElementById('cancel-note').addEventListener('click', cancelNoteEdit);
+        }
+
+        function toggleNotesEditor() {
+            const editor = document.getElementById('notes-editor');
+            const isVisible = editor.style.display !== 'none';
+
+            if (isVisible) {
+                editor.style.display = 'none';
+                document.getElementById('notes-button-text').textContent = 'Add Note';
+            } else {
+                editor.style.display = 'block';
+                document.getElementById('notes-button-text').textContent = 'Hide Editor';
+                if (quillEditor) {
+                    quillEditor.focus();
+                }
+            }
+        }
+
+        async function loadNotes(lessonId) {
+            try {
+                const response = await API.get(`/notes/lesson/${lessonId}`);
+                const notes = response.data?.notes || [];
+
+                const notesDisplay = document.getElementById('notes-display');
+
+                if (notes.length === 0) {
+                    notesDisplay.innerHTML = `
+                        <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--text-light);">
+                            <i class="fas fa-sticky-note" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <p>No notes yet. Click "Add Note" to get started!</p>
+                        </div>
+                    `;
+                    currentNoteContent = '';
+                } else {
+                    const note = notes[0]; // Get most recent note
+                    currentNoteContent = note.note_content;
+
+                    // Set Quill content
+                    if (quillEditor) {
+                        quillEditor.root.innerHTML = currentNoteContent;
+                    }
+
+                    // Display note
+                    const noteDate = new Date(note.updated_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    notesDisplay.innerHTML = `
+                        <div class="note-item">
+                            <div class="note-content">${currentNoteContent}</div>
+                            <div class="note-meta">
+                                <div class="note-date">
+                                    <i class="fas fa-clock"></i>
+                                    Last updated: ${noteDate}
+                                </div>
+                                <div class="note-actions-buttons">
+                                    <button class="btn-icon" onclick="editNote()" title="Edit note">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteNote(${note.id})" title="Delete note">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading notes:', error);
+            }
+        }
+
+        window.editNote = function() {
+            const editor = document.getElementById('notes-editor');
+            editor.style.display = 'block';
+            document.getElementById('notes-button-text').textContent = 'Hide Editor';
+            if (quillEditor) {
+                quillEditor.focus();
+            }
+        };
+
+        async function saveNote(lessonId) {
+            try {
+                if (!quillEditor) {
+                    alert('Editor not initialized');
+                    return;
+                }
+
+                const content = quillEditor.root.innerHTML;
+
+                if (!content || content === '<p><br></p>') {
+                    alert('Please write something in your note');
+                    return;
+                }
+
+                // Show loading state
+                const saveBtn = document.getElementById('save-note');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // Save note via API
+                await API.post('/notes', {
+                    lesson_id: lessonId,
+                    content: content
+                });
+
+                // Reload notes
+                await loadNotes(lessonId);
+
+                // Hide editor
+                document.getElementById('notes-editor').style.display = 'none';
+                document.getElementById('notes-button-text').textContent = 'Add Note';
+
+                // Reset button
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+
+                alert('Note saved successfully!');
+
+            } catch (error) {
+                console.error('Error saving note:', error);
+                alert('Failed to save note. Please try again.');
+
+                // Reset button
+                const saveBtn = document.getElementById('save-note');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Note';
+            }
+        }
+
+        function cancelNoteEdit() {
+            const editor = document.getElementById('notes-editor');
+            editor.style.display = 'none';
+            document.getElementById('notes-button-text').textContent = 'Add Note';
+
+            // Reset editor to current saved content
+            if (quillEditor && currentNoteContent) {
+                quillEditor.root.innerHTML = currentNoteContent;
+            }
+        }
+
+        window.deleteNote = async function(noteId) {
+            if (!confirm('Are you sure you want to delete this note?')) {
+                return;
+            }
+
+            try {
+                await API.delete(`/notes/${noteId}`);
+                await loadNotes(ContentLoader.getUrlParam('lesson_id'));
+                alert('Note deleted successfully');
+            } catch (error) {
+                console.error('Error deleting note:', error);
+                alert('Failed to delete note. Please try again.');
+            }
+        };
+
+        /**
+         * Initialize bookmarks system (Phase 5D Priority 5)
+         */
+        async function initializeBookmarks(lessonId) {
+            const bookmarkButton = document.getElementById('bookmark-button');
+            if (!bookmarkButton) return;
+
+            // Show bookmark button
+            bookmarkButton.style.display = 'flex';
+
+            // Load current bookmark status
+            await loadBookmarkStatus(lessonId);
+
+            // Setup click handler
+            bookmarkButton.addEventListener('click', () => toggleBookmark(lessonId));
+        }
+
+        async function loadBookmarkStatus(lessonId) {
+            try {
+                const response = await API.get(`/bookmarks/check/${lessonId}`);
+                const isBookmarked = response.data?.bookmarked || false;
+
+                updateBookmarkButton(isBookmarked);
+            } catch (error) {
+                console.error('Error loading bookmark status:', error);
+            }
+        }
+
+        function updateBookmarkButton(isBookmarked) {
+            const bookmarkButton = document.getElementById('bookmark-button');
+            const icon = bookmarkButton.querySelector('i');
+            const text = bookmarkButton.querySelector('.bookmark-text');
+
+            if (isBookmarked) {
+                bookmarkButton.classList.add('bookmarked');
+                icon.className = 'fas fa-bookmark'; // Solid icon
+                text.textContent = 'Bookmarked';
+                bookmarkButton.title = 'Remove bookmark';
+            } else {
+                bookmarkButton.classList.remove('bookmarked');
+                icon.className = 'far fa-bookmark'; // Regular icon
+                text.textContent = 'Bookmark';
+                bookmarkButton.title = 'Bookmark this lesson';
+            }
+        }
+
+        async function toggleBookmark(lessonId) {
+            const bookmarkButton = document.getElementById('bookmark-button');
+
+            try {
+                // Disable button
+                bookmarkButton.disabled = true;
+
+                // Toggle bookmark via API
+                const response = await API.post('/bookmarks/toggle', {
+                    lesson_id: lessonId
+                });
+
+                const isBookmarked = response.data?.bookmarked || false;
+
+                // Update UI
+                updateBookmarkButton(isBookmarked);
+
+                // Show brief notification
+                const message = isBookmarked ? 'Lesson bookmarked!' : 'Bookmark removed';
+                showBookmarkNotification(message);
+
+            } catch (error) {
+                console.error('Error toggling bookmark:', error);
+                alert('Failed to update bookmark. Please try again.');
+            } finally {
+                bookmarkButton.disabled = false;
+            }
+        }
+
+        function showBookmarkNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'bookmark-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                background: var(--primary-color);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideInUp 0.3s ease;
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove after 2 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutDown 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+    </script>
+
+    <style>
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <style>
+        .nav-button.complete {
+            background: #4caf50;
+            color: white;
+        }
+
+        .nav-button.complete:hover {
+            background: #45a049;
+        }
+
+        .nav-button.complete.completed {
+            background: #2e7d32;
+            cursor: default;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</body>
+</html>

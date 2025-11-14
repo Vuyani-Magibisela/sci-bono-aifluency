@@ -91,12 +91,13 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
+            <!-- Dashboard Content (Phase 4: Dynamic Loading) -->
+            <div class="dashboard-content" id="dashboard-content">
                 <!-- Welcome Banner -->
                 <div class="welcome-banner">
-                    <h2>System Overview</h2>
+                    <h2 id="welcome-message">System Overview</h2>
                     <p>Monitor and manage the AI Fluency platform</p>
+                    <button id="refresh-dashboard" class="btn-secondary btn-sm">↻ Refresh</button>
                 </div>
 
                 <!-- Statistics Cards -->
@@ -105,52 +106,52 @@
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Total Users</div>
-                                <div class="card-value">1,247</div>
+                                <div class="card-value" id="total-users">0</div>
                             </div>
                             <div class="card-icon blue">
                                 <i class="fas fa-users"></i>
                             </div>
                         </div>
-                        <div class="card-description">+45 new this month</div>
+                        <div class="card-description">System-wide users</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Active Courses</div>
-                                <div class="card-value">12</div>
+                                <div class="card-value" id="total-courses">0</div>
                             </div>
                             <div class="card-icon green">
                                 <i class="fas fa-book"></i>
                             </div>
                         </div>
-                        <div class="card-description">3 pending approval</div>
+                        <div class="card-description">Published courses</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
                                 <div class="card-title">Instructors</div>
-                                <div class="card-value">24</div>
+                                <div class="card-value" id="total-instructors">0</div>
                             </div>
                             <div class="card-icon orange">
                                 <i class="fas fa-chalkboard-teacher"></i>
                             </div>
                         </div>
-                        <div class="card-description">2 new applications</div>
+                        <div class="card-description">Active instructors</div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Revenue</div>
-                                <div class="card-value">$24.8K</div>
+                                <div class="card-title">Students</div>
+                                <div class="card-value" id="total-students">0</div>
                             </div>
                             <div class="card-icon red">
-                                <i class="fas fa-dollar-sign"></i>
+                                <i class="fas fa-user-graduate"></i>
                             </div>
                         </div>
-                        <div class="card-description">+12% from last month</div>
+                        <div class="card-description">Enrolled students</div>
                     </div>
                 </div>
 
@@ -173,151 +174,30 @@
                     </div>
                 </div>
 
-                <!-- User Management Table -->
-                <div class="data-table" style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3>Recent Users</h3>
-                        <button class="action-btn edit">
-                            <i class="fas fa-eye"></i> View All
-                        </button>
+                <!-- User Management Table (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">User Management</h3>
+                    <div id="users-table">
+                        <!-- Populated by admin.js -->
+                        <div class="loading-spinner">Loading users...</div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Joined</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>john.doe@email.com</td>
-                                <td>Student</td>
-                                <td>2025-01-15</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>jane.smith@email.com</td>
-                                <td>Student</td>
-                                <td>2025-01-14</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Dr. Sarah Johnson</td>
-                                <td>sarah.j@email.com</td>
-                                <td>Instructor</td>
-                                <td>2025-01-10</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Mike Johnson</td>
-                                <td>mike.j@email.com</td>
-                                <td>Student</td>
-                                <td>2025-01-08</td>
-                                <td><span class="status-badge pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Emily Brown</td>
-                                <td>emily.b@email.com</td>
-                                <td>Student</td>
-                                <td>2025-01-05</td>
-                                <td><span class="status-badge inactive">Inactive</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
 
-                <!-- Course Management Table -->
-                <div class="data-table">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3>Course Overview</h3>
-                        <button class="action-btn edit">
-                            <i class="fas fa-eye"></i> View All
-                        </button>
+                <!-- Recent Activity (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
+                    <div id="recent-activity">
+                        <!-- Populated by admin.js -->
+                        <div class="loading-spinner">Loading activity...</div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Course Name</th>
-                                <th>Instructor</th>
-                                <th>Enrolled</th>
-                                <th>Completion Rate</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>AI Fluency Course</td>
-                                <td>Dr. Sarah Johnson</td>
-                                <td>82</td>
-                                <td>65%</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Machine Learning Basics</td>
-                                <td>Dr. Sarah Johnson</td>
-                                <td>45</td>
-                                <td>42%</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Data Science Fundamentals</td>
-                                <td>Dr. Sarah Johnson</td>
-                                <td>29</td>
-                                <td>55%</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Programming Fundamentals</td>
-                                <td>Prof. Mike Chen</td>
-                                <td>67</td>
-                                <td>48%</td>
-                                <td><span class="status-badge pending">Under Review</span></td>
-                                <td>
-                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                </div>
+
+                <!-- User Distribution Chart (Dynamic) -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">User Distribution</h3>
+                    <div id="user-distribution-chart">
+                        <!-- Populated by admin.js -->
+                    </div>
                 </div>
             </div>
         </main>
@@ -341,19 +221,13 @@
     <script src="/js/auth.js"></script>
     <script src="/js/header-template.js"></script>
 
+    <!-- Admin Dashboard Module (Phase 4) -->
+    <script src="/js/admin.js"></script>
+
     <!-- Page Protection -->
     <script>
         // Require authentication - admins only
         Auth.requireAuth(['admin']);
-
-        // Load admin-specific data
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = Auth.getUser();
-            if (user) {
-                console.log('Admin dashboard loaded for:', user.email, '(Role:', user.role, ')');
-                // Phase 2: Load all users, all courses, system stats, analytics
-            }
-        });
     </script>
 </body>
 </html>

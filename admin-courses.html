@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management - AI Fluency Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-name">Admin User</div>
+                <div class="profile-role">System Administrator</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="admin-courses.html" class="nav-item active">
+                    <i class="fas fa-book"></i>
+                    <span>Courses</span>
+                </a>
+                <a href="admin-modules.html" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Modules</span>
+                </a>
+                <a href="admin-lessons.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Lessons</span>
+                </a>
+                <a href="admin-quizzes.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quizzes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Bar -->
+            <div class="dashboard-topbar">
+                <div class="topbar-left">
+                    <h1>Course Management</h1>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-primary" id="create-course-btn">
+                        <i class="fas fa-plus"></i> Create Course
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content" id="dashboard-content">
+                <!-- Filters -->
+                <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filter-status">Status:</label>
+                            <select id="filter-status" class="filter-select">
+                                <option value="all">All Courses</option>
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-search">Search:</label>
+                            <input type="text" id="filter-search" class="filter-input" placeholder="Search courses...">
+                        </div>
+                        <button class="btn-secondary btn-sm" id="clear-filters">Clear Filters</button>
+                    </div>
+                </div>
+
+                <!-- Courses List -->
+                <div class="dashboard-card">
+                    <div id="courses-list">
+                        <div class="loading-spinner">Loading courses...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Course Form Modal -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Course</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="course-form">
+                    <input type="hidden" id="course-id" name="id">
+
+                    <div class="form-group">
+                        <label for="course-title">Course Title *</label>
+                        <input type="text" id="course-title" name="title" required maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course-slug">URL Slug *</label>
+                        <input type="text" id="course-slug" name="slug" required maxlength="255" pattern="[a-z0-9-]+">
+                        <small>Lowercase letters, numbers, and hyphens only (e.g., ai-fluency-course)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course-description">Description *</label>
+                        <textarea id="course-description" name="description" required rows="4"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="course-difficulty">Difficulty Level *</label>
+                            <select id="course-difficulty" name="difficulty_level" required>
+                                <option value="">Select...</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-duration">Duration (hours) *</label>
+                            <input type="number" id="course-duration" name="duration_hours" required min="1" max="1000" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course-thumbnail">Thumbnail URL</label>
+                        <input type="url" id="course-thumbnail" name="thumbnail_url" maxlength="500">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="course-featured" name="is_featured">
+                            <span>Featured Course</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="course-published" name="is_published" checked>
+                            <span>Publish Course</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn-primary" id="save-course-btn">Save Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <!-- Authentication System (Phase 1) -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/header-template.js"></script>
+
+    <!-- Course Management Module (Phase 5B) -->
+    <script src="/js/admin-courses.js"></script>
+
+    <!-- Page Protection -->
+    <script>
+        // Require authentication - admins only
+        Auth.requireAuth(['admin']);
+    </script>
+</body>
+</html>

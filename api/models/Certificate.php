@@ -16,7 +16,22 @@ class Certificate extends BaseModel
         'course_id',
         'certificate_number',
         'issue_date',
-        'certificate_url'
+        'certificate_url',
+        'verification_code', // Phase 6
+        'template_id',       // Phase 6
+        'certificate_type',  // Phase 6
+        'module_id',         // Phase 6
+        'quiz_id',           // Phase 6
+        'title',             // Phase 6
+        'description',       // Phase 6
+        'completion_date',   // Phase 6
+        'metadata',          // Phase 6
+        'pdf_path',          // Phase 6
+        'verification_url',  // Phase 6
+        'is_revoked',        // Phase 6
+        'revoked_at',        // Phase 6
+        'revoked_by',        // Phase 6
+        'revocation_reason'  // Phase 6
     ];
     protected array $hidden = [];
 
