@@ -1,0 +1,63 @@
+[2025-12-29 13:41:48] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Admin123\!"}
+[2025-12-29 13:42:09] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"Admin123!"}
+[2025-12-29 13:42:17] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Admin123!"}
+
+[2025-12-29 13:43:24] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Admin123!"}
+
+[2025-12-29 13:44:52] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"password"}
+
+[2025-12-29 14:18:02] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:19:37] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:22:26] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:23:11] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:26:25] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:27:47] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:30:35] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:30:53] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:35:58] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:40:07] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:43:12] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:54:47] Raw Input Length: 2, Content: {}
+[2025-12-29 14:55:35] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:55:52] Raw Input Length: 2, Content: {}
+[2025-12-29 14:56:28] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 14:56:52] Raw Input Length: 2, Content: {}
+[2025-12-29 18:07:56] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 18:12:07] Raw Input Length: 2, Content: {}
+[2025-12-29 18:33:36] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 18:38:01] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"password"}
+[2025-12-29 18:50:25] Raw Input Length: 2, Content: {}
+[2025-12-29 18:52:29] Raw Input Length: 149, Content: {"name":"Vuyani Magibisela","email":"vuyani.magibisela@sci-bono.co.za","password":"Vu13#k*s3D","password_confirmation":"Vu13#k*s3D","role":"student"}
+[2025-12-29 18:55:09] Raw Input Length: 2, Content: {}
+[2025-12-30 12:26:51] Raw Input Length: 54, Content: {"email":"admin@scibono.co.za","password":"Admin123!"}
+[2025-12-30 12:27:50] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:28:03] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:28:03] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:28:03] Raw Input Length: 13, Content: {"quiz_id":2}
+[2025-12-30 12:28:03] Raw Input Length: 0, Content: 
+[2025-12-30 12:28:04] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:28:51] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:28:51] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:28:51] Raw Input Length: 13, Content: {"quiz_id":2}
+[2025-12-30 12:28:51] Raw Input Length: 0, Content: 
+[2025-12-30 12:28:51] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:29:10] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:29:10] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:29:10] Raw Input Length: 13, Content: {"quiz_id":2}
+[2025-12-30 12:29:10] Raw Input Length: 0, Content: 
+[2025-12-30 12:29:10] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:29:51] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:29:51] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:29:51] Raw Input Length: 104, Content: {"question":"UPDATED: What is the primary purpose of this test question?","correct_answer":2,"points":2}
+[2025-12-30 12:29:51] Raw Input Length: 13, Content: {"quiz_id":2}
+[2025-12-30 12:29:51] Raw Input Length: 0, Content: 
+[2025-12-30 12:29:52] Raw Input Length: 0, Content: 
+[2025-12-30 12:29:52] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:31:08] Raw Input Length: 62, Content: {"email":"test.admin@scibono.test","password":"TestAdmin123!"}
+[2025-12-30 12:31:08] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 12:31:08] Raw Input Length: 104, Content: {"question":"UPDATED: What is the primary purpose of this test question?","correct_answer":2,"points":2}
+[2025-12-30 12:31:08] Raw Input Length: 13, Content: {"quiz_id":2}
+[2025-12-30 12:31:08] Raw Input Length: 0, Content: 
+[2025-12-30 12:31:08] Raw Input Length: 0, Content: 
+[2025-12-30 12:31:08] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
+[2025-12-30 13:17:49] Raw Input Length: 51, Content: {"email":"admin@test.com","password":"password123"}

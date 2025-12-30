@@ -21,11 +21,11 @@ const Auth = {
             const response = await API.post('/auth/login', { email, password });
 
             if (response.success) {
-                const { access_token, refresh_token, user } = response.data;
+                const { tokens, user } = response.data;
 
                 // Store authentication data
-                Storage.set('access_token', access_token);
-                Storage.set('refresh_token', refresh_token);
+                Storage.set('access_token', tokens.accessToken);
+                Storage.set('refresh_token', tokens.refreshToken);
                 Storage.set('user', user);
 
                 // Calculate token expiry (1 hour from now)
@@ -69,11 +69,11 @@ const Auth = {
                 console.log('Registration successful:', userData.email);
 
                 // Auto-login after registration
-                if (response.data.access_token) {
-                    const { access_token, refresh_token, user } = response.data;
+                if (response.data.tokens) {
+                    const { tokens, user } = response.data;
 
-                    Storage.set('access_token', access_token);
-                    Storage.set('refresh_token', refresh_token);
+                    Storage.set('access_token', tokens.accessToken);
+                    Storage.set('refresh_token', tokens.refreshToken);
                     Storage.set('user', user);
 
                     const expiry = Date.now() + (60 * 60 * 1000);
@@ -102,17 +102,20 @@ const Auth = {
      * @returns {Promise<void>}
      */
     async logout() {
+        console.log('🔴 LOGOUT CALLED');
+
         try {
             // Call logout endpoint to blacklist token
             await API.post('/auth/logout');
-            console.log('Logout successful');
+            console.log('✅ Logout API call successful');
         } catch (error) {
-            console.error('Logout API error:', error);
+            console.error('❌ Logout API error:', error);
             // Continue with local logout even if API fails
         }
 
         // Get user before clearing
         const user = this.getUser();
+        console.log('👤 User being logged out:', user?.email);
 
         // Clear all authentication data
         Storage.remove('access_token');
@@ -121,11 +124,17 @@ const Auth = {
         Storage.remove('user');
         Storage.remove('return_url');
 
+        console.log('🧹 Storage cleared');
+        console.log('✓ access_token removed:', !Storage.get('access_token'));
+        console.log('✓ user removed:', !Storage.get('user'));
+
         // Dispatch logout event
         this.dispatchAuthEvent('logout', user);
 
+        console.log('🔄 Redirecting to index.html...');
+
         // Redirect to home page
-        window.location.href = '/index.html';
+        window.location.href = 'index.html';
     },
 
     /**
@@ -230,14 +239,14 @@ const Auth = {
                 Storage.set('return_url', currentUrl);
             }
 
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
             return false;
         }
 
         // Check role if required
         if (requiredRoles && !this.hasRole(requiredRoles)) {
             console.error('Insufficient permissions');
-            window.location.href = '/403.html'; // Forbidden page
+            window.location.href = '403.html'; // Forbidden page
             return false;
         }
 
@@ -254,11 +263,11 @@ const Auth = {
 
         switch (role) {
             case 'admin':
-                return '/admin-dashboard.html';
+                return 'admin-dashboard.html';
             case 'instructor':
-                return '/instructor-dashboard.html';
+                return 'instructor-dashboard.html';
             default:
-                return '/student-dashboard.html';
+                return 'student-dashboard.html';
         }
     },
 

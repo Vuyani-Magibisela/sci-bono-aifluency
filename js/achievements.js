@@ -152,7 +152,7 @@ const AchievementsManager = {
     },
 
     /**
-     * Show single achievement notification
+     * Show single achievement notification with GSAP animation
      */
     showSingleNotification(achievement) {
         // Create notification element
@@ -174,18 +174,48 @@ const AchievementsManager = {
         // Add to page
         document.body.appendChild(notification);
 
-        // Animate in
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
+        // Use GSAP achievement unlock animation
+        if (typeof Animations !== 'undefined') {
+            Animations.achievementUnlock(notification, {
+                duration: 0.8,
+                glow: true,
+                onUnlock: () => {
+                    // Play a sound effect here if desired
+                    console.log('Achievement unlocked:', achievement.name);
+                }
+            });
 
-        // Remove after delay
-        setTimeout(() => {
-            notification.classList.remove('show');
+            // Auto-hide with GSAP animation
             setTimeout(() => {
-                notification.remove();
-            }, 300);
-        }, 5000);
+                Animations.notificationSlideIn(notification, 'top-right', {
+                    duration: 0.5,
+                    autoHide: false
+                });
+
+                // Slide out manually
+                gsap.to(notification, {
+                    x: 400,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        notification.remove();
+                    }
+                });
+            }, 5000);
+        } else {
+            // Fallback to CSS animations if GSAP not available
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+        }
     },
 
     /**
@@ -266,6 +296,31 @@ const AchievementsManager = {
             }
 
             container.innerHTML = html;
+
+            // Animate achievement badges with GSAP
+            if (typeof Animations !== 'undefined') {
+                setTimeout(() => {
+                    // Animate unlocked badges with special effect
+                    const unlockedBadges = container.querySelectorAll('.achievement-badge.unlocked');
+                    unlockedBadges.forEach((badge, index) => {
+                        gsap.from(badge, {
+                            scale: 0,
+                            opacity: 0,
+                            duration: 0.5,
+                            delay: index * 0.05,
+                            ease: 'back.out(1.7)'
+                        });
+                    });
+
+                    // Animate locked badges more subtly
+                    const lockedBadges = container.querySelectorAll('.achievement-badge.locked');
+                    Animations.fadeInStagger(lockedBadges, {
+                        duration: 0.6,
+                        stagger: 0.05,
+                        y: 20
+                    });
+                }, 100);
+            }
         } catch (error) {
             console.error('Error rendering achievement grid:', error);
             container.innerHTML = '<div class="error">Failed to load achievements</div>';
@@ -290,33 +345,73 @@ const AchievementsManager = {
             container.innerHTML = `
                 <div class="points-summary">
                     <div class="total-points">
-                        <div class="points-value">${points.total_points || 0}</div>
+                        <div class="points-value" id="total-points-value">0</div>
                         <div class="points-label">Total Points</div>
                     </div>
                     <div class="achievements-count">
-                        <div class="count-value">${points.achievements_count || 0}</div>
+                        <div class="count-value" id="achievements-count-value">0</div>
                         <div class="count-label">Achievements</div>
                     </div>
                     <div class="tier-breakdown">
                         <div class="tier-item">
                             <i class="fas fa-medal" style="color: #E5E4E2;"></i>
-                            <span>${points.platinum_count || 0}</span>
+                            <span id="platinum-count">0</span>
                         </div>
                         <div class="tier-item">
                             <i class="fas fa-medal" style="color: #FFD700;"></i>
-                            <span>${points.gold_count || 0}</span>
+                            <span id="gold-count">0</span>
                         </div>
                         <div class="tier-item">
                             <i class="fas fa-medal" style="color: #C0C0C0;"></i>
-                            <span>${points.silver_count || 0}</span>
+                            <span id="silver-count">0</span>
                         </div>
                         <div class="tier-item">
                             <i class="fas fa-medal" style="color: #CD7F32;"></i>
-                            <span>${points.bronze_count || 0}</span>
+                            <span id="bronze-count">0</span>
                         </div>
                     </div>
                 </div>
             `;
+
+            // Animate counters with GSAP
+            if (typeof Animations !== 'undefined') {
+                setTimeout(() => {
+                    Animations.animateCounter('#total-points-value', points.total_points || 0, {
+                        duration: 1.5
+                    });
+
+                    Animations.animateCounter('#achievements-count-value', points.achievements_count || 0, {
+                        duration: 1.5
+                    });
+
+                    Animations.animateCounter('#platinum-count', points.platinum_count || 0, {
+                        duration: 1.2,
+                        delay: 0.2
+                    });
+
+                    Animations.animateCounter('#gold-count', points.gold_count || 0, {
+                        duration: 1.2,
+                        delay: 0.3
+                    });
+
+                    Animations.animateCounter('#silver-count', points.silver_count || 0, {
+                        duration: 1.2,
+                        delay: 0.4
+                    });
+
+                    Animations.animateCounter('#bronze-count', points.bronze_count || 0, {
+                        duration: 1.2,
+                        delay: 0.5
+                    });
+
+                    // Fade in the points summary
+                    Animations.fadeInStagger('.tier-item', {
+                        duration: 0.6,
+                        stagger: 0.1,
+                        y: 20
+                    });
+                }, 100);
+            }
         } catch (error) {
             console.error('Error rendering points summary:', error);
             container.innerHTML = '<div class="error">Failed to load points</div>';
@@ -359,6 +454,50 @@ const AchievementsManager = {
             html += '</div>';
 
             container.innerHTML = html;
+
+            // Animate leaderboard entries with GSAP
+            if (typeof Animations !== 'undefined') {
+                setTimeout(() => {
+                    const entries = container.querySelectorAll('.leaderboard-entry');
+
+                    // Slide in leaderboard entries
+                    Animations.slideIn(entries, 'left', {
+                        duration: 0.6,
+                        stagger: 0.08,
+                        distance: 50
+                    });
+
+                    // Add special effect to top 3
+                    entries.forEach((entry, index) => {
+                        if (index < 3) {
+                            setTimeout(() => {
+                                Animations.pulse(entry, {
+                                    scale: 1.03,
+                                    duration: 0.4,
+                                    repeat: 1
+                                });
+                            }, 800 + (index * 150));
+                        }
+                    });
+
+                    // Animate points values
+                    entries.forEach((entry, index) => {
+                        const pointsEl = entry.querySelector('.user-points');
+                        if (pointsEl) {
+                            const pointsText = pointsEl.textContent;
+                            const pointsValue = parseInt(pointsText.replace(/[^\d]/g, ''));
+                            if (!isNaN(pointsValue)) {
+                                setTimeout(() => {
+                                    Animations.animateCounter(pointsEl, pointsValue, {
+                                        duration: 1.2,
+                                        suffix: ' pts'
+                                    });
+                                }, index * 80);
+                            }
+                        }
+                    });
+                }, 100);
+            }
         } catch (error) {
             console.error('Error rendering leaderboard:', error);
             container.innerHTML = '<div class="error">Failed to load leaderboard</div>';

@@ -210,8 +210,22 @@ class CertificateController
 
             $certificate = $this->certificateModel->getCertificateWithDetails($certificateId);
 
+            // Check for achievement unlocks (Phase 6)
+            $newAchievements = [];
+            try {
+                $achievementModel = new \App\Models\Achievement($this->pdo);
+                $newAchievements = $achievementModel->checkAndUnlock($userId, 'certificate_issued', [
+                    'course_id' => $courseId,
+                    'certificate_id' => $certificateId
+                ]);
+            } catch (\Exception $e) {
+                error_log('Achievement check error: ' . $e->getMessage());
+                // Don't fail certificate issuance if achievement check fails
+            }
+
             Response::success([
-                'certificate' => $certificate
+                'certificate' => $certificate,
+                'achievements_unlocked' => $newAchievements
             ], 'Certificate issued successfully', 201);
 
         } catch (\PDOException $e) {

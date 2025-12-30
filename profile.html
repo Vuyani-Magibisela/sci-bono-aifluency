@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - AI Fluency</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
@@ -24,11 +24,16 @@
                 <div class="profile-avatar-section">
                     <div class="profile-avatar-large" id="profile-avatar">
                         <span id="avatar-initials">JD</span>
+                        <img id="avatar-image" style="display: none;" alt="Profile Avatar">
                     </div>
-                    <button class="btn-secondary" disabled>
+                    <input type="file" id="avatar-upload-input" accept="image/jpeg,image/png,image/gif" style="display: none;">
+                    <button class="btn-secondary" id="change-avatar-btn">
                         <i class="fas fa-camera"></i> Change Photo
                     </button>
-                    <p class="help-text">Photo upload coming in Phase 2</p>
+                    <button class="btn-danger" id="remove-avatar-btn" style="display: none;">
+                        <i class="fas fa-trash"></i> Remove Photo
+                    </button>
+                    <p class="help-text">JPG, PNG or GIF (max 2MB)</p>
                 </div>
 
                 <!-- Profile Information -->
@@ -63,6 +68,21 @@
                             <i class="fas fa-key"></i> Change Password
                         </button>
                     </div>
+                </div>
+
+                <!-- Achievement Badges -->
+                <div class="profile-achievements-section">
+                    <h2>
+                        <i class="fas fa-trophy"></i> Recent Achievements
+                    </h2>
+                    <div id="profile-achievements-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Loading achievements...
+                        </div>
+                    </div>
+                    <a href="/achievements.html" class="view-all-link">
+                        View All Achievements <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
 
                 <!-- Additional Info -->
@@ -113,35 +133,39 @@
     </footer>
 
     <!-- Authentication System (Phase 1) -->
-    <script src="/js/storage.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/header-template.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/achievements.js"></script>
 
     <!-- Page Protection & Data Loading -->
     <script>
         // Require authentication
         Auth.requireAuth();
 
-        // Load user data
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = Auth.getUser();
+        let currentUser = null;
+        let currentAvatarFileId = null;
 
-            if (user) {
+        // Load user data
+        document.addEventListener('DOMContentLoaded', async () => {
+            currentUser = Auth.getUser();
+
+            if (currentUser) {
                 // Display user information
-                document.getElementById('user-name').textContent = user.name || 'N/A';
-                document.getElementById('user-email').textContent = user.email || 'N/A';
-                document.getElementById('user-role').textContent = user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'N/A';
+                document.getElementById('user-name').textContent = currentUser.name || 'N/A';
+                document.getElementById('user-email').textContent = currentUser.email || 'N/A';
+                document.getElementById('user-role').textContent = currentUser.role ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'N/A';
 
                 // Generate avatar initials
-                const initials = user.name
-                    ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                const initials = currentUser.name
+                    ? currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
                     : 'U';
                 document.getElementById('avatar-initials').textContent = initials;
 
                 // Format join date
-                if (user.created_at) {
-                    const joinDate = new Date(user.created_at);
+                if (currentUser.created_at) {
+                    const joinDate = new Date(currentUser.created_at);
                     document.getElementById('user-joined').textContent = joinDate.toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -151,11 +175,238 @@
                     document.getElementById('user-joined').textContent = 'N/A';
                 }
 
-                console.log('Profile loaded for:', user.email);
+                console.log('Profile loaded for:', currentUser.email);
 
-                // Phase 2: Load enrollments, certificates, achievements, streak data
+                // Load avatar if exists
+                await loadUserAvatar();
+
+                // Load achievements (Phase B)
+                await loadRecentAchievements();
+
+                // Load statistics
+                await loadUserStats();
+
+                // Setup avatar upload
+                setupAvatarUpload();
             }
         });
+
+        /**
+         * Load user avatar
+         */
+        async function loadUserAvatar() {
+            try {
+                const response = await apiRequest('/api/files?type=avatar');
+
+                if (response.success && response.files && response.files.length > 0) {
+                    const avatarFile = response.files[0]; // Get most recent avatar
+                    currentAvatarFileId = avatarFile.id;
+                    displayAvatar(avatarFile.file_url);
+                }
+            } catch (error) {
+                console.error('Failed to load avatar:', error);
+            }
+        }
+
+        /**
+         * Display avatar image
+         */
+        function displayAvatar(fileUrl) {
+            const avatarImage = document.getElementById('avatar-image');
+            const avatarInitials = document.getElementById('avatar-initials');
+            const removeBtn = document.getElementById('remove-avatar-btn');
+
+            avatarImage.src = fileUrl;
+            avatarImage.style.display = 'block';
+            avatarInitials.style.display = 'none';
+            removeBtn.style.display = 'inline-block';
+        }
+
+        /**
+         * Setup avatar upload
+         */
+        function setupAvatarUpload() {
+            const changeBtn = document.getElementById('change-avatar-btn');
+            const removeBtn = document.getElementById('remove-avatar-btn');
+            const fileInput = document.getElementById('avatar-upload-input');
+
+            changeBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', async (e) => {
+                if (e.target.files.length > 0) {
+                    await uploadAvatar(e.target.files[0]);
+                }
+            });
+
+            removeBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to remove your profile picture?')) {
+                    await removeAvatar();
+                }
+            });
+        }
+
+        /**
+         * Upload avatar
+         */
+        async function uploadAvatar(file) {
+            // Validate file
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                showToast('Image file must be smaller than 2MB', 'error');
+                return;
+            }
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                showToast('Only JPG, PNG, or GIF images are allowed', 'error');
+                return;
+            }
+
+            const changeBtn = document.getElementById('change-avatar-btn');
+            changeBtn.disabled = true;
+            changeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+            try {
+                // Delete old avatar if exists
+                if (currentAvatarFileId) {
+                    await apiRequest(`/api/files/${currentAvatarFileId}`, {
+                        method: 'DELETE'
+                    });
+                }
+
+                // Upload new avatar
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('type', 'avatar');
+
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentAvatarFileId = data.file_id;
+                    displayAvatar(data.file_url);
+                    showToast('Profile picture updated successfully!', 'success');
+                } else {
+                    showToast('Failed to upload avatar: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showToast('Failed to upload avatar: ' + error.message, 'error');
+            } finally {
+                changeBtn.disabled = false;
+                changeBtn.innerHTML = '<i class="fas fa-camera"></i> Change Photo';
+            }
+        }
+
+        /**
+         * Remove avatar
+         */
+        async function removeAvatar() {
+            if (!currentAvatarFileId) return;
+
+            try {
+                await apiRequest(`/api/files/${currentAvatarFileId}`, {
+                    method: 'DELETE'
+                });
+
+                const avatarImage = document.getElementById('avatar-image');
+                const avatarInitials = document.getElementById('avatar-initials');
+                const removeBtn = document.getElementById('remove-avatar-btn');
+
+                avatarImage.style.display = 'none';
+                avatarInitials.style.display = 'block';
+                removeBtn.style.display = 'none';
+                currentAvatarFileId = null;
+
+                showToast('Profile picture removed', 'success');
+            } catch (error) {
+                showToast('Failed to remove avatar: ' + error.message, 'error');
+            }
+        }
+
+        /**
+         * Load recent achievements
+         */
+        async function loadRecentAchievements() {
+            const container = document.getElementById('profile-achievements-container');
+
+            try {
+                const response = await apiRequest('/api/achievements/user');
+
+                if (response.success && response.achievements && response.achievements.length > 0) {
+                    // Show only the 6 most recent achievements
+                    const recentAchievements = response.achievements.slice(0, 6);
+
+                    container.innerHTML = '<div class="achievements-mini-grid"></div>';
+                    const grid = container.querySelector('.achievements-mini-grid');
+
+                    recentAchievements.forEach(achievement => {
+                        const badge = document.createElement('div');
+                        badge.className = `achievement-mini ${achievement.tier}`;
+                        badge.title = achievement.name;
+                        badge.innerHTML = `
+                            <i class="${achievement.badge_icon}"></i>
+                            <span class="achievement-mini-name">${escapeHtml(achievement.name)}</span>
+                        `;
+                        grid.appendChild(badge);
+                    });
+                } else {
+                    container.innerHTML = '<p class="text-muted">No achievements yet. Start completing lessons and quizzes to earn badges!</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load achievements:', error);
+                container.innerHTML = '<p class="text-error">Failed to load achievements</p>';
+            }
+        }
+
+        /**
+         * Load user statistics
+         */
+        async function loadUserStats() {
+            try {
+                // Load enrollments count
+                const enrollmentsResponse = await apiRequest('/api/enrollments');
+                if (enrollmentsResponse.success) {
+                    document.getElementById('stat-courses').textContent = enrollmentsResponse.enrollments?.length || 0;
+                }
+
+                // Load certificates count
+                const certsResponse = await apiRequest('/api/certificates/user');
+                if (certsResponse.success) {
+                    document.getElementById('stat-certificates').textContent = certsResponse.certificates?.length || 0;
+                }
+
+                // Load achievements count
+                const achievementsResponse = await apiRequest('/api/achievements/user');
+                if (achievementsResponse.success) {
+                    document.getElementById('stat-achievements').textContent = achievementsResponse.achievements?.length || 0;
+                }
+
+                // Streak calculation would require activity tracking - placeholder for now
+                document.getElementById('stat-streak').textContent = '-';
+            } catch (error) {
+                console.error('Failed to load statistics:', error);
+            }
+        }
+
+        /**
+         * Helper: Escape HTML
+         */
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>

@@ -20,7 +20,8 @@ class Project extends BaseModel
         'requirements',
         'max_score',
         'due_date',
-        'is_published'
+        'is_published',
+        'order'
     ];
     protected array $hidden = [];
 

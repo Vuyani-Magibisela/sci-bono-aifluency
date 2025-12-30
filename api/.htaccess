@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # Set base directory
-RewriteBase /api/
+RewriteBase /sci-bono-aifluency/api/
 
 # Block access to sensitive files and directories
 RedirectMatch 403 ^/api/\.env$

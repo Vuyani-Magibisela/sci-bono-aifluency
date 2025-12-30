@@ -18,13 +18,13 @@ const InstructorDashboard = {
         const user = Auth.getUser();
         if (!user) {
             console.error('InstructorDashboard: No authenticated user found');
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
             return;
         }
 
         if (user.role !== 'instructor' && user.role !== 'admin') {
             console.error('InstructorDashboard: User is not an instructor');
-            window.location.href = '/403.html';
+            window.location.href = '403.html';
             return;
         }
 
@@ -202,6 +202,13 @@ const InstructorDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
+
+        // Animate course cards with fade-in effect
+        Animations.fadeInStagger('.instructor-course', {
+            duration: 0.8,
+            stagger: 0.15,
+            y: 20
+        });
     },
 
     /**
@@ -271,26 +278,84 @@ const InstructorDashboard = {
 
         html += '</div>';
         container.innerHTML = html;
+
+        // Animate grading queue items with slide-in effect
+        Animations.slideIn('.grading-item', 'up', {
+            duration: 0.6,
+            stagger: 0.1,
+            distance: 30
+        });
+
+        // Add pulse effect to urgent items (submitted more than 3 days ago)
+        const gradingItems = container.querySelectorAll('.grading-item');
+        gradingItems.forEach((item, index) => {
+            // Add a subtle pulse to the first few items to draw attention
+            if (index < 3) {
+                setTimeout(() => {
+                    Animations.pulse(item, {
+                        scale: 1.02,
+                        duration: 0.4,
+                        repeat: 1
+                    });
+                }, 1000 + (index * 200));
+            }
+        });
     },
 
     /**
-     * Render instructor statistics
+     * Render instructor statistics with animations
      */
     renderInstructorStats(stats) {
-        // Update stat cards
-        this.updateStatCard('total-courses', stats.total_courses || 0);
-        this.updateStatCard('total-students', stats.total_students || 0);
-        this.updateStatCard('total-enrollments', stats.total_enrollments || 0);
-        this.updateStatCard('pending-grading', stats.pending_grading || 0);
-        this.updateStatCard('completion-rate', `${stats.average_completion_rate || 0}%`);
+        // Animate stat cards in sequence
+        setTimeout(() => {
+            this.updateStatCard('total-courses', stats.total_courses || 0);
+        }, 100);
+
+        setTimeout(() => {
+            this.updateStatCard('total-students', stats.total_students || 0);
+        }, 200);
+
+        setTimeout(() => {
+            this.updateStatCard('pending-grading', stats.pending_grading || 0);
+        }, 300);
+
+        setTimeout(() => {
+            this.updateStatCard('completion-rate', `${stats.average_completion_rate || 0}%`);
+        }, 400);
+
+        // Animate dashboard cards with stagger effect
+        Animations.fadeInStagger('.dashboard-card', {
+            duration: 0.8,
+            stagger: 0.1,
+            y: 30
+        });
     },
 
     /**
-     * Update individual stat card
+     * Update individual stat card with animation
      */
     updateStatCard(id, value) {
         const element = document.getElementById(id);
-        if (element) {
+        if (!element) return;
+
+        // Check if value is a number for counter animation
+        if (typeof value === 'number') {
+            Animations.animateCounter(element, value, {
+                duration: 1.5,
+                decimals: 0
+            });
+        } else if (typeof value === 'string' && value.includes('%')) {
+            // Animate percentage
+            const percentage = parseFloat(value.replace('%', ''));
+            if (!isNaN(percentage)) {
+                Animations.animatePercentage(element, percentage, {
+                    duration: 1.5
+                });
+            } else {
+                element.textContent = value;
+            }
+        } else {
+            // Non-numeric value, just set text
             element.textContent = value;
         }
     },
@@ -396,7 +461,7 @@ const InstructorDashboard = {
         // Listen for auth state changes
         document.addEventListener('authStateChanged', (e) => {
             if (!e.detail.isAuthenticated) {
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
             }
         });
     },

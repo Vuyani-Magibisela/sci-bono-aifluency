@@ -21,14 +21,14 @@
     <meta name="apple-mobile-web-app-title" content="AI Fluency">
 
     <!-- Manifest and Icons -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
+          navigator.serviceWorker.register('service-worker.js')
             .then(registration => {
               console.log('Service Worker registered with scope:', registration.scope);
             })
@@ -47,6 +47,10 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
+    <!-- Dynamic Header (Phase 1 Integration) -->
+    <div id="header-placeholder"></div>
+
+    <!-- Static Header (Disabled - Keep for rollback)
     <header>
         <div class="logo">
             <img src="images/logo.svg" alt="Logo of Sci-Bono Discovery Center on a blue circular background">
@@ -66,11 +70,9 @@
             <span></span>
         </button>
         <div class="header-controls">
-            <!-- <button id="downloadPdf"><i class="fas fa-download"></i> Download PDF</button> -->
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" id="mobileMenu">
         <button class="close-menu" id="closeMenu" aria-label="Close menu">
             <i class="fas fa-times"></i>
@@ -82,6 +84,7 @@
             <li><a href="index.html#about" class="mobile-nav-link">About</a></li>
         </ul>
     </div>
+    -->
 
     <main>
         <section class="auth-section">
@@ -144,12 +147,14 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
-
-    <!-- Authentication Modules -->
+    <!-- Authentication System (Phase 1) - Load BEFORE inline scripts -->
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+
+    <!-- Legacy Scripts -->
+    <script src="js/script.js"></script>
 
     <script>
         // Check if already logged in

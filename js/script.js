@@ -51,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Mobile menu toggle functionality
+    // NOTE: Mobile menu is now handled by header-template.js
+    // This code is kept for backward compatibility with pages that haven't migrated yet
+    /*
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
     const closeMenu = document.getElementById('closeMenu');
@@ -90,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    */
 
     // For chapter pages: Highlight current section in navigation
     const sectionLinks = document.querySelectorAll('.nav-tab');

@@ -20,7 +20,7 @@ const AdminModules = {
         const user = Auth.getUser();
         if (!user || user.role !== 'admin') {
             console.error('AdminModules: Unauthorized access');
-            window.location.href = '/403.html';
+            window.location.href = '403.html';
             return;
         }
 

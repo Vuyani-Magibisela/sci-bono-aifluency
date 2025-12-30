@@ -1,0 +1,21 @@
+# Security: Prevent execution of PHP and other scripts in uploads directory
+# Phase B: Complete Core Features
+
+# Deny all direct access - files must be served through FileUploadController
+Order Deny,Allow
+Deny from all
+
+# Disable PHP execution
+php_flag engine off
+
+# Disable script execution
+RemoveHandler .php .phtml .php3 .php4 .php5 .phps .cgi .pl .py .jsp .asp .htm .shtml .sh .rb
+
+# Prevent directory listing
+Options -Indexes
+
+# Additional security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

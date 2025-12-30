@@ -21,7 +21,8 @@ class ProjectSubmission extends BaseModel
         'feedback',
         'graded_by',
         'submitted_at',
-        'graded_at'
+        'graded_at',
+        'uploaded_file_id'
     ];
     protected array $hidden = [];
 

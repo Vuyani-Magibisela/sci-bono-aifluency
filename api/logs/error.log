@@ -1,0 +1,31 @@
+[2025-12-30 12:28:03] ERROR: App\Utils\Validator::required(): Argument #1 ($field) must be of type string, array given, called in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php on line 555 in /var/www/html/sci-bono-aifluency/api/utils/Validator.php:31
+Trace: #0 /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php(555): App\Utils\Validator->required()
+#1 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#2 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#3 {main}
+[2025-12-30 12:28:03] ERROR: App\Utils\Validator::required(): Argument #1 ($field) must be of type string, array given, called in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php on line 555 in /var/www/html/sci-bono-aifluency/api/utils/Validator.php:31
+Trace: #0 /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php(555): App\Utils\Validator->required()
+#1 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#2 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#3 {main}
+[2025-12-30 12:28:51] ERROR: Call to undefined method App\Utils\Validator::hasErrors() in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php:560
+Trace: #0 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#1 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#2 {main}
+[2025-12-30 12:28:51] ERROR: Call to undefined method App\Utils\Validator::hasErrors() in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php:560
+Trace: #0 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#1 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#2 {main}
+[2025-12-30 12:29:10] ERROR: Call to undefined method App\Utils\Response::created() in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php:612
+Trace: #0 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#1 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#2 {main}
+[2025-12-30 12:29:10] ERROR: Call to undefined method App\Utils\Response::badRequest() in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php:561
+Trace: #0 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->createQuestion()
+#1 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#2 {main}
+[2025-12-30 12:29:51] ERROR: App\Utils\Response::success(): Argument #2 ($message) must be of type string, array given, called in /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php on line 684 in /var/www/html/sci-bono-aifluency/api/utils/Response.php:19
+Trace: #0 /var/www/html/sci-bono-aifluency/api/controllers/QuizController.php(684): App\Utils\Response::success()
+#1 /var/www/html/sci-bono-aifluency/api/routes/api.php(698): App\Controllers\QuizController->updateQuestion()
+#2 /var/www/html/sci-bono-aifluency/api/index.php(141): require_once('...')
+#3 {main}

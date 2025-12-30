@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Test - Sci-Bono AI Fluency</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .test-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .debug-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .debug-box h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Header (should be injected here) -->
+    <div id="header-placeholder"></div>
+
+    <div class="test-content">
+        <h1>Header System Test Page</h1>
+        <p>This page tests if the dynamic header system is working correctly.</p>
+
+        <div class="debug-box">
+            <h3>Debug Information:</h3>
+            <div id="debug-output"></div>
+        </div>
+
+        <div class="debug-box">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>You should see a header at the top of this page with logo and navigation</li>
+                <li>Check the debug info below to see if all modules loaded</li>
+                <li>Open browser console (F12) to see any errors</li>
+                <li>Try resizing window to test responsive behavior</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Load Dependencies in Correct Order -->
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+
+    <!-- Debug Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const debugOutput = document.getElementById('debug-output');
+            let html = '';
+
+            // Check if modules loaded
+            html += `<div class="status ${typeof Storage !== 'undefined' ? 'success' : 'error'}">
+                Storage Module: ${typeof Storage !== 'undefined' ? '✅ Loaded' : '❌ Not Found'}
+            </div>`;
+
+            html += `<div class="status ${typeof API !== 'undefined' ? 'success' : 'error'}">
+                API Module: ${typeof API !== 'undefined' ? '✅ Loaded' : '❌ Not Found'}
+            </div>`;
+
+            html += `<div class="status ${typeof Auth !== 'undefined' ? 'success' : 'error'}">
+                Auth Module: ${typeof Auth !== 'undefined' ? '✅ Loaded' : '❌ Not Found'}
+            </div>`;
+
+            html += `<div class="status ${typeof HeaderTemplate !== 'undefined' ? 'success' : 'error'}">
+                HeaderTemplate Module: ${typeof HeaderTemplate !== 'undefined' ? '✅ Loaded' : '❌ Not Found'}
+            </div>`;
+
+            // Check if header was rendered
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            const headerRendered = headerPlaceholder && headerPlaceholder.innerHTML.trim().length > 0;
+
+            html += `<div class="status ${headerRendered ? 'success' : 'error'}">
+                Header Rendered: ${headerRendered ? '✅ Yes' : '❌ No'}
+            </div>`;
+
+            // Check authentication
+            if (typeof Auth !== 'undefined') {
+                const isAuth = Auth.isAuthenticated();
+                html += `<div class="status ${isAuth ? 'success' : 'success'}">
+                    User Authenticated: ${isAuth ? '✅ Yes' : 'ℹ️ No (Expected for test)'}
+                </div>`;
+            }
+
+            // Check CSS
+            const mainHeader = document.querySelector('.main-header');
+            html += `<div class="status ${mainHeader ? 'success' : 'error'}">
+                Main Header Element: ${mainHeader ? '✅ Found in DOM' : '❌ Not Found'}
+            </div>`;
+
+            // Check viewport width
+            html += `<div class="status success">
+                Viewport Width: ${window.innerWidth}px (${window.innerWidth > 768 ? 'Desktop' : 'Mobile'})
+            </div>`;
+
+            debugOutput.innerHTML = html;
+
+            // Log to console
+            console.log('=== Header System Debug ===');
+            console.log('Storage:', typeof Storage !== 'undefined');
+            console.log('API:', typeof API !== 'undefined');
+            console.log('Auth:', typeof Auth !== 'undefined');
+            console.log('HeaderTemplate:', typeof HeaderTemplate !== 'undefined');
+            console.log('Header Rendered:', headerRendered);
+            console.log('Header HTML:', headerPlaceholder?.innerHTML);
+        });
+    </script>
+</body>
+</html>

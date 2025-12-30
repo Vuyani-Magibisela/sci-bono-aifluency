@@ -168,4 +168,78 @@ class QuizQuestion extends BaseModel
 
         return $this->update($questionId, $data);
     }
+
+    /**
+     * Get difficulty statistics for a question
+     * Phase 6 - Task 1: Question Difficulty Analysis
+     *
+     * @param int $questionId Question ID
+     * @return array Statistics including total_attempts, success_rate, difficulty_score, avg_time
+     */
+    public static function getDifficultyStats(int $questionId): array
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare("
+            SELECT
+                COUNT(*) as total_attempts,
+                SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct_answers,
+                SUM(CASE WHEN is_correct = 0 THEN 1 ELSE 0 END) as incorrect_answers,
+                ROUND(AVG(CASE WHEN is_correct = 1 THEN 100 ELSE 0 END), 2) as success_rate,
+                ROUND(AVG(time_spent_seconds), 2) as avg_time_seconds
+            FROM quiz_attempt_answers
+            WHERE question_id = ?
+        ");
+
+        $stmt->execute([$questionId]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$result || $result['total_attempts'] == 0) {
+            return [
+                'total_attempts' => 0,
+                'correct_answers' => 0,
+                'incorrect_answers' => 0,
+                'success_rate' => 0,
+                'difficulty_score' => 0,
+                'avg_time_seconds' => 0
+            ];
+        }
+
+        // Calculate difficulty score (inverse of success rate)
+        $result['difficulty_score'] = round(100 - $result['success_rate'], 2);
+
+        return $result;
+    }
+
+    /**
+     * Get all questions ranked by difficulty for a quiz
+     * Phase 6 - Task 1: Question Difficulty Analysis
+     *
+     * @param int $quizId Quiz ID
+     * @return array Questions ranked by difficulty (hardest first)
+     */
+    public static function getQuestionDifficultyRanking(int $quizId): array
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare("
+            SELECT
+                qq.id,
+                qq.question_text,
+                qq.order_index,
+                COUNT(qaa.id) as total_attempts,
+                SUM(CASE WHEN qaa.is_correct = 1 THEN 1 ELSE 0 END) as correct_count,
+                ROUND(AVG(CASE WHEN qaa.is_correct = 1 THEN 100 ELSE 0 END), 2) as success_rate,
+                ROUND(100 - AVG(CASE WHEN qaa.is_correct = 1 THEN 100 ELSE 0 END), 2) as difficulty_score,
+                ROUND(AVG(qaa.time_spent_seconds), 2) as avg_time_seconds
+            FROM quiz_questions qq
+            LEFT JOIN quiz_attempt_answers qaa ON qq.id = qaa.question_id
+            WHERE qq.quiz_id = ?
+            GROUP BY qq.id, qq.question_text, qq.order_index
+            ORDER BY difficulty_score DESC
+        ");
+
+        $stmt->execute([$quizId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

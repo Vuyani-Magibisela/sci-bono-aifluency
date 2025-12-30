@@ -524,4 +524,282 @@ class QuizAttempt extends BaseModel
     {
         return $attempt->instructor_score ?? $attempt->score ?? 0.0;
     }
+
+    /**
+     * Get performance trends for a user on a specific quiz
+     * Phase 6 - Task 2: Performance Trends Analysis
+     *
+     * @param int $userId User ID
+     * @param int $quizId Quiz ID
+     * @return array Trend data including attempts, trend direction, improvement metrics
+     */
+    public static function getPerformanceTrends(int $userId, int $quizId): array
+    {
+        global $pdo;
+
+        // Get all attempts ordered by date
+        $stmt = $pdo->prepare("
+            SELECT
+                id,
+                score,
+                time_completed,
+                time_spent_seconds,
+                passed
+            FROM quiz_attempts
+            WHERE user_id = ? AND quiz_id = ? AND status IN ('submitted', 'graded')
+            ORDER BY time_completed ASC
+        ");
+
+        $stmt->execute([$userId, $quizId]);
+        $attempts = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($attempts)) {
+            return [
+                'attempts' => [],
+                'trend' => 'no_data',
+                'avg_improvement' => 0,
+                'best_score' => 0,
+                'latest_score' => 0
+            ];
+        }
+
+        // Add attempt numbers
+        foreach ($attempts as $index => &$attempt) {
+            $attempt['attempt_number'] = $index + 1;
+        }
+
+        // Calculate trend
+        $scores = array_column($attempts, 'score');
+        $trend = self::calculateTrend($scores);
+        $avgImprovement = self::calculateAverageImprovement($scores);
+
+        return [
+            'attempts' => $attempts,
+            'trend' => $trend,
+            'avg_improvement' => $avgImprovement,
+            'best_score' => max($scores),
+            'latest_score' => end($scores)
+        ];
+    }
+
+    /**
+     * Calculate trend direction from scores
+     * Phase 6 - Task 2: Performance Trends Analysis
+     *
+     * @param array $scores Array of scores
+     * @return string Trend direction: improving, declining, stable, or insufficient_data
+     */
+    private static function calculateTrend(array $scores): string
+    {
+        if (count($scores) < 2) return 'insufficient_data';
+
+        $improvements = 0;
+        $declines = 0;
+
+        for ($i = 1; $i < count($scores); $i++) {
+            if ($scores[$i] > $scores[$i-1]) $improvements++;
+            elseif ($scores[$i] < $scores[$i-1]) $declines++;
+        }
+
+        if ($improvements > $declines) return 'improving';
+        elseif ($declines > $improvements) return 'declining';
+        else return 'stable';
+    }
+
+    /**
+     * Calculate average score improvement per attempt
+     * Phase 6 - Task 2: Performance Trends Analysis
+     *
+     * @param array $scores Array of scores
+     * @return float Average improvement
+     */
+    private static function calculateAverageImprovement(array $scores): float
+    {
+        if (count($scores) < 2) return 0;
+
+        $totalChange = end($scores) - $scores[0];
+        $numIntervals = count($scores) - 1;
+
+        return round($totalChange / $numIntervals, 2);
+    }
+
+    /**
+     * Get performance trends across ALL quizzes for a user
+     * Phase 6 - Task 2: Performance Trends Analysis
+     *
+     * @param int $userId User ID
+     * @return array Learning curve data
+     */
+    public static function getUserLearningCurve(int $userId): array
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare("
+            SELECT
+                qa.quiz_id,
+                q.title as quiz_title,
+                qa.score,
+                qa.time_completed,
+                m.title as module_title
+            FROM quiz_attempts qa
+            JOIN quizzes q ON qa.quiz_id = q.id
+            JOIN modules m ON q.module_id = m.id
+            WHERE qa.user_id = ? AND qa.status IN ('submitted', 'graded')
+            ORDER BY qa.time_completed ASC
+        ");
+
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get class comparison data for a user's quiz attempt
+     * Phase 6 - Task 3: Class Comparisons & Peer Analysis
+     *
+     * @param int $userId User ID
+     * @param int $quizId Quiz ID
+     * @return array Class statistics and user's rank/percentile
+     */
+    public static function getClassComparison(int $userId, int $quizId): array
+    {
+        global $pdo;
+
+        // Get user's best score
+        $stmt = $pdo->prepare("
+            SELECT MAX(score) as best_score
+            FROM quiz_attempts
+            WHERE user_id = ? AND quiz_id = ? AND status IN ('submitted', 'graded')
+        ");
+        $stmt->execute([$userId, $quizId]);
+        $userScore = $stmt->fetchColumn() ?? 0;
+
+        // Get class statistics
+        $stmt = $pdo->prepare("
+            SELECT
+                AVG(best_scores.score) as class_average,
+                MIN(best_scores.score) as class_min,
+                MAX(best_scores.score) as class_max,
+                COUNT(DISTINCT best_scores.user_id) as total_students
+            FROM (
+                SELECT user_id, MAX(score) as score
+                FROM quiz_attempts
+                WHERE quiz_id = ? AND status IN ('submitted', 'graded')
+                GROUP BY user_id
+            ) as best_scores
+        ");
+        $stmt->execute([$quizId]);
+        $classStats = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // Get median score
+        $stmt = $pdo->prepare("
+            SELECT score
+            FROM (
+                SELECT user_id, MAX(score) as score
+                FROM quiz_attempts
+                WHERE quiz_id = ? AND status IN ('submitted', 'graded')
+                GROUP BY user_id
+            ) as best_scores
+            ORDER BY score
+        ");
+        $stmt->execute([$quizId]);
+        $scores = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $median = self::calculateMedian($scores);
+
+        // Calculate user's rank and percentile
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) as better_count
+            FROM (
+                SELECT user_id, MAX(score) as score
+                FROM quiz_attempts
+                WHERE quiz_id = ? AND status IN ('submitted', 'graded')
+                GROUP BY user_id
+            ) as best_scores
+            WHERE score > ?
+        ");
+        $stmt->execute([$quizId, $userScore]);
+        $betterCount = $stmt->fetchColumn();
+
+        $rank = $betterCount + 1;
+        $totalStudents = (int)$classStats['total_students'];
+        $percentile = $totalStudents > 0 ? round((($totalStudents - $rank) / $totalStudents) * 100, 2) : 0;
+        $betterThanPercentage = $totalStudents > 1 ? round((($totalStudents - $rank) / ($totalStudents - 1)) * 100, 2) : 0;
+
+        return [
+            'user_best_score' => $userScore,
+            'class_average' => round($classStats['class_average'], 2),
+            'class_median' => $median,
+            'class_min' => (int)$classStats['class_min'],
+            'class_max' => (int)$classStats['class_max'],
+            'percentile' => $percentile,
+            'rank' => $rank,
+            'total_students' => $totalStudents,
+            'better_than_percentage' => $betterThanPercentage
+        ];
+    }
+
+    /**
+     * Get leaderboard for a quiz
+     * Phase 6 - Task 3: Class Comparisons & Peer Analysis
+     *
+     * @param int $quizId Quiz ID
+     * @param int $limit Number of top students to return
+     * @return array Leaderboard data
+     */
+    public static function getQuizLeaderboard(int $quizId, int $limit = 10): array
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare("
+            SELECT
+                u.id as user_id,
+                u.name,
+                u.profile_picture_url,
+                best_scores.score,
+                best_scores.time_completed
+            FROM (
+                SELECT
+                    user_id,
+                    MAX(score) as score,
+                    MIN(time_completed) as time_completed
+                FROM quiz_attempts
+                WHERE quiz_id = ? AND status IN ('submitted', 'graded')
+                GROUP BY user_id
+            ) as best_scores
+            JOIN users u ON best_scores.user_id = u.id
+            ORDER BY best_scores.score DESC, best_scores.time_completed ASC
+            LIMIT ?
+        ");
+
+        $stmt->execute([$quizId, $limit]);
+        $leaderboard = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Add rank
+        foreach ($leaderboard as $index => &$entry) {
+            $entry['rank'] = $index + 1;
+        }
+
+        return $leaderboard;
+    }
+
+    /**
+     * Calculate median from array of scores
+     * Phase 6 - Task 3: Class Comparisons & Peer Analysis
+     *
+     * @param array $scores Array of scores
+     * @return float Median score
+     */
+    private static function calculateMedian(array $scores): float
+    {
+        if (empty($scores)) return 0;
+
+        sort($scores);
+        $count = count($scores);
+        $middle = floor($count / 2);
+
+        if ($count % 2 == 0) {
+            return ($scores[$middle - 1] + $scores[$middle]) / 2;
+        } else {
+            return $scores[$middle];
+        }
+    }
 }

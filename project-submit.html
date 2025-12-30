@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Project - Sci-Bono AI Fluency</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="student-dashboard.html">Dashboard</a>
+            <span class="separator">/</span>
+            <span id="breadcrumb-project">Submit Project</span>
+        </div>
+
+        <div id="loading-spinner" class="loading-spinner" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i> Loading project details...
+        </div>
+
+        <div id="project-content" style="display: none;">
+            <!-- Project Header -->
+            <div class="page-header">
+                <h1 id="project-title">Loading...</h1>
+                <div class="project-meta">
+                    <span class="meta-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span id="module-title"></span>
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-star"></i>
+                        Max Score: <strong id="max-score"></strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Project Description -->
+            <div class="project-info-card">
+                <h2><i class="fas fa-info-circle"></i> Project Description</h2>
+                <div id="project-description" class="project-text"></div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="project-info-card">
+                <h2><i class="fas fa-tasks"></i> Instructions</h2>
+                <div id="project-instructions" class="project-text"></div>
+            </div>
+
+            <!-- Requirements -->
+            <div class="project-info-card">
+                <h2><i class="fas fa-clipboard-check"></i> Requirements</h2>
+                <div id="project-requirements" class="project-text"></div>
+            </div>
+
+            <!-- Submission Section -->
+            <div class="submission-section">
+                <h2><i class="fas fa-upload"></i> Submit Your Project</h2>
+
+                <!-- Previous Submissions -->
+                <div id="previous-submissions" style="display: none;">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Previous Submission Found</strong>
+                            <p id="previous-submission-info"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Form -->
+                <div class="upload-container">
+                    <div id="drop-zone" class="drop-zone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop Files Here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.zip,.png,.jpg,.jpeg" style="display: none;">
+                        <div class="supported-formats">
+                            <small>Supported formats: PDF, DOC, DOCX, ZIP, PNG, JPG (Max 10MB per file)</small>
+                        </div>
+                    </div>
+
+                    <!-- File List -->
+                    <div id="file-list" class="file-list" style="display: none;"></div>
+
+                    <!-- Submission Notes -->
+                    <div class="form-group">
+                        <label for="submission-notes">
+                            Submission Notes
+                            <span class="optional">(optional)</span>
+                        </label>
+                        <textarea
+                            id="submission-notes"
+                            rows="4"
+                            placeholder="Add any notes about your submission..."
+                            maxlength="1000"
+                        ></textarea>
+                        <small><span id="notes-char-count">0</span> / 1000 characters</small>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="button" id="cancel-btn" class="btn btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="button" id="submit-btn" class="btn btn-primary" disabled>
+                            <i class="fas fa-paper-plane"></i> Submit Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submission History -->
+            <div id="submission-history-section" class="submission-history" style="display: none;">
+                <h2><i class="fas fa-history"></i> Submission History</h2>
+                <div id="submission-history-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/project-upload.js"></script>
+
+    <script>
+        // Get project ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeHeader();
+
+            if (!projectId) {
+                showToast('No project specified', 'error');
+                setTimeout(() => {
+                    window.location.href = 'student-dashboard.html';
+                }, 2000);
+                return;
+            }
+
+            // Initialize project submission page
+            await ProjectUpload.init(projectId);
+        });
+    </script>
+</body>
+</html>

@@ -56,16 +56,37 @@ try {
 
         if (strpos($contentType, 'application/json') !== false) {
             $rawInput = file_get_contents('php://input');
-            $_POST = json_decode($rawInput, true) ?? [];
 
-            // Handle JSON decode errors
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Invalid JSON in request body: ' . json_last_error_msg()
-                ]);
-                exit;
+            // Debug logging
+            if (APP_DEBUG) {
+                $debugLogFile = __DIR__ . '/logs/json_debug.log';
+                file_put_contents($debugLogFile, sprintf(
+                    "[%s] Raw Input Length: %d, Content: %s\n",
+                    date('Y-m-d H:i:s'),
+                    strlen($rawInput),
+                    $rawInput
+                ), FILE_APPEND);
+            }
+
+            // Only attempt to parse JSON if there's actual content
+            if (!empty($rawInput)) {
+                $_POST = json_decode($rawInput, true) ?? [];
+
+                // Handle JSON decode errors (only if we actually tried to parse)
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    http_response_code(400);
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Invalid JSON in request body: ' . json_last_error_msg(),
+                        'debug' => APP_DEBUG ? [
+                            'raw_input_length' => strlen($rawInput),
+                            'raw_input' => substr($rawInput, 0, 200)
+                        ] : null
+                    ]);
+                    exit;
+                }
+            } else {
+                $_POST = [];
             }
         }
     }

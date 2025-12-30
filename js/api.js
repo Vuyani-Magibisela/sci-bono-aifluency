@@ -9,7 +9,7 @@
  */
 
 const API = {
-    baseURL: '/api',
+    baseURL: 'api',
     refreshing: false,
     requestQueue: [],
 
@@ -110,10 +110,10 @@ const API = {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                const { access_token } = data.data;
+                const { tokens } = data.data;
 
                 // Update stored token
-                Storage.set('access_token', access_token);
+                Storage.set('access_token', tokens.accessToken);
 
                 // Calculate new expiry (1 hour from now)
                 const expiry = Date.now() + (60 * 60 * 1000);
@@ -172,7 +172,7 @@ const API = {
         Storage.remove('user');
 
         // Redirect to login
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
     },
 
     /**

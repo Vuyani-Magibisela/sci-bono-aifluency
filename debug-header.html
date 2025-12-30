@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Debug - Simple Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .box { border: 2px solid #333; padding: 15px; margin: 10px 0; }
+        .success { border-color: green; background: #e8f5e9; }
+        .error { border-color: red; background: #ffebee; }
+    </style>
+</head>
+<body>
+    <h1>Header Debug - Simple Test</h1>
+
+    <div id="test-results"></div>
+
+    <h2>Header Should Appear Below:</h2>
+    <div id="header-placeholder" style="border: 2px dashed blue; min-height: 60px;"></div>
+
+    <script>
+        const results = document.getElementById('test-results');
+        let html = '<h2>Test Results:</h2>';
+
+        // Test 1: Check fetch API
+        html += '<div class="box">Test 1: Checking if files exist...</div>';
+
+        fetch('/js/storage.js')
+            .then(r => {
+                html += `<div class="box ${r.ok ? 'success' : 'error'}">storage.js: ${r.status} ${r.statusText}</div>`;
+                results.innerHTML = html;
+                return fetch('/js/api.js');
+            })
+            .then(r => {
+                html += `<div class="box ${r.ok ? 'success' : 'error'}">api.js: ${r.status} ${r.statusText}</div>`;
+                results.innerHTML = html;
+                return fetch('/js/auth.js');
+            })
+            .then(r => {
+                html += `<div class="box ${r.ok ? 'success' : 'error'}">auth.js: ${r.status} ${r.statusText}</div>`;
+                results.innerHTML = html;
+                return fetch('/js/header-template.js');
+            })
+            .then(r => {
+                html += `<div class="box ${r.ok ? 'success' : 'error'}">header-template.js: ${r.status} ${r.statusText}</div>`;
+                results.innerHTML = html;
+
+                // Now try to load them
+                html += '<div class="box">Test 2: Loading scripts...</div>';
+                results.innerHTML = html;
+                loadScripts();
+            })
+            .catch(e => {
+                html += `<div class="box error">Error fetching files: ${e.message}</div>`;
+                results.innerHTML = html;
+            });
+
+        function loadScripts() {
+            const scripts = [
+                '/js/storage.js',
+                '/js/api.js',
+                '/js/auth.js',
+                '/js/header-template.js'
+            ];
+
+            let loaded = 0;
+            scripts.forEach((src, index) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    loaded++;
+                    html += `<div class="box success">Loaded: ${src}</div>`;
+                    results.innerHTML = html;
+
+                    if (loaded === scripts.length) {
+                        setTimeout(checkModules, 500);
+                    }
+                };
+                script.onerror = (e) => {
+                    html += `<div class="box error">Failed to load: ${src}<br>Error: ${e}</div>`;
+                    results.innerHTML = html;
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        function checkModules() {
+            html += '<div class="box">Test 3: Checking if modules are defined...</div>';
+
+            html += `<div class="box ${typeof Storage !== 'undefined' ? 'success' : 'error'}">
+                Storage: ${typeof Storage !== 'undefined' ? '✅ Defined' : '❌ Undefined'}
+            </div>`;
+
+            html += `<div class="box ${typeof API !== 'undefined' ? 'success' : 'error'}">
+                API: ${typeof API !== 'undefined' ? '✅ Defined' : '❌ Undefined'}
+            </div>`;
+
+            html += `<div class="box ${typeof Auth !== 'undefined' ? 'success' : 'error'}">
+                Auth: ${typeof Auth !== 'undefined' ? '✅ Defined' : '❌ Undefined'}
+            </div>`;
+
+            html += `<div class="box ${typeof HeaderTemplate !== 'undefined' ? 'success' : 'error'}">
+                HeaderTemplate: ${typeof HeaderTemplate !== 'undefined' ? '✅ Defined' : '❌ Undefined'}
+            </div>`;
+
+            results.innerHTML = html;
+
+            // Check if header was rendered
+            setTimeout(() => {
+                const placeholder = document.getElementById('header-placeholder');
+                const hasContent = placeholder.innerHTML.trim().length > 0;
+
+                html += '<div class="box">Test 4: Header rendering...</div>';
+                html += `<div class="box ${hasContent ? 'success' : 'error'}">
+                    Header innerHTML length: ${placeholder.innerHTML.length} characters
+                    ${hasContent ? '✅ Content found!' : '❌ Empty!'}
+                </div>`;
+
+                if (hasContent) {
+                    html += `<div class="box success">
+                        Header HTML Preview:<br>
+                        <pre style="font-size: 10px; overflow: auto; max-height: 200px;">${
+                            placeholder.innerHTML.substring(0, 500).replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        }...</pre>
+                    </div>`;
+                } else {
+                    html += `<div class="box error">
+                        ❌ Header did not render!<br>
+                        Possible causes:<br>
+                        1. JavaScript errors (check browser console)<br>
+                        2. HeaderTemplate.render() not called<br>
+                        3. DOMContentLoaded event issue
+                    </div>`;
+
+                    // Try manual render
+                    if (typeof HeaderTemplate !== 'undefined' && typeof HeaderTemplate.render === 'function') {
+                        html += '<div class="box">Attempting manual render...</div>';
+                        results.innerHTML = html;
+
+                        try {
+                            HeaderTemplate.render('header-placeholder');
+                            setTimeout(() => {
+                                const newContent = placeholder.innerHTML.trim().length > 0;
+                                html += `<div class="box ${newContent ? 'success' : 'error'}">
+                                    Manual render: ${newContent ? '✅ Success!' : '❌ Still failed'}
+                                </div>`;
+                                results.innerHTML = html;
+                            }, 200);
+                        } catch (e) {
+                            html += `<div class="box error">Manual render error: ${e.message}</div>`;
+                            results.innerHTML = html;
+                        }
+                    }
+                }
+
+                results.innerHTML = html;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

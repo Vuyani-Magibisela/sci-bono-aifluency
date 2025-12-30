@@ -224,7 +224,26 @@ class Enrollment extends BaseModel
             // Update enrollment
             $enrollment = $this->getUserEnrollment($userId, $courseId);
             if ($enrollment) {
+                $wasCompleted = $enrollment->completion_percentage >= 100;
                 $this->updateProgress($enrollment->id, $percentage);
+
+                // Auto-generate certificate on 100% completion (Phase 6)
+                if ($percentage >= 100 && !$wasCompleted) {
+                    try {
+                        $certificateModel = new \App\Models\Certificate($this->pdo);
+
+                        // Check if certificate doesn't already exist
+                        $existingCert = $certificateModel->getUserCourseCertificate($userId, $courseId);
+
+                        if (!$existingCert) {
+                            $certificateId = $certificateModel->issueCertificate($userId, $courseId);
+                            error_log("Auto-generated certificate ID {$certificateId} for user {$userId}, course {$courseId}");
+                        }
+                    } catch (\Exception $e) {
+                        error_log("Failed to auto-generate certificate: " . $e->getMessage());
+                        // Don't fail progress update if certificate generation fails
+                    }
+                }
             }
 
             return $percentage;

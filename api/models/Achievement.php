@@ -595,4 +595,159 @@ class Achievement extends BaseModel
             return ['progress' => 0, 'total' => 100, 'percentage' => 0];
         }
     }
+
+    /**
+     * Get user's achievement data (unlock date, etc.)
+     *
+     * @param int $userId
+     * @param int $achievementId
+     * @return array|null
+     */
+    public function getUserAchievementData(int $userId, int $achievementId): ?array
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT * FROM user_achievements
+                WHERE user_id = :user_id AND achievement_id = :achievement_id
+                LIMIT 1
+            ");
+            $stmt->execute([
+                'user_id' => $userId,
+                'achievement_id' => $achievementId
+            ]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (\PDOException $e) {
+            error_log("Database error in getUserAchievementData: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get unlock progress for achievement criteria
+     * Alias for getUserProgress for consistency
+     *
+     * @param int $userId
+     * @param array $criteria
+     * @return array
+     */
+    public function getUnlockProgress(int $userId, array $criteria): array
+    {
+        // This is a simplified version - we need achievement ID to use getUserProgress
+        // For now, return generic progress based on criteria type
+        $type = $criteria['type'] ?? '';
+        $total = $criteria['count'] ?? 1;
+        $progress = 0;
+
+        try {
+            switch ($type) {
+                case 'lesson_completion':
+                    $stmt = $this->pdo->prepare("
+                        SELECT COUNT(DISTINCT lesson_id) as count
+                        FROM lesson_progress
+                        WHERE user_id = :user_id AND status = 'completed'
+                    ");
+                    $stmt->execute(['user_id' => $userId]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $progress = $result['count'];
+                    break;
+
+                case 'quiz_completion':
+                    $stmt = $this->pdo->prepare("
+                        SELECT COUNT(DISTINCT quiz_id) as count
+                        FROM quiz_attempts
+                        WHERE user_id = :user_id
+                    ");
+                    $stmt->execute(['user_id' => $userId]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $progress = $result['count'];
+                    break;
+
+                case 'quiz_score':
+                    $minScore = $criteria['min_score'] ?? 70;
+                    $stmt = $this->pdo->prepare("
+                        SELECT COUNT(*) as count
+                        FROM quiz_attempts
+                        WHERE user_id = :user_id AND score >= :min_score
+                    ");
+                    $stmt->execute(['user_id' => $userId, 'min_score' => $minScore]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $progress = $result['count'];
+                    break;
+
+                case 'course_completion':
+                    $minCompletion = $criteria['min_completion'] ?? 100;
+                    $stmt = $this->pdo->prepare("
+                        SELECT COUNT(*) as count
+                        FROM enrollments
+                        WHERE user_id = :user_id AND completion_percentage >= :min_completion
+                    ");
+                    $stmt->execute(['user_id' => $userId, 'min_completion' => $minCompletion]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $progress = $result['count'];
+                    break;
+            }
+
+            $percentage = $total > 0 ? min(100, ($progress / $total) * 100) : 0;
+
+            return [
+                'current' => $progress,
+                'required' => $total,
+                'percentage' => round($percentage, 2)
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getUnlockProgress: " . $e->getMessage());
+            return ['current' => 0, 'required' => $total, 'percentage' => 0];
+        }
+    }
+
+    /**
+     * Get total number of users with at least one achievement
+     *
+     * @return int
+     */
+    public function getTotalUsersWithAchievements(): int
+    {
+        try {
+            $stmt = $this->pdo->query("
+                SELECT COUNT(DISTINCT user_id) as total
+                FROM user_achievement_points
+                WHERE achievements_count > 0
+            ");
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int)($result['total'] ?? 0);
+        } catch (\PDOException $e) {
+            error_log("Database error in getTotalUsersWithAchievements: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Get user's rank position on leaderboard
+     *
+     * @param int $userId
+     * @return int|null Rank position (1 = first place), null if user has no achievements
+     */
+    public function getUserRank(int $userId): ?int
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT rank_position
+                FROM (
+                    SELECT
+                        user_id,
+                        ROW_NUMBER() OVER (ORDER BY total_points DESC, achievements_count DESC, updated_at ASC) as rank_position
+                    FROM user_achievement_points
+                    WHERE achievements_count > 0
+                ) ranked
+                WHERE user_id = :user_id
+            ");
+            $stmt->execute(['user_id' => $userId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? (int)$result['rank_position'] : null;
+        } catch (\PDOException $e) {
+            error_log("Database error in getUserRank: " . $e->getMessage());
+            return null;
+        }
+    }
 }

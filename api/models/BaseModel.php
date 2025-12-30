@@ -135,9 +135,10 @@ abstract class BaseModel
             }
 
             $columns = array_keys($filteredData);
+            $escapedColumns = array_map(fn($col) => "`{$col}`", $columns);
             $placeholders = array_map(fn($col) => ":{$col}", $columns);
 
-            $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ")
+            $sql = "INSERT INTO {$this->table} (" . implode(', ', $escapedColumns) . ")
                     VALUES (" . implode(', ', $placeholders) . ")";
 
             $stmt = $this->pdo->prepare($sql);
@@ -169,11 +170,11 @@ abstract class BaseModel
 
             $setParts = [];
             foreach (array_keys($filteredData) as $column) {
-                $setParts[] = "{$column} = :{$column}";
+                $setParts[] = "`{$column}` = :{$column}";
             }
 
             $sql = "UPDATE {$this->table} SET " . implode(', ', $setParts) .
-                   " WHERE {$this->primaryKey} = :id";
+                   " WHERE `{$this->primaryKey}` = :id";
 
             $filteredData['id'] = $id;
 

@@ -42,7 +42,9 @@ function requireRole($roles): ?object
 // Parse the request method and URI
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = str_replace('/api', '', $uri);
+// Remove project subdirectory and /api prefix
+$uri = str_replace('/sci-bono-aifluency/api', '', $uri);
+$uri = str_replace('/api', '', $uri); // Fallback if accessed directly
 $uri = rtrim($uri, '/');
 $uri = $uri ?: '/';
 
@@ -286,6 +288,29 @@ $routes = [
         'auth' => true
     ],
 
+    // Quiz Question Routes (Admin Management - 3 endpoints)
+    [
+        'method' => 'POST',
+        'pattern' => '/quiz-questions',
+        'handler' => 'QuizController@createQuestion',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/quiz-questions/:id',
+        'handler' => 'QuizController@updateQuestion',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/quiz-questions/:id',
+        'handler' => 'QuizController@deleteQuestion',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+
     // Project Routes (8 endpoints)
     [
         'method' => 'GET',
@@ -425,6 +450,120 @@ $routes = [
         'auth' => true
     ],
 
+    // Grading Routes (Phase 6)
+    [
+        'method' => 'GET',
+        'pattern' => '/grading/pending',
+        'handler' => 'GradingController@getPendingQueue',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/grading/:attemptId',
+        'handler' => 'GradingController@gradeAttempt',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/grading/analytics/:quizId',
+        'handler' => 'GradingController@getQuizAnalytics',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/grading/history',
+        'handler' => 'GradingController@getGradingHistory',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+
+    // Analytics Routes (Phase 6 - Advanced Analytics)
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/questions/:questionId',
+        'handler' => 'AnalyticsController@getQuestionStats',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/quiz/:quizId/questions',
+        'handler' => 'AnalyticsController@getQuizQuestionDifficulty',
+        'auth' => true,
+        'roles' => ['admin', 'instructor']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/trends/:userId/:quizId',
+        'handler' => 'AnalyticsController@getPerformanceTrends',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/learning-curve/:userId',
+        'handler' => 'AnalyticsController@getUserLearningCurve',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/comparison/:quizId/:userId',
+        'handler' => 'AnalyticsController@getClassComparison',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/leaderboard/:quizId',
+        'handler' => 'AnalyticsController@getQuizLeaderboard',
+        'auth' => true
+    ],
+
+    // Achievement Routes (Phase 6)
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements',
+        'handler' => 'AchievementController@index',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements/user',
+        'handler' => 'AchievementController@getUserAchievements',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements/points',
+        'handler' => 'AchievementController@getPoints',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements/leaderboard',
+        'handler' => 'AchievementController@getLeaderboard',
+        'auth' => true
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/achievements/check',
+        'handler' => 'AchievementController@checkForUnlocks',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements/categories',
+        'handler' => 'AchievementController@getCategories',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/achievements/:id',
+        'handler' => 'AchievementController@show',
+        'auth' => true
+    ],
+
     // Student Notes Routes (Phase 5D Priority 4)
     [
         'method' => 'GET',
@@ -460,6 +599,32 @@ $routes = [
         'method' => 'GET',
         'pattern' => '/notes/stats',
         'handler' => 'NotesController@getNoteStats',
+        'auth' => true
+    ],
+
+    // File Upload Routes (Phase B)
+    [
+        'method' => 'POST',
+        'pattern' => '/upload',
+        'handler' => 'FileUploadController@upload',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/files/:id',
+        'handler' => 'FileUploadController@getFile',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/files',
+        'handler' => 'FileUploadController@getUserFiles',
+        'auth' => true
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/files/:id',
+        'handler' => 'FileUploadController@deleteFile',
         'auth' => true
     ],
 

@@ -19,7 +19,7 @@ const StudentDashboard = {
         const user = Auth.getUser();
         if (!user) {
             console.error('StudentDashboard: No authenticated user found');
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
             return;
         }
 
@@ -171,7 +171,7 @@ const StudentDashboard = {
                     </div>
                     <p class="course-description">${this.escapeHtml(course.description || 'No description available')}</p>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
+                        <div class="progress-fill" data-progress="${progress}" style="width: 0%"></div>
                     </div>
                     <div class="course-footer">
                         <button class="btn-primary btn-sm" onclick="StudentDashboard.continueCourse(${course.id})">
@@ -184,6 +184,25 @@ const StudentDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
+
+        // Animate progress bars after rendering
+        const progressBars = container.querySelectorAll('.progress-fill');
+        progressBars.forEach((bar, index) => {
+            const targetProgress = parseFloat(bar.getAttribute('data-progress')) || 0;
+            setTimeout(() => {
+                Animations.animateProgressBar(bar, targetProgress, {
+                    duration: 1.2,
+                    delay: 0,
+                    pulse: targetProgress === 100
+                });
+            }, index * 100);
+        });
+
+        // Animate course cards
+        Animations.fadeInStagger('.course-card', {
+            duration: 0.8,
+            stagger: 0.15
+        });
     },
 
     /**
@@ -228,6 +247,13 @@ const StudentDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
+
+        // Animate quiz attempt items with slide-in effect
+        Animations.slideIn('.quiz-attempt-item', 'up', {
+            duration: 0.6,
+            stagger: 0.1,
+            distance: 30
+        });
     },
 
     /**
@@ -263,37 +289,102 @@ const StudentDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
+
+        // Animate certificates with fade-in and slight scale effect
+        Animations.fadeInStagger('.certificate-card', {
+            duration: 0.8,
+            stagger: 0.12,
+            y: 20
+        });
     },
 
     /**
-     * Render learning statistics
+     * Render learning statistics with animations
      */
     renderLearningStats(stats) {
-        // Update stat cards
-        this.updateStatCard('total-courses', stats.total_courses || 0);
-        this.updateStatCard('completed-lessons', `${stats.completed_lessons || 0}/${stats.total_lessons || 0}`);
-        this.updateStatCard('quiz-average', `${stats.quiz_average || 0}%`);
-        this.updateStatCard('certificates-earned', stats.certificates_earned || 0);
-        this.updateStatCard('current-streak', `${stats.current_streak || 0} days`);
+        // Animate stat cards in sequence
+        setTimeout(() => {
+            this.updateStatCard('total-courses', stats.total_courses || 0);
+        }, 100);
+
+        setTimeout(() => {
+            this.updateStatCard('completed-lessons', `${stats.completed_lessons || 0}/${stats.total_lessons || 0}`);
+        }, 200);
+
+        setTimeout(() => {
+            this.updateStatCard('quiz-average', `${stats.quiz_average || 0}%`);
+        }, 300);
+
+        setTimeout(() => {
+            this.updateStatCard('certificates-earned', stats.certificates_earned || 0);
+        }, 400);
 
         // Render progress chart if element exists
         if (stats.completed_lessons && stats.total_lessons) {
             this.renderProgressChart(stats.completed_lessons, stats.total_lessons);
         }
+
+        // Animate dashboard cards with stagger effect
+        Animations.fadeInStagger('.dashboard-card', {
+            duration: 0.8,
+            stagger: 0.1,
+            y: 30
+        });
     },
 
     /**
-     * Update individual stat card
+     * Update individual stat card with animation
      */
     updateStatCard(id, value) {
         const element = document.getElementById(id);
-        if (element) {
+        if (!element) return;
+
+        // Check if value is a number for counter animation
+        if (typeof value === 'number') {
+            Animations.animateCounter(element, value, {
+                duration: 1.5,
+                decimals: 0
+            });
+        } else if (typeof value === 'string' && value.includes('%')) {
+            // Animate percentage
+            const percentage = parseFloat(value.replace('%', ''));
+            if (!isNaN(percentage)) {
+                Animations.animatePercentage(element, percentage, {
+                    duration: 1.5
+                });
+            } else {
+                element.textContent = value;
+            }
+        } else if (typeof value === 'string' && value.includes('/')) {
+            // For fraction values like "10/20", animate the first number
+            const parts = value.split('/');
+            if (parts.length === 2) {
+                const current = parseInt(parts[0]);
+                const total = parseInt(parts[1]);
+                if (!isNaN(current) && !isNaN(total)) {
+                    const counter = { value: 0 };
+                    gsap.to(counter, {
+                        value: current,
+                        duration: 1.5,
+                        ease: 'power2.out',
+                        onUpdate: function() {
+                            element.textContent = Math.round(counter.value) + '/' + total;
+                        }
+                    });
+                } else {
+                    element.textContent = value;
+                }
+            } else {
+                element.textContent = value;
+            }
+        } else {
+            // Non-numeric value, just set text
             element.textContent = value;
         }
     },
 
     /**
-     * Render progress chart (simple implementation)
+     * Render progress chart with animation
      */
     renderProgressChart(completed, total) {
         const chartContainer = document.getElementById('progress-chart');
@@ -303,16 +394,32 @@ const StudentDashboard = {
 
         chartContainer.innerHTML = `
             <div class="circular-progress">
-                <div class="progress-value">${percentage}%</div>
+                <div class="progress-value" id="circular-progress-value">0%</div>
                 <svg width="200" height="200">
                     <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="12"/>
-                    <circle cx="100" cy="100" r="90" fill="none" stroke="#4CAF50" stroke-width="12"
-                        stroke-dasharray="${percentage * 5.65} 565"
-                        stroke-dashoffset="0"
+                    <circle id="progress-circle" cx="100" cy="100" r="90" fill="none" stroke="#4CAF50" stroke-width="12"
+                        stroke-dasharray="565.48"
+                        stroke-dashoffset="565.48"
                         transform="rotate(-90 100 100)"/>
                 </svg>
             </div>
         `;
+
+        // Animate the circular progress
+        const circle = chartContainer.querySelector('#progress-circle');
+        if (circle) {
+            setTimeout(() => {
+                Animations.animateCircularProgress(circle, percentage, {
+                    duration: 1.5,
+                    ease: 'power2.out'
+                });
+
+                // Animate the percentage text
+                Animations.animatePercentage('#circular-progress-value', percentage, {
+                    duration: 1.5
+                });
+            }, 500);
+        }
     },
 
     /**
@@ -402,7 +509,7 @@ const StudentDashboard = {
         // Listen for auth state changes
         document.addEventListener('authStateChanged', (e) => {
             if (!e.detail.isAuthenticated) {
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
             }
         });
     },

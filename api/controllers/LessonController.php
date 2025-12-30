@@ -503,8 +503,22 @@ class LessonController
 
             $progress = $this->progressModel->getUserLessonProgress($currentUser->id, $lessonId);
 
+            // Check for achievement unlocks (Phase 6)
+            $newAchievements = [];
+            try {
+                $achievementModel = new \App\Models\Achievement($this->pdo);
+                $newAchievements = $achievementModel->checkAndUnlock($currentUser->id, 'lesson_completion', [
+                    'lesson_id' => $lessonId,
+                    'module_id' => $lesson->module_id
+                ]);
+            } catch (\Exception $e) {
+                error_log('Achievement check error: ' . $e->getMessage());
+                // Don't fail lesson completion if achievement check fails
+            }
+
             Response::success([
-                'progress' => $progress
+                'progress' => $progress,
+                'achievements_unlocked' => $newAchievements
             ], 'Lesson completed successfully');
 
         } catch (\PDOException $e) {

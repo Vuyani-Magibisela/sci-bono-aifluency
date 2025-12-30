@@ -8,14 +8,14 @@
     <meta name="apple-mobile-web-app-title" content="AI Fluency">
 
     <!-- Manifest and Icons -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="/images/icon-192x192.png">
 
     <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
+          navigator.serviceWorker.register('service-worker.js')
             .then(registration => {
               console.log('Service Worker registered with scope:', registration.scope);
             })
@@ -305,16 +305,16 @@
 
     <script src="js/script.js"></script>
     <!-- Authentication System (Phase 1) -->
-    <script src="/js/storage.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/header-template.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
 
     <!-- Content Loader (Phase 5C) -->
-    <script src="/js/content-loader.js"></script>
+    <script src="js/content-loader.js"></script>
 
     <!-- Breadcrumb Navigation (Phase 5D Priority 2) -->
-    <script src="/js/breadcrumb.js"></script>
+    <script src="js/breadcrumb.js"></script>
 
     <!-- Quiz Page Logic -->
     <script>
@@ -322,6 +322,11 @@
         let moduleId = null;
         let timerInterval = null;
         let timeRemaining = null;
+
+        // Per-question timing tracking (Phase 6 - Task 5)
+        let questionTimers = {}; // Stores accumulated time per question ID
+        let currentQuestionId = null; // Currently active question
+        let questionStartTime = null; // When current question was started
 
         (async function() {
             // Get module ID from URL parameter
@@ -412,6 +417,13 @@
                         opt.classList.remove('selected');
                     });
                     this.classList.add('selected');
+
+                    // Start tracking time for this question (Phase 6 - Task 5)
+                    const questionIndex = parseInt(radio.name.replace('question', ''));
+                    if (quizData && quizData.questions && quizData.questions[questionIndex]) {
+                        const questionId = quizData.questions[questionIndex].id;
+                        startQuestionTimer(questionId);
+                    }
                 });
             });
         }
@@ -454,6 +466,32 @@
         }
 
         /**
+         * Start tracking time for a specific question (Phase 6 - Task 5)
+         */
+        function startQuestionTimer(questionId) {
+            // Stop previous question timer if one is active
+            if (currentQuestionId !== null && questionStartTime !== null) {
+                const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+                questionTimers[currentQuestionId] = (questionTimers[currentQuestionId] || 0) + timeSpent;
+            }
+
+            // Start new timer
+            currentQuestionId = questionId;
+            questionStartTime = Date.now();
+        }
+
+        /**
+         * Stop the current question timer (Phase 6 - Task 5)
+         */
+        function stopQuestionTimer() {
+            if (currentQuestionId !== null && questionStartTime !== null) {
+                const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+                questionTimers[currentQuestionId] = (questionTimers[currentQuestionId] || 0) + timeSpent;
+                questionStartTime = null;
+            }
+        }
+
+        /**
          * Setup submit handler
          */
         function setupSubmitHandler() {
@@ -481,19 +519,23 @@
                 clearInterval(timerInterval);
             }
 
+            // Stop per-question timer (Phase 6 - Task 5)
+            stopQuestionTimer();
+
             // Disable submit button
             const submitBtn = document.getElementById('submit-quiz');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
-            // Collect answers
+            // Collect answers with per-question timing data (Phase 6 - Task 5)
             const answers = [];
             quizData.questions.forEach((question, index) => {
                 const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
                 if (selectedOption) {
                     answers.push({
                         question_id: question.id,
-                        selected_answer: parseInt(selectedOption.value)
+                        selected_answer: parseInt(selectedOption.value),
+                        time_spent: questionTimers[question.id] || 0 // Include time spent on this question
                     });
                 }
             });
