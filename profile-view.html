@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - AI Fluency</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="profile-view-main">
+        <div class="profile-view-container">
+            <!-- Loading State -->
+            <div id="loading-state" class="loading-container">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p>Loading profile...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="error-container" style="display: none;">
+                <i class="fas fa-exclamation-circle fa-3x"></i>
+                <h2 id="error-title">Profile Not Found</h2>
+                <p id="error-message">This profile doesn't exist or is set to private.</p>
+                <a href="profiles-directory.html" class="btn-primary">
+                    <i class="fas fa-users"></i> Browse All Profiles
+                </a>
+            </div>
+
+            <!-- Profile Content -->
+            <div id="profile-content" style="display: none;">
+                <!-- Profile Header -->
+                <div class="public-profile-header">
+                    <div class="public-profile-avatar-container">
+                        <div class="public-profile-avatar" id="profile-avatar">
+                            <span id="avatar-initials">U</span>
+                            <img id="avatar-image" style="display: none;" alt="Profile Avatar">
+                        </div>
+                        <div class="profile-views-badge">
+                            <i class="fas fa-eye"></i>
+                            <span id="profile-views">0</span> views
+                        </div>
+                    </div>
+
+                    <div class="public-profile-info">
+                        <h1 id="profile-name">Loading...</h1>
+                        <p class="profile-headline" id="profile-headline" style="display: none;"></p>
+                        <div class="profile-meta">
+                            <span id="profile-role"><i class="fas fa-user-tag"></i> Student</span>
+                            <span id="profile-location" style="display: none;">
+                                <i class="fas fa-map-marker-alt"></i> <span id="location-text"></span>
+                            </span>
+                            <span id="profile-email" style="display: none;">
+                                <i class="fas fa-envelope"></i> <span id="email-text"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <section class="public-profile-section" id="about-section" style="display: none;">
+                    <h2><i class="fas fa-user-circle"></i> About</h2>
+                    <p class="bio-text" id="profile-bio"></p>
+                </section>
+
+                <!-- Social Links Section -->
+                <section class="public-profile-section" id="social-section" style="display: none;">
+                    <h2><i class="fas fa-link"></i> Connect</h2>
+                    <div class="social-links-grid" id="social-links-grid"></div>
+                </section>
+
+                <!-- Achievements Section -->
+                <section class="public-profile-section" id="achievements-section" style="display: none;">
+                    <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                    <div id="achievements-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Loading achievements...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Certificates Section -->
+                <section class="public-profile-section" id="certificates-section" style="display: none;">
+                    <h2><i class="fas fa-certificate"></i> Certificates</h2>
+                    <div id="certificates-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Loading certificates...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats Section -->
+                <section class="public-profile-section">
+                    <h2><i class="fas fa-chart-bar"></i> Stats</h2>
+                    <div class="public-stats-grid">
+                        <div class="public-stat-item">
+                            <i class="fas fa-book"></i>
+                            <h3 id="stat-courses">0</h3>
+                            <p>Courses</p>
+                        </div>
+                        <div class="public-stat-item" id="stat-achievements-item" style="display: none;">
+                            <i class="fas fa-trophy"></i>
+                            <h3 id="stat-achievements-count">0</h3>
+                            <p>Achievements</p>
+                        </div>
+                        <div class="public-stat-item" id="stat-certificates-item" style="display: none;">
+                            <i class="fas fa-certificate"></i>
+                            <h3 id="stat-certificates-count">0</h3>
+                            <p>Certificates</p>
+                        </div>
+                        <div class="public-stat-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3 id="stat-member-since"></h3>
+                            <p>Member Since</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 AI Fluency Course - Sci-Bono Discovery Centre</p>
+        </div>
+    </footer>
+
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/profile-view.js"></script>
+</body>
+</html>

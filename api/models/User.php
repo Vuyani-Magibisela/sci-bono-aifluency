@@ -22,7 +22,21 @@ class User extends BaseModel
         'verification_token',
         'reset_token',
         'reset_token_expires',
-        'last_login_at'
+        'last_login_at',
+        // Phase 8: Profile enhancements
+        'bio',
+        'headline',
+        'location',
+        'website_url',
+        'github_url',
+        'linkedin_url',
+        'twitter_url',
+        'is_public_profile',
+        'show_email',
+        'show_achievements',
+        'show_certificates',
+        'profile_views_count',
+        'last_profile_updated'
     ];
     protected array $hidden = ['password_hash'];
 
@@ -347,5 +361,270 @@ class User extends BaseModel
     public function getRoles(): array
     {
         return ['student', 'instructor', 'admin'];
+    }
+
+    // ========================================
+    // Phase 8: Profile Enhancement Methods
+    // ========================================
+
+    /**
+     * Update profile fields
+     *
+     * @param int $userId User ID
+     * @param array $profileData Profile fields to update
+     * @return bool Success status
+     */
+    public function updateProfileFields(int $userId, array $profileData): bool
+    {
+        try {
+            $allowedFields = [
+                'bio', 'headline', 'location', 'website_url',
+                'github_url', 'linkedin_url', 'twitter_url'
+            ];
+
+            $updateData = [];
+            foreach ($allowedFields as $field) {
+                if (isset($profileData[$field])) {
+                    $updateData[$field] = $profileData[$field];
+                }
+            }
+
+            if (empty($updateData)) {
+                return false;
+            }
+
+            $updateData['last_profile_updated'] = date('Y-m-d H:i:s');
+
+            return $this->update($userId, $updateData);
+        } catch (\PDOException $e) {
+            error_log("Error updating profile fields: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get public profile data (respects privacy settings)
+     *
+     * @param int $userId User ID
+     * @return array|null Profile data or null if private/not found
+     */
+    public function getPublicProfileData(int $userId): ?array
+    {
+        try {
+            $user = $this->find($userId);
+
+            if (!$user || $user->is_public_profile != 1) {
+                return null;
+            }
+
+            // Build public profile array
+            $profile = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'profile_picture_url' => $user->profile_picture_url,
+                'bio' => $user->bio,
+                'headline' => $user->headline,
+                'location' => $user->location,
+                'role' => $user->role,
+                'created_at' => $user->created_at,
+                'last_profile_updated' => $user->last_profile_updated,
+                'profile_views_count' => $user->profile_views_count
+            ];
+
+            // Conditionally include based on privacy settings
+            if ($user->show_email) {
+                $profile['email'] = $user->email;
+            }
+
+            // Social links
+            $profile['social_links'] = [
+                'website' => $user->website_url,
+                'github' => $user->github_url,
+                'linkedin' => $user->linkedin_url,
+                'twitter' => $user->twitter_url
+            ];
+
+            // Statistics
+            $stats = $this->getUserStats($userId);
+            $profile['statistics'] = $stats;
+
+            // Include achievements if public
+            if ($user->show_achievements) {
+                $profile['show_achievements'] = true;
+            }
+
+            // Include certificates if public
+            if ($user->show_certificates) {
+                $profile['show_certificates'] = true;
+            }
+
+            return $profile;
+        } catch (\PDOException $e) {
+            error_log("Error getting public profile: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Update privacy settings
+     *
+     * @param int $userId User ID
+     * @param array $privacyData Privacy settings
+     * @return bool Success status
+     */
+    public function updatePrivacySettings(int $userId, array $privacyData): bool
+    {
+        try {
+            $allowedFields = [
+                'is_public_profile', 'show_email',
+                'show_achievements', 'show_certificates'
+            ];
+
+            $updateData = [];
+            foreach ($allowedFields as $field) {
+                if (isset($privacyData[$field])) {
+                    // Convert to boolean, then to integer for MySQL TINYINT
+                    $updateData[$field] = (int) (bool) $privacyData[$field];
+                }
+            }
+
+            if (empty($updateData)) {
+                return false;
+            }
+
+            return $this->update($userId, $updateData);
+        } catch (\PDOException $e) {
+            error_log("Error updating privacy settings: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get profile completion percentage
+     *
+     * @param int $userId User ID
+     * @return int Completion percentage (0-100)
+     */
+    public function getProfileCompletionPercentage(int $userId): int
+    {
+        try {
+            $user = $this->find($userId);
+
+            if (!$user) {
+                return 0;
+            }
+
+            $fields = [
+                'name' => !empty($user->name),
+                'email' => !empty($user->email),
+                'profile_picture_url' => !empty($user->profile_picture_url),
+                'bio' => !empty($user->bio),
+                'headline' => !empty($user->headline),
+                'location' => !empty($user->location),
+                'website_url' => !empty($user->website_url),
+                'github_url' => !empty($user->github_url),
+                'linkedin_url' => !empty($user->linkedin_url),
+                'twitter_url' => !empty($user->twitter_url)
+            ];
+
+            $completed = count(array_filter($fields));
+            $total = count($fields);
+
+            return (int) round(($completed / $total) * 100);
+        } catch (\PDOException $e) {
+            error_log("Error calculating profile completion: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Track profile view
+     *
+     * @param int $viewedUserId User being viewed
+     * @param int $viewerUserId User viewing the profile
+     * @param string $ipAddress IP address
+     * @param string $userAgent User agent
+     * @return bool Success status
+     */
+    public function trackProfileView(int $viewedUserId, int $viewerUserId, string $ipAddress, string $userAgent): bool
+    {
+        try {
+            // Don't track self-views
+            if ($viewedUserId === $viewerUserId) {
+                return false;
+            }
+
+            // Insert view record
+            $stmt = $this->pdo->prepare("
+                INSERT INTO profile_views
+                (viewer_user_id, viewed_user_id, ip_address, user_agent)
+                VALUES (:viewer_id, :viewed_id, :ip, :user_agent)
+            ");
+
+            $stmt->execute([
+                'viewer_id' => $viewerUserId,
+                'viewed_id' => $viewedUserId,
+                'ip' => $ipAddress,
+                'user_agent' => $userAgent
+            ]);
+
+            // Increment view counter
+            $stmt = $this->pdo->prepare("
+                UPDATE users
+                SET profile_views_count = profile_views_count + 1
+                WHERE id = :user_id
+            ");
+
+            return $stmt->execute(['user_id' => $viewedUserId]);
+        } catch (\PDOException $e) {
+            error_log("Error tracking profile view: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Search users by name, email, or headline (public profiles only)
+     *
+     * @param string $searchTerm Search term
+     * @param bool $publicOnly Only return users with public profiles
+     * @param int|null $limit Optional limit
+     * @param int|null $offset Optional offset
+     * @return array
+     */
+    public function searchPublicProfiles(string $searchTerm, bool $publicOnly = true, ?int $limit = null, ?int $offset = null): array
+    {
+        try {
+            $searchPattern = "%{$searchTerm}%";
+
+            $sql = "SELECT
+                        id, name, email, profile_picture_url, headline,
+                        location, role, profile_views_count, created_at
+                    FROM {$this->table}
+                    WHERE (name LIKE ? OR email LIKE ? OR headline LIKE ?)";
+
+            $params = [$searchPattern, $searchPattern, $searchPattern];
+
+            if ($publicOnly) {
+                $sql .= " AND is_public_profile = 1";
+            }
+
+            $sql .= " ORDER BY name ASC";
+
+            if ($limit !== null) {
+                $sql .= " LIMIT ?";
+                $params[] = $limit;
+                if ($offset !== null) {
+                    $sql .= " OFFSET ?";
+                    $params[] = $offset;
+                }
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            error_log("Error searching public profiles: " . $e->getMessage());
+            return [];
+        }
     }
 }

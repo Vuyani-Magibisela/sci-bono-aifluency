@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Directory - AI Fluency</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="directory-main">
+        <div class="directory-container">
+            <!-- Header -->
+            <div class="directory-header">
+                <h1><i class="fas fa-users"></i> Learner Directory</h1>
+                <p>Connect with fellow AI learners from around the world</p>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="directory-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search by name, headline, or location..."
+                        autocomplete="off"
+                    >
+                    <button id="clear-search-btn" class="clear-btn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-role="all">
+                        <i class="fas fa-users"></i> All
+                        <span class="count" id="count-all">0</span>
+                    </button>
+                    <button class="filter-btn" data-role="student">
+                        <i class="fas fa-user-graduate"></i> Students
+                        <span class="count" id="count-student">0</span>
+                    </button>
+                    <button class="filter-btn" data-role="instructor">
+                        <i class="fas fa-chalkboard-teacher"></i> Instructors
+                        <span class="count" id="count-instructor">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="results-info">
+                <span id="results-count">Loading profiles...</span>
+            </div>
+
+            <!-- Profiles Grid -->
+            <div id="profiles-grid" class="profiles-grid">
+                <!-- Loading state -->
+                <div class="loading-container">
+                    <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    <p>Loading profiles...</p>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-search fa-3x"></i>
+                <h3>No Profiles Found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="pagination" style="display: none;">
+                <button id="prev-page-btn" class="pagination-btn" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span id="page-info">Page 1 of 1</span>
+                <button id="next-page-btn" class="pagination-btn" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 AI Fluency Course - Sci-Bono Discovery Centre</p>
+        </div>
+    </footer>
+
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/profiles-directory.js"></script>
+</body>
+</html>

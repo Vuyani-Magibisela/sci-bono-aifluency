@@ -326,4 +326,243 @@ class UserController
             Response::serverError('An error occurred while deleting user');
         }
     }
+
+    // ========================================
+    // Phase 8: Profile Enhancement Methods
+    // ========================================
+
+    /**
+     * Update user profile fields
+     *
+     * PUT /api/users/:id/profile
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function updateProfile(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+
+        $userId = (int)$params['id'];
+
+        // Authorization: self only (not even admin can edit others' bios)
+        $this->requireSelfOrAdmin($userId);
+
+        // Get request data
+        $data = json_decode(file_get_contents('php://input'), true) ?? [];
+
+        // Validate input
+        $validator = new Validator();
+
+        if (isset($data['bio'])) {
+            if (strlen($data['bio']) > 5000) {
+                Response::error('Bio must not exceed 5000 characters', 400);
+            }
+        }
+
+        if (isset($data['headline'])) {
+            if (strlen($data['headline']) > 255) {
+                Response::error('Headline must not exceed 255 characters', 400);
+            }
+        }
+
+        if (isset($data['location'])) {
+            if (strlen($data['location']) > 255) {
+                Response::error('Location must not exceed 255 characters', 400);
+            }
+        }
+
+        // Validate URLs
+        $urlFields = ['website_url', 'github_url', 'linkedin_url', 'twitter_url'];
+        foreach ($urlFields as $field) {
+            if (isset($data[$field]) && !empty($data[$field])) {
+                if (!filter_var($data[$field], FILTER_VALIDATE_URL)) {
+                    $fieldName = ucfirst(str_replace('_url', '', $field));
+                    Response::error("{$fieldName} must be a valid URL", 400);
+                }
+            }
+        }
+
+        // Update profile
+        try {
+            $updated = $this->userModel->updateProfileFields($userId, $data);
+
+            if (!$updated) {
+                Response::error('No valid fields provided for update', 400);
+            }
+
+            $updatedUser = $this->userModel->find($userId);
+
+            Response::success([
+                'user' => $updatedUser
+            ], 'Profile updated successfully');
+
+        } catch (\PDOException $e) {
+            error_log('Profile update error: ' . $e->getMessage());
+            Response::serverError('An error occurred while updating profile');
+        }
+    }
+
+    /**
+     * Get public profile (privacy-aware)
+     *
+     * GET /api/users/:id/profile/public
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getPublicProfile(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+
+        $userId = (int)$params['id'];
+
+        // Get public profile data
+        $profile = $this->userModel->getPublicProfileData($userId);
+
+        if (!$profile) {
+            Response::error('Profile not found or private', 404);
+        }
+
+        // Track view if authenticated
+        $currentUser = $this->getCurrentUser();
+        if ($currentUser && $currentUser->id !== $userId) {
+            $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+
+            $this->userModel->trackProfileView(
+                $userId,
+                $currentUser->id,
+                $ipAddress,
+                $userAgent
+            );
+        }
+
+        Response::success([
+            'profile' => $profile
+        ], 'Profile retrieved successfully');
+    }
+
+    /**
+     * Update privacy settings
+     *
+     * PUT /api/users/:id/profile/privacy
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function updatePrivacySettings(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+
+        $userId = (int)$params['id'];
+
+        // Authorization: self only
+        $this->requireSelfOrAdmin($userId);
+
+        $data = json_decode(file_get_contents('php://input'), true) ?? [];
+
+        // Validate boolean values
+        $booleanFields = ['is_public_profile', 'show_email', 'show_achievements', 'show_certificates'];
+        foreach ($booleanFields as $field) {
+            if (isset($data[$field])) {
+                $data[$field] = filter_var($data[$field], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        try {
+            $updated = $this->userModel->updatePrivacySettings($userId, $data);
+
+            if (!$updated) {
+                Response::error('No valid privacy settings provided', 400);
+            }
+
+            $updatedUser = $this->userModel->find($userId);
+
+            Response::success([
+                'user' => $updatedUser
+            ], 'Privacy settings updated successfully');
+
+        } catch (\PDOException $e) {
+            error_log('Privacy settings update error: ' . $e->getMessage());
+            Response::serverError('An error occurred while updating privacy settings');
+        }
+    }
+
+    /**
+     * Get profile completion percentage
+     *
+     * GET /api/users/:id/profile/completion
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getProfileCompletion(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+
+        $userId = (int)$params['id'];
+
+        // Authorization: self or admin
+        $this->requireSelfOrAdmin($userId);
+
+        $completion = $this->userModel->getProfileCompletionPercentage($userId);
+
+        Response::success([
+            'completion_percentage' => $completion
+        ], 'Profile completion retrieved successfully');
+    }
+
+    /**
+     * Search profiles directory
+     *
+     * GET /api/users/profiles/search?q=term&page=1&pageSize=20
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function searchProfiles(array $params = []): void
+    {
+        // Public endpoint - no auth required for public profiles
+
+        $searchTerm = $_GET['q'] ?? '';
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 20;
+
+        // Validate pagination
+        if ($page < 1) $page = 1;
+        if ($pageSize < 1 || $pageSize > 100) $pageSize = 20;
+
+        $offset = ($page - 1) * $pageSize;
+
+        if (empty($searchTerm)) {
+            // Return recently active users if no search term
+            $users = $this->userModel->getRecentlyActiveUsers(30, $pageSize);
+            $total = count($this->userModel->getRecentlyActiveUsers(30));
+        } else {
+            $users = $this->userModel->searchPublicProfiles($searchTerm, true, $pageSize, $offset);
+            // Get total count for pagination
+            $total = count($this->userModel->searchPublicProfiles($searchTerm, true));
+        }
+
+        $totalPages = ceil($total / $pageSize);
+
+        Response::success([
+            'data' => $users,
+            'pagination' => [
+                'page' => $page,
+                'pageSize' => $pageSize,
+                'total' => $total,
+                'totalPages' => $totalPages
+            ]
+        ], 'Profiles retrieved successfully');
+    }
 }

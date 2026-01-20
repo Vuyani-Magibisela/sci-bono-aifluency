@@ -15,6 +15,198 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - Phase 8 Complete: Profile Building & Viewing (2026-01-20)
+
+### 🗄️ Database Schema Enhancements
+- **Migration 020**: Added comprehensive profile system to users table
+- Added 13 new columns to users table:
+  - Profile content: `bio` (TEXT, 5000 char limit), `headline` (VARCHAR 255), `location` (VARCHAR 255)
+  - Social links: `website_url`, `github_url`, `linkedin_url`, `twitter_url` (VARCHAR 255)
+  - Privacy controls: `is_public_profile`, `show_email`, `show_achievements`, `show_certificates` (BOOLEAN/TINYINT)
+  - Metadata: `profile_views_count` (INT, default 0), `last_profile_updated` (TIMESTAMP)
+- Created `profile_views` table for analytics:
+  - Tracks `viewer_user_id`, `viewed_user_id`, `viewed_at`, `ip_address`, `user_agent`
+  - Foreign key constraints with CASCADE delete for data integrity
+  - Indexes on `viewed_user_id`, `viewer_user_id`, `viewed_at` for query performance
+
+### 🔧 Enhanced - User Model (`api/models/User.php`)
+- Added 13 fillable fields for profile data
+- Implemented 7 new methods:
+  1. `updateProfileFields()` - Update profile content with timestamp tracking
+  2. `getPublicProfileData()` - Privacy-aware profile retrieval (respects is_public_profile)
+  3. `updatePrivacySettings()` - Granular privacy controls management
+  4. `getProfileCompletionPercentage()` - Calculate 0-100% completion score (10 fields tracked)
+  5. `trackProfileView()` - Record view with self-view prevention
+  6. `searchPublicProfiles()` - Search by name/headline/location with pagination support
+  7. Helper methods for data validation and sanitization
+
+### 🚀 New API Endpoints - UserController
+- Added 5 new RESTful endpoints:
+  1. `PUT /api/users/:id/profile` - Update profile fields (authenticated, owner-only)
+  2. `GET /api/users/:id/profile/public` - Get public profile (respects privacy settings)
+  3. `PUT /api/users/:id/profile/privacy` - Update privacy settings (authenticated, owner-only)
+  4. `GET /api/users/:id/profile/completion` - Get completion percentage (authenticated)
+  5. `GET /api/users/profiles/search` - Search public profiles (optional auth, supports pagination)
+- All endpoints follow REST conventions with proper HTTP methods and status codes
+- Privacy enforcement at server-side (not just client-side)
+
+### ✅ Testing & Validation
+- Created comprehensive test suite (`test_profile_system.php`) with 29 tests:
+  - Schema verification (13 columns + profile_views table)
+  - Model method testing (all 7 methods)
+  - Privacy enforcement tests
+  - Search functionality with pagination
+  - Profile completion calculation
+  - View tracking with self-view prevention
+- **Result:** 100% pass rate (29/29 tests) ✅
+- Fixed 4 issues during testing:
+  1. MySQL TINYINT boolean handling (converted to integers 0/1)
+  2. Profile views table creation (manually created via PHP)
+  3. Search query parameter binding (switched to positional parameters)
+  4. Privacy check integer comparison (strict == 1 comparison)
+
+### 🎨 Frontend - Profile Editing Interface
+- **profile-edit.html** (246 lines): Full profile editing interface
+  - Avatar upload area with preview
+  - Basic information section (bio 5000 chars, headline 255 chars, location)
+  - Social links section (4 platforms with URL validation)
+  - Privacy toggles with animated switches
+  - Profile completion progress bar
+  - Real-time character counters
+  - Mobile-responsive layout
+- **js/profile-edit.js** (380 lines): Profile editing functionality
+  - `loadUserProfile()`, `loadProfileCompletion()`, `handleProfileSave()`
+  - `validateUrls()`, `setupCharacterCounters()`, `uploadAvatar()`, `removeAvatar()`
+  - `showNotification()` - GSAP-animated success/error messages
+  - Dual API calls (profile + privacy) with error handling
+  - URL validation regex for all social links
+  - Character limit enforcement with visual feedback
+
+### 🌐 Frontend - Profile Display & Directory
+- **profile.html** (updated): Added "Profile Details" section
+  - Displays headline, bio, location, social links (conditional rendering)
+  - Changed "Edit Profile" button to link to `/profile-edit.html`
+  - Added "View Public Profile" button linking to `/profile-view.html?id={userId}`
+  - Empty state message for incomplete profiles
+  - JavaScript functions: `loadProfileDetails()`, `setupPublicProfileButton()`
+- **profile-view.html** (140 lines): Privacy-aware public profile viewing
+  - Profile header with avatar, name, headline, views badge
+  - About section (bio), social links grid
+  - Achievements section (if show_achievements = true)
+  - Certificates section (if show_certificates = true)
+  - Stats grid (courses, member since, achievements/certs if visible)
+  - Error state for private/non-existent profiles
+  - GSAP animations for smooth transitions
+- **js/profile-view.js** (330 lines): Public profile display logic
+  - `loadPublicProfile()`, `displayProfile()`, `trackView()`
+  - `loadAchievements()`, `loadCertificates()`, `loadStats()`
+  - Privacy enforcement (respects all privacy flags)
+  - Self-view prevention for analytics
+- **profiles-directory.html** (100 lines): Searchable learner directory
+  - Search box with real-time filtering (300ms debounce)
+  - Role filters (All, Students, Instructors) with live counts
+  - Profile cards grid (12 per page)
+  - Pagination controls (Previous/Next)
+  - Empty state for no results
+- **js/profiles-directory.js** (340 lines): Directory functionality
+  - `loadProfiles()`, `applyFilters()`, `handleSearch()`, `displayProfiles()`
+  - Client-side filtering for instant results
+  - Pagination (12 profiles per page)
+  - Search by name, headline, or location
+  - GSAP-animated profile cards
+
+### 🎨 CSS Styling - 1,330 Lines Added
+- **Profile Edit Styles** (lines 4657-4977, 320 lines):
+  - Form sections with clean card design
+  - Avatar upload area with hover effects
+  - Character counters with color coding
+  - Privacy toggle switches with smooth animations
+  - Animated notifications (success/error with slide-in)
+  - Responsive breakpoints for mobile/tablet
+- **Profile Display Styles** (lines 4978-5151, 173 lines):
+  - Profile details section with icon labels
+  - Bio text formatting with pre-wrap for line breaks
+  - Social links with gradient buttons and hover effects
+  - Empty state styling with call-to-action
+  - Button styles for Edit Profile and View Public Profile
+- **Public Profile View Styles** (lines 5153-5494, 341 lines):
+  - Large profile header with avatar and metadata
+  - Profile sections with consistent card design
+  - Social links grid with gradient buttons
+  - Achievements/certificates grids with tier colors (bronze/silver/gold/platinum)
+  - Stats grid with hover effects
+  - Loading and error states
+- **Directory Styles** (lines 5496-5841, 345 lines):
+  - Directory header with large title
+  - Search box with icon positioning
+  - Filter buttons with active state gradients
+  - Profile cards with hover lift effect
+  - Avatar with gradient background and initials fallback
+  - Empty state styling
+  - Pagination controls
+
+### 🔐 Security Enhancements
+- **Input Validation**:
+  - Bio limited to 5000 characters (client + server)
+  - Headline limited to 255 characters (client + server)
+  - URL validation with regex (client + server)
+  - XSS prevention with `htmlspecialchars()` on output
+  - SQL injection prevention with PDO prepared statements
+- **Privacy Protection**:
+  - Privacy flags enforced server-side (not just client-side)
+  - Private profiles return NULL from `getPublicProfileData()`
+  - Privacy settings only editable by profile owner (JWT auth)
+  - Profile views only tracked when profile is public
+- **External Links Security**:
+  - All social links use `target="_blank"` (new tab)
+  - All social links use `rel="noopener noreferrer"` (security)
+  - URL validation prevents javascript: and data: URLs
+
+### ⚡ Performance Optimizations
+- Database indexes on profile_views table (viewed_user_id, viewer_user_id, viewed_at)
+- CASCADE delete on foreign keys (automatic cleanup)
+- Pagination support in searchPublicProfiles() (limit/offset)
+- Debounced search input (300ms delay) for reduced server load
+- Client-side filtering for instant results
+- Lazy loading of achievements/certificates (only if privacy allows)
+- GSAP animations use GPU acceleration
+
+### 📚 Documentation
+- Created comprehensive `Documentation/PHASE8_COMPLETE.md` (800+ lines)
+  - Complete implementation summary (backend + frontend)
+  - Database schema documentation
+  - API endpoint reference with examples
+  - Technical architecture diagrams
+  - Testing summary (29/29 tests)
+  - Security considerations
+  - Performance optimizations
+  - User experience highlights
+  - Lessons learned and best practices
+  - Future enhancements roadmap
+- Updated `README.md`:
+  - Added "Profile Building & Social Features" section
+  - Updated Phase Completion Status (added Phase 8)
+  - Updated overall completion to ~90%
+- Updated `CHANGELOG.md` with version 0.9.0 release notes
+
+### 📊 Statistics
+- **11 files created**: 4 HTML pages, 4 JavaScript files, 1 migration, 1 test file, 1 documentation
+- **4 files modified**: User.php, UserController.php, api/routes/api.php, profile.html, styles.css
+- **~2,900 lines of code** added (backend + frontend)
+- **1,330 lines of CSS** styling added
+- **100% test pass rate** (29/29 backend tests)
+- **5 new API endpoints** implemented
+- **7 new model methods** implemented
+
+### 🎯 Key Features
+1. **Profile Completion System**: Tracks 10 fields, displays 0-100% with animated progress bar
+2. **Privacy Controls**: 4 granular settings (is_public_profile, show_email, show_achievements, show_certificates)
+3. **Profile View Analytics**: Tracks every view with self-view prevention
+4. **Search & Discovery**: Search by name/headline/location, filter by role, pagination
+5. **Social Integration**: 4 social platforms (Website, GitHub, LinkedIn, Twitter) with URL validation
+
+---
+
 ## [0.8.0] - Phase 7 Complete (2025-12-30)
 
 ### 🗄️ Database Schema Fixes

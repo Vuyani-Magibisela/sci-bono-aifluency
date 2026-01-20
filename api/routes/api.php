@@ -124,6 +124,38 @@ $routes = [
         'roles' => ['admin']
     ],
 
+    // Profile Routes (Phase 8 - 5 endpoints)
+    [
+        'method' => 'PUT',
+        'pattern' => '/users/:id/profile',
+        'handler' => 'UserController@updateProfile',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/users/:id/profile/public',
+        'handler' => 'UserController@getPublicProfile',
+        'auth' => false // Public endpoint
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/users/:id/profile/privacy',
+        'handler' => 'UserController@updatePrivacySettings',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/users/:id/profile/completion',
+        'handler' => 'UserController@getProfileCompletion',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/users/profiles/search',
+        'handler' => 'UserController@searchProfiles',
+        'auth' => false // Public endpoint
+    ],
+
     // Course Routes (5 endpoints)
     [
         'method' => 'GET',
