@@ -14,74 +14,16 @@ use App\Utils\JWTHandler;
  * performance trends, and class comparisons
  * Phase 6: Quiz Tracking & Grading System - Analytics
  */
-class AnalyticsController
+class AnalyticsController extends BaseController
 {
     private QuizAttempt $quizAttemptModel;
     private User $userModel;
-    private \PDO $pdo;
-    private ?array $auth = null;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->quizAttemptModel = new QuizAttempt($pdo);
         $this->userModel = new User($pdo);
-    }
-
-    /**
-     * Authenticate request and set auth property
-     *
-     * @return void
-     */
-    private function requireAuth(): void
-    {
-        $headers = getallheaders();
-        $token = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$token) {
-            Response::error('Authorization token required', 401);
-            exit;
-        }
-
-        // Remove 'Bearer ' prefix if present
-        $token = str_replace('Bearer ', '', $token);
-
-        try {
-            $this->auth = JWTHandler::validateToken($token);
-        } catch (\Exception $e) {
-            Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
-            exit;
-        }
-    }
-
-    /**
-     * Require specific role(s)
-     *
-     * @param array $roles Allowed roles
-     * @return void
-     */
-    private function requireRole(array $roles): void
-    {
-        $this->requireAuth();
-        $user = $this->userModel->find($this->auth['user_id']);
-
-        if (!in_array($user->role, $roles)) {
-            $rolesStr = implode(' or ', $roles);
-            Response::error("$rolesStr role required", 403);
-            exit;
-        }
-    }
-
-    /**
-     * Get currently authenticated user
-     *
-     * @return object User object
-     */
-    private function getCurrentUser(): object
-    {
-        $this->requireAuth();
-        return $this->userModel->find($this->auth['user_id']);
     }
 
     /**

@@ -627,4 +627,144 @@ class User extends BaseModel
             return [];
         }
     }
+
+    // ================================================================
+    // PHASE 10: ADVANCED ANALYTICS METHODS
+    // ================================================================
+
+    /**
+     * Get user acquisition trends over time
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param array $options Grouping and date range options
+     * @return array User acquisition trends
+     */
+    public function getAcquisitionTrends(array $options = []): array
+    {
+        try {
+            $groupBy = $options['group_by'] ?? 'month';
+            $startDate = $options['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
+            $endDate = $options['end_date'] ?? date('Y-m-d');
+
+            // Determine grouping format
+            $dateFormat = match($groupBy) {
+                'day' => 'DATE(created_at)',
+                'week' => 'DATE_FORMAT(created_at, "%Y-%U")',
+                'month' => 'DATE_FORMAT(created_at, "%Y-%m")',
+                default => 'DATE_FORMAT(created_at, "%Y-%m")'
+            };
+
+            $sql = "SELECT
+                    $dateFormat as period,
+                    COUNT(*) as new_users_count,
+                    SUM(CASE WHEN role = 'student' THEN 1 ELSE 0 END) as students_count,
+                    SUM(CASE WHEN role = 'instructor' THEN 1 ELSE 0 END) as instructors_count,
+                    SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admins_count,
+                    SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active_count
+                FROM {$this->table}
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                GROUP BY $dateFormat
+                ORDER BY period ASC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            $trends = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Calculate totals
+            $totalUsers = array_sum(array_column($trends, 'new_users_count'));
+            $totalActive = array_sum(array_column($trends, 'active_count'));
+            $activationRate = $totalUsers > 0 ? round(($totalActive / $totalUsers) * 100, 2) : 0;
+
+            return [
+                'trends' => $trends,
+                'total_new_users' => $totalUsers,
+                'total_active' => $totalActive,
+                'activation_rate' => $activationRate,
+                'group_by' => $groupBy
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getAcquisitionTrends: " . $e->getMessage());
+            return [
+                'trends' => [],
+                'total_new_users' => 0,
+                'total_active' => 0,
+                'activation_rate' => 0,
+                'group_by' => $groupBy
+            ];
+        }
+    }
+
+    /**
+     * Get at-risk students for a specific course
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param int $courseId Course ID
+     * @param int $riskThreshold Minimum risk score (0-100, default 60)
+     * @return array At-risk students data
+     */
+    public function getAtRiskStudents(int $courseId, int $riskThreshold = 60): array
+    {
+        try {
+            // Use the v_at_risk_students view
+            $sql = "SELECT
+                    user_id,
+                    first_name,
+                    last_name,
+                    email,
+                    course_title,
+                    progress_percentage,
+                    enrolled_at,
+                    days_since_last_access,
+                    last_accessed_at,
+                    avg_quiz_score,
+                    failed_quiz_count,
+                    risk_score,
+                    CASE
+                        WHEN risk_score >= 80 THEN 'critical'
+                        WHEN risk_score >= 60 THEN 'high'
+                        WHEN risk_score >= 40 THEN 'moderate'
+                        ELSE 'low'
+                    END as risk_level
+                FROM v_at_risk_students
+                WHERE course_id = :course_id
+                AND risk_score >= :risk_threshold
+                ORDER BY risk_score DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'course_id' => $courseId,
+                'risk_threshold' => $riskThreshold
+            ]);
+            $atRiskStudents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Categorize by risk level
+            $riskLevels = [
+                'critical' => count(array_filter($atRiskStudents, fn($s) => $s['risk_score'] >= 80)),
+                'high' => count(array_filter($atRiskStudents, fn($s) => $s['risk_score'] >= 60 && $s['risk_score'] < 80)),
+                'moderate' => count(array_filter($atRiskStudents, fn($s) => $s['risk_score'] >= 40 && $s['risk_score'] < 60))
+            ];
+
+            return [
+                'at_risk_students' => $atRiskStudents,
+                'total_at_risk' => count($atRiskStudents),
+                'risk_levels' => $riskLevels,
+                'risk_threshold' => $riskThreshold
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getAtRiskStudents: " . $e->getMessage());
+            return [
+                'at_risk_students' => [],
+                'total_at_risk' => 0,
+                'risk_levels' => [
+                    'critical' => 0,
+                    'high' => 0,
+                    'moderate' => 0
+                ],
+                'risk_threshold' => $riskThreshold
+            ];
+        }
+    }
 }

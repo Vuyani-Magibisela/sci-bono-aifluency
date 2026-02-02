@@ -213,9 +213,9 @@
             <div class="quiz-attempt-card">
                 <div class="attempt-header">
                     <div>
-                        <div class="attempt-title">${escapeHtml(quizTitle)}</div>
+                        <div class="attempt-title">${Utils.escapeHtml(quizTitle)}</div>
                         <div class="attempt-date">
-                            <i class="fas fa-book"></i> ${escapeHtml(moduleTitle)} •
+                            <i class="fas fa-book"></i> ${Utils.escapeHtml(moduleTitle)} •
                             <i class="fas fa-calendar"></i> ${completedDate}
                         </div>
                     </div>
@@ -271,16 +271,7 @@
         return `${secs}s`;
     }
 
-    /**
-     * Escape HTML to prevent XSS
-     * @param {string} text - Text to escape
-     * @returns {string} Escaped text
-     */
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    // escapeHtml moved to Utils.js (Phase 11 refactoring)
 
     /**
      * Show error message
@@ -292,7 +283,7 @@
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle" style="color: var(--accent-color);"></i>
                 <h2>Error</h2>
-                <p>${escapeHtml(message)}</p>
+                <p>${Utils.escapeHtml(message)}</p>
                 <button class="btn-primary" onclick="location.reload()">Retry</button>
             </div>
         `;

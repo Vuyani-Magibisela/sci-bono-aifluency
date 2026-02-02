@@ -14,62 +14,20 @@ use App\Utils\JWTHandler;
  *
  * Handles lesson and lesson progress operations
  */
-class LessonController
+class LessonController extends BaseController
 {
     private Lesson $lessonModel;
     private LessonProgress $progressModel;
     private Module $moduleModel;
     private Enrollment $enrollmentModel;
-    private \PDO $pdo;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->lessonModel = new Lesson($pdo);
         $this->progressModel = new LessonProgress($pdo);
         $this->moduleModel = new Module($pdo);
         $this->enrollmentModel = new Enrollment($pdo);
-    }
-
-    /**
-     * Get current authenticated user
-     *
-     * @return object|null
-     */
-    private function getCurrentUser(): ?object
-    {
-        $currentUser = JWTHandler::getCurrentUser();
-
-        if (!$currentUser) {
-            Response::unauthorized('Authentication required');
-        }
-
-        $token = JWTHandler::extractTokenFromHeader();
-        if ($token && JWTHandler::isTokenBlacklisted($token, $this->pdo)) {
-            Response::unauthorized('Token has been revoked. Please login again.');
-        }
-
-        return $currentUser;
-    }
-
-    /**
-     * Check if current user has required role(s)
-     *
-     * @param string|array $roles Required role(s)
-     * @return void
-     */
-    private function requireRole($roles): void
-    {
-        $currentUser = $this->getCurrentUser();
-
-        if (is_string($roles)) {
-            $roles = [$roles];
-        }
-
-        if (!in_array($currentUser->role, $roles, true)) {
-            Response::forbidden('You do not have permission to perform this action');
-        }
     }
 
     /**

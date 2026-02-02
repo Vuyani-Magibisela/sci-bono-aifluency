@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Analytics - AI Fluency LMS</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .analytics-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .analytics-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .platform-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .platform-stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .platform-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .platform-stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+
+        .platform-stat-label {
+            font-size: 0.875rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-ranking-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .course-ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .course-ranking-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .course-rank.top-1 { color: #FFD700; }
+        .course-rank.top-2 { color: #C0C0C0; }
+        .course-rank.top-3 { color: #CD7F32; }
+
+        .course-info {
+            flex: 1;
+        }
+
+        .course-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .course-stats {
+            font-size: 0.875rem;
+            color: #666;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .course-metric {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .achievement-item:hover {
+            transform: scale(1.05);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .achievement-count {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .trend-indicator.positive {
+            background: #E8F5E9;
+            color: #388E3C;
+        }
+
+        .trend-indicator.negative {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .trend-indicator.neutral {
+            background: #F5F5F5;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="analytics-header">
+            <h1>🎛️ Admin Analytics Dashboard</h1>
+            <p>Platform-wide metrics, trends, and performance insights</p>
+        </div>
+
+        <!-- Filters -->
+        <div id="filters-container"></div>
+
+        <!-- Platform Overview Stats -->
+        <div class="platform-stats-grid">
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">👥</div>
+                <div class="platform-stat-value" id="total-users">0</div>
+                <div class="platform-stat-label">Total Users</div>
+            </div>
+
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">📚</div>
+                <div class="platform-stat-value" id="total-courses">0</div>
+                <div class="platform-stat-label">Active Courses</div>
+            </div>
+
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">🎓</div>
+                <div class="platform-stat-value" id="total-enrollments">0</div>
+                <div class="platform-stat-label">Total Enrollments</div>
+            </div>
+
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">📜</div>
+                <div class="platform-stat-value" id="total-certificates">0</div>
+                <div class="platform-stat-label">Certificates Issued</div>
+            </div>
+
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">✅</div>
+                <div class="platform-stat-value" id="completion-rate">0%</div>
+                <div class="platform-stat-label">Completion Rate</div>
+            </div>
+
+            <div class="platform-stat-card">
+                <div class="platform-stat-icon">📊</div>
+                <div class="platform-stat-value" id="avg-platform-score">0%</div>
+                <div class="platform-stat-label">Avg Quiz Score</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="analytics-charts-grid">
+            <!-- Enrollment Trends -->
+            <div class="chart-card full-width">
+                <h3>📈 Enrollment Trends Over Time</h3>
+                <p class="chart-description">New enrollments and completion rates by time period</p>
+                <div class="chart-container">
+                    <canvas id="enrollmentTrendsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Course Popularity -->
+            <div class="chart-card half-width">
+                <h3>🏆 Top Courses by Popularity</h3>
+                <p class="chart-description">Most enrolled and highest-rated courses</p>
+                <div id="course-popularity-container">
+                    <div class="loading-spinner">Loading course rankings...</div>
+                </div>
+            </div>
+
+            <!-- User Acquisition -->
+            <div class="chart-card half-width">
+                <h3>👤 User Acquisition Trends</h3>
+                <p class="chart-description">New user signups by role</p>
+                <div class="chart-container">
+                    <canvas id="userAcquisitionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Achievement Distribution -->
+            <div class="chart-card full-width">
+                <h3>🏅 Achievement Distribution</h3>
+                <p class="chart-description">Most earned achievements across the platform</p>
+                <div id="achievement-distribution-container">
+                    <div class="loading-spinner">Loading achievements...</div>
+                </div>
+            </div>
+
+            <!-- Platform Usage -->
+            <div class="chart-card half-width">
+                <h3>⏱️ Platform Usage Statistics</h3>
+                <p class="chart-description">User activity by time of day</p>
+                <div class="chart-container">
+                    <canvas id="platformUsageChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Certificate Trends -->
+            <div class="chart-card half-width">
+                <h3>📜 Certificate Issuance Trends</h3>
+                <p class="chart-description">Certificates issued over time</p>
+                <div class="chart-container">
+                    <canvas id="certificateTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div id="insights-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/admin-analytics.js"></script>
+</body>
+</html>

@@ -11,57 +11,14 @@ use App\Utils\JWTHandler;
  *
  * Handles user management operations (list, view, update, delete)
  */
-class UserController
+class UserController extends BaseController
 {
     private User $userModel;
-    private \PDO $pdo;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->userModel = new User($pdo);
-    }
-
-    /**
-     * Get current authenticated user
-     *
-     * @return object|null Current user or null
-     */
-    private function getCurrentUser(): ?object
-    {
-        $currentUser = JWTHandler::getCurrentUser();
-
-        if (!$currentUser) {
-            Response::unauthorized('Authentication required');
-        }
-
-        // Check if token is blacklisted
-        $token = JWTHandler::extractTokenFromHeader();
-        if ($token && JWTHandler::isTokenBlacklisted($token, $this->pdo)) {
-            Response::unauthorized('Token has been revoked. Please login again.');
-        }
-
-        return $currentUser;
-    }
-
-    /**
-     * Check if current user has required role(s)
-     *
-     * @param string|array $roles Required role(s)
-     * @return void
-     */
-    private function requireRole($roles): void
-    {
-        $currentUser = $this->getCurrentUser();
-
-        if (is_string($roles)) {
-            $roles = [$roles];
-        }
-
-        if (!in_array($currentUser->role, $roles, true)) {
-            Response::forbidden('You do not have permission to perform this action');
-        }
     }
 
     /**
@@ -72,14 +29,8 @@ class UserController
      */
     private function requireSelfOrAdmin(int $userId): void
     {
-        $currentUser = $this->getCurrentUser();
-
-        $isSelf = ($currentUser->id == $userId);
-        $isAdmin = ($currentUser->role === 'admin');
-
-        if (!$isSelf && !$isAdmin) {
-            Response::forbidden('You do not have permission to access this resource');
-        }
+        // Use BaseController's requireOwnershipOrRole with admin-only allowance
+        $this->requireOwnershipOrRole($userId, ['admin']);
     }
 
     /**

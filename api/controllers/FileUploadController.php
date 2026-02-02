@@ -10,11 +10,8 @@ use App\Utils\JWTHandler;
  * Handles file uploads with validation and security
  * Phase B: Complete Core Features
  */
-class FileUploadController
+class FileUploadController extends BaseController
 {
-    private \PDO $pdo;
-    private ?array $auth = null;
-
     // File upload configuration
     private const UPLOAD_BASE_DIR = '/var/www/html/sci-bono-aifluency/uploads';
     private const MAX_FILE_SIZE = 10485760; // 10MB in bytes
@@ -52,32 +49,9 @@ class FileUploadController
         ]
     ];
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
-    }
-
-    /**
-     * Authenticate request
-     */
-    private function requireAuth(): void
-    {
-        $headers = getallheaders();
-        $token = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$token) {
-            Response::error('Authorization token required', 401);
-            exit;
-        }
-
-        $token = str_replace('Bearer ', '', $token);
-
-        try {
-            $this->auth = JWTHandler::validateToken($token);
-        } catch (\Exception $e) {
-            Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
-            exit;
+        parent::__construct($pdo);
         }
     }
 
@@ -92,8 +66,8 @@ class FileUploadController
      */
     public function upload(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         // Check if file was uploaded
         if (!isset($_FILES['file']) || $_FILES['file']['error'] === UPLOAD_ERR_NO_FILE) {
@@ -193,8 +167,8 @@ class FileUploadController
      */
     public function getFile(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         $fileId = $params['id'] ?? null;
         if (!$fileId) {
@@ -244,8 +218,8 @@ class FileUploadController
      */
     public function deleteFile(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         $fileId = $params['id'] ?? null;
         if (!$fileId) {
@@ -294,8 +268,8 @@ class FileUploadController
      */
     public function getUserFiles(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         $type = $_GET['type'] ?? null;
 

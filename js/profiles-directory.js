@@ -220,7 +220,7 @@ function createProfileCard(profile) {
         : 'Student';
 
     const avatarHtml = profile.avatar_url
-        ? `<img src="${escapeHtml(profile.avatar_url)}" alt="${escapeHtml(profile.name)}">`
+        ? `<img src="${Utils.escapeHtml(profile.avatar_url)}" alt="${Utils.escapeHtml(profile.name)}">`
         : `<span class="avatar-initials">${initials}</span>`;
 
     return `
@@ -229,10 +229,10 @@ function createProfileCard(profile) {
                 ${avatarHtml}
             </div>
             <div class="profile-card-content">
-                <h3 class="profile-card-name">${escapeHtml(profile.name || 'Anonymous')}</h3>
+                <h3 class="profile-card-name">${Utils.escapeHtml(profile.name || 'Anonymous')}</h3>
 
                 ${profile.headline ? `
-                    <p class="profile-card-headline">${escapeHtml(profile.headline)}</p>
+                    <p class="profile-card-headline">${Utils.escapeHtml(profile.headline)}</p>
                 ` : ''}
 
                 <div class="profile-card-meta">
@@ -242,7 +242,7 @@ function createProfileCard(profile) {
 
                     ${profile.location ? `
                         <span class="profile-card-location">
-                            <i class="fas fa-map-marker-alt"></i> ${escapeHtml(profile.location)}
+                            <i class="fas fa-map-marker-alt"></i> ${Utils.escapeHtml(profile.location)}
                         </span>
                     ` : ''}
                 </div>
@@ -299,7 +299,7 @@ function showError(message) {
     grid.innerHTML = `
         <div class="error-container">
             <i class="fas fa-exclamation-circle fa-3x"></i>
-            <p>${escapeHtml(message)}</p>
+            <p>${Utils.escapeHtml(message)}</p>
         </div>
     `;
 }
@@ -329,12 +329,4 @@ function debounce(func, wait) {
     };
 }
 
-/**
- * Escape HTML
- */
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// escapeHtml moved to Utils.js (Phase 11 refactoring)

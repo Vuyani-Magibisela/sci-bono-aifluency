@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning Analytics - AI Fluency Course</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <!-- Header will be injected by JavaScript -->
+    <div id="header-container"></div>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> My Learning Analytics</h1>
+            <p>Track your progress, identify areas for improvement, and celebrate your achievements</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="analytics-filters-section">
+            <div id="filters-container"></div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="analytics-summary-cards">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4B6EFB, #6E4BFB);">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-lessons-stat">--</h3>
+                    <p>Lessons Completed</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4BFB9D, #6EFBBB);">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="avg-score-stat">--%</h3>
+                    <p>Average Quiz Score</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FB4B4B, #FB6E6E);">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="learning-streak-stat">--</h3>
+                    <p>Day Learning Streak</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFA500, #FFD700);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="time-spent-stat">-- hrs</h3>
+                    <p>Total Time Spent</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="analytics-charts-grid">
+            <!-- Learning Velocity Chart -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Learning Velocity</h3>
+                    <p>Your progress over time</p>
+                </div>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="velocityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Skill Proficiency Chart -->
+            <div class="chart-card half-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-star"></i> Skill Proficiency</h3>
+                    <p>Proficiency by module</p>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="proficiencyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Time on Task Breakdown -->
+            <div class="chart-card half-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-clock"></i> Time Distribution</h3>
+                    <p>Where you spend your time</p>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="timeDistributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Struggle Indicators -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Areas for Improvement</h3>
+                    <p>Topics that may need more practice</p>
+                </div>
+                <div id="struggle-indicators-list" class="struggle-list">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Loading data...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Insights -->
+        <div class="insights-section">
+            <h2><i class="fas fa-lightbulb"></i> Personalized Insights</h2>
+            <div id="insights-container" class="insights-grid">
+                <!-- Insights will be dynamically generated -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 2rem; color: #666;">
+        <p>&copy; 2024 Sci-Bono Discovery Centre. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/student-analytics.js"></script>
+</body>
+</html>

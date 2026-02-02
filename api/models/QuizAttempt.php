@@ -802,4 +802,147 @@ class QuizAttempt extends BaseModel
             return $scores[$middle];
         }
     }
+
+    // ================================================================
+    // PHASE 10: ADVANCED ANALYTICS METHODS
+    // ================================================================
+
+    /**
+     * Get learning velocity (pace of progress over time)
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param int $userId User ID
+     * @param array $options Date range options
+     * @return array Learning velocity data
+     */
+    public function getLearningVelocity(int $userId, array $options = []): array
+    {
+        global $pdo;
+
+        $range = $options['range'] ?? '30';
+        $startDate = $options['start_date'] ?? null;
+        $endDate = $options['end_date'] ?? null;
+
+        // Build date filter
+        $dateFilter = '';
+        $params = ['user_id' => $userId];
+
+        if ($startDate && $endDate) {
+            $dateFilter = "AND DATE(time_completed) BETWEEN :start_date AND :end_date";
+            $params['start_date'] = $startDate;
+            $params['end_date'] = $endDate;
+        } elseif ($range !== 'all') {
+            $dateFilter = "AND time_completed >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+            $params['days'] = (int)$range;
+        }
+
+        // Get quiz attempts over time
+        $sql = "SELECT
+                DATE(time_completed) as completion_date,
+                COUNT(*) as attempts_count,
+                AVG(score) as avg_score,
+                SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count,
+                AVG(time_spent_seconds / 60) as avg_time_minutes
+            FROM quiz_attempts
+            WHERE user_id = :user_id
+            AND time_completed IS NOT NULL
+            $dateFilter
+            GROUP BY DATE(time_completed)
+            ORDER BY completion_date ASC";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $velocityData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Calculate velocity metrics
+        $totalAttempts = array_sum(array_column($velocityData, 'attempts_count'));
+        $daysActive = count($velocityData);
+        $avgAttemptsPerDay = $daysActive > 0 ? round($totalAttempts / $daysActive, 2) : 0;
+
+        // Calculate trend (improving/declining/stable)
+        $trend = 'stable';
+        if (count($velocityData) >= 2) {
+            $firstHalf = array_slice($velocityData, 0, ceil(count($velocityData) / 2));
+            $secondHalf = array_slice($velocityData, floor(count($velocityData) / 2));
+
+            $firstHalfAvg = array_sum(array_column($firstHalf, 'avg_score')) / max(count($firstHalf), 1);
+            $secondHalfAvg = array_sum(array_column($secondHalf, 'avg_score')) / max(count($secondHalf), 1);
+
+            if ($secondHalfAvg > $firstHalfAvg + 5) {
+                $trend = 'improving';
+            } elseif ($secondHalfAvg < $firstHalfAvg - 5) {
+                $trend = 'declining';
+            }
+        }
+
+        return [
+            'velocity_data' => $velocityData,
+            'total_attempts' => $totalAttempts,
+            'days_active' => $daysActive,
+            'avg_attempts_per_day' => $avgAttemptsPerDay,
+            'trend' => $trend
+        ];
+    }
+
+    /**
+     * Get struggle indicators (failed attempts, excessive time, etc.)
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param int $userId User ID
+     * @param int|null $quizId Optional quiz ID filter
+     * @return array Struggle indicators
+     */
+    public function getStruggleIndicators(int $userId, ?int $quizId = null): array
+    {
+        global $pdo;
+
+        $sql = "SELECT
+                qa.quiz_id,
+                q.title as quiz_title,
+                COUNT(qa.id) as total_attempts,
+                SUM(CASE WHEN qa.passed = 0 THEN 1 ELSE 0 END) as failed_attempts,
+                AVG(qa.score) as avg_score,
+                MAX(qa.score) as best_score,
+                AVG(qa.time_spent_seconds / 60) as avg_time_minutes,
+                MAX(qa.time_spent_seconds / 60) as max_time_minutes,
+                -- Struggle score: higher = more struggle
+                ROUND((
+                    (SUM(CASE WHEN qa.passed = 0 THEN 1 ELSE 0 END) / COUNT(qa.id)) * 40 +
+                    ((100 - AVG(qa.score)) / 100) * 30 +
+                    (CASE
+                        WHEN AVG(qa.time_spent_seconds / 60) > q.time_limit * 1.5 THEN 30
+                        WHEN AVG(qa.time_spent_seconds / 60) > q.time_limit THEN 20
+                        ELSE 10
+                    END)
+                ), 2) as struggle_score
+            FROM quiz_attempts qa
+            INNER JOIN quizzes q ON qa.quiz_id = q.id
+            WHERE qa.user_id = :user_id";
+
+        $params = ['user_id' => $userId];
+
+        if ($quizId) {
+            $sql .= " AND qa.quiz_id = :quiz_id";
+            $params['quiz_id'] = $quizId;
+        }
+
+        $sql .= " GROUP BY qa.quiz_id, q.title, q.time_limit
+                  ORDER BY struggle_score DESC";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $struggles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Identify top struggles (struggle_score >= 60)
+        $topStruggles = array_filter($struggles, function($s) {
+            return $s['struggle_score'] >= 60;
+        });
+
+        return [
+            'struggles' => $struggles,
+            'top_struggles' => array_values($topStruggles),
+            'total_quizzes_with_attempts' => count($struggles),
+            'quizzes_with_high_struggle' => count($topStruggles)
+        ];
+    }
 }

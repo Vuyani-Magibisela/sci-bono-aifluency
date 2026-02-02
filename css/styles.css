@@ -5839,3 +5839,469 @@ input[type="checkbox"] {
         justify-content: center;
     }
 }
+
+/* ================================================================
+   PHASE 10: ADVANCED ANALYTICS DASHBOARD STYLES
+   ================================================================ */
+
+/* Analytics Filter Bar */
+.analytics-filters-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.analytics-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.filter-group label i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+.filter-select,
+.filter-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(75, 110, 251, 0.1);
+}
+
+#custom-date-inputs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(75, 110, 251, 0.3);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Analytics Summary Cards */
+.analytics-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: #333;
+    font-weight: 700;
+}
+
+.stat-content p {
+    margin: 0.25rem 0 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Analytics Charts Grid */
+.analytics-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-card.half-width {
+    grid-column: span 1;
+}
+
+.chart-header {
+    margin-bottom: 1rem;
+}
+
+.chart-header h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.25rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-header h3 i {
+    color: var(--primary-color);
+}
+
+.chart-header p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Struggle Indicators List */
+.struggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.struggle-item {
+    background: #f9f9f9;
+    padding: 1.25rem;
+    border-radius: 10px;
+    border-left: 4px solid #FFA500;
+    transition: all 0.3s ease;
+}
+
+.struggle-item.struggle-critical {
+    border-left-color: #FB4B4B;
+    background: #FFF5F5;
+}
+
+.struggle-item.struggle-high {
+    border-left-color: #FFA500;
+    background: #FFF9F0;
+}
+
+.struggle-item.struggle-moderate {
+    border-left-color: #FFD700;
+    background: #FFFEF0;
+}
+
+.struggle-item.struggle-low {
+    border-left-color: #4BFB9D;
+    background: #F5FFF9;
+}
+
+.struggle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.struggle-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.struggle-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.struggle-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.struggle-stats .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.struggle-stats .stat i {
+    color: var(--primary-color);
+}
+
+.struggle-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Insights Section */
+.insights-section {
+    margin-bottom: 2rem;
+}
+
+.insights-section h2 {
+    margin-bottom: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.insights-section h2 i {
+    color: #FFD700;
+}
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.insight-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 1rem;
+    border-left: 4px solid;
+}
+
+.insight-card.insight-success {
+    border-left-color: #4BFB9D;
+    background: linear-gradient(135deg, #ffffff, #f5fff9);
+}
+
+.insight-card.insight-warning {
+    border-left-color: #FFA500;
+    background: linear-gradient(135deg, #ffffff, #fff9f0);
+}
+
+.insight-card.insight-info {
+    border-left-color: #4B6EFB;
+    background: linear-gradient(135deg, #ffffff, #f5f7ff);
+}
+
+.insight-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.insight-success .insight-icon {
+    background: rgba(75, 251, 157, 0.2);
+    color: #4BFB9D;
+}
+
+.insight-warning .insight-icon {
+    background: rgba(255, 165, 0, 0.2);
+    color: #FFA500;
+}
+
+.insight-info .insight-icon {
+    background: rgba(75, 110, 251, 0.2);
+    color: #4B6EFB;
+}
+
+.insight-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.insight-content p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Loading and Error States */
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.loading-spinner i {
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.no-data-message {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+}
+
+.no-data-message i {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.no-data-message p {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.error-message {
+    background: #FFF5F5;
+    border-left: 4px solid #FB4B4B;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.error-message i {
+    color: #FB4B4B;
+    font-size: 1.5rem;
+}
+
+.error-message p {
+    margin: 0;
+    color: #333;
+}
+
+/* Responsive Analytics Styles */
+@media (max-width: 768px) {
+    .analytics-filter-bar {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .filter-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .analytics-summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-card.half-width {
+        grid-column: 1;
+    }
+
+    .chart-container {
+        height: 250px !important;
+    }
+
+    .struggle-stats {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+}

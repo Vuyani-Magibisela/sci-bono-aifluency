@@ -262,4 +262,144 @@ class LessonProgress extends BaseModel
             return 0;
         }
     }
+
+    // ================================================================
+    // PHASE 10: ADVANCED ANALYTICS METHODS
+    // ================================================================
+
+    /**
+     * Get engagement metrics for a course
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param int $courseId Course ID
+     * @return array Engagement metrics including time spent, notes, bookmarks
+     */
+    public function getEngagementMetrics(int $courseId): array
+    {
+        try {
+            // Use the database view for student engagement
+            $sql = "SELECT
+                    user_id,
+                    first_name,
+                    last_name,
+                    email,
+                    lessons_accessed,
+                    lessons_completed,
+                    total_time_minutes,
+                    notes_created,
+                    bookmarks_created,
+                    last_lesson_activity,
+                    enrolled_at,
+                    progress_percentage,
+                    enrollment_status,
+                    -- Engagement score (0-100)
+                    ROUND((
+                        (lessons_completed / GREATEST(lessons_accessed, 1)) * 30 +
+                        LEAST((total_time_minutes / 60), 100) * 0.2 +
+                        LEAST(notes_created * 5, 30) +
+                        LEAST(bookmarks_created * 5, 20)
+                    ), 2) as engagement_score
+                FROM v_student_engagement
+                WHERE course_id = :course_id
+                ORDER BY engagement_score DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['course_id' => $courseId]);
+            $engagementData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Calculate aggregates
+            $totalStudents = count($engagementData);
+            $avgEngagement = $totalStudents > 0 ?
+                round(array_sum(array_column($engagementData, 'engagement_score')) / $totalStudents, 2) : 0;
+
+            return [
+                'engagement_data' => $engagementData,
+                'total_students' => $totalStudents,
+                'avg_engagement_score' => $avgEngagement,
+                'high_engagement_count' => count(array_filter($engagementData, fn($e) => $e['engagement_score'] >= 70)),
+                'low_engagement_count' => count(array_filter($engagementData, fn($e) => $e['engagement_score'] < 40))
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getEngagementMetrics: " . $e->getMessage());
+            return [
+                'engagement_data' => [],
+                'total_students' => 0,
+                'avg_engagement_score' => 0,
+                'high_engagement_count' => 0,
+                'low_engagement_count' => 0
+            ];
+        }
+    }
+
+    /**
+     * Get completion heatmap data (activity by day/hour)
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param int $courseId Course ID
+     * @param array $options Date range options
+     * @return array Heatmap data
+     */
+    public function getCompletionHeatmap(int $courseId, array $options = []): array
+    {
+        try {
+            $dateRange = $options['range'] ?? '30';
+            $startDate = $options['start_date'] ?? null;
+            $endDate = $options['end_date'] ?? null;
+
+            // Build date filter
+            $dateFilter = '';
+            $params = ['course_id' => $courseId];
+
+            if ($startDate && $endDate) {
+                $dateFilter = "AND DATE(lp.completed_at) BETWEEN :start_date AND :end_date";
+                $params['start_date'] = $startDate;
+                $params['end_date'] = $endDate;
+            } elseif ($dateRange !== 'all') {
+                $dateFilter = "AND lp.completed_at >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+                $params['days'] = (int)$dateRange;
+            }
+
+            $sql = "SELECT
+                    DAYOFWEEK(lp.completed_at) as day_of_week,
+                    HOUR(lp.completed_at) as hour_of_day,
+                    COUNT(*) as completion_count,
+                    AVG(lp.time_spent_minutes) as avg_time_spent
+                FROM {$this->table} lp
+                INNER JOIN lessons l ON lp.lesson_id = l.id
+                INNER JOIN modules m ON l.module_id = m.id
+                WHERE m.course_id = :course_id
+                AND lp.status = 'completed'
+                AND lp.completed_at IS NOT NULL
+                $dateFilter
+                GROUP BY DAYOFWEEK(lp.completed_at), HOUR(lp.completed_at)
+                ORDER BY day_of_week, hour_of_day";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $heatmapData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Find peak activity
+            $peakActivity = null;
+            $maxCompletions = 0;
+            foreach ($heatmapData as $data) {
+                if ($data['completion_count'] > $maxCompletions) {
+                    $maxCompletions = $data['completion_count'];
+                    $peakActivity = $data;
+                }
+            }
+
+            return [
+                'heatmap_data' => $heatmapData,
+                'peak_activity' => $peakActivity,
+                'total_completions' => array_sum(array_column($heatmapData, 'completion_count'))
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getCompletionHeatmap: " . $e->getMessage());
+            return [
+                'heatmap_data' => [],
+                'peak_activity' => null,
+                'total_completions' => 0
+            ];
+        }
+    }
 }

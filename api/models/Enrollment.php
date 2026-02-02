@@ -280,4 +280,138 @@ class Enrollment extends BaseModel
             return null;
         }
     }
+
+    // ================================================================
+    // PHASE 10: ADVANCED ANALYTICS METHODS
+    // ================================================================
+
+    /**
+     * Get enrollment trends over time
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param array $options Grouping and date range options
+     * @return array Enrollment trends data
+     */
+    public function getEnrollmentTrends(array $options = []): array
+    {
+        try {
+            $groupBy = $options['group_by'] ?? 'month';
+            $startDate = $options['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
+            $endDate = $options['end_date'] ?? date('Y-m-d');
+
+            // Determine grouping format
+            $dateFormat = match($groupBy) {
+                'day' => 'DATE(enrolled_at)',
+                'week' => 'DATE_FORMAT(enrolled_at, "%Y-%U")',
+                'month' => 'DATE_FORMAT(enrolled_at, "%Y-%m")',
+                default => 'DATE_FORMAT(enrolled_at, "%Y-%m")'
+            };
+
+            $sql = "SELECT
+                    $dateFormat as period,
+                    COUNT(*) as enrollments_count,
+                    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
+                    SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+                    SUM(CASE WHEN status = 'dropped' THEN 1 ELSE 0 END) as dropped_count,
+                    AVG(progress_percentage) as avg_progress
+                FROM {$this->table}
+                WHERE DATE(enrolled_at) BETWEEN :start_date AND :end_date
+                GROUP BY $dateFormat
+                ORDER BY period ASC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            $trends = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Calculate totals
+            $totalEnrollments = array_sum(array_column($trends, 'enrollments_count'));
+            $totalCompleted = array_sum(array_column($trends, 'completed_count'));
+            $completionRate = $totalEnrollments > 0 ? round(($totalCompleted / $totalEnrollments) * 100, 2) : 0;
+
+            return [
+                'trends' => $trends,
+                'total_enrollments' => $totalEnrollments,
+                'total_completed' => $totalCompleted,
+                'completion_rate' => $completionRate,
+                'group_by' => $groupBy
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getEnrollmentTrends: " . $e->getMessage());
+            return [
+                'trends' => [],
+                'total_enrollments' => 0,
+                'total_completed' => 0,
+                'completion_rate' => 0,
+                'group_by' => $groupBy
+            ];
+        }
+    }
+
+    /**
+     * Get retention metrics (dropout vs completion rates)
+     * Phase 10: Advanced Analytics Dashboard
+     *
+     * @param array $options Date range options
+     * @return array Retention metrics
+     */
+    public function getRetentionMetrics(array $options = []): array
+    {
+        try {
+            $startDate = $options['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
+            $endDate = $options['end_date'] ?? date('Y-m-d');
+
+            $sql = "SELECT
+                    COUNT(*) as total_enrollments,
+                    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+                    SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+                    SUM(CASE WHEN status = 'dropped' THEN 1 ELSE 0 END) as dropped,
+                    AVG(progress_percentage) as avg_progress,
+                    AVG(DATEDIFF(IFNULL(completed_at, NOW()), enrolled_at)) as avg_days_to_completion,
+                    AVG(DATEDIFF(last_accessed_at, enrolled_at)) as avg_days_active
+                FROM {$this->table}
+                WHERE DATE(enrolled_at) BETWEEN :start_date AND :end_date";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            $metrics = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $total = $metrics['total_enrollments'];
+            $retentionRate = $total > 0 ? round((($metrics['active'] + $metrics['completed']) / $total) * 100, 2) : 0;
+            $dropoutRate = $total > 0 ? round(($metrics['dropped'] / $total) * 100, 2) : 0;
+            $completionRate = $total > 0 ? round(($metrics['completed'] / $total) * 100, 2) : 0;
+
+            return [
+                'total_enrollments' => $total,
+                'active' => $metrics['active'],
+                'completed' => $metrics['completed'],
+                'dropped' => $metrics['dropped'],
+                'retention_rate' => $retentionRate,
+                'dropout_rate' => $dropoutRate,
+                'completion_rate' => $completionRate,
+                'avg_progress' => round($metrics['avg_progress'], 2),
+                'avg_days_to_completion' => round($metrics['avg_days_to_completion'], 2),
+                'avg_days_active' => round($metrics['avg_days_active'], 2)
+            ];
+        } catch (\PDOException $e) {
+            error_log("Database error in getRetentionMetrics: " . $e->getMessage());
+            return [
+                'total_enrollments' => 0,
+                'active' => 0,
+                'completed' => 0,
+                'dropped' => 0,
+                'retention_rate' => 0,
+                'dropout_rate' => 0,
+                'completion_rate' => 0,
+                'avg_progress' => 0,
+                'avg_days_to_completion' => 0,
+                'avg_days_active' => 0
+            ];
+        }
+    }
 }

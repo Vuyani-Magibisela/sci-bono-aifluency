@@ -552,6 +552,114 @@ $routes = [
         'auth' => true
     ],
 
+    // Advanced Analytics Routes (Phase 10)
+    // Student Analytics
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/student/:userId/velocity',
+        'handler' => 'AdvancedAnalyticsController@getLearningVelocity',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/student/:userId/time-on-task',
+        'handler' => 'AdvancedAnalyticsController@getTimeOnTask',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/student/:userId/skill-proficiency',
+        'handler' => 'AdvancedAnalyticsController@getSkillProficiency',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/student/:userId/struggle-indicators',
+        'handler' => 'AdvancedAnalyticsController@getStruggleIndicators',
+        'auth' => true
+    ],
+
+    // Instructor Analytics
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/instructor/class/:courseId/distribution',
+        'handler' => 'AdvancedAnalyticsController@getClassDistribution',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/instructor/engagement/:courseId',
+        'handler' => 'AdvancedAnalyticsController@getEngagementMetrics',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/instructor/question-effectiveness/:quizId',
+        'handler' => 'AdvancedAnalyticsController@getQuestionEffectiveness',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/instructor/at-risk-students/:courseId',
+        'handler' => 'AdvancedAnalyticsController@getAtRiskStudents',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/instructor/grading-workload',
+        'handler' => 'AdvancedAnalyticsController@getGradingWorkload',
+        'auth' => true,
+        'roles' => ['instructor', 'admin']
+    ],
+
+    // Admin Analytics
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/enrollment-trends',
+        'handler' => 'AdvancedAnalyticsController@getEnrollmentTrends',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/course-popularity',
+        'handler' => 'AdvancedAnalyticsController@getCoursePopularity',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/user-acquisition',
+        'handler' => 'AdvancedAnalyticsController@getUserAcquisition',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/achievement-distribution',
+        'handler' => 'AdvancedAnalyticsController@getAchievementDistribution',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/platform-usage',
+        'handler' => 'AdvancedAnalyticsController@getPlatformUsage',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/analytics/admin/certificate-trends',
+        'handler' => 'AdvancedAnalyticsController@getCertificateTrends',
+        'auth' => true,
+        'roles' => ['admin']
+    ],
+
     // Achievement Routes (Phase 6)
     [
         'method' => 'GET',
@@ -758,8 +866,9 @@ if (!class_exists($controllerClass)) {
     Response::serverError("Controller {$controllerName} not found");
 }
 
-// Instantiate controller
-$controller = new $controllerClass();
+// Instantiate controller with PDO dependency
+global $pdo;
+$controller = new $controllerClass($pdo);
 
 // Check if method exists
 if (!method_exists($controller, $methodName)) {

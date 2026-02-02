@@ -1,14 +1,20 @@
 <?php
+namespace App\Controllers;
+
+use App\Models\Bookmark;
+use App\Utils\Response;
+use App\Utils\JWTHandler;
+
 /**
  * BookmarksController (Phase 5D Priority 5)
  * Handles bookmark operations
  */
+class BookmarksController extends BaseController {
+    private Bookmark $bookmarkModel;
 
-class BookmarksController {
-    private $bookmarkModel;
-
-    public function __construct($db) {
-        $this->bookmarkModel = new Bookmark($db);
+    public function __construct(\PDO $pdo) {
+        parent::__construct($pdo);
+        $this->bookmarkModel = new Bookmark($pdo);
     }
 
     /**
@@ -18,19 +24,15 @@ class BookmarksController {
     public function index() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get grouped parameter
             $grouped = isset($_GET['grouped']) && $_GET['grouped'] === 'true';
 
             if ($grouped) {
-                $bookmarks = $this->bookmarkModel->getBookmarksGroupedByModule($user['id']);
+                $bookmarks = $this->bookmarkModel->getBookmarksGroupedByModule($currentUser->id);
             } else {
-                $bookmarks = $this->bookmarkModel->getBookmarksByUser($user['id']);
+                $bookmarks = $this->bookmarkModel->getBookmarksByUser($currentUser->id);
             }
 
             Response::success([
@@ -51,11 +53,7 @@ class BookmarksController {
     public function checkBookmark($lessonId) {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Validate lesson ID
             if (!is_numeric($lessonId) || $lessonId <= 0) {
@@ -63,7 +61,7 @@ class BookmarksController {
                 return;
             }
 
-            $isBookmarked = $this->bookmarkModel->isBookmarked($user['id'], $lessonId);
+            $isBookmarked = $this->bookmarkModel->isBookmarked($currentUser->id, $lessonId);
 
             Response::success([
                 'bookmarked' => $isBookmarked,
@@ -84,17 +82,13 @@ class BookmarksController {
     public function create() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get request body
             $data = json_decode(file_get_contents('php://input'), true);
 
             // Validate input
-            $validator = new Validator();
+            $validator = new \App\Utils\Validator();
             $validator->required($data, ['lesson_id']);
 
             if (!$validator->isValid()) {
@@ -109,7 +103,7 @@ class BookmarksController {
             }
 
             // Add bookmark
-            $bookmark = $this->bookmarkModel->addBookmark($user['id'], $data['lesson_id']);
+            $bookmark = $this->bookmarkModel->addBookmark($currentUser->id, $data['lesson_id']);
 
             if ($bookmark === false) {
                 Response::badRequest('Lesson is already bookmarked');
@@ -134,11 +128,7 @@ class BookmarksController {
     public function delete($lessonId) {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Validate lesson ID
             if (!is_numeric($lessonId) || $lessonId <= 0) {
@@ -147,7 +137,7 @@ class BookmarksController {
             }
 
             // Remove bookmark
-            $success = $this->bookmarkModel->removeBookmarkByLesson($user['id'], $lessonId);
+            $success = $this->bookmarkModel->removeBookmarkByLesson($currentUser->id, $lessonId);
 
             if (!$success) {
                 Response::notFound('Bookmark not found');
@@ -172,17 +162,13 @@ class BookmarksController {
     public function toggle() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get request body
             $data = json_decode(file_get_contents('php://input'), true);
 
             // Validate input
-            $validator = new Validator();
+            $validator = new \App\Utils\Validator();
             $validator->required($data, ['lesson_id']);
 
             if (!$validator->isValid()) {
@@ -197,7 +183,7 @@ class BookmarksController {
             }
 
             // Toggle bookmark
-            $result = $this->bookmarkModel->toggleBookmark($user['id'], $data['lesson_id']);
+            $result = $this->bookmarkModel->toggleBookmark($currentUser->id, $data['lesson_id']);
 
             Response::success($result);
 
@@ -214,14 +200,10 @@ class BookmarksController {
     public function stats() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
-            $count = $this->bookmarkModel->getBookmarkCount($user['id']);
-            $recentBookmarks = $this->bookmarkModel->getBookmarksByUser($user['id']);
+            $count = $this->bookmarkModel->getBookmarkCount($currentUser->id);
+            $recentBookmarks = $this->bookmarkModel->getBookmarksByUser($currentUser->id);
 
             // Limit to 5 most recent
             $recentBookmarks = array_slice($recentBookmarks, 0, 5);

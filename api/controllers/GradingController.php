@@ -14,47 +14,18 @@ use App\Utils\Validator;
  * Handles instructor grading operations for quiz attempts
  * Phase 6: Quiz Tracking & Grading System
  */
-class GradingController
+class GradingController extends BaseController
 {
     private QuizAttempt $quizAttemptModel;
     private User $userModel;
     private Quiz $quizModel;
-    private \PDO $pdo;
-    private ?array $auth = null;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->quizAttemptModel = new QuizAttempt($pdo);
         $this->userModel = new User($pdo);
         $this->quizModel = new Quiz($pdo);
-    }
-
-    /**
-     * Authenticate request and set auth property
-     *
-     * @return void
-     */
-    private function requireAuth(): void
-    {
-        $headers = getallheaders();
-        $token = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$token) {
-            Response::error('Authorization token required', 401);
-            exit;
-        }
-
-        // Remove 'Bearer ' prefix if present
-        $token = str_replace('Bearer ', '', $token);
-
-        try {
-            $this->auth = JWTHandler::validateToken($token);
-        } catch (\Exception $e) {
-            Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
-            exit;
-        }
     }
 
     /**
@@ -64,13 +35,7 @@ class GradingController
      */
     private function requireInstructorRole(): void
     {
-        $this->requireAuth();
-        $user = $this->userModel->find($this->auth['user_id']);
-
-        if (!in_array($user->role, ['instructor', 'admin'])) {
-            Response::error('Instructor or admin role required', 403);
-            exit;
-        }
+        $this->requireRole(['instructor', 'admin']);
     }
 
     /**

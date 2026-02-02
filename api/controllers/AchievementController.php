@@ -12,45 +12,16 @@ use App\Utils\JWTHandler;
  * Handles achievement/badge system operations, unlock logic, and leaderboard
  * Phase 6: Quiz Tracking & Grading System
  */
-class AchievementController
+class AchievementController extends BaseController
 {
     private Achievement $achievementModel;
     private User $userModel;
-    private \PDO $pdo;
-    private ?array $auth = null;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->achievementModel = new Achievement($pdo);
         $this->userModel = new User($pdo);
-    }
-
-    /**
-     * Authenticate request and set auth property
-     *
-     * @return void
-     */
-    private function requireAuth(): void
-    {
-        $headers = getallheaders();
-        $token = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$token) {
-            Response::error('Authorization token required', 401);
-            exit;
-        }
-
-        // Remove 'Bearer ' prefix if present
-        $token = str_replace('Bearer ', '', $token);
-
-        try {
-            $this->auth = JWTHandler::validateToken($token);
-        } catch (\Exception $e) {
-            Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
-            exit;
-        }
     }
 
     /**
@@ -64,8 +35,8 @@ class AchievementController
      */
     public function index(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         // Get query parameters
         $categoryId = $_GET['category_id'] ?? null;
@@ -150,8 +121,8 @@ class AchievementController
      */
     public function getUserAchievements(array $params = []): void
     {
-        $this->requireAuth();
-        $requestingUserId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $requestingUserId = $currentUser->id;
 
         // Allow viewing other users if admin/instructor
         $targetUserId = $_GET['user_id'] ?? $requestingUserId;
@@ -205,8 +176,8 @@ class AchievementController
      */
     public function getPoints(array $params = []): void
     {
-        $this->requireAuth();
-        $requestingUserId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $requestingUserId = $currentUser->id;
 
         $targetUserId = $_GET['user_id'] ?? $requestingUserId;
 
@@ -258,7 +229,7 @@ class AchievementController
      */
     public function getLeaderboard(array $params = []): void
     {
-        $this->requireAuth();
+        $currentUser = $this->getCurrentUser();
 
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
@@ -272,7 +243,7 @@ class AchievementController
             $leaderboard = $this->achievementModel->getLeaderboard($limit, $offset);
 
             // Get current user's position if not in top results
-            $currentUserId = $this->auth['user_id'];
+            $currentUserId = $currentUser->id;
             $currentUserRank = $this->achievementModel->getUserRank($currentUserId);
             $currentUserPoints = $this->achievementModel->getUserPoints($currentUserId);
 
@@ -313,8 +284,8 @@ class AchievementController
      */
     public function checkForUnlocks(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         // Get request data
         $input = file_get_contents('php://input');
@@ -355,8 +326,8 @@ class AchievementController
      */
     public function show(array $params = []): void
     {
-        $this->requireAuth();
-        $userId = $this->auth['user_id'];
+        $currentUser = $this->getCurrentUser();
+        $userId = $currentUser->id;
 
         $achievementId = $params['id'] ?? null;
         if (!$achievementId) {
@@ -399,7 +370,7 @@ class AchievementController
      */
     public function getCategories(array $params = []): void
     {
-        $this->requireAuth();
+        $currentUser = $this->getCurrentUser();
 
         try {
             $stmt = $this->pdo->query("

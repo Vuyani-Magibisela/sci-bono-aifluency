@@ -90,12 +90,12 @@ const Breadcrumb = (function() {
                             ${item.url ? `
                                 <a href="${item.url}" class="breadcrumb-link">
                                     <i class="fas ${item.icon}"></i>
-                                    <span class="breadcrumb-label">${escapeHtml(item.label)}</span>
+                                    <span class="breadcrumb-label">${Utils.escapeHtml(item.label)}</span>
                                 </a>
                             ` : `
                                 <span class="breadcrumb-text">
                                     <i class="fas ${item.icon}"></i>
-                                    <span class="breadcrumb-label">${escapeHtml(item.label)}</span>
+                                    <span class="breadcrumb-label">${Utils.escapeHtml(item.label)}</span>
                                 </span>
                             `}
                             ${index < items.length - 1 ? '<i class="fas fa-chevron-right breadcrumb-separator"></i>' : ''}
@@ -191,16 +191,7 @@ const Breadcrumb = (function() {
         render(containerId, trail);
     }
 
-    /**
-     * Escape HTML to prevent XSS
-     * @param {string} text - Text to escape
-     * @returns {string} Escaped text
-     */
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    // escapeHtml moved to Utils.js (Phase 11 refactoring)
 
     /**
      * Update breadcrumb dynamically (for single-page apps)

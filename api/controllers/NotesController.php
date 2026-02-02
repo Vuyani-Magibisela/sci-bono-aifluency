@@ -1,14 +1,20 @@
 <?php
+namespace App\Controllers;
+
+use App\Models\StudentNote;
+use App\Utils\Response;
+use App\Utils\JWTHandler;
+
 /**
  * NotesController (Phase 5D Priority 4)
  * Handles student note operations
  */
+class NotesController extends BaseController {
+    private StudentNote $noteModel;
 
-class NotesController {
-    private $noteModel;
-
-    public function __construct($db) {
-        $this->noteModel = new StudentNote($db);
+    public function __construct(\PDO $pdo) {
+        parent::__construct($pdo);
+        $this->noteModel = new StudentNote($pdo);
     }
 
     /**
@@ -18,11 +24,7 @@ class NotesController {
     public function getNotesByLesson($lessonId) {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Validate lesson ID
             if (!is_numeric($lessonId) || $lessonId <= 0) {
@@ -31,7 +33,7 @@ class NotesController {
             }
 
             // Get notes
-            $notes = $this->noteModel->getNotesByUserAndLesson($user['id'], $lessonId);
+            $notes = $this->noteModel->getNotesByUserAndLesson($currentUser->id, $lessonId);
 
             Response::success([
                 'notes' => $notes,
@@ -51,17 +53,13 @@ class NotesController {
     public function getAllNotes() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get optional limit parameter
             $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
 
             // Get notes
-            $notes = $this->noteModel->getNotesByUser($user['id'], $limit);
+            $notes = $this->noteModel->getNotesByUser($currentUser->id, $limit);
 
             Response::success([
                 'items' => $notes,
@@ -82,17 +80,13 @@ class NotesController {
     public function createOrUpdateNote() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get request body
             $data = json_decode(file_get_contents('php://input'), true);
 
             // Validate input
-            $validator = new Validator();
+            $validator = new \App\Utils\Validator();
             $validator->required($data, ['lesson_id', 'content']);
 
             if (!$validator->isValid()) {
@@ -114,7 +108,7 @@ class NotesController {
 
             // Create or update note
             $note = $this->noteModel->createOrUpdate(
-                $user['id'],
+                $currentUser->id,
                 $data['lesson_id'],
                 $data['content']
             );
@@ -137,11 +131,7 @@ class NotesController {
     public function deleteNote($noteId) {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Validate note ID
             if (!is_numeric($noteId) || $noteId <= 0) {
@@ -150,7 +140,7 @@ class NotesController {
             }
 
             // Delete note (with ownership verification)
-            $success = $this->noteModel->deleteNote($noteId, $user['id']);
+            $success = $this->noteModel->deleteNote($noteId, $currentUser->id);
 
             if (!$success) {
                 Response::notFound('Note not found or you do not have permission to delete it');
@@ -174,11 +164,7 @@ class NotesController {
     public function searchNotes() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get search query
             $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -189,7 +175,7 @@ class NotesController {
             }
 
             // Search notes
-            $notes = $this->noteModel->searchNotes($user['id'], $searchTerm);
+            $notes = $this->noteModel->searchNotes($currentUser->id, $searchTerm);
 
             Response::success([
                 'items' => $notes,
@@ -210,17 +196,13 @@ class NotesController {
     public function getNoteStats() {
         try {
             // Verify authentication
-            $user = JWTHandler::validateToken();
-            if (!$user) {
-                Response::unauthorized('Authentication required');
-                return;
-            }
+            $currentUser = $this->getCurrentUser();
 
             // Get note count
-            $count = $this->noteModel->getNoteCount($user['id']);
+            $count = $this->noteModel->getNoteCount($currentUser->id);
 
             // Get recent notes
-            $recentNotes = $this->noteModel->getNotesByUser($user['id'], 5);
+            $recentNotes = $this->noteModel->getNotesByUser($currentUser->id, 5);
 
             Response::success([
                 'total_notes' => $count,

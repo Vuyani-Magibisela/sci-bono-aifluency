@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Analytics - AI Fluency LMS</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .analytics-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .analytics-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .at-risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .at-risk-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .at-risk-table th,
+        .at-risk-table td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .at-risk-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+        }
+
+        .at-risk-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .risk-badge.critical {
+            background: #FFE5E5;
+            color: #D32F2F;
+        }
+
+        .risk-badge.high {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .risk-badge.moderate {
+            background: #FFF9C4;
+            color: #F9A825;
+        }
+
+        .risk-badge.low {
+            background: #E8F5E9;
+            color: #388E3C;
+        }
+
+        .engagement-score-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .engagement-score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4BFB9D 0%, #4B6EFB 100%);
+            transition: width 0.5s ease;
+        }
+
+        .grading-workload-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grading-workload-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .workload-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .workload-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .workload-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="analytics-header">
+            <h1>📊 Instructor Analytics Dashboard</h1>
+            <p>Monitor class performance, student engagement, and teaching effectiveness</p>
+        </div>
+
+        <!-- Filters -->
+        <div id="filters-container"></div>
+
+        <!-- Summary Cards -->
+        <div class="analytics-summary-cards">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    👥
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Students</p>
+                    <p class="stat-value" id="total-students">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4BFB9D 0%, #4B6EFB 100%);">
+                    📈
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Average Class Score</p>
+                    <p class="stat-value" id="avg-class-score">0%</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FB4B4B 0%, #FFA500 100%);">
+                    ⚠️
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">At-Risk Students</p>
+                    <p class="stat-value" id="at-risk-count">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #6E4BFB 0%, #FB4B4B 100%);">
+                    📝
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Pending Grading</p>
+                    <p class="stat-value" id="pending-grading">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="analytics-charts-grid">
+            <!-- Class Distribution Histogram -->
+            <div class="chart-card full-width">
+                <h3>📊 Class Performance Distribution</h3>
+                <p class="chart-description">Distribution of student scores across grade ranges</p>
+                <div class="chart-container">
+                    <canvas id="classDistributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Engagement Metrics -->
+            <div class="chart-card half-width">
+                <h3>🎯 Student Engagement Overview</h3>
+                <p class="chart-description">Average engagement scores by metric</p>
+                <div class="chart-container">
+                    <canvas id="engagementChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Question Effectiveness -->
+            <div class="chart-card half-width">
+                <h3>❓ Question Effectiveness Analysis</h3>
+                <p class="chart-description">Difficulty vs. discrimination index for quiz questions</p>
+                <div class="chart-container">
+                    <canvas id="questionEffectivenessChart"></canvas>
+                </div>
+            </div>
+
+            <!-- At-Risk Students Table -->
+            <div class="chart-card full-width">
+                <h3>⚠️ At-Risk Students Alert</h3>
+                <p class="chart-description">Students requiring intervention based on risk assessment</p>
+                <div id="at-risk-students-container" style="overflow-x: auto;">
+                    <table class="at-risk-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Risk Level</th>
+                                <th>Risk Score</th>
+                                <th>Last Activity</th>
+                                <th>Completion Rate</th>
+                                <th>Quiz Average</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="at-risk-tbody">
+                            <tr>
+                                <td colspan="7" class="no-data-message">
+                                    Loading at-risk students...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grading Workload -->
+            <div class="chart-card full-width">
+                <h3>📝 Grading Workload Overview</h3>
+                <p class="chart-description">Pending and completed grading tasks</p>
+                <div id="grading-workload-container">
+                    <div class="loading-spinner">Loading grading workload...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div id="insights-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/instructor-analytics.js"></script>
+</body>
+</html>

@@ -159,7 +159,7 @@ function displayProfile(user) {
     if (socialLinks.length > 0) {
         const socialGrid = document.getElementById('social-links-grid');
         socialGrid.innerHTML = socialLinks.map(link => `
-            <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link-card">
+            <a href="${Utils.escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link-card">
                 <i class="${link.icon}"></i>
                 <span>${link.label}</span>
             </a>
@@ -208,9 +208,9 @@ async function loadAchievements() {
                     <div class="achievement-icon">
                         <i class="${achievement.badge_icon}"></i>
                     </div>
-                    <h4>${escapeHtml(achievement.name)}</h4>
-                    <p>${escapeHtml(achievement.description)}</p>
-                    <span class="achievement-date">${formatDate(achievement.earned_at)}</span>
+                    <h4>${Utils.escapeHtml(achievement.name)}</h4>
+                    <p>${Utils.escapeHtml(achievement.description)}</p>
+                    <span class="achievement-date">${Utils.formatDate(achievement.earned_at)}</span>
                 `;
                 grid.appendChild(badge);
             });
@@ -248,9 +248,9 @@ async function loadCertificates() {
                     <div class="certificate-icon">
                         <i class="fas fa-award"></i>
                     </div>
-                    <h4>${escapeHtml(cert.course_title || 'Course Certificate')}</h4>
-                    <p class="certificate-date">Issued: ${formatDate(cert.issued_at)}</p>
-                    <a href="${escapeHtml(cert.certificate_url)}" target="_blank" class="btn-secondary btn-sm">
+                    <h4>${Utils.escapeHtml(cert.course_title || 'Course Certificate')}</h4>
+                    <p class="certificate-date">Issued: ${Utils.formatDate(cert.issued_at)}</p>
+                    <a href="${Utils.escapeHtml(cert.certificate_url)}" target="_blank" class="btn-secondary btn-sm">
                         <i class="fas fa-download"></i> View Certificate
                     </a>
                 `;
@@ -303,25 +303,6 @@ function showError(title, message) {
     });
 }
 
-/**
- * Format date
- */
-function formatDate(dateString) {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-}
+// formatDate moved to Utils.js (Phase 11 refactoring)
 
-/**
- * Escape HTML
- */
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// escapeHtml moved to Utils.js (Phase 11 refactoring)

@@ -1,0 +1,4 @@
+# Block web access to admin scripts
+# These scripts should only be run from command line
+
+Deny from all

@@ -61,3 +61,34 @@
 [2025-12-30 12:31:08] Raw Input Length: 0, Content: 
 [2025-12-30 12:31:08] Raw Input Length: 359, Content: {"quiz_id":2,"question":"What is the primary purpose of this test question?","options":"[\"To verify API functionality\",\"To test database insertion\",\"To validate authentication\",\"All of the above\"]","correct_answer":3,"explanation":"This test question verifies that the API can create new quiz questions with proper validation and storage.","points":1}
 [2025-12-30 13:17:49] Raw Input Length: 51, Content: {"email":"admin@test.com","password":"password123"}
+[2026-01-14 11:02:29] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-01-14 11:03:40] Raw Input Length: 2, Content: {}
+[2026-01-14 11:04:23] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Vu13#k*s3D"}
+[2026-01-14 11:04:28] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"13378vuks"}
+[2026-01-14 11:04:37] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"admin@2025"}
+[2026-01-14 11:04:39] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"admin@2026"}
+[2026-01-22 06:48:17] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-01-22 06:51:27] Raw Input Length: 2, Content: {}
+[2026-01-22 06:51:49] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Vu13#k*s3D"}
+[2026-01-22 06:52:02] Raw Input Length: 55, Content: {"email":"admin@sci-bono.org","password":"admin123!@#"}
+[2026-01-22 06:52:42] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Vu13#k*s3D"}
+[2026-01-22 06:53:16] Raw Input Length: 57, Content: {"email":"admin@sci-bono.co.za","password":"admin123!@#"}
+[2026-01-22 22:31:06] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Vu13#k*s3D"}
+[2026-01-22 22:31:27] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"Admin@123"}
+[2026-01-22 22:31:36] Raw Input Length: 55, Content: {"email":"admin@sci-bono.org","password":"admin123!@#"}
+[2026-01-22 22:32:35] Raw Input Length: 54, Content: {"email":"admin@sci-bono.org","password":"Vu13#k*s3D"}
+[2026-01-22 22:32:43] Raw Input Length: 55, Content: {"email":"admin@sci-bono.org","password":"admin123!@#"}
+[2026-01-22 22:32:54] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"Admin2025"}
+[2026-01-22 22:37:25] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-01-22 22:53:31] Raw Input Length: 2, Content: {}
+[2026-02-02 12:51:27] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-02 13:00:00] Raw Input Length: 2, Content: {}
+[2026-02-02 13:12:03] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-02 13:12:21] Raw Input Length: 2, Content: {}
+[2026-02-02 13:12:39] Raw Input Length: 53, Content: {"email":"admin@sci-bono.co.za","password":"adin123"}
+[2026-02-02 13:12:46] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-02 13:12:53] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-02 13:13:03] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-02 13:14:04] Raw Input Length: 2, Content: {}
+[2026-02-02 13:16:35] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-02 13:32:20] Raw Input Length: 2, Content: {}

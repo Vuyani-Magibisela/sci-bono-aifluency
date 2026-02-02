@@ -13,60 +13,18 @@ use App\Utils\JWTHandler;
  *
  * Handles quiz and quiz attempt operations
  */
-class QuizController
+class QuizController extends BaseController
 {
     private Quiz $quizModel;
     private QuizQuestion $questionModel;
     private QuizAttempt $attemptModel;
-    private \PDO $pdo;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->quizModel = new Quiz($pdo);
         $this->questionModel = new QuizQuestion($pdo);
         $this->attemptModel = new QuizAttempt($pdo);
-    }
-
-    /**
-     * Get current authenticated user
-     *
-     * @return object|null
-     */
-    private function getCurrentUser(): ?object
-    {
-        $currentUser = JWTHandler::getCurrentUser();
-
-        if (!$currentUser) {
-            Response::unauthorized('Authentication required');
-        }
-
-        $token = JWTHandler::extractTokenFromHeader();
-        if ($token && JWTHandler::isTokenBlacklisted($token, $this->pdo)) {
-            Response::unauthorized('Token has been revoked. Please login again.');
-        }
-
-        return $currentUser;
-    }
-
-    /**
-     * Check if current user has required role(s)
-     *
-     * @param string|array $roles Required role(s)
-     * @return void
-     */
-    private function requireRole($roles): void
-    {
-        $currentUser = $this->getCurrentUser();
-
-        if (is_string($roles)) {
-            $roles = [$roles];
-        }
-
-        if (!in_array($currentUser->role, $roles, true)) {
-            Response::forbidden('You do not have permission to perform this action');
-        }
     }
 
     /**

@@ -11,15 +11,13 @@ use App\Utils\JWTHandler;
  *
  * Handles user registration, login, token refresh, logout, and profile retrieval
  */
-class AuthController
+class AuthController extends BaseController
 {
     private User $userModel;
-    private \PDO $pdo;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        global $pdo;
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
         $this->userModel = new User($pdo);
     }
 
