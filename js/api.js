@@ -9,7 +9,7 @@
  */
 
 const API = {
-    baseURL: 'api',
+    baseURL: '/api',
     refreshing: false,
     requestQueue: [],
 
@@ -172,7 +172,7 @@ const API = {
         Storage.remove('user');
 
         // Redirect to login
-        window.location.href = 'login.html';
+        window.location.href = '/public/login.html';
     },
 
     /**

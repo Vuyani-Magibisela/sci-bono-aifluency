@@ -87,6 +87,50 @@ class CourseController extends BaseController
     }
 
     /**
+     * Get enrolled courses for current user
+     *
+     * GET /api/courses/enrolled?page=1&pageSize=10
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getEnrolledCourses(array $params = []): void
+    {
+        $currentUser = JWTHandler::getCurrentUser();
+
+        if (!$currentUser) {
+            Response::unauthorized('Authentication required');
+        }
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10;
+
+        if ($page < 1) $page = 1;
+        if ($pageSize < 1 || $pageSize > 100) $pageSize = 10;
+
+        $offset = ($page - 1) * $pageSize;
+
+        // Get user's active enrollments
+        $enrollments = $this->enrollmentModel->getByUser($currentUser->id, 'active', $pageSize, $offset);
+
+        // Load course details for each enrollment
+        $courses = [];
+        foreach ($enrollments as $enrollment) {
+            $course = $this->courseModel->getById($enrollment->course_id);
+            if ($course) {
+                $course->enrollment_status = $enrollment->status;
+                $course->enrolled_at = $enrollment->enrolled_at;
+                $course->completion_percentage = $enrollment->completion_percentage;
+                $course->is_enrolled = true;
+                $courses[] = $course;
+            }
+        }
+
+        // Return courses array directly for dashboard
+        Response::success($courses, 'Enrolled courses retrieved successfully');
+    }
+
+    /**
      * Get course by ID
      *
      * GET /api/courses/:id

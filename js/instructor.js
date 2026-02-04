@@ -18,13 +18,13 @@ const InstructorDashboard = {
         const user = Auth.getUser();
         if (!user) {
             console.error('InstructorDashboard: No authenticated user found');
-            window.location.href = 'login.html';
+            window.location.href = '/public/login.html';
             return;
         }
 
         if (user.role !== 'instructor' && user.role !== 'admin') {
             console.error('InstructorDashboard: User is not an instructor');
-            window.location.href = '403.html';
+            window.location.href = '/public/403.html';
             return;
         }
 
@@ -387,6 +387,9 @@ const InstructorDashboard = {
         const container = document.getElementById('dashboard-content');
         if (!container) return;
 
+        // Remove loading state before showing error
+        container.classList.remove('loading');
+
         container.innerHTML = `
             <div class="error-state">
                 <div class="error-icon">⚠️</div>
@@ -461,7 +464,7 @@ const InstructorDashboard = {
         // Listen for auth state changes
         document.addEventListener('authStateChanged', (e) => {
             if (!e.detail.isAuthenticated) {
-                window.location.href = 'login.html';
+                window.location.href = '/public/login.html';
             }
         });
     },

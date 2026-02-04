@@ -68,7 +68,7 @@ class EnrollmentController extends BaseController
         } else {
             // Only admins can see all enrollments
             $this->requireRole('admin');
-            $enrollments = $this->enrollmentModel->all([], 'enrollment_date DESC', $pageSize, $offset);
+            $enrollments = $this->enrollmentModel->all([], 'enrolled_at DESC', $pageSize, $offset);
             $total = $this->enrollmentModel->count();
         }
 

@@ -516,4 +516,57 @@ class UserController extends BaseController
             ]
         ], 'Profiles retrieved successfully');
     }
+
+    /**
+     * Get statistics for current user
+     *
+     * GET /api/users/me/stats
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getMyStats(array $params = []): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        // Total courses enrolled
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM enrollments WHERE user_id = ? AND status = 'active'");
+        $stmt->execute([$currentUser->id]);
+        $totalCourses = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
+
+        // Completed lessons
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM lesson_completions WHERE user_id = ?");
+        $stmt->execute([$currentUser->id]);
+        $completedLessons = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
+
+        // Total lessons available (from enrolled courses)
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(DISTINCT l.id) as count
+            FROM lessons l
+            JOIN modules m ON l.module_id = m.id
+            JOIN enrollments e ON m.course_id = e.course_id
+            WHERE e.user_id = ? AND e.status = 'active'
+        ");
+        $stmt->execute([$currentUser->id]);
+        $totalLessons = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
+
+        // Quiz average
+        $stmt = $this->pdo->prepare("SELECT AVG(score) as average FROM quiz_attempts WHERE user_id = ?");
+        $stmt->execute([$currentUser->id]);
+        $result = $stmt->fetch(\PDO::FETCH_OBJ);
+        $quizAverage = $result->average ? round((float)$result->average, 2) : 0;
+
+        // Certificates earned
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM certificates WHERE user_id = ?");
+        $stmt->execute([$currentUser->id]);
+        $certificatesEarned = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
+
+        Response::success([
+            'total_courses' => $totalCourses,
+            'completed_lessons' => $completedLessons,
+            'total_lessons' => $totalLessons,
+            'quiz_average' => $quizAverage,
+            'certificates_earned' => $certificatesEarned
+        ], 'User statistics retrieved successfully');
+    }
 }

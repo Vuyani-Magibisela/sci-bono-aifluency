@@ -83,6 +83,16 @@ const Animations = {
         const prefix = options.prefix || '';
         const decimals = options.decimals || 0;
 
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            // Fallback: Set value directly without animation
+            const displayValue = decimals > 0
+                ? endValue.toFixed(decimals)
+                : endValue;
+            el.textContent = prefix + displayValue + suffix;
+            return;
+        }
+
         // Create counter object
         const counter = { value: 0 };
 
@@ -132,6 +142,16 @@ const Animations = {
 
         if (!bar) {
             console.warn('Animations: Progress bar not found:', progressBar);
+            return;
+        }
+
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            // Fallback: Set width directly without animation
+            bar.style.width = percentage + '%';
+            if (options.color) {
+                bar.style.backgroundColor = options.color;
+            }
             return;
         }
 
@@ -193,6 +213,13 @@ const Animations = {
         circleEl.style.strokeDasharray = circumference;
         circleEl.style.strokeDashoffset = circumference;
 
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            // Fallback: Set offset directly without animation
+            circleEl.style.strokeDashoffset = offset;
+            return;
+        }
+
         // Animate to target
         gsap.to(circleEl, {
             strokeDashoffset: offset,
@@ -213,6 +240,16 @@ const Animations = {
 
         if (!els || els.length === 0) {
             console.warn('Animations: No elements found for fadeInStagger:', elements);
+            return;
+        }
+
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            // Fallback: Make elements visible immediately
+            els.forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            });
             return;
         }
 
@@ -247,9 +284,20 @@ const Animations = {
             return;
         }
 
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            // Fallback: Make elements visible immediately
+            els.forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translate(0, 0)';
+            });
+            return;
+        }
+
         const duration = options.duration || 0.8;
         const stagger = options.stagger || this.defaults.stagger;
         const distance = options.distance || 50;
+        const delay = options.delay || 0;
 
         const fromProps = { opacity: 0 };
 
@@ -272,6 +320,7 @@ const Animations = {
             ...fromProps,
             duration: duration,
             stagger: stagger,
+            delay: delay,
             ease: 'power2.out'
         });
     },

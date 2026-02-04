@@ -133,8 +133,8 @@ const Auth = {
 
         console.log('🔄 Redirecting to index.html...');
 
-        // Redirect to home page
-        window.location.href = 'index.html';
+        // Redirect to home page (absolute path)
+        window.location.href = '/index.html';
     },
 
     /**
@@ -239,14 +239,14 @@ const Auth = {
                 Storage.set('return_url', currentUrl);
             }
 
-            window.location.href = 'login.html';
+            window.location.href = '/public/login.html';
             return false;
         }
 
         // Check role if required
         if (requiredRoles && !this.hasRole(requiredRoles)) {
             console.error('Insufficient permissions');
-            window.location.href = '403.html'; // Forbidden page
+            window.location.href = '/public/403.html'; // Forbidden page
             return false;
         }
 
@@ -263,11 +263,11 @@ const Auth = {
 
         switch (role) {
             case 'admin':
-                return 'admin-dashboard.html';
+                return '/admin/dashboard.html';
             case 'instructor':
-                return 'instructor-dashboard.html';
+                return '/instructor/dashboard.html';
             default:
-                return 'student-dashboard.html';
+                return '/student/dashboard.html';
         }
     },
 

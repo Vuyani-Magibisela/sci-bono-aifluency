@@ -30,8 +30,8 @@ const HeaderTemplate = {
                 <div class="header-container">
                     <!-- Logo and Title -->
                     <div class="header-brand">
-                        <a href="index.html" class="logo-link">
-                            <img src="images/logo.svg" alt="Sci-Bono AI Fluency" class="logo-image">
+                        <a href="/index.html" class="logo-link">
+                            <img src="/images/logo.svg" alt="Sci-Bono AI Fluency" class="logo-image">
                             <div class="brand-text">
                                 <h1 class="brand-title">Sci-Bono</h1>
                                 <span class="brand-subtitle">AI Fluency</span>
@@ -42,9 +42,9 @@ const HeaderTemplate = {
                     <!-- Main Navigation -->
                     <nav class="main-nav" role="navigation" aria-label="Main navigation">
                         <ul class="nav-links">
-                            <li><a href="index.html" class="nav-link">Home</a></li>
-                            <li><a href="courses.html" class="nav-link">Courses</a></li>
-                            ${isAuthenticated ? '<li><a href="projects.html" class="nav-link">Projects</a></li>' : ''}
+                            <li><a href="/index.html" class="nav-link">Home</a></li>
+                            <li><a href="/student/courses.html" class="nav-link">Courses</a></li>
+                            ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="nav-link">Projects</a></li>' : ''}
                             <li><a href="#about" class="nav-link">About</a></li>
                         </ul>
                     </nav>
@@ -66,19 +66,19 @@ const HeaderTemplate = {
                 <div class="mobile-nav-overlay" id="mobileNavOverlay">
                     <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
                         <ul class="mobile-nav-links">
-                            <li><a href="index.html" class="mobile-nav-link">Home</a></li>
-                            <li><a href="courses.html" class="mobile-nav-link">Courses</a></li>
-                            ${isAuthenticated ? '<li><a href="projects.html" class="mobile-nav-link">Projects</a></li>' : ''}
+                            <li><a href="/index.html" class="mobile-nav-link">Home</a></li>
+                            <li><a href="/student/courses.html" class="mobile-nav-link">Courses</a></li>
+                            ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="mobile-nav-link">Projects</a></li>' : ''}
                             <li><a href="#about" class="mobile-nav-link">About</a></li>
                             ${isAuthenticated ? `
                                 <li class="mobile-nav-divider"></li>
                                 <li><a href="${Auth.getDashboardUrl()}" class="mobile-nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li><a href="profile.html" class="mobile-nav-link"><i class="fas fa-user"></i> Profile</a></li>
+                                <li><a href="/profile/index.html" class="mobile-nav-link"><i class="fas fa-user"></i> Profile</a></li>
                                 <li><button onclick="Auth.logout()" class="mobile-nav-button"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
                             ` : `
                                 <li class="mobile-nav-divider"></li>
-                                <li><a href="login.html" class="mobile-nav-link"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                                <li><a href="signup.html" class="mobile-nav-link"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                                <li><a href="/public/login.html" class="mobile-nav-link"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                                <li><a href="/public/signup.html" class="mobile-nav-link"><i class="fas fa-user-plus"></i> Sign Up</a></li>
                             `}
                         </ul>
                     </nav>
@@ -127,7 +127,7 @@ const HeaderTemplate = {
                             </div>
                         </div>
                         <div class="user-menu-divider"></div>
-                        <a href="profile.html" class="user-menu-item" role="menuitem">
+                        <a href="/profile/index.html" class="user-menu-item" role="menuitem">
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
                         </a>
@@ -137,7 +137,7 @@ const HeaderTemplate = {
                         </a>
                         ${user.role === 'admin' ? `
                             <div class="user-menu-divider"></div>
-                            <a href="admin-dashboard.html" class="user-menu-item" role="menuitem">
+                            <a href="/admin/dashboard.html" class="user-menu-item" role="menuitem">
                                 <i class="fas fa-shield-alt"></i>
                                 <span>Admin Panel</span>
                             </a>
@@ -153,11 +153,11 @@ const HeaderTemplate = {
         }
 
         return `
-            <a href="login.html" class="header-btn login-btn">
+            <a href="/public/login.html" class="header-btn login-btn">
                 <i class="fas fa-sign-in-alt"></i>
                 <span class="btn-text">Login</span>
             </a>
-            <a href="signup.html" class="header-btn signup-btn primary">
+            <a href="/public/signup.html" class="header-btn signup-btn primary">
                 <i class="fas fa-user-plus"></i>
                 <span class="btn-text">Sign Up</span>
             </a>

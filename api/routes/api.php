@@ -106,6 +106,18 @@ $routes = [
     ],
     [
         'method' => 'GET',
+        'pattern' => '/users/profiles/search',
+        'handler' => 'UserController@searchProfiles',
+        'auth' => false // Public endpoint
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/users/me/stats',
+        'handler' => 'UserController@getMyStats',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
         'pattern' => '/users/:id',
         'handler' => 'UserController@show',
         'auth' => true
@@ -149,12 +161,6 @@ $routes = [
         'handler' => 'UserController@getProfileCompletion',
         'auth' => true
     ],
-    [
-        'method' => 'GET',
-        'pattern' => '/users/profiles/search',
-        'handler' => 'UserController@searchProfiles',
-        'auth' => false // Public endpoint
-    ],
 
     // Course Routes (5 endpoints)
     [
@@ -162,6 +168,12 @@ $routes = [
         'pattern' => '/courses',
         'handler' => 'CourseController@index',
         'auth' => false
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/courses/enrolled',
+        'handler' => 'CourseController@getEnrolledCourses',
+        'auth' => true
     ],
     [
         'method' => 'GET',
@@ -315,6 +327,12 @@ $routes = [
     ],
     [
         'method' => 'GET',
+        'pattern' => '/quizzes/attempts/recent',
+        'handler' => 'QuizController@getRecentAttempts',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
         'pattern' => '/quizzes/:id/attempts',
         'handler' => 'QuizController@getAttempts',
         'auth' => true
@@ -444,6 +462,24 @@ $routes = [
     ],
     [
         'method' => 'GET',
+        'pattern' => '/certificates/my-certificates',
+        'handler' => 'CertificateController@getMyCertificates',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/certificates/verify/:certificate_number',
+        'handler' => 'CertificateController@verify',
+        'auth' => false
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/certificates/request',
+        'handler' => 'CertificateController@requestCertificate',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
         'pattern' => '/certificates/:id',
         'handler' => 'CertificateController@show',
         'auth' => true
@@ -468,18 +504,6 @@ $routes = [
         'handler' => 'CertificateController@delete',
         'auth' => true,
         'roles' => ['admin']
-    ],
-    [
-        'method' => 'GET',
-        'pattern' => '/certificates/verify/:certificate_number',
-        'handler' => 'CertificateController@verify',
-        'auth' => false
-    ],
-    [
-        'method' => 'POST',
-        'pattern' => '/certificates/request',
-        'handler' => 'CertificateController@requestCertificate',
-        'auth' => true
     ],
 
     // Grading Routes (Phase 6)

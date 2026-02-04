@@ -570,6 +570,41 @@ class QuizController extends BaseController
     }
 
     /**
+     * Get recent quiz attempts for current user across all quizzes
+     *
+     * GET /api/quizzes/attempts/recent?limit=5
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getRecentAttempts(array $params = []): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+
+        if ($limit < 1 || $limit > 100) $limit = 5;
+
+        // Query recent quiz attempts for current user
+        $stmt = $this->pdo->prepare("
+            SELECT qa.*, q.title as quiz_title, l.title as lesson_title, c.title as course_title
+            FROM quiz_attempts qa
+            JOIN quizzes q ON qa.quiz_id = q.id
+            LEFT JOIN lessons l ON q.lesson_id = l.id
+            LEFT JOIN modules m ON l.module_id = m.id
+            LEFT JOIN courses c ON m.course_id = c.id
+            WHERE qa.user_id = ?
+            ORDER BY qa.completed_at DESC
+            LIMIT ?
+        ");
+        $stmt->execute([$currentUser->id, $limit]);
+        $attempts = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        // Return attempts array directly for dashboard
+        Response::success($attempts, 'Recent quiz attempts retrieved successfully');
+    }
+
+    /**
      * Create quiz question
      *
      * POST /api/quiz-questions

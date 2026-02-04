@@ -1629,6 +1629,27 @@ footer {
     text-align: center;
 }
 
+/* Disabled navigation items */
+.nav-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    position: relative;
+}
+
+.nav-item.disabled:hover {
+    background-color: transparent;
+    border-left-color: transparent;
+}
+
+/* Add "Coming Soon" badge to disabled items */
+.nav-item.disabled span::after {
+    content: " (Soon)";
+    font-size: 0.75em;
+    opacity: 0.85;
+    font-style: italic;
+}
+
 /* Main Dashboard Content */
 .dashboard-main {
     flex: 1;
@@ -1755,7 +1776,7 @@ footer {
 }
 
 .welcome-banner p {
-    opacity: 0.9;
+    opacity: 1;
 }
 
 /* Dashboard Cards Grid */
@@ -2543,7 +2564,7 @@ button .loading-spinner {
 }
 
 .dashboard-content.loading {
-    opacity: 0.6;
+    opacity: 0.95;
     pointer-events: none;
 }
 

@@ -19,7 +19,7 @@ const StudentDashboard = {
         const user = Auth.getUser();
         if (!user) {
             console.error('StudentDashboard: No authenticated user found');
-            window.location.href = 'login.html';
+            window.location.href = '/public/login.html';
             return;
         }
 
@@ -68,12 +68,12 @@ const StudentDashboard = {
             this.renderCertificates(certificates);
             this.renderLearningStats(stats);
 
-            // Hide loading state
-            this.hideLoadingState();
-
         } catch (error) {
             console.error('StudentDashboard: Error loading data:', error);
             this.showErrorState(error.message);
+        } finally {
+            // Always hide loading state, even if there are errors
+            this.hideLoadingState();
         }
     },
 
@@ -150,6 +150,9 @@ const StudentDashboard = {
         const container = document.getElementById('enrolled-courses');
         if (!container) return;
 
+        // Get the parent dashboard card for animation
+        const parentCard = container.closest('.dashboard-card');
+
         if (courses.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Enrolled Courses',
@@ -157,6 +160,13 @@ const StudentDashboard = {
                 '/courses.html',
                 'Browse Courses'
             );
+            // Animate the parent card
+            if (parentCard) {
+                Animations.fadeInStagger([parentCard], {
+                    duration: 0.6,
+                    y: 20
+                });
+            }
             return;
         }
 
@@ -185,6 +195,14 @@ const StudentDashboard = {
 
         container.innerHTML = html;
 
+        // Animate the parent card first
+        if (parentCard) {
+            Animations.fadeInStagger([parentCard], {
+                duration: 0.6,
+                y: 20
+            });
+        }
+
         // Animate progress bars after rendering
         const progressBars = container.querySelectorAll('.progress-fill');
         progressBars.forEach((bar, index) => {
@@ -199,10 +217,13 @@ const StudentDashboard = {
         });
 
         // Animate course cards
-        Animations.fadeInStagger('.course-card', {
-            duration: 0.8,
-            stagger: 0.15
-        });
+        setTimeout(() => {
+            Animations.fadeInStagger('.course-card', {
+                duration: 0.8,
+                stagger: 0.15,
+                delay: 0.2
+            });
+        }, 300);
     },
 
     /**
@@ -212,6 +233,9 @@ const StudentDashboard = {
         const container = document.getElementById('recent-quiz-attempts');
         if (!container) return;
 
+        // Get the parent dashboard card for animation
+        const parentCard = container.closest('.dashboard-card');
+
         if (attempts.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Quiz Attempts',
@@ -219,6 +243,13 @@ const StudentDashboard = {
                 null,
                 null
             );
+            // Animate the parent card
+            if (parentCard) {
+                Animations.fadeInStagger([parentCard], {
+                    duration: 0.6,
+                    y: 20
+                });
+            }
             return;
         }
 
@@ -248,12 +279,23 @@ const StudentDashboard = {
 
         container.innerHTML = html;
 
+        // Animate the parent card first
+        if (parentCard) {
+            Animations.fadeInStagger([parentCard], {
+                duration: 0.6,
+                y: 20
+            });
+        }
+
         // Animate quiz attempt items with slide-in effect
-        Animations.slideIn('.quiz-attempt-item', 'up', {
-            duration: 0.6,
-            stagger: 0.1,
-            distance: 30
-        });
+        setTimeout(() => {
+            Animations.slideIn('.quiz-attempt-item', 'up', {
+                duration: 0.6,
+                stagger: 0.1,
+                distance: 30,
+                delay: 0.2
+            });
+        }, 300);
     },
 
     /**
@@ -263,6 +305,9 @@ const StudentDashboard = {
         const container = document.getElementById('certificates');
         if (!container) return;
 
+        // Get the parent dashboard card for animation
+        const parentCard = container.closest('.dashboard-card');
+
         if (certificates.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Certificates Yet',
@@ -270,6 +315,13 @@ const StudentDashboard = {
                 null,
                 null
             );
+            // Animate the parent card
+            if (parentCard) {
+                Animations.fadeInStagger([parentCard], {
+                    duration: 0.6,
+                    y: 20
+                });
+            }
             return;
         }
 
@@ -290,46 +342,59 @@ const StudentDashboard = {
 
         container.innerHTML = html;
 
+        // Animate the parent card first
+        if (parentCard) {
+            Animations.fadeInStagger([parentCard], {
+                duration: 0.6,
+                y: 20
+            });
+        }
+
         // Animate certificates with fade-in and slight scale effect
-        Animations.fadeInStagger('.certificate-card', {
-            duration: 0.8,
-            stagger: 0.12,
-            y: 20
-        });
+        setTimeout(() => {
+            Animations.fadeInStagger('.certificate-card', {
+                duration: 0.8,
+                stagger: 0.12,
+                y: 20,
+                delay: 0.2
+            });
+        }, 300);
     },
 
     /**
      * Render learning statistics with animations
      */
     renderLearningStats(stats) {
-        // Animate stat cards in sequence
-        setTimeout(() => {
-            this.updateStatCard('total-courses', stats.total_courses || 0);
-        }, 100);
+        // First, set the stat values immediately (no animation for values)
+        // This prevents conflicts between card fade-in and counter animations
+        this.setStatCardValue('total-courses', stats.total_courses || 0);
+        this.setStatCardValue('completed-lessons', `${stats.completed_lessons || 0}/${stats.total_lessons || 0}`);
+        this.setStatCardValue('quiz-average', `${stats.quiz_average || 0}%`);
+        this.setStatCardValue('certificates-earned', stats.certificates_earned || 0);
 
-        setTimeout(() => {
-            this.updateStatCard('completed-lessons', `${stats.completed_lessons || 0}/${stats.total_lessons || 0}`);
-        }, 200);
-
-        setTimeout(() => {
-            this.updateStatCard('quiz-average', `${stats.quiz_average || 0}%`);
-        }, 300);
-
-        setTimeout(() => {
-            this.updateStatCard('certificates-earned', stats.certificates_earned || 0);
-        }, 400);
+        // Then animate the stat cards (fade them in with values already set)
+        const statCards = document.querySelectorAll('.dashboard-grid .dashboard-card');
+        if (statCards.length > 0) {
+            Animations.fadeInStagger(statCards, {
+                duration: 0.6,
+                stagger: 0.1,
+                y: 20
+            });
+        }
 
         // Render progress chart if element exists
         if (stats.completed_lessons && stats.total_lessons) {
             this.renderProgressChart(stats.completed_lessons, stats.total_lessons);
         }
+    },
 
-        // Animate dashboard cards with stagger effect
-        Animations.fadeInStagger('.dashboard-card', {
-            duration: 0.8,
-            stagger: 0.1,
-            y: 30
-        });
+    /**
+     * Set stat card value without animation (for initial render)
+     */
+    setStatCardValue(id, value) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.textContent = value;
     },
 
     /**
@@ -342,7 +407,7 @@ const StudentDashboard = {
         // Check if value is a number for counter animation
         if (typeof value === 'number') {
             Animations.animateCounter(element, value, {
-                duration: 1.5,
+                duration: 1.0,
                 decimals: 0
             });
         } else if (typeof value === 'string' && value.includes('%')) {
@@ -350,7 +415,7 @@ const StudentDashboard = {
             const percentage = parseFloat(value.replace('%', ''));
             if (!isNaN(percentage)) {
                 Animations.animatePercentage(element, percentage, {
-                    duration: 1.5
+                    duration: 1.0
                 });
             } else {
                 element.textContent = value;
@@ -365,7 +430,7 @@ const StudentDashboard = {
                     const counter = { value: 0 };
                     gsap.to(counter, {
                         value: current,
-                        duration: 1.5,
+                        duration: 1.0,
                         ease: 'power2.out',
                         onUpdate: function() {
                             element.textContent = Math.round(counter.value) + '/' + total;
@@ -390,6 +455,9 @@ const StudentDashboard = {
         const chartContainer = document.getElementById('progress-chart');
         if (!chartContainer) return;
 
+        // Get the parent dashboard card for animation
+        const parentCard = chartContainer.closest('.dashboard-card');
+
         const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
         chartContainer.innerHTML = `
@@ -405,6 +473,14 @@ const StudentDashboard = {
             </div>
         `;
 
+        // Animate the parent card first
+        if (parentCard) {
+            Animations.fadeInStagger([parentCard], {
+                duration: 0.6,
+                y: 20
+            });
+        }
+
         // Animate the circular progress
         const circle = chartContainer.querySelector('#progress-circle');
         if (circle) {
@@ -418,7 +494,7 @@ const StudentDashboard = {
                 Animations.animatePercentage('#circular-progress-value', percentage, {
                     duration: 1.5
                 });
-            }, 500);
+            }, 800);
         }
     },
 
@@ -448,6 +524,9 @@ const StudentDashboard = {
     showErrorState(message) {
         const container = document.getElementById('dashboard-content');
         if (!container) return;
+
+        // Remove loading state before showing error
+        container.classList.remove('loading');
 
         container.innerHTML = `
             <div class="error-state">
@@ -509,7 +588,7 @@ const StudentDashboard = {
         // Listen for auth state changes
         document.addEventListener('authStateChanged', (e) => {
             if (!e.detail.isAuthenticated) {
-                window.location.href = 'login.html';
+                window.location.href = '/public/login.html';
             }
         });
     },

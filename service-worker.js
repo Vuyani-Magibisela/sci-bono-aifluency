@@ -1,36 +1,36 @@
-const CACHE_NAME = 'ai-fluency-cache-v31';
+const CACHE_NAME = 'ai-fluency-cache-v32';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/offline.html',
-  '/login.html',
-  '/signup.html',
+  '/public/offline.html',
+  '/public/login.html',
+  '/public/signup.html',
   // Dashboard and Profile pages (Phase 1)
-  '/student-dashboard.html',
-  '/instructor-dashboard.html',
-  '/admin-dashboard.html',
-  '/profile.html',
-  '/403.html',
+  '/student/dashboard.html',
+  '/instructor/dashboard.html',
+  '/admin/dashboard.html',
+  '/profile/index.html',
+  '/public/403.html',
   // Admin Content Management pages (Phase 5B)
-  '/admin-courses.html',
-  '/admin-modules.html',
-  '/admin-lessons.html',
-  '/admin-quizzes.html',
+  '/admin/courses.html',
+  '/admin/modules.html',
+  '/admin/lessons.html',
+  '/admin/quizzes.html',
   // Dynamic Content Pages (Phase 5C)
-  '/module-dynamic.html',
-  '/lesson-dynamic.html',
-  '/quiz-dynamic.html',
-  '/quiz-history.html',
+  '/student/modules/module-dynamic.html',
+  '/student/lessons/lesson-dynamic.html',
+  '/student/quizzes/quiz-dynamic.html',
+  '/student/quizzes/quiz-history.html',
   // CSS files
   '/css/styles.css',
   '/css/stylesModules.css',
   // Module files (dynamic content loaded via API)
-  '/module1.html',
-  '/module2.html',
-  '/module3.html',
-  '/module4.html',
-  '/module5.html',
-  '/module6.html',
+  '/student/modules/module1.html',
+  '/student/modules/module2.html',
+  '/student/modules/module3.html',
+  '/student/modules/module4.html',
+  '/student/modules/module5.html',
+  '/student/modules/module6.html',
   // JavaScript files (Phase 1)
   '/js/script.js',
   '/js/storage.js',
@@ -55,8 +55,8 @@ const urlsToCache = [
   '/js/quiz-history.js',
   // Achievements (Phase 6)
   '/js/achievements.js',
-  '/achievements.html',
-  '/certificates.html',
+  '/student/achievements.html',
+  '/student/certificates.html',
   // Images
   '/images/favicon.ico',
   // External resources

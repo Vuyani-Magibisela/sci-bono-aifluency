@@ -9,14 +9,16 @@
  * Purpose: Security-first consolidation of auth logic
  */
 
-require_once __DIR__ . '/../utils/JWTHandler.php';
-require_once __DIR__ . '/../utils/Response.php';
+namespace App\Controllers;
+
+use App\Utils\JWTHandler;
+use App\Utils\Response;
 
 abstract class BaseController
 {
-    protected PDO $pdo;
+    protected \PDO $pdo;
 
-    public function __construct(PDO $pdo)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }

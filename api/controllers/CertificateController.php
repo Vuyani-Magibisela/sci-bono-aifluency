@@ -75,6 +75,33 @@ class CertificateController extends BaseController
     }
 
     /**
+     * Get certificates for current user (convenience endpoint)
+     *
+     * GET /api/certificates/my-certificates?page=1&pageSize=10
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getMyCertificates(array $params = []): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10;
+
+        if ($page < 1) $page = 1;
+        if ($pageSize < 1 || $pageSize > 100) $pageSize = 10;
+
+        $offset = ($page - 1) * $pageSize;
+
+        // Get certificates for current user
+        $certificates = $this->certificateModel->getByUser($currentUser->id, $pageSize, $offset);
+
+        // Return certificates array directly for dashboard
+        Response::success($certificates, 'My certificates retrieved successfully');
+    }
+
+    /**
      * Get certificate by ID
      *
      * GET /api/certificates/:id
