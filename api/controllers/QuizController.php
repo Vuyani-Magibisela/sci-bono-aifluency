@@ -149,7 +149,7 @@ class QuizController extends BaseController
     public function create(array $params = []): void
     {
         // Only admin and instructor can create quizzes
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         $data = $_POST;
 
@@ -224,7 +224,7 @@ class QuizController extends BaseController
     public function update(array $params): void
     {
         // Only admin and instructor can update quizzes
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -314,7 +314,7 @@ class QuizController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete quizzes
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -615,7 +615,7 @@ class QuizController extends BaseController
      */
     public function createQuestion(array $params = []): void
     {
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Validate required fields
@@ -691,7 +691,7 @@ class QuizController extends BaseController
      */
     public function updateQuestion(array $params): void
     {
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
         $questionId = (int)$params['id'];
         $data = json_decode(file_get_contents('php://input'), true);
 
@@ -762,7 +762,7 @@ class QuizController extends BaseController
      */
     public function deleteQuestion(array $params): void
     {
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
         $questionId = (int)$params['id'];
 
         // Verify question exists

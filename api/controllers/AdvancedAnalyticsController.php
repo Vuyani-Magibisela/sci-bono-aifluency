@@ -268,7 +268,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getClassDistribution(array $params): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['courseId'])) {
             Response::error('Course ID is required', 400);
@@ -345,7 +345,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getEngagementMetrics(array $params): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['courseId'])) {
             Response::error('Course ID is required', 400);
@@ -371,7 +371,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getQuestionEffectiveness(array $params): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['quizId'])) {
             Response::error('Quiz ID is required', 400);
@@ -421,7 +421,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getAtRiskStudents(array $params): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['courseId'])) {
             Response::error('Course ID is required', 400);
@@ -450,7 +450,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getGradingWorkload(array $params): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
 
         $currentUser = $this->getCurrentUser();
 
@@ -537,7 +537,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getEnrollmentTrends(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $groupBy = $_GET['group_by'] ?? 'month'; // 'day', 'week', 'month'
         $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
@@ -565,7 +565,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getCoursePopularity(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         try {
             $sql = "SELECT * FROM v_course_popularity
@@ -592,7 +592,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getUserAcquisition(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $groupBy = $_GET['group_by'] ?? 'month';
         $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
@@ -620,7 +620,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getAchievementDistribution(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         try {
             $sql = "SELECT * FROM v_achievement_distribution
@@ -660,7 +660,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getPlatformUsage(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $dateRange = $_GET['range'] ?? '30'; // days
 
@@ -713,7 +713,7 @@ class AdvancedAnalyticsController extends BaseController
      */
     public function getCertificateTrends(array $params): void
     {
-        $this->requireRole(['admin']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $groupBy = $_GET['group_by'] ?? 'month';
         $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));

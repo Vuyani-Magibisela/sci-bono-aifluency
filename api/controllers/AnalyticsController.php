@@ -35,7 +35,7 @@ class AnalyticsController extends BaseController
      */
     public function getQuestionStats(array $params): void
     {
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         if (!isset($params['questionId'])) {
             Response::error('Question ID is required', 400);
@@ -56,7 +56,7 @@ class AnalyticsController extends BaseController
      */
     public function getQuizQuestionDifficulty(array $params): void
     {
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         if (!isset($params['quizId'])) {
             Response::error('Quiz ID is required', 400);

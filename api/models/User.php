@@ -767,4 +767,84 @@ class User extends BaseModel
             ];
         }
     }
+
+    /**
+     * Get users by organization (Phase 12 - Hierarchical RBAC)
+     */
+    public function getUsersByOrganization(int $organizationId, ?string $role = null, ?int $limit = null, ?int $offset = null): array
+    {
+        $sql = "SELECT * FROM users
+                WHERE primary_organization_id = :organization_id
+                AND is_active = 1";
+
+        if ($role) {
+            $sql .= " AND role = :role";
+        }
+
+        $sql .= " ORDER BY name ASC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit";
+            if ($offset !== null) {
+                $sql .= " OFFSET :offset";
+            }
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':organization_id', $organizationId, \PDO::PARAM_INT);
+
+        if ($role) {
+            $stmt->bindValue(':role', $role, \PDO::PARAM_STR);
+        }
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            if ($offset !== null) {
+                $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+            }
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get users by school (Phase 12 - Hierarchical RBAC)
+     */
+    public function getUsersBySchool(int $schoolId, ?string $role = null, ?int $limit = null, ?int $offset = null): array
+    {
+        $sql = "SELECT * FROM users
+                WHERE primary_school_id = :school_id
+                AND is_active = 1";
+
+        if ($role) {
+            $sql .= " AND role = :role";
+        }
+
+        $sql .= " ORDER BY name ASC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit";
+            if ($offset !== null) {
+                $sql .= " OFFSET :offset";
+            }
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':school_id', $schoolId, \PDO::PARAM_INT);
+
+        if ($role) {
+            $stmt->bindValue(':role', $role, \PDO::PARAM_STR);
+        }
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            if ($offset !== null) {
+                $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+            }
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

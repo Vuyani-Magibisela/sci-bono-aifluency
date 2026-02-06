@@ -145,7 +145,7 @@ class ProjectController extends BaseController
     public function create(array $params = []): void
     {
         // Only admin and instructor can create projects
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         $data = $_POST;
 
@@ -220,7 +220,7 @@ class ProjectController extends BaseController
     public function update(array $params): void
     {
         // Only admin and instructor can update projects
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);
@@ -310,7 +310,7 @@ class ProjectController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete projects
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);
@@ -473,7 +473,7 @@ class ProjectController extends BaseController
     public function gradeSubmission(array $params): void
     {
         // Only instructors/admins can grade
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
         $currentUser = $this->getCurrentUser();
 
         if (!isset($params['id'])) {

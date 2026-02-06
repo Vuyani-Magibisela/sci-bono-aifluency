@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Management - AI Fluency Admin</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin-courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
@@ -109,6 +110,27 @@
         </main>
     </div>
 
+    <!-- Course Details Modal -->
+    <div id="course-details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Course Details</h2>
+                <button class="modal-close" onclick="AdminCourses.closeDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="details-container" id="course-details-content">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-primary" onclick="AdminCourses.editCourseFromDetails()">
+                        <i class="fas fa-edit"></i> Edit Course
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="AdminCourses.closeDetailsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Course Form Modal -->
     <div id="course-modal" class="modal">
         <div class="modal-content">
@@ -193,8 +215,8 @@
 
     <!-- Page Protection -->
     <script>
-        // Require authentication - admins only
-        Auth.requireAuth(['admin']);
+        // Require authentication - content managers only (Phase 12 - Hierarchical RBAC)
+        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
     </script>
 </body>
 </html>

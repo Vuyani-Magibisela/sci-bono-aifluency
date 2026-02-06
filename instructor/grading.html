@@ -195,10 +195,10 @@
         document.addEventListener('DOMContentLoaded', async function() {
             await initializeHeader();
 
-            // Check if user is instructor/admin
+            // Check if user can manage content (Phase 12 - Hierarchical RBAC)
             const user = await getCurrentUser();
-            if (!user || !['instructor', 'admin'].includes(user.role)) {
-                showToast('Access denied. Instructor or admin role required.', 'error');
+            if (!user || !Auth.canManageContent()) {
+                showToast('Access denied. Content management role required.', 'error');
                 setTimeout(() => {
                     window.location.href = 'student-dashboard.html';
                 }, 2000);

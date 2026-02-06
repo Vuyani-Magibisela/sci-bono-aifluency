@@ -154,9 +154,9 @@ class CourseController extends BaseController
             Response::notFound('Course not found');
         }
 
-        // Check if course is published (unless admin/instructor)
+        // Check if course is published (unless admin/teacher)
         if (!$course->is_published) {
-            if (!$currentUser || !in_array($currentUser->role, ['admin', 'instructor'])) {
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
                 Response::forbidden('This course is not published');
             }
         }
@@ -187,8 +187,8 @@ class CourseController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create courses
-        $this->requireRole(['admin', 'instructor']);
+        // Only admin and teacher can create courses
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
         $currentUser = $this->getCurrentUser();
 
         $data = $_POST;
@@ -377,7 +377,7 @@ class CourseController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete courses
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['id'])) {
             Response::error('Course ID is required', 400);

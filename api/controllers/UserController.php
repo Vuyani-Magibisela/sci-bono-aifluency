@@ -29,8 +29,8 @@ class UserController extends BaseController
      */
     private function requireSelfOrAdmin(int $userId): void
     {
-        // Use BaseController's requireOwnershipOrRole with admin-only allowance
-        $this->requireOwnershipOrRole($userId, ['admin']);
+        // Use BaseController's requireOwnershipOrRole with hierarchical admin roles
+        $this->requireOwnershipOrRole($userId, ['superadmin', 'orgadmin', 'schooladmin']);
     }
 
     /**
@@ -43,48 +43,88 @@ class UserController extends BaseController
      */
     public function index(array $params = []): void
     {
-        // Only admin and instructor can list users
-        $this->requireRole(['admin', 'instructor']);
+        $currentUser = $this->getCurrentUser();
 
         // Get query parameters
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 20;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $pageSize = isset($_GET['pageSize']) ? min(100, max(1, (int)$_GET['pageSize'])) : 20;
         $role = isset($_GET['role']) ? $_GET['role'] : null;
         $search = isset($_GET['search']) ? $_GET['search'] : null;
-
-        // Validate page and pageSize
-        if ($page < 1) {
-            $page = 1;
-        }
-
-        if ($pageSize < 1 || $pageSize > 100) {
-            $pageSize = 20;
-        }
+        $organizationId = isset($_GET['organization_id']) ? (int)$_GET['organization_id'] : null;
+        $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
 
         // Validate role if provided
-        if ($role && !in_array($role, ['student', 'instructor', 'admin'])) {
+        $validRoles = ['student', 'teacher', 'schooladmin', 'orgadmin', 'superadmin'];
+        if ($role && !in_array($role, $validRoles)) {
             Response::error('Invalid role specified', 400);
         }
 
         $offset = ($page - 1) * $pageSize;
 
-        // Get users based on filters
-        if ($search) {
-            // Search by name or email
-            $users = $this->userModel->searchUsers($search, $role, $pageSize, $offset);
-            $total = count($this->userModel->searchUsers($search, $role)); // Get total without limit
-        } else if ($role) {
-            // Filter by role
-            $users = $this->userModel->getUsersByRole($role, $pageSize, $offset);
-            $total = $this->userModel->countByRole($role);
+        // Apply organizational scoping based on current user's role
+        if ($currentUser->role === 'superadmin') {
+            // SuperAdmins see all users system-wide
+            if ($search) {
+                $users = $this->userModel->searchUsers($search, $role, $pageSize, $offset);
+                $total = count($this->userModel->searchUsers($search, $role));
+            } else if ($role) {
+                $users = $this->userModel->getUsersByRole($role, $pageSize, $offset);
+                $total = $this->userModel->countByRole($role);
+            } else {
+                $users = $this->userModel->all([], 'created_at DESC', $pageSize, $offset);
+                $total = $this->userModel->count();
+            }
+        } elseif ($currentUser->role === 'orgadmin') {
+            // OrgAdmins see users in their organization(s)
+            $managedOrgIds = $this->getManagedOrganizationIds();
+            if ($managedOrgIds === null || empty($managedOrgIds)) {
+                $users = [];
+                $total = 0;
+            } else {
+                // Use first managed org (or filter if specified)
+                $targetOrgId = $organizationId ?? $managedOrgIds[0];
+                if (!in_array($targetOrgId, $managedOrgIds)) {
+                    Response::forbidden('You cannot access users in this organization');
+                }
+                $users = $this->userModel->getUsersByOrganization($targetOrgId, $role, $pageSize, $offset);
+                $total = count($this->userModel->getUsersByOrganization($targetOrgId, $role, null, null));
+            }
+        } elseif ($currentUser->role === 'schooladmin') {
+            // SchoolAdmins see users in their school only
+            if (!$currentUser->primary_school_id) {
+                $users = [];
+                $total = 0;
+            } else {
+                $users = $this->userModel->getUsersBySchool($currentUser->primary_school_id, $role, $pageSize, $offset);
+                $total = count($this->userModel->getUsersBySchool($currentUser->primary_school_id, $role, null, null));
+            }
         } else {
-            // Get all users
-            $users = $this->userModel->all([], 'created_at DESC', $pageSize, $offset);
-            $total = $this->userModel->count();
+            // Teachers and students cannot list users
+            Response::forbidden('Insufficient permissions to list users');
         }
 
-        // Return paginated response
-        Response::paginated($users, $total, $page, $pageSize, 'Users retrieved successfully');
+        // Convert objects to arrays and remove sensitive data
+        $usersArray = [];
+        foreach ($users as $user) {
+            // Convert object to array
+            $userArray = is_object($user) ? json_decode(json_encode($user), true) : $user;
+
+            // Remove sensitive fields
+            unset($userArray['password_hash']);
+            unset($userArray['reset_token']);
+            unset($userArray['verification_token']);
+
+            $usersArray[] = $userArray;
+        }
+
+        // Return response in format expected by frontend
+        Response::success([
+            'data' => $usersArray,
+            'total' => $total,
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'totalPages' => ceil($total / $pageSize)
+        ], 'Users retrieved successfully');
     }
 
     /**
@@ -132,6 +172,84 @@ class UserController extends BaseController
     }
 
     /**
+     * Create new user (Phase 12 - Hierarchical RBAC)
+     *
+     * POST /api/users
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function create(array $params): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        // Validate required fields
+        $this->validateRequiredParams($_POST, ['name', 'email', 'password', 'role', 'primary_organization_id']);
+
+        // Validate email format
+        if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+            Response::validationError(['email' => 'Invalid email format']);
+        }
+
+        // Check if email already exists
+        $existingUser = $this->userModel->findByEmail($_POST['email']);
+        if ($existingUser) {
+            Response::validationError(['email' => 'Email already registered']);
+        }
+
+        // Check if user can assign this role
+        if (!$this->canAssignRole($_POST['role'])) {
+            Response::forbidden('You cannot assign this role');
+        }
+
+        // Validate organizational scoping
+        $organizationId = (int)$_POST['primary_organization_id'];
+        $managedOrgIds = $this->getManagedOrganizationIds();
+
+        if ($managedOrgIds !== null && !in_array($organizationId, $managedOrgIds)) {
+            Response::forbidden('You cannot create users in this organization');
+        }
+
+        // Validate school if provided
+        if (isset($_POST['primary_school_id']) && $_POST['primary_school_id']) {
+            $schoolId = (int)$_POST['primary_school_id'];
+            $managedSchoolIds = $this->getManagedSchoolIds();
+
+            if ($managedSchoolIds !== null && !in_array($schoolId, $managedSchoolIds)) {
+                Response::forbidden('You cannot assign users to this school');
+            }
+        }
+
+        // Hash password
+        $passwordHash = password_hash($_POST['password'], PASSWORD_BCRYPT);
+
+        // Prepare user data
+        $userData = [
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'password_hash' => $passwordHash,
+            'role' => $_POST['role'],
+            'primary_organization_id' => $organizationId,
+            'primary_school_id' => isset($_POST['primary_school_id']) ? (int)$_POST['primary_school_id'] : null,
+            'organizational_title' => $_POST['organizational_title'] ?? null,
+            'is_active' => isset($_POST['is_active']) ? (bool)$_POST['is_active'] : true,
+            'is_verified' => true // Admin-created users are pre-verified
+        ];
+
+        // Create user
+        $userId = $this->userModel->create($userData);
+
+        // Get created user
+        $user = $this->userModel->find($userId);
+
+        // Convert to array and remove sensitive data
+        $userArray = json_decode(json_encode($user), true);
+        unset($userArray['password_hash']);
+
+        Response::success($userArray, 'User created successfully', 201);
+    }
+
+    /**
      * Update user profile
      *
      * PUT /api/users/:id
@@ -141,6 +259,8 @@ class UserController extends BaseController
      */
     public function update(array $params): void
     {
+        $currentUser = $this->getCurrentUser();
+
         // Get user ID from params
         if (!isset($params['id'])) {
             Response::error('User ID is required', 400);
@@ -148,45 +268,79 @@ class UserController extends BaseController
 
         $userId = (int)$params['id'];
 
-        // Authorization: admin or self
-        $this->requireSelfOrAdmin($userId);
+        // Check if user exists
+        $targetUser = $this->userModel->find($userId);
+        if (!$targetUser) {
+            Response::notFound('User not found');
+        }
+
+        $isSelf = ($currentUser->id == $userId);
+        $isAdminUpdate = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin']);
 
         // Get request data
         $data = $_POST;
 
-        // Validate input
-        $validator = Validator::make($data);
+        // Determine allowed fields based on context
+        if ($isSelf && !$isAdminUpdate) {
+            // Regular users can only update their own profile fields
+            $allowedFields = ['name', 'profile_picture_url', 'bio', 'headline', 'location',
+                            'website_url', 'github_url', 'linkedin_url', 'twitter_url'];
+        } elseif ($isAdminUpdate) {
+            // Admin users managing other users - check hierarchical permissions
+            if (!$isSelf) {
+                // Check role hierarchy - can't manage equal or higher roles
+                $roleHierarchy = [
+                    'superadmin' => 5,
+                    'orgadmin' => 4,
+                    'schooladmin' => 3,
+                    'teacher' => 2,
+                    'student' => 1
+                ];
 
-        if (isset($data['name'])) {
-            $validator->maxLength('name', 255, 'Name must not exceed 255 characters');
+                $currentLevel = $roleHierarchy[$currentUser->role] ?? 0;
+                $targetLevel = $roleHierarchy[$targetUser->role] ?? 0;
+
+                if ($targetLevel >= $currentLevel) {
+                    Response::forbidden('You cannot modify users with equal or higher roles');
+                }
+
+                // Check organizational scope
+                if ($currentUser->role === 'orgadmin') {
+                    $managedOrgIds = $this->getManagedOrganizationIds();
+                    if ($managedOrgIds !== null && !in_array($targetUser->primary_organization_id, $managedOrgIds)) {
+                        Response::forbidden('You can only manage users in your organization');
+                    }
+                } elseif ($currentUser->role === 'schooladmin') {
+                    if ($targetUser->primary_school_id != $currentUser->primary_school_id) {
+                        Response::forbidden('You can only manage users in your school');
+                    }
+                }
+            }
+
+            // Admins can update all user management fields
+            $allowedFields = ['name', 'email', 'role', 'primary_organization_id', 'primary_school_id',
+                            'organizational_title', 'is_active', 'profile_picture_url'];
+
+            // Validate role assignment if provided
+            if (isset($data['role']) && !$this->canAssignRole($data['role'])) {
+                Response::forbidden('You cannot assign this role');
+            }
+        } else {
+            Response::forbidden('Insufficient permissions');
         }
 
-        if (isset($data['profile_picture_url'])) {
-            $validator->url('profile_picture_url', 'Profile picture URL must be a valid URL');
-        }
-
-        // Check for validation errors
-        if ($validator->fails()) {
-            Response::validationError($validator->errors());
-        }
-
-        // Check if user exists
-        $user = $this->userModel->find($userId);
-
-        if (!$user) {
-            Response::notFound('User not found');
-        }
-
-        // Prepare update data (only allowed fields)
+        // Prepare update data
         $updateData = [];
-
-        $allowedFields = ['name', 'profile_picture_url'];
-
         foreach ($allowedFields as $field) {
-            if (isset($data[$field])) {
-                $updateData[$field] = $field === 'profile_picture_url'
-                    ? $data[$field]
-                    : Validator::sanitize($data[$field]);
+            if (array_key_exists($field, $data)) {
+                $updateData[$field] = $data[$field];
+            }
+        }
+
+        // Hash password if provided
+        if (isset($data['password']) && !empty($data['password'])) {
+            if ($isSelf || $isAdminUpdate) {
+                $updateData['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT);
             }
         }
 
@@ -200,20 +354,23 @@ class UserController extends BaseController
             $updated = $this->userModel->update($userId, $updateData);
 
             if (!$updated) {
-                Response::serverError('Failed to update user profile');
+                Response::serverError('Failed to update user');
             }
 
             // Fetch updated user
             $updatedUser = $this->userModel->find($userId);
 
-            // Return response
-            Response::success([
-                'user' => $updatedUser
-            ], 'User profile updated successfully');
+            // Remove sensitive data by converting to array
+            $updatedUserArray = json_decode(json_encode($updatedUser), true);
+            unset($updatedUserArray['password_hash']);
+            unset($updatedUserArray['reset_token']);
+            unset($updatedUserArray['verification_token']);
+
+            Response::success($updatedUserArray, 'User updated successfully');
 
         } catch (\PDOException $e) {
             error_log('User update error: ' . $e->getMessage());
-            Response::serverError('An error occurred while updating user profile');
+            Response::serverError('An error occurred while updating user');
         }
     }
 
@@ -228,7 +385,7 @@ class UserController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete users
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         // Get user ID from params
         if (!isset($params['id'])) {

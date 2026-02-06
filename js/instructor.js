@@ -22,8 +22,8 @@ const InstructorDashboard = {
             return;
         }
 
-        if (user.role !== 'instructor' && user.role !== 'admin') {
-            console.error('InstructorDashboard: User is not an instructor');
+        if (!Auth.canManageContent()) {
+            console.error('InstructorDashboard: User cannot manage content');
             window.location.href = '/public/403.html';
             return;
         }

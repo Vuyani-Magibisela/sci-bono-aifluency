@@ -135,7 +135,7 @@ const HeaderTemplate = {
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
-                        ${user.role === 'admin' ? `
+                        ${Auth.isAdmin() || Auth.isTeacher() ? `
                             <div class="user-menu-divider"></div>
                             <a href="/admin/dashboard.html" class="user-menu-item" role="menuitem">
                                 <i class="fas fa-shield-alt"></i>
@@ -307,7 +307,12 @@ const HeaderTemplate = {
 
         const roleMap = {
             'student': 'Student',
-            'instructor': 'Instructor',
+            'teacher': 'Teacher',
+            'schooladmin': 'School Admin',
+            'orgadmin': 'Organization Admin',
+            'superadmin': 'Super Admin',
+            // Legacy role names for backwards compatibility
+            'instructor': 'Teacher',
             'admin': 'Administrator'
         };
 

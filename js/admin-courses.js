@@ -19,7 +19,7 @@ const AdminCourses = {
 
         // Ensure user is authenticated and has admin role
         const user = Auth.getUser();
-        if (!user || user.role !== 'admin') {
+        if (!user || !Auth.canManageContent()) {
             console.error('AdminCourses: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
@@ -170,27 +170,134 @@ const AdminCourses = {
      * View course details
      */
     async viewCourse(courseId) {
+        console.log('AdminCourses.viewCourse called with courseId:', courseId);
         try {
+            console.log('Fetching course data...');
             const response = await API.get(`/courses/${courseId}`);
-            const course = response.data;
+            console.log('API response:', response);
+            const course = response.data?.course || response.data;
+            console.log('Course data:', course);
 
-            const details = `
-                Course Details:
+            this.currentCourseId = courseId;
 
-                Title: ${course.title}
-                Slug: ${course.slug}
-                Description: ${course.description}
-                Difficulty: ${course.difficulty_level}
-                Duration: ${course.duration_hours} hours
-                Status: ${course.is_published ? 'Published' : 'Draft'}
-                Featured: ${course.is_featured ? 'Yes' : 'No'}
-                Modules: ${course.modules?.length || 0}
-                Created: ${this.formatDate(course.created_at)}
+            // Build details HTML
+            const detailsHTML = `
+                <div class="course-details">
+                    <div class="detail-group">
+                        <h3><i class="fas fa-book"></i> Course Information</h3>
+                        <div class="detail-item">
+                            <strong>Title:</strong>
+                            <span>${course.title}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Slug:</strong>
+                            <span>${course.slug || 'N/A'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Description:</strong>
+                            <p>${course.description || 'No description'}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-group">
+                        <h3><i class="fas fa-info-circle"></i> Details</h3>
+                        <div class="detail-item">
+                            <strong>Difficulty Level:</strong>
+                            <span class="badge badge-${course.difficulty_level}">${this.capitalize(course.difficulty_level)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Duration:</strong>
+                            <span>${course.duration_hours} hours</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Status:</strong>
+                            <span class="badge ${course.is_published ? 'badge-success' : 'badge-warning'}">
+                                ${course.is_published ? 'Published' : 'Draft'}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Featured:</strong>
+                            <span>${course.is_featured ? '⭐ Yes' : 'No'}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-group">
+                        <h3><i class="fas fa-layer-group"></i> Modules</h3>
+                        <div class="detail-item">
+                            <strong>Total Modules:</strong>
+                            <span>${course.modules?.length || 0}</span>
+                        </div>
+                        ${course.modules && course.modules.length > 0 ? `
+                            <div class="modules-list">
+                                ${course.modules.map(module => `
+                                    <div class="module-item">
+                                        <i class="fas fa-layer-group"></i>
+                                        ${module.title}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<p class="text-muted">No modules yet</p>'}
+                    </div>
+
+                    <div class="detail-group">
+                        <h3><i class="fas fa-calendar"></i> Timestamps</h3>
+                        <div class="detail-item">
+                            <strong>Created:</strong>
+                            <span>${this.formatDate(course.created_at)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Last Updated:</strong>
+                            <span>${this.formatDate(course.updated_at)}</span>
+                        </div>
+                    </div>
+                </div>
             `;
 
-            alert(details);
+            const detailsElement = document.getElementById('course-details-content');
+            const modalElement = document.getElementById('course-details-modal');
+
+            console.log('Details element:', detailsElement);
+            console.log('Modal element:', modalElement);
+
+            if (!detailsElement || !modalElement) {
+                console.error('Modal elements not found!');
+                alert('Error: Modal elements not found in the page. Please refresh.');
+                return;
+            }
+
+            detailsElement.innerHTML = detailsHTML;
+            modalElement.classList.add('show');
+            console.log('Modal should now be visible');
         } catch (error) {
+            console.error('ViewCourse error:', error);
             this.showError('Failed to load course details: ' + error.message);
+        }
+    },
+
+    /**
+     * Close details modal
+     */
+    closeDetailsModal() {
+        document.getElementById('course-details-modal').classList.remove('show');
+        // Don't clear currentCourseId here - it's needed for Edit button
+        // this.currentCourseId = null;
+    },
+
+    /**
+     * Edit course from details modal
+     */
+    async editCourseFromDetails() {
+        console.log('editCourseFromDetails called, currentCourseId:', this.currentCourseId);
+        if (this.currentCourseId) {
+            const courseIdToEdit = this.currentCourseId; // Store it before closing
+            this.closeDetailsModal();
+            // Small delay to ensure modal is closed before opening edit modal
+            setTimeout(() => {
+                this.editCourse(courseIdToEdit);
+            }, 100);
+        } else {
+            console.error('No currentCourseId set!');
+            alert('Error: Course ID not found. Please try clicking View again.');
         }
     },
 
@@ -198,27 +305,43 @@ const AdminCourses = {
      * Edit course
      */
     async editCourse(courseId) {
+        console.log('editCourse called with courseId:', courseId);
         try {
+            console.log('Fetching course for edit:', courseId);
             const response = await API.get(`/courses/${courseId}`);
-            const course = response.data;
+            console.log('Edit course API response:', response);
+
+            const course = response.data?.course || response.data;
+            console.log('Parsed course data:', course);
+
+            if (!course || !course.id) {
+                throw new Error('Invalid course data received from API');
+            }
 
             this.currentCourseId = courseId;
             document.getElementById('modal-title').textContent = 'Edit Course';
 
             // Populate form
             document.getElementById('course-id').value = course.id;
-            document.getElementById('course-title').value = course.title;
-            document.getElementById('course-slug').value = course.slug;
+            document.getElementById('course-title').value = course.title || '';
+            document.getElementById('course-slug').value = course.slug || '';
             document.getElementById('course-description').value = course.description || '';
             document.getElementById('course-difficulty').value = course.difficulty_level || '';
             document.getElementById('course-duration').value = course.duration_hours || '';
             document.getElementById('course-thumbnail').value = course.thumbnail_url || '';
-            document.getElementById('course-featured').checked = course.is_featured;
-            document.getElementById('course-published').checked = course.is_published;
+            document.getElementById('course-featured').checked = course.is_featured ? true : false;
+            document.getElementById('course-published').checked = course.is_published ? true : false;
 
             this.showModal();
+            console.log('Edit modal opened successfully');
         } catch (error) {
-            this.showError('Failed to load course: ' + error.message);
+            console.error('EditCourse error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                response: error.response,
+                stack: error.stack
+            });
+            this.showError('Failed to load course: ' + (error.response?.data?.message || error.message));
         }
     },
 
@@ -363,11 +486,16 @@ const AdminCourses = {
         document.getElementById('close-modal').addEventListener('click', () => this.hideModal());
         document.getElementById('cancel-btn').addEventListener('click', () => this.hideModal());
 
-        // Close modal on outside click
+        // Close modal on outside click (both modals)
         window.addEventListener('click', (event) => {
             const modal = document.getElementById('course-modal');
+            const detailsModal = document.getElementById('course-details-modal');
+
             if (event.target === modal) {
                 this.hideModal();
+            }
+            if (event.target === detailsModal) {
+                this.closeDetailsModal();
             }
         });
 
@@ -422,6 +550,14 @@ const AdminCourses = {
             month: 'short',
             day: 'numeric'
         });
+    },
+
+    /**
+     * Capitalize first letter of string
+     */
+    capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 };
 

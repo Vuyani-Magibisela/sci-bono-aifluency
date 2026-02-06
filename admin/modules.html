@@ -179,7 +179,7 @@
     <!-- Page Protection -->
     <script>
         // Require authentication - admins only
-        Auth.requireAuth(['admin']);
+        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
     </script>
 </body>
 </html>

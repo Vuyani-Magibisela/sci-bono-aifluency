@@ -32,7 +32,7 @@
                     <i class="fas fa-th-large"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-item disabled" title="Coming Soon" onclick="return false;">
+                <a href="/admin/users.html" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
@@ -131,14 +131,14 @@
                     <div class="dashboard-card">
                         <div class="card-header">
                             <div>
-                                <div class="card-title">Instructors</div>
-                                <div class="card-value" id="total-instructors">0</div>
+                                <div class="card-title">Teachers</div>
+                                <div class="card-value" id="total-teachers">0</div>
                             </div>
                             <div class="card-icon orange">
                                 <i class="fas fa-chalkboard-teacher"></i>
                             </div>
                         </div>
-                        <div class="card-description">Active instructors</div>
+                        <div class="card-description">Active teachers</div>
                     </div>
 
                     <div class="dashboard-card">
@@ -226,8 +226,8 @@
 
     <!-- Page Protection -->
     <script>
-        // Require authentication - admins only
-        Auth.requireAuth(['admin']);
+        // Require authentication - admins only (hierarchical roles)
+        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin']);
     </script>
 </body>
 </html>

@@ -62,12 +62,12 @@ class EnrollmentController extends BaseController
             $total = $this->enrollmentModel->count(['user_id' => $userId]);
         } elseif ($courseId) {
             // Only instructors/admins can see all enrollments for a course
-            $this->requireRole(['admin', 'instructor']);
+            $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
             $enrollments = $this->enrollmentModel->getByCourse($courseId, $status, $pageSize, $offset);
             $total = $this->enrollmentModel->count(['course_id' => $courseId]);
         } else {
             // Only admins can see all enrollments
-            $this->requireRole('admin');
+            $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
             $enrollments = $this->enrollmentModel->all([], 'enrolled_at DESC', $pageSize, $offset);
             $total = $this->enrollmentModel->count();
         }

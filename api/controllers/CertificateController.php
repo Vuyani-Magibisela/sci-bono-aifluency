@@ -61,12 +61,12 @@ class CertificateController extends BaseController
             $total = $this->certificateModel->count(['user_id' => $userId]);
         } elseif ($courseId) {
             // Only instructors/admins can see all certificates for a course
-            $this->requireRole(['admin', 'instructor']);
+            $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
             $certificates = $this->certificateModel->getByCourse($courseId, $pageSize, $offset);
             $total = $this->certificateModel->count(['course_id' => $courseId]);
         } else {
             // Only admins can see all certificates
-            $this->requireRole('admin');
+            $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
             $certificates = $this->certificateModel->getRecent($pageSize);
             $total = $this->certificateModel->count();
         }
@@ -145,7 +145,7 @@ class CertificateController extends BaseController
     public function create(array $params = []): void
     {
         // Only admin and instructor can issue certificates
-        $this->requireRole(['admin', 'instructor']);
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
 
         $data = $_POST;
 
@@ -231,7 +231,7 @@ class CertificateController extends BaseController
     public function update(array $params): void
     {
         // Only admin can update certificates
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['id'])) {
             Response::error('Certificate ID is required', 400);
@@ -287,7 +287,7 @@ class CertificateController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete certificates
-        $this->requireRole('admin');
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!isset($params['id'])) {
             Response::error('Certificate ID is required', 400);

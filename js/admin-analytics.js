@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const user = Auth.getUser();
-    if (user.role !== 'admin') {
+    if (!Auth.isAdmin()) {
         alert('Access denied. This page is for administrators only.');
         window.location.href = 'student-dashboard.html';
         return;

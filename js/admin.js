@@ -25,8 +25,10 @@ const AdminDashboard = {
             return;
         }
 
-        if (user.role !== 'admin') {
-            console.error('AdminDashboard: User is not an admin');
+        // Phase 11+: Updated for hierarchical roles
+        const adminRoles = ['superadmin', 'orgadmin', 'schooladmin'];
+        if (!adminRoles.includes(user.role)) {
+            console.error('AdminDashboard: User does not have admin permissions');
             window.location.href = '/public/403.html';
             return;
         }
@@ -129,7 +131,7 @@ const AdminDashboard = {
         return {
             total_users: 0,
             total_students: 0,
-            total_instructors: 0,
+            total_teachers: 0,
             total_courses: 0,
             total_enrollments: 0,
             total_certificates: 0,
@@ -245,15 +247,15 @@ const AdminDashboard = {
         // Update stat cards
         this.updateStatCard('total-users', stats.total_users || 0);
         this.updateStatCard('total-students', stats.total_students || 0);
-        this.updateStatCard('total-instructors', stats.total_instructors || 0);
+        this.updateStatCard('total-teachers', stats.total_teachers || 0);
         this.updateStatCard('total-courses', stats.total_courses || 0);
         this.updateStatCard('total-enrollments', stats.total_enrollments || 0);
         this.updateStatCard('total-certificates', stats.total_certificates || 0);
         this.updateStatCard('active-users-today', stats.active_users_today || 0);
 
         // Render user distribution chart if element exists
-        if (stats.total_students || stats.total_instructors) {
-            this.renderUserDistributionChart(stats.total_students, stats.total_instructors);
+        if (stats.total_students || stats.total_teachers) {
+            this.renderUserDistributionChart(stats.total_students, stats.total_teachers);
         }
     },
 
@@ -270,18 +272,18 @@ const AdminDashboard = {
     /**
      * Render user distribution chart
      */
-    renderUserDistributionChart(students, instructors) {
+    renderUserDistributionChart(students, teachers) {
         const chartContainer = document.getElementById('user-distribution-chart');
         if (!chartContainer) return;
 
-        const total = students + instructors;
+        const total = students + teachers;
         if (total === 0) {
             chartContainer.innerHTML = '<p class="no-data">No users to display</p>';
             return;
         }
 
         const studentPercentage = Math.round((students / total) * 100);
-        const instructorPercentage = Math.round((instructors / total) * 100);
+        const teacherPercentage = Math.round((teachers / total) * 100);
 
         chartContainer.innerHTML = `
             <div class="bar-chart">
@@ -293,11 +295,11 @@ const AdminDashboard = {
                     <div class="bar-value">${studentPercentage}%</div>
                 </div>
                 <div class="bar-item">
-                    <div class="bar-label">Instructors (${instructors})</div>
+                    <div class="bar-label">Teachers (${teachers})</div>
                     <div class="bar-container">
-                        <div class="bar-fill instructors" style="width: ${instructorPercentage}%"></div>
+                        <div class="bar-fill teachers" style="width: ${teacherPercentage}%"></div>
                     </div>
-                    <div class="bar-value">${instructorPercentage}%</div>
+                    <div class="bar-value">${teacherPercentage}%</div>
                 </div>
             </div>
         `;

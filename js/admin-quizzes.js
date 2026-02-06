@@ -20,7 +20,7 @@ const AdminQuizzes = {
 
         // Ensure user is authenticated and has admin role
         const user = Auth.getUser();
-        if (!user || user.role !== 'admin') {
+        if (!user || !Auth.canManageContent()) {
             console.error('AdminQuizzes: Unauthorized access');
             window.location.href = '/public/403.html';
             return;

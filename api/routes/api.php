@@ -102,7 +102,7 @@ $routes = [
         'pattern' => '/users',
         'handler' => 'UserController@index',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'GET',
@@ -133,7 +133,102 @@ $routes = [
         'pattern' => '/users/:id',
         'handler' => 'UserController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/users',
+        'handler' => 'UserController@create',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+
+    // Organization Routes (Phase 12 - Hierarchical RBAC)
+    [
+        'method' => 'GET',
+        'pattern' => '/organizations',
+        'handler' => 'OrganizationController@index',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/organizations/:id',
+        'handler' => 'OrganizationController@show',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/organizations',
+        'handler' => 'OrganizationController@create',
+        'auth' => true,
+        'roles' => ['superadmin']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/organizations/:id',
+        'handler' => 'OrganizationController@update',
+        'auth' => true,
+        'roles' => ['superadmin']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/organizations/:id',
+        'handler' => 'OrganizationController@delete',
+        'auth' => true,
+        'roles' => ['superadmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/organizations/:organizationId/users',
+        'handler' => 'OrganizationController@getUsers',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+
+    // School Routes (Phase 12 - Hierarchical RBAC)
+    [
+        'method' => 'GET',
+        'pattern' => '/schools',
+        'handler' => 'SchoolController@index',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/schools/:id',
+        'handler' => 'SchoolController@show',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/schools',
+        'handler' => 'SchoolController@create',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/schools/:id',
+        'handler' => 'SchoolController@update',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+    [
+        'method' => 'DELETE',
+        'pattern' => '/schools/:id',
+        'handler' => 'SchoolController@delete',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/schools/:schoolId/users',
+        'handler' => 'SchoolController@getUsers',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Profile Routes (Phase 8 - 5 endpoints)
@@ -186,21 +281,21 @@ $routes = [
         'pattern' => '/courses',
         'handler' => 'CourseController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/courses/:id',
         'handler' => 'CourseController@update',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/courses/:id',
         'handler' => 'CourseController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Module Routes (5 endpoints)
@@ -221,21 +316,21 @@ $routes = [
         'pattern' => '/modules',
         'handler' => 'ModuleController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/modules/:id',
         'handler' => 'ModuleController@update',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/modules/:id',
         'handler' => 'ModuleController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Lesson Routes (7 endpoints)
@@ -256,21 +351,21 @@ $routes = [
         'pattern' => '/lessons',
         'handler' => 'LessonController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/lessons/:id',
         'handler' => 'LessonController@update',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/lessons/:id',
         'handler' => 'LessonController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'POST',
@@ -303,21 +398,21 @@ $routes = [
         'pattern' => '/quizzes',
         'handler' => 'QuizController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/quizzes/:id',
         'handler' => 'QuizController@update',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/quizzes/:id',
         'handler' => 'QuizController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'POST',
@@ -344,21 +439,21 @@ $routes = [
         'pattern' => '/quiz-questions',
         'handler' => 'QuizController@createQuestion',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/quiz-questions/:id',
         'handler' => 'QuizController@updateQuestion',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/quiz-questions/:id',
         'handler' => 'QuizController@deleteQuestion',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
 
     // Project Routes (8 endpoints)
@@ -379,21 +474,21 @@ $routes = [
         'pattern' => '/projects',
         'handler' => 'ProjectController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/projects/:id',
         'handler' => 'ProjectController@update',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/projects/:id',
         'handler' => 'ProjectController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'POST',
@@ -412,7 +507,7 @@ $routes = [
         'pattern' => '/projects/submissions/:id/grade',
         'handler' => 'ProjectController@gradeSubmission',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
 
     // Enrollment Routes (6 endpoints)
@@ -489,21 +584,21 @@ $routes = [
         'pattern' => '/certificates',
         'handler' => 'CertificateController@create',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/certificates/:id',
         'handler' => 'CertificateController@update',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/certificates/:id',
         'handler' => 'CertificateController@delete',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Grading Routes (Phase 6)
@@ -512,28 +607,28 @@ $routes = [
         'pattern' => '/grading/pending',
         'handler' => 'GradingController@getPendingQueue',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'POST',
         'pattern' => '/grading/:attemptId',
         'handler' => 'GradingController@gradeAttempt',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/grading/analytics/:quizId',
         'handler' => 'GradingController@getQuizAnalytics',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/grading/history',
         'handler' => 'GradingController@getGradingHistory',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Analytics Routes (Phase 6 - Advanced Analytics)
@@ -542,14 +637,14 @@ $routes = [
         'pattern' => '/analytics/questions/:questionId',
         'handler' => 'AnalyticsController@getQuestionStats',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/quiz/:quizId/questions',
         'handler' => 'AnalyticsController@getQuizQuestionDifficulty',
         'auth' => true,
-        'roles' => ['admin', 'instructor']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
     ],
     [
         'method' => 'GET',
@@ -609,35 +704,35 @@ $routes = [
         'pattern' => '/analytics/instructor/class/:courseId/distribution',
         'handler' => 'AdvancedAnalyticsController@getClassDistribution',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/instructor/engagement/:courseId',
         'handler' => 'AdvancedAnalyticsController@getEngagementMetrics',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/instructor/question-effectiveness/:quizId',
         'handler' => 'AdvancedAnalyticsController@getQuestionEffectiveness',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/instructor/at-risk-students/:courseId',
         'handler' => 'AdvancedAnalyticsController@getAtRiskStudents',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/instructor/grading-workload',
         'handler' => 'AdvancedAnalyticsController@getGradingWorkload',
         'auth' => true,
-        'roles' => ['instructor', 'admin']
+        'roles' => ['teacher', 'superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Admin Analytics
@@ -646,42 +741,42 @@ $routes = [
         'pattern' => '/analytics/admin/enrollment-trends',
         'handler' => 'AdvancedAnalyticsController@getEnrollmentTrends',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/admin/course-popularity',
         'handler' => 'AdvancedAnalyticsController@getCoursePopularity',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/admin/user-acquisition',
         'handler' => 'AdvancedAnalyticsController@getUserAcquisition',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/admin/achievement-distribution',
         'handler' => 'AdvancedAnalyticsController@getAchievementDistribution',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/admin/platform-usage',
         'handler' => 'AdvancedAnalyticsController@getPlatformUsage',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
     [
         'method' => 'GET',
         'pattern' => '/analytics/admin/certificate-trends',
         'handler' => 'AdvancedAnalyticsController@getCertificateTrends',
         'auth' => true,
-        'roles' => ['admin']
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 
     // Achievement Routes (Phase 6)
@@ -828,6 +923,22 @@ $routes = [
         'pattern' => '/bookmarks/stats',
         'handler' => 'BookmarksController@stats',
         'auth' => true
+    ],
+
+    // Admin Dashboard Endpoints
+    [
+        'method' => 'GET',
+        'pattern' => '/admin/stats',
+        'handler' => 'AdminController@getStats',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/admin/activity',
+        'handler' => 'AdminController@getActivity',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
 ];
 

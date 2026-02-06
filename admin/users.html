@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - AI Fluency Admin</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-bar select, .filter-bar input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .role-superadmin { background: #8b5cf6; color: white; }
+        .role-orgadmin { background: #3b82f6; color: white; }
+        .role-schooladmin { background: #10b981; color: white; }
+        .role-teacher { background: #f59e0b; color: white; }
+        .role-student { background: #6b7280; color: white; }
+
+        .org-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .org-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .school-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .school-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .school-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+        }
+        .school-stats {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #6b7280;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Header -->
+    <div id="header-placeholder"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../images/logo.svg" alt="Logo" onerror="this.style.display='none'">
+                <h2>AI Fluency</h2>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-name" id="sidebar-user-name">Admin User</div>
+                <div class="profile-role" id="sidebar-user-role">System Administrator</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/admin/dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/users.html" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/admin/courses.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Courses</span>
+                </a>
+                <a href="/admin/analytics.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" onclick="Auth.logout(); return false;" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Bar -->
+            <div class="dashboard-topbar">
+                <div class="topbar-left">
+                    <h1>User Management</h1>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-primary" id="create-user-btn">
+                        <i class="fas fa-user-plus"></i> Create User
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab active" data-tab="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="tab" data-tab="organizations" id="organizations-tab" style="display: none;">
+                    <i class="fas fa-building"></i> Organizations
+                </button>
+                <button class="tab" data-tab="schools" id="schools-tab">
+                    <i class="fas fa-school"></i> Schools
+                </button>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-content active" id="users-content">
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <select id="role-filter" style="min-width: 150px;">
+                        <option value="">All Roles</option>
+                        <option value="superadmin">SuperAdmin</option>
+                        <option value="orgadmin">OrgAdmin</option>
+                        <option value="schooladmin">SchoolAdmin</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+
+                    <select id="organization-filter" style="min-width: 200px;">
+                        <option value="">All Organizations</option>
+                    </select>
+
+                    <select id="school-filter" style="min-width: 200px;">
+                        <option value="">All Schools</option>
+                    </select>
+
+                    <input type="text" id="search-users" placeholder="Search by name or email..." style="min-width: 250px;">
+
+                    <button class="btn-secondary btn-sm" id="clear-filters">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="dashboard-card">
+                    <div id="users-table-container">
+                        <div class="loading-spinner">Loading users...</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination-container" style="margin-top: 1rem; display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div id="pagination-info"></div>
+                            <div id="pagination-controls"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organizations Tab (SuperAdmin only) -->
+            <div class="tab-content" id="organizations-content">
+                <div class="dashboard-card">
+                    <div class="org-header">
+                        <h3>Organizations</h3>
+                        <button class="btn-primary" id="create-org-btn">
+                            <i class="fas fa-plus"></i> Create Organization
+                        </button>
+                    </div>
+                    <div id="organizations-list">
+                        <div class="loading-spinner">Loading organizations...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schools Tab -->
+            <div class="tab-content" id="schools-content">
+                <div class="dashboard-card">
+                    <div class="org-header">
+                        <h3>Schools</h3>
+                        <button class="btn-primary" id="create-school-btn">
+                            <i class="fas fa-plus"></i> Create School
+                        </button>
+                    </div>
+                    <div id="schools-list">
+                        <div class="loading-spinner">Loading schools...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create/Edit User Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="user-modal-title">Create User</h2>
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="user-name">Full Name *</label>
+                    <input type="text" id="user-name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-email">Email *</label>
+                    <input type="email" id="user-email" name="email" required>
+                </div>
+
+                <div class="form-group" id="password-group">
+                    <label for="user-password">Password *</label>
+                    <input type="password" id="user-password" name="password">
+                    <small>Minimum 8 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-role">Role *</label>
+                    <select id="user-role" name="role" required>
+                        <option value="">Select Role</option>
+                    </select>
+                    <small>You can only assign roles lower than yours</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-organization">Organization *</label>
+                    <select id="user-organization" name="organization_id" required>
+                        <option value="">Select Organization</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-school">School</label>
+                    <select id="user-school" name="school_id">
+                        <option value="">Select School (Optional)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-title">Organizational Title</label>
+                    <input type="text" id="user-title" name="organizational_title" placeholder="e.g., Grade 10 Math Teacher">
+                    <small>Job title or role within the organization</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="user-active" name="is_active" checked>
+                        Active Account
+                    </label>
+                    <small>Inactive users cannot login</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-user-btn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submit-user-btn">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Organization Modal -->
+    <div id="org-modal" class="modal">
+        <div class="modal-content">
+            <h2>Create Organization</h2>
+            <form id="org-form">
+                <div class="form-group">
+                    <label for="org-name">Organization Name *</label>
+                    <input type="text" id="org-name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="org-slug">Slug *</label>
+                    <input type="text" id="org-slug" name="slug" required pattern="[a-z0-9-]+">
+                    <small>URL-friendly identifier (lowercase, hyphens only)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="org-description">Description</label>
+                    <textarea id="org-description" name="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="org-email">Email</label>
+                    <input type="email" id="org-email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="org-phone">Phone</label>
+                    <input type="tel" id="org-phone" name="phone">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-org-btn">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Organization</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create School Modal -->
+    <div id="school-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="school-modal-title">Create School</h2>
+            <form id="school-form">
+                <div class="form-group">
+                    <label for="school-organization">Organization *</label>
+                    <select id="school-organization" name="organization_id" required>
+                        <option value="">Select Organization</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="school-name">School Name *</label>
+                    <input type="text" id="school-name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="school-slug">Slug *</label>
+                    <input type="text" id="school-slug" name="slug" required pattern="[a-z0-9-]+">
+                    <small>URL-friendly identifier (unique within organization)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="school-type">School Type *</label>
+                    <select id="school-type" name="school_type" required>
+                        <option value="combined">Combined</option>
+                        <option value="primary">Primary</option>
+                        <option value="secondary">Secondary</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="school-email">Email</label>
+                    <input type="email" id="school-email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="school-phone">Phone</label>
+                    <input type="tel" id="school-phone" name="phone">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-school-btn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submit-school-btn">Create School</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/storage.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-users.js"></script>
+</body>
+</html>

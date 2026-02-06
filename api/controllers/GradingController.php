@@ -35,7 +35,7 @@ class GradingController extends BaseController
      */
     private function requireInstructorRole(): void
     {
-        $this->requireRole(['instructor', 'admin']);
+        $this->requireRole(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
     }
 
     /**

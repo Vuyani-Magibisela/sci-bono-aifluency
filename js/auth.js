@@ -201,6 +201,37 @@ const Auth = {
     },
 
     /**
+     * Check if user has any admin role (Phase 12 - Hierarchical RBAC)
+     * Replaces old: user.role === 'admin'
+     *
+     * @returns {boolean} True if user is superadmin, orgadmin, or schooladmin
+     */
+    isAdmin() {
+        return this.hasRole(['superadmin', 'orgadmin', 'schooladmin']);
+    },
+
+    /**
+     * Check if user can manage content (create/edit courses, modules, etc)
+     * Includes teachers and all admin roles
+     * Replaces old: user.role === 'admin' || user.role === 'instructor'
+     *
+     * @returns {boolean} True if user can manage content
+     */
+    canManageContent() {
+        return this.hasRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+    },
+
+    /**
+     * Check if user is a teacher (old 'instructor' role)
+     * Replaces old: user.role === 'instructor'
+     *
+     * @returns {boolean} True if user is a teacher
+     */
+    isTeacher() {
+        return this.hasRole('teacher');
+    },
+
+    /**
      * Check authentication status and refresh token if needed
      * Call this on every page load
      *
@@ -262,9 +293,11 @@ const Auth = {
         const role = this.getUserRole();
 
         switch (role) {
-            case 'admin':
+            case 'superadmin':
+            case 'orgadmin':
+            case 'schooladmin':
                 return '/admin/dashboard.html';
-            case 'instructor':
+            case 'teacher':
                 return '/instructor/dashboard.html';
             default:
                 return '/student/dashboard.html';

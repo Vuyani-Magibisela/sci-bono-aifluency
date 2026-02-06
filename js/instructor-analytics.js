@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const user = Auth.getUser();
-    if (user.role !== 'instructor' && user.role !== 'admin') {
-        alert('Access denied. This page is for instructors only.');
+    if (!Auth.canManageContent()) {
+        alert('Access denied. This page is for content managers only.');
         window.location.href = 'student-dashboard.html';
         return;
     }
