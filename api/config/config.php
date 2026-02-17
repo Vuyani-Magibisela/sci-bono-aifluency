@@ -37,9 +37,7 @@ define('API_PREFIX', '/api');
 
 // CORS Settings
 define('CORS_ALLOWED_ORIGINS', [
-    'http://localhost',
-    'http://localhost:8000',
-    'http://localhost:3000',
+    'https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za',
     APP_URL
 ]);
 
@@ -87,3 +85,4 @@ ini_set('session.use_strict_mode', 1);
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     ini_set('session.cookie_secure', 1);
 }
+ini_set('session.cookie_samesite', 'Strict');

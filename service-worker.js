@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v38';
+const CACHE_NAME = 'ai-fluency-cache-v39';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -157,7 +157,7 @@ self.addEventListener('fetch', event => {
           .catch(error => {
             // Network request failed, show offline page for HTML requests
             if (request.headers.get('accept') && request.headers.get('accept').includes('text/html')) {
-              return caches.match('/offline.html');
+              return caches.match('/public/offline.html');
             }
           });
       })
