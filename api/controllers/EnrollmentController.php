@@ -229,10 +229,10 @@ class EnrollmentController extends BaseController
             }
 
             if (isset($data['completion_percentage'])) {
-                $updateData['completion_percentage'] = (float)$data['completion_percentage'];
+                $updateData['progress_percentage'] = (float)$data['completion_percentage'];
 
-                if ($updateData['completion_percentage'] >= 100) {
-                    $updateData['completion_date'] = date('Y-m-d H:i:s');
+                if ($updateData['progress_percentage'] >= 100) {
+                    $updateData['completed_at'] = date('Y-m-d H:i:s');
                     $updateData['status'] = 'completed';
                 }
             }

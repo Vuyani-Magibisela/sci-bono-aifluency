@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v32';
+const CACHE_NAME = 'ai-fluency-cache-v38';
 const urlsToCache = [
   '/',
   '/index.html',

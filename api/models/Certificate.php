@@ -15,7 +15,7 @@ class Certificate extends BaseModel
         'user_id',
         'course_id',
         'certificate_number',
-        'issue_date',
+        'issued_date',
         'certificate_url',
         'verification_code', // Phase 6
         'template_id',       // Phase 6
@@ -45,7 +45,7 @@ class Certificate extends BaseModel
      */
     public function getByUser(int $userId, ?int $limit = null, ?int $offset = null): array
     {
-        return $this->all(['user_id' => $userId], 'issue_date DESC', $limit, $offset);
+        return $this->all(['user_id' => $userId], 'issued_date DESC', $limit, $offset);
     }
 
     /**
@@ -58,7 +58,7 @@ class Certificate extends BaseModel
      */
     public function getByCourse(int $courseId, ?int $limit = null, ?int $offset = null): array
     {
-        return $this->all(['course_id' => $courseId], 'issue_date DESC', $limit, $offset);
+        return $this->all(['course_id' => $courseId], 'issued_date DESC', $limit, $offset);
     }
 
     /**
@@ -122,7 +122,7 @@ class Certificate extends BaseModel
             'user_id' => $userId,
             'course_id' => $courseId,
             'certificate_number' => $certificateNumber,
-            'issue_date' => date('Y-m-d H:i:s'),
+            'issued_date' => date('Y-m-d'),
             'certificate_url' => $certificateUrl
         ]);
     }
@@ -232,7 +232,7 @@ class Certificate extends BaseModel
         try {
             // Check if enrollment is complete
             $stmt = $this->pdo->prepare("
-                SELECT completion_percentage
+                SELECT progress_percentage
                 FROM enrollments
                 WHERE user_id = :user_id AND course_id = :course_id
                 LIMIT 1
@@ -248,7 +248,7 @@ class Certificate extends BaseModel
             }
 
             // Check if completed (100%)
-            return $enrollment->completion_percentage >= 100;
+            return $enrollment->progress_percentage >= 100;
         } catch (\PDOException $e) {
             error_log("Database error in isEligibleForCertificate: " . $e->getMessage());
             return false;
@@ -271,7 +271,7 @@ class Certificate extends BaseModel
                     FROM {$this->table} c
                     JOIN users u ON c.user_id = u.id
                     JOIN courses co ON c.course_id = co.id
-                    ORDER BY c.issue_date DESC";
+                    ORDER BY c.issued_date DESC";
 
             if ($limit !== null) {
                 $sql .= " LIMIT {$limit}";

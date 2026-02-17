@@ -87,11 +87,14 @@ class Course extends BaseModel
                 return null;
             }
 
-            // Get modules for this course
+            // Get modules for this course with lessons count
             $modulesStmt = $this->pdo->prepare("
-                SELECT * FROM modules
-                WHERE course_id = :course_id
-                ORDER BY `order` ASC
+                SELECT m.*, COUNT(l.id) as lessons_count
+                FROM modules m
+                LEFT JOIN lessons l ON l.module_id = m.id AND l.is_published = 1
+                WHERE m.course_id = :course_id
+                GROUP BY m.id
+                ORDER BY m.order_index ASC
             ");
             $modulesStmt->execute(['course_id' => $courseId]);
             $course->modules = $modulesStmt->fetchAll(PDO::FETCH_OBJ);
@@ -142,7 +145,7 @@ class Course extends BaseModel
             // Get completion rate
             $completionStmt = $this->pdo->prepare("
                 SELECT
-                    COUNT(DISTINCT CASE WHEN e.completion_percentage = 100 THEN e.user_id END) as completed,
+                    COUNT(DISTINCT CASE WHEN e.progress_percentage = 100 THEN e.user_id END) as completed,
                     COUNT(DISTINCT e.user_id) as total
                 FROM enrollments e
                 WHERE e.course_id = :course_id

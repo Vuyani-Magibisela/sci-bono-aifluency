@@ -45,7 +45,7 @@ define('CORS_ALLOWED_ORIGINS', [
 
 // Security Settings
 define('PASSWORD_MIN_LENGTH', 8);
-define('RATE_LIMIT_REQUESTS', 100); // requests per window
+define('RATE_LIMIT_REQUESTS', 1000); // requests per window (increased for development)
 define('RATE_LIMIT_WINDOW', 3600); // 1 hour in seconds
 
 // File Upload Settings
@@ -69,8 +69,12 @@ date_default_timezone_set('Africa/Johannesburg');
 // Error Reporting
 if (APP_DEBUG) {
     error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
+    // Do NOT display errors in API responses - they break JSON format
+    // Errors are logged to api/logs/error.log instead
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    ini_set('log_errors', 1);
+    ini_set('error_log', __DIR__ . '/../logs/php_errors.log');
 } else {
     error_reporting(0);
     ini_set('display_errors', 0);

@@ -89,6 +89,43 @@ class SchoolController extends BaseController
     }
 
     /**
+     * GET /api/schools/public
+     * Public list of schools for signup dropdown — no authentication required.
+     *
+     * Query params:
+     *   ?search=        Partial name match (min 2 chars)
+     *   ?organization_id=  Filter by organization
+     */
+    public function publicList(array $params): void
+    {
+        $search         = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $organizationId = isset($_GET['organization_id']) ? (int)$_GET['organization_id'] : null;
+
+        $sql = "SELECT id, name, district, city, school_type
+                FROM schools
+                WHERE is_active = 1";
+        $bindings = [];
+
+        if ($organizationId) {
+            $sql .= " AND organization_id = :organization_id";
+            $bindings[':organization_id'] = $organizationId;
+        }
+
+        if (strlen($search) >= 2) {
+            $sql .= " AND name LIKE :search";
+            $bindings[':search'] = '%' . $search . '%';
+        }
+
+        $sql .= " ORDER BY name ASC LIMIT 5000";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($bindings);
+        $schools = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        Response::success(['schools' => $schools, 'total' => count($schools)]);
+    }
+
+    /**
      * GET /api/schools/:id
      * Get single school
      */

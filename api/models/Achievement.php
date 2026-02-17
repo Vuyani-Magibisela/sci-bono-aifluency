@@ -280,7 +280,7 @@ class Achievement extends BaseModel
         $stmt = $this->pdo->prepare("
             SELECT COUNT(DISTINCT lesson_id) as count
             FROM lesson_progress
-            WHERE user_id = :user_id AND completion_percentage >= 100
+            WHERE user_id = :user_id AND status = 'completed'
         ");
         $stmt->execute(['user_id' => $userId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -308,15 +308,15 @@ class Achievement extends BaseModel
     {
         $minCompletion = $criteria['min_completion'] ?? 100;
         $stmt = $this->pdo->prepare("
-            SELECT completion_percentage
+            SELECT progress_percentage
             FROM enrollments
             WHERE user_id = :user_id
-            ORDER BY completion_percentage DESC
+            ORDER BY progress_percentage DESC
             LIMIT 1
         ");
         $stmt->execute(['user_id' => $userId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result && $result['completion_percentage'] >= $minCompletion;
+        return $result && $result['progress_percentage'] >= $minCompletion;
     }
 
     private function checkQuizScore(int $userId, array $criteria, array $eventData): bool
@@ -541,7 +541,7 @@ class Achievement extends BaseModel
                     $stmt = $this->pdo->prepare("
                         SELECT COUNT(DISTINCT lesson_id) as count
                         FROM lesson_progress
-                        WHERE user_id = :user_id AND completion_percentage >= 100
+                        WHERE user_id = :user_id AND status = 'completed'
                     ");
                     $stmt->execute(['user_id' => $userId]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -680,7 +680,7 @@ class Achievement extends BaseModel
                     $stmt = $this->pdo->prepare("
                         SELECT COUNT(*) as count
                         FROM enrollments
-                        WHERE user_id = :user_id AND completion_percentage >= :min_completion
+                        WHERE user_id = :user_id AND progress_percentage >= :min_completion
                     ");
                     $stmt->execute(['user_id' => $userId, 'min_completion' => $minCompletion]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);

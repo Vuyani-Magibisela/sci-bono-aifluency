@@ -408,6 +408,161 @@
                 justify-content: center;
             }
         }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .loading-spinner i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Enrollment Status Badge */
+        .enrollment-status-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(75, 251, 157, 0.95);
+            color: #00753E;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Course Progress Bar */
+        .course-progress {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: var(--background-light);
+            border-radius: 10px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--grey-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-success {
+            border-left: 4px solid #00D084;
+        }
+
+        .toast-success i {
+            color: #00D084;
+        }
+
+        .toast-error {
+            border-left: 4px solid #FB4B4B;
+        }
+
+        .toast-error i {
+            color: #FB4B4B;
+        }
+
+        .toast-warning {
+            border-left: 4px solid #FB8C00;
+        }
+
+        .toast-warning i {
+            color: #FB8C00;
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast-info i {
+            color: var(--primary-color);
+        }
+
+        .toast i {
+            font-size: 1.5rem;
+        }
+
+        .toast span {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* Error Message */
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .error-message i {
+            font-size: 4rem;
+            color: #FB4B4B;
+            margin-bottom: 1rem;
+        }
+
+        .error-message p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Disabled Button State */
+        .course-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .no-courses {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -461,128 +616,16 @@
 
         <!-- Courses Grid -->
         <div class="courses-container">
-            <div class="courses-grid">
-                <!-- AI Fluency Course -->
-                <div class="course-card-detailed">
-                    <div class="course-header-image">
-                        <img src="../images/AIFluency.png" alt="AI Fluency Course">
-                        <span class="partner-badge">Microsoft Partner</span>
-                    </div>
-                    <div class="course-body">
-                        <h2 class="course-title">AI Fluency Course</h2>
-                        <div class="course-badges">
-                            <span class="badge type"><i class="fas fa-graduation-cap"></i> Theory + Interactive</span>
-                            <span class="badge duration"><i class="fas fa-clock"></i> 2.5 Hours</span>
-                        </div>
-                        <p class="course-description">
-                            A comprehensive introduction to Artificial Intelligence covering foundational concepts,
-                            generative AI technologies, advanced search capabilities, responsible AI practices,
-                            Microsoft Copilot tools, and the broader societal impact of AI. Perfect for beginners
-                            looking to understand and apply AI in their daily work and life.
-                        </p>
-                        <div class="course-topics">
-                            <h4>What You'll Learn:</h4>
-                            <div class="topics-list">
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>AI Foundations</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Generative AI</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Advanced Search</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Responsible AI</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Microsoft Copilot</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>AI Impact & Ethics</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="course-action">
-                            <span class="modules-count">
-                                <i class="fas fa-book"></i>
-                                6 Modules
-                            </span>
-                            <a href="aifluencystart.html" class="course-btn">
-                                Start Learning <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI For Youth Course -->
-                <div class="course-card-detailed">
-                    <div class="course-header-image">
-                        <img src="../images/Course image.jpg" alt="AI For Youth Course">
-                        <span class="partner-badge">Intel Partner</span>
-                    </div>
-                    <div class="course-body">
-                        <h2 class="course-title">AI For Youth</h2>
-                        <div class="course-badges">
-                            <span class="badge type"><i class="fas fa-project-diagram"></i> Theory + Projects</span>
-                            <span class="badge age"><i class="fas fa-users"></i> Ages 10-19</span>
-                        </div>
-                        <p class="course-description">
-                            Learn the fundamentals of Artificial Intelligence through hands-on projects and real-world
-                            applications. This course combines theoretical knowledge with practical programming and
-                            problem-solving, covering statistical data analysis, natural language processing, and
-                            computer vision. Build a strong foundation in AI for the digital age.
-                        </p>
-                        <div class="course-topics">
-                            <h4>What You'll Learn:</h4>
-                            <div class="topics-list">
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Statistical Data Analysis</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Data Visualization</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Natural Language Processing</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Computer Vision</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Python Programming</span>
-                                </div>
-                                <div class="topic-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Real-world Projects</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="course-action">
-                            <span class="modules-count">
-                                <i class="fas fa-tasks"></i>
-                                Multiple Projects
-                            </span>
-                            <span class="coming-soon-badge">
-                                <i class="fas fa-hourglass-half"></i> Coming Soon
-                            </span>
-                        </div>
-                    </div>
+            <div class="courses-grid" id="courses-grid">
+                <!-- Courses will be loaded dynamically -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading courses...</p>
                 </div>
             </div>
         </div>
 
-        <!-- Features Section -->
+        <!-- Features Section 
         <section class="features-section">
             <h2>Why Choose Our Platform?</h2>
             <p class="subtitle">Comprehensive AI education designed for South African learners</p>
@@ -636,9 +679,9 @@
                     <p>Tailored content for learners from ages 5 to 35, ensuring relevant and engaging experiences</p>
                 </div>
             </div>
-        </section>
+        </section> -->
 
-        <!-- Call to Action Section -->
+        <!-- Call to Action Section 
         <section class="cta-section">
             <h2>Ready to Start Your AI Journey?</h2>
             <p>Join thousands of South African learners building AI fluency for the future</p>
@@ -653,7 +696,7 @@
                 </a>
             </div>
         </section>
-    </main>
+    </main>  -->
 
     <footer>
         <div class="footer-content">
@@ -672,6 +715,9 @@
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/header-template.js"></script>
+
+    <!-- Student Courses Dynamic Loading -->
+    <script src="../js/student-courses.js"></script>
 
     <!-- Legacy Scripts -->
 </body>

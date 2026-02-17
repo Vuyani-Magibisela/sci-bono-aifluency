@@ -17,6 +17,7 @@ use App\Utils\Response;
 abstract class BaseController
 {
     protected \PDO $pdo;
+    private ?object $cachedCurrentUser = null;
 
     public function __construct(\PDO $pdo)
     {
@@ -26,16 +27,21 @@ abstract class BaseController
     /**
      * Get current authenticated user from JWT token
      *
-     * Validates JWT token and checks against blacklist.
-     * This method is called by all protected endpoints.
+     * Validates JWT token, checks against blacklist, then enriches with
+     * full DB record so that primary_organization_id and primary_school_id
+     * are available for organizational scoping (fixes Phase 10 JWT gap).
      *
-     * @return object User object with id, email, role properties
+     * @return object Full user object from DB (includes org/school IDs)
      * @throws Response 401 if not authenticated or token blacklisted
      */
     protected function getCurrentUser(): object
     {
-        $currentUser = JWTHandler::getCurrentUser();
-        if (!$currentUser) {
+        if ($this->cachedCurrentUser !== null) {
+            return $this->cachedCurrentUser;
+        }
+
+        $jwtUser = JWTHandler::getCurrentUser();
+        if (!$jwtUser) {
             Response::unauthorized('Authentication required');
         }
 
@@ -45,7 +51,17 @@ abstract class BaseController
             Response::unauthorized('Token has been revoked. Please login again.');
         }
 
-        return $currentUser;
+        // Fetch full user record from DB so org/school IDs are available
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ? AND is_active = 1 LIMIT 1");
+        $stmt->execute([$jwtUser->id]);
+        $fullUser = $stmt->fetch(\PDO::FETCH_OBJ);
+
+        if (!$fullUser) {
+            Response::unauthorized('User not found or inactive');
+        }
+
+        $this->cachedCurrentUser = $fullUser;
+        return $this->cachedCurrentUser;
     }
 
     /**

@@ -18,7 +18,7 @@
 <meta name="theme-color" content="#4B6EFB">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AI Fluency">
+<meta name="apple-mobile-web-app-title" content="Sci-Bono AI Discovery Hub">
 
 <!-- Manifest and Icons -->
 <link rel="manifest" href="manifest.json">
@@ -41,156 +41,321 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fluency - Digital Infographic</title>
+    <title>Sci-Bono AI Discovery Hub</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* Landing page overrides */
+        .landing-page {
+            font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        /* --- HERO --- */
+        .home-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 10% 160px;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .home-hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            line-height: 1.15;
+        }
+
+        .home-hero h1 span {
+            color: #f2b030;
+        }
+
+        .home-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-cta a {
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero-cta a:hover {
+            transform: translateY(-3px);
+        }
+
+        .hero-cta .cta-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .hero-cta .cta-secondary {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.7);
+            color: white;
+        }
+
+        .hero-cta .cta-secondary:hover {
+            border-color: white;
+        }
+
+        /* --- FEATURE CARDS --- */
+        .features-container {
+            max-width: 1100px;
+            margin: -80px auto 0;
+            padding: 0 20px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: #f0f4ff;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+
+        .feature-card p {
+            color: #718096;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* --- COURSE SECTION --- */
+        .home-courses {
+            padding: 40px 20px 80px;
+            background-color: #f9fafb;
+        }
+
+        .home-courses h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 40px;
+        }
+
+        .home-course-card {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+        }
+
+        .home-course-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .home-course-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .home-course-card-body {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .home-course-card-body h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .home-course-card-body p {
+            color: #718096;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .home-course-card-body .course-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .home-course-card-body .course-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* --- iOS BANNER --- */
+        .ios-install-banner {
+            display: none;
+            background-color: #f8f9fa;
+            padding: 10px 40px 10px 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .ios-install-banner .close-banner {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #999;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .home-hero {
+                padding: 60px 6% 140px;
+            }
+
+            .home-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .features-container {
+                grid-template-columns: 1fr;
+                margin-top: -60px;
+                padding: 0 15px 40px;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Dynamic Header (Phase 1 Integration) -->
     <div id="header-placeholder"></div>
 
-    <!-- Static Header (Disabled - Keep for rollback)
-    <header>
-        <div class="logo">
-            <img src="images/logo.svg" alt="Logo of Sci-Bono Discovery Center on a blue circular background">
-            <h1>Sci-Bono AI Fluency</h1>
-        </div>
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="courses.html" class="nav-link">Courses</a></li>
-                <li><a href="projects.html" class="nav-link">Projects</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-            </ul>
-        </nav>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="header-controls">
-            <a href="/public/login.html" class="header-btn login-btn">Login</a>
-            <a href="/public/signup.html" class="header-btn signup-btn">Sign Up</a>
-        </div>
-    </header>
+    <main class="landing-page">
 
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="close-menu" id="closeMenu" aria-label="Close menu">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html" class="mobile-nav-link">Home</a></li>
-            <li><a href="courses.html" class="mobile-nav-link">Courses</a></li>
-            <li><a href="projects.html" class="mobile-nav-link">Projects</a></li>
-            <li><a href="#about" class="mobile-nav-link">About</a></li>
-        </ul>
-    </div>
-    -->
-
-    <main>
-
-    <div id="ios-install-banner" style="display: none; background-color: #f8f9fa; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #dee2e6;">
+    <div class="ios-install-banner" id="ios-install-banner">
         <p>Install this app on your iPhone: tap <i class="fas fa-share"></i> and then "Add to Home Screen" <i class="fas fa-plus"></i></p>
-        <button onclick="this.parentNode.style.display='none'" style="background: none; border: none; cursor: pointer; float: right; margin-top: -25px;"><i class="fas fa-times"></i></button>
+        <button class="close-banner" onclick="this.parentNode.style.display='none'"><i class="fas fa-times"></i></button>
     </div>
-        
+
     <script>
-        // Show banner only on iOS devices
         if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
             if (!navigator.standalone) {
-            document.getElementById('ios-install-banner').style.display = 'block';
+                document.getElementById('ios-install-banner').style.display = 'block';
             }
         }
     </script>
 
-        <section class="landing">
-            <div class="hero">
-                <h1>AI <span class="highlight">Fluency</span></h1>
-                <h2>Understanding the world of Artificial Intelligence</h2>
-                <p>An interactive guide for All</p>
-                <div class="cta-buttons">
-                    <button id="startCourse">Start Learning</button>
-                    <button id="viewContents">View Contents</button>
-                </div>
+        <!-- Hero Section -->
+        <header class="home-hero">
+            <h1>Master <span>AI Fluency</span><br>Shape <span>Tomorrow</span></h1>
+            <p>44 lessons across 6 modules — self-paced learning with quizzes, projects, and certificates for grades 8–12.</p>
+            <div class="hero-cta">
+                <a href="public/signup.html" class="cta-primary">Start Learning</a>
+                <a href="about-course.html" class="cta-secondary">View Course</a>
             </div>
-            
-            <div class="hero-graphics">
-                <div class="graphic-element" id="brain">
-                    <svg width="150" height="150" viewBox="0 0 100 100">
-                        <path d="M50,10 C25,10 10,30 10,50 C10,75 30,90 50,90 C70,90 90,75 90,50 C90,30 75,10 50,10 Z" stroke="#6E4BFB" fill="none" stroke-width="2"/>
-                        <path d="M30,40 Q50,20 70,40" stroke="#6E4BFB" fill="none" stroke-width="2"/>
-                        <path d="M30,60 Q50,80 70,60" stroke="#6E4BFB" fill="none" stroke-width="2"/>
-                        <path d="M50,30 L50,70" stroke="#6E4BFB" fill="none" stroke-width="2"/>
-                        <path d="M30,50 L70,50" stroke="#6E4BFB" fill="none" stroke-width="2"/>
-                    </svg>
-                </div>
-                <div class="graphic-element" id="data">
-                    <svg width="120" height="120" viewBox="0 0 100 100">
-                        <rect x="20" y="20" width="60" height="10" rx="2" fill="#4BFB9D"/>
-                        <rect x="20" y="35" width="40" height="10" rx="2" fill="#4BFB9D"/>
-                        <rect x="20" y="50" width="50" height="10" rx="2" fill="#4BFB9D"/>
-                        <rect x="20" y="65" width="30" height="10" rx="2" fill="#4BFB9D"/>
-                    </svg>
-                </div>
-                <div class="graphic-element" id="robot">
-                    <svg width="140" height="140" viewBox="0 0 100 100">
-                        <rect x="30" y="30" width="40" height="50" rx="5" fill="#FB4B4B"/>
-                        <rect x="25" y="20" width="50" height="15" rx="7" fill="#FB4B4B"/>
-                        <circle cx="40" cy="45" r="5" fill="white"/>
-                        <circle cx="60" cy="45" r="5" fill="white"/>
-                        <rect x="40" y="60" width="20" height="5" rx="2" fill="white"/>
-                    </svg>
-                </div>
-                <div class="graphic-element" id="scibono">
-                    
+        </header>
+
+        <!-- Feature Cards -->
+        <section class="features-container">
+            <div class="feature-card">
+                <div class="card-icon"><i class="fas fa-brain"></i></div>
+                <h3>AI Foundations</h3>
+                <p>From machine learning to generative AI, build a solid understanding of how artificial intelligence works and shapes our world.</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                <h3>Hands-On Projects</h3>
+                <p>Apply what you learn through real-world projects and quizzes designed to test your understanding and build practical skills.</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon"><i class="fas fa-certificate"></i></div>
+                <h3>Earn Certificates</h3>
+                <p>Complete modules and earn certificates that recognise your AI literacy — perfect for your academic and career portfolio.</p>
+            </div>
+        </section>
+
+        <!-- Course Section -->
+        <section class="home-courses" id="courses">
+            <h2>Our Course</h2>
+            <div class="home-course-card">
+                <img src="images/AIFluency.png" alt="AI Discovery Course">
+                <div class="home-course-card-body">
+                    <h3>AI Discovery Course</h3>
+                    <p>A comprehensive introduction to Artificial Intelligence covering foundations, generative AI, advanced search, responsible AI practices, Microsoft Copilot, and the broader impact of AI on society.</p>
+                    <a href="about-course.html" class="course-link">View Course</a>
                 </div>
             </div>
         </section>
 
-        <section class="courses-section" id="courses">
-            <h2>Courses</h2>
-            <div class="course-cards">
-                <div class="course-card">
-                    <div class="course-image">
-                        <!-- <i class="fas fa-robot"></i> -->
-                        <img src="images/AIFluency.png" alt="">
-                    </div>
-                    <h3>AI Fluency Course</h3>
-                    <p>A comprehensive introduction to Artificial Intelligence covering foundations, generative AI, advanced search, responsible AI practices, Microsoft Copilot, and the broader impact of AI on society.</p>
-                    <a href="aifluencystart.html" class="course-btn">View Course</a>
-                </div>
-                <div class="course-card">
-                    <div class="course-image">
-                        <!-- <i class="fas fa-code"></i> -->
-                         <img src="images/Course image.jpg" alt="">
-                    </div>
-                    <h3>Ai For Youth</h3>
-                    <p>Learn the basics of programming and computational thinking. Build a strong foundation in coding principles and problem-solving techniques essential for the digital age.</p>
-                    <a href="#" class="course-btn">View Course</a>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2025 AI Fluency Course</p>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
-            </div>
-        </div>
-    </footer>
+    <!-- Dynamic Footer -->
+    <div id="footer-placeholder"></div>
 
     <!-- Authentication System (Phase 1) -->
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/header-template.js"></script>
+    <script src="js/footer-template.js"></script>
 
     <!-- Legacy Scripts -->
     <script src="js/script.js"></script>

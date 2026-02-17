@@ -86,8 +86,8 @@ class Lesson extends BaseModel
         try {
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
-                WHERE module_id = :module_id AND `order` > :current_order AND is_published = 1
-                ORDER BY `order` ASC
+                WHERE module_id = :module_id AND `order_index` > :current_order AND is_published = 1
+                ORDER BY `order_index` ASC
                 LIMIT 1
             ");
             $stmt->execute([
@@ -113,8 +113,8 @@ class Lesson extends BaseModel
         try {
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
-                WHERE module_id = :module_id AND `order` < :current_order AND is_published = 1
-                ORDER BY `order` DESC
+                WHERE module_id = :module_id AND `order_index` < :current_order AND is_published = 1
+                ORDER BY `order_index` DESC
                 LIMIT 1
             ");
             $stmt->execute([

@@ -30,12 +30,8 @@ const HeaderTemplate = {
                 <div class="header-container">
                     <!-- Logo and Title -->
                     <div class="header-brand">
-                        <a href="/index.html" class="logo-link">
-                            <img src="/images/logo.svg" alt="Sci-Bono AI Fluency" class="logo-image">
-                            <div class="brand-text">
-                                <h1 class="brand-title">Sci-Bono</h1>
-                                <span class="brand-subtitle">AI Fluency</span>
-                            </div>
+                        <a href="${isAuthenticated ? Auth.getDashboardUrl() : '/index.html'}" class="logo-link">
+                            <img src="/assets/sci-bono-logo.png" alt="Sci-Bono" class="logo-image">
                         </a>
                     </div>
 
@@ -43,7 +39,7 @@ const HeaderTemplate = {
                     <nav class="main-nav" role="navigation" aria-label="Main navigation">
                         <ul class="nav-links">
                             <li><a href="/index.html" class="nav-link">Home</a></li>
-                            <li><a href="/student/courses.html" class="nav-link">Courses</a></li>
+                            <li><a href="${this.getCoursesUrl(user)}" class="nav-link">Courses</a></li>
                             ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="nav-link">Projects</a></li>' : ''}
                             <li><a href="#about" class="nav-link">About</a></li>
                         </ul>
@@ -67,7 +63,7 @@ const HeaderTemplate = {
                     <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
                         <ul class="mobile-nav-links">
                             <li><a href="/index.html" class="mobile-nav-link">Home</a></li>
-                            <li><a href="/student/courses.html" class="mobile-nav-link">Courses</a></li>
+                            <li><a href="${this.getCoursesUrl(user)}" class="mobile-nav-link">Courses</a></li>
                             ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="mobile-nav-link">Projects</a></li>' : ''}
                             <li><a href="#about" class="mobile-nav-link">About</a></li>
                             ${isAuthenticated ? `
@@ -238,8 +234,7 @@ const HeaderTemplate = {
         const currentPage = currentPath.split('/').pop() || 'index.html';
 
         // Don't highlight nav links on dashboard pages
-        const dashboardPages = ['admin-dashboard.html', 'student-dashboard.html', 'instructor-dashboard.html'];
-        if (dashboardPages.includes(currentPage)) {
+        if (currentPage === 'dashboard.html') {
             return;
         }
 
@@ -252,9 +247,8 @@ const HeaderTemplate = {
             }
 
             const linkPath = new URL(link.href, window.location.origin).pathname;
-            const linkPage = linkPath.split('/').pop();
 
-            if (linkPage === currentPage) {
+            if (linkPath === currentPath) {
                 link.classList.add('active');
             } else {
                 link.classList.remove('active');
@@ -294,6 +288,28 @@ const HeaderTemplate = {
         }
 
         return name.substring(0, maxLength - 3) + '...';
+    },
+
+    /**
+     * Get the correct courses URL based on user role
+     *
+     * @param {Object|null} user - User object
+     * @returns {string} Courses URL
+     */
+    getCoursesUrl(user) {
+        // If not authenticated, go to student courses (public view)
+        if (!user || !user.role) {
+            return '/student/courses.html';
+        }
+
+        // Check if user is admin, teacher, or organizational admin
+        const adminRoles = ['superadmin', 'orgadmin', 'schooladmin', 'teacher', 'admin', 'instructor'];
+        if (adminRoles.includes(user.role.toLowerCase())) {
+            return '/admin/courses.html';
+        }
+
+        // Default to student courses
+        return '/student/courses.html';
     },
 
     /**

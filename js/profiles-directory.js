@@ -195,7 +195,7 @@ function displayProfiles() {
     document.querySelectorAll('.profile-card').forEach(card => {
         card.addEventListener('click', () => {
             const userId = card.dataset.userId;
-            window.location.href = `profile-view.html?id=${userId}`;
+            window.location.href = `view.html?id=${userId}`;
         });
     });
 

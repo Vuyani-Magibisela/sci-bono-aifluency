@@ -28,8 +28,9 @@ const InstructorDashboard = {
             return;
         }
 
-        // Update welcome message
+        // Update welcome message and sidebar profile
         this.updateWelcomeMessage(user);
+        this.updateSidebarProfile(user);
 
         // Load dashboard data
         await this.loadDashboardData();
@@ -48,6 +49,20 @@ const InstructorDashboard = {
         if (welcomeElement) {
             const firstName = user.name ? user.name.split(' ')[0] : 'Instructor';
             welcomeElement.textContent = `Welcome, ${firstName}!`;
+        }
+    },
+
+    /**
+     * Update sidebar profile with actual user info
+     */
+    updateSidebarProfile(user) {
+        const profileName = document.querySelector('.profile-name');
+        if (profileName) {
+            profileName.textContent = user.name || 'Instructor';
+        }
+        const profileRole = document.querySelector('.profile-role');
+        if (profileRole) {
+            profileRole.textContent = user.role === 'teacher' ? 'Instructor' : (user.role || 'Instructor');
         }
     },
 
@@ -85,10 +100,15 @@ const InstructorDashboard = {
      */
     async loadMyCourses() {
         try {
-            const response = await API.get('/courses');
-            // Filter to only courses where current user is instructor
-            // In Phase 5, backend will filter automatically
-            return response.data || [];
+            const user = Auth.getUser();
+            // Use instructor_id filter if available, and include unpublished
+            const endpoint = user
+                ? `/courses?instructor_id=${user.id}&published=false`
+                : '/courses';
+            const response = await API.get(endpoint);
+            const raw = response.data || {};
+            // Response::paginated returns { items: [...], pagination: {...} }
+            return Array.isArray(raw) ? raw : (raw.items || raw.data || []);
         } catch (error) {
             console.warn('InstructorDashboard: Could not load courses:', error);
             return [];
@@ -99,24 +119,32 @@ const InstructorDashboard = {
      * Load grading queue (pending quizzes and projects)
      */
     async loadGradingQueue() {
+        let projects = [];
+        let quizzes = [];
+
+        // Load pending project submissions (endpoint may not exist yet)
         try {
-            // Get pending project submissions
             const projectsResponse = await API.get('/projects/submissions/pending');
-            const projects = projectsResponse.data || [];
-
-            // Get quiz attempts that need review
-            const quizzesResponse = await API.get('/quizzes/attempts/pending-review');
-            const quizzes = quizzesResponse.data || [];
-
-            return {
-                projects: projects,
-                quizzes: quizzes,
-                total: projects.length + quizzes.length
-            };
+            const raw = projectsResponse.data || [];
+            projects = Array.isArray(raw) ? raw : (raw.items || []);
         } catch (error) {
-            console.warn('InstructorDashboard: Could not load grading queue:', error);
-            return { projects: [], quizzes: [], total: 0 };
+            console.warn('InstructorDashboard: Could not load project submissions:', error);
         }
+
+        // Load quiz attempts that need review (endpoint may not exist yet)
+        try {
+            const quizzesResponse = await API.get('/quizzes/attempts/pending-review');
+            const raw = quizzesResponse.data || [];
+            quizzes = Array.isArray(raw) ? raw : (raw.items || []);
+        } catch (error) {
+            console.warn('InstructorDashboard: Could not load quiz reviews:', error);
+        }
+
+        return {
+            projects: projects,
+            quizzes: quizzes,
+            total: projects.length + quizzes.length
+        };
     },
 
     /**
@@ -124,7 +152,7 @@ const InstructorDashboard = {
      */
     async loadInstructorStats() {
         try {
-            const response = await API.get('/users/me/instructor-stats');
+            const response = await API.get('/users/me/stats');
             return response.data || this.getDefaultStats();
         } catch (error) {
             console.warn('InstructorDashboard: Could not load stats:', error);
@@ -151,6 +179,8 @@ const InstructorDashboard = {
     renderMyCourses(courses) {
         const container = document.getElementById('my-courses');
         if (!container) return;
+
+        if (!Array.isArray(courses)) courses = [];
 
         if (courses.length === 0) {
             container.innerHTML = this.getEmptyState(
@@ -202,13 +232,6 @@ const InstructorDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
-
-        // Animate course cards with fade-in effect
-        Animations.fadeInStagger('.instructor-course', {
-            duration: 0.8,
-            stagger: 0.15,
-            y: 20
-        });
     },
 
     /**
@@ -278,84 +301,24 @@ const InstructorDashboard = {
 
         html += '</div>';
         container.innerHTML = html;
-
-        // Animate grading queue items with slide-in effect
-        Animations.slideIn('.grading-item', 'up', {
-            duration: 0.6,
-            stagger: 0.1,
-            distance: 30
-        });
-
-        // Add pulse effect to urgent items (submitted more than 3 days ago)
-        const gradingItems = container.querySelectorAll('.grading-item');
-        gradingItems.forEach((item, index) => {
-            // Add a subtle pulse to the first few items to draw attention
-            if (index < 3) {
-                setTimeout(() => {
-                    Animations.pulse(item, {
-                        scale: 1.02,
-                        duration: 0.4,
-                        repeat: 1
-                    });
-                }, 1000 + (index * 200));
-            }
-        });
     },
 
     /**
      * Render instructor statistics with animations
      */
     renderInstructorStats(stats) {
-        // Animate stat cards in sequence
-        setTimeout(() => {
-            this.updateStatCard('total-courses', stats.total_courses || 0);
-        }, 100);
-
-        setTimeout(() => {
-            this.updateStatCard('total-students', stats.total_students || 0);
-        }, 200);
-
-        setTimeout(() => {
-            this.updateStatCard('pending-grading', stats.pending_grading || 0);
-        }, 300);
-
-        setTimeout(() => {
-            this.updateStatCard('completion-rate', `${stats.average_completion_rate || 0}%`);
-        }, 400);
-
-        // Animate dashboard cards with stagger effect
-        Animations.fadeInStagger('.dashboard-card', {
-            duration: 0.8,
-            stagger: 0.1,
-            y: 30
-        });
+        this.updateStatCard('total-courses', stats.total_courses || 0);
+        this.updateStatCard('total-students', stats.total_students || 0);
+        this.updateStatCard('pending-grading', stats.pending_grading || 0);
+        this.updateStatCard('completion-rate', `${stats.average_completion_rate || 0}%`);
     },
 
     /**
-     * Update individual stat card with animation
+     * Update individual stat card
      */
     updateStatCard(id, value) {
         const element = document.getElementById(id);
-        if (!element) return;
-
-        // Check if value is a number for counter animation
-        if (typeof value === 'number') {
-            Animations.animateCounter(element, value, {
-                duration: 1.5,
-                decimals: 0
-            });
-        } else if (typeof value === 'string' && value.includes('%')) {
-            // Animate percentage
-            const percentage = parseFloat(value.replace('%', ''));
-            if (!isNaN(percentage)) {
-                Animations.animatePercentage(element, percentage, {
-                    duration: 1.5
-                });
-            } else {
-                element.textContent = value;
-            }
-        } else {
-            // Non-numeric value, just set text
+        if (element) {
             element.textContent = value;
         }
     },

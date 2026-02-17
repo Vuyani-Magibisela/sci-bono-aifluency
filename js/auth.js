@@ -85,7 +85,7 @@ const Auth = {
                 return { success: true, data: response.data };
             }
 
-            return { success: false, message: response.message || 'Registration failed' };
+            return { success: false, message: response.message || 'Registration failed', errors: response.errors || {} };
 
         } catch (error) {
             console.error('Registration error:', error);

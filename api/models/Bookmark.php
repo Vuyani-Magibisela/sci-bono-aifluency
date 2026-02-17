@@ -1,4 +1,6 @@
 <?php
+namespace App\Models;
+
 /**
  * Bookmark Model (Phase 5D Priority 5)
  * Handles bookmark operations
@@ -26,7 +28,7 @@ class Bookmark extends BaseModel {
                 WHERE b.user_id = ?
                 ORDER BY b.created_at DESC";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -42,7 +44,7 @@ class Bookmark extends BaseModel {
         $sql = "SELECT COUNT(*) as count FROM {$this->table}
                 WHERE user_id = ? AND lesson_id = ?";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId, $lessonId]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -80,7 +82,7 @@ class Bookmark extends BaseModel {
         $sql = "DELETE FROM {$this->table}
                 WHERE user_id = ? AND lesson_id = ?";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$userId, $lessonId]);
     }
 
@@ -107,7 +109,7 @@ class Bookmark extends BaseModel {
      */
     public function getBookmarkCount($userId) {
         $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE user_id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);

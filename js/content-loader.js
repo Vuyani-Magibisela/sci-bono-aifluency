@@ -38,7 +38,7 @@ const ContentLoader = {
     async loadLesson(lessonId) {
         try {
             const response = await API.get(`/lessons/${lessonId}`);
-            return response.data;
+            return response.data.lesson || response.data;
         } catch (error) {
             console.error('ContentLoader: Error loading lesson:', error);
             throw error;
@@ -183,7 +183,7 @@ const ContentLoader = {
                     <div class="chapter-card-content">
                         <h3>${this.escapeHtml(lesson.title)}</h3>
                         ${lesson.subtitle ? `<p>${this.escapeHtml(lesson.subtitle)}</p>` : ''}
-                        <a href="?lesson_id=${lesson.id}" class="chapter-link">Begin Lesson</a>
+                        <a href="../lessons/lesson-dynamic.html?lesson_id=${lesson.id}" class="chapter-link">Begin Lesson</a>
                     </div>
                 </div>
             `;
@@ -320,10 +320,8 @@ const ContentLoader = {
         }
 
         try {
-            await API.post('/progress/lesson/start', {
-                lesson_id: lessonId
-            });
-            console.log('ContentLoader: Lesson start tracked');
+            await API.post(`/lessons/${lessonId}/start`, {});
+            console.log('ContentLoader: Lesson start tracked for lesson', lessonId);
         } catch (error) {
             console.warn('ContentLoader: Could not track lesson start:', error);
         }
@@ -341,12 +339,12 @@ const ContentLoader = {
         }
 
         try {
-            await API.post('/progress/lesson/complete', {
-                lesson_id: lessonId
-            });
-            console.log('ContentLoader: Lesson completion tracked');
+            await API.post(`/lessons/${lessonId}/complete`, {});
+            console.log('ContentLoader: Lesson completion tracked for lesson', lessonId);
+            return true;
         } catch (error) {
             console.warn('ContentLoader: Could not track lesson completion:', error);
+            return false;
         }
     },
 
@@ -364,8 +362,7 @@ const ContentLoader = {
         }
 
         try {
-            const response = await API.post('/progress/quiz/submit', {
-                quiz_id: quizId,
+            const response = await API.post(`/quizzes/${quizId}/submit`, {
                 answers: answers
             });
             return response.data;

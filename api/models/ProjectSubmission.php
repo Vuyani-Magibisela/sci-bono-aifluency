@@ -14,7 +14,7 @@ class ProjectSubmission extends BaseModel
     protected array $fillable = [
         'project_id',
         'user_id',
-        'submission_url',
+        'submission_file_url',
         'submission_text',
         'status',
         'score',

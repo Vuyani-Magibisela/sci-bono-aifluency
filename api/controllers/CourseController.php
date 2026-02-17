@@ -73,13 +73,24 @@ class CourseController extends BaseController
             }
         }
 
-        // Add enrollment status for authenticated users
-        if ($currentUser) {
-            foreach ($courses as $course) {
+        // Add enrollment status and modules count
+        foreach ($courses as $course) {
+            // Add modules count
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM modules WHERE course_id = ? AND is_published = 1");
+            $stmt->execute([$course->id]);
+            $count = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $course->modules_count = (int)$count['count'];
+
+            // Add enrollment status for authenticated users
+            if ($currentUser) {
                 $enrollment = $this->enrollmentModel->getUserEnrollment($currentUser->id, $course->id);
                 $course->is_enrolled = $enrollment !== null;
                 $course->enrollment_status = $enrollment ? $enrollment->status : null;
-                $course->completion_percentage = $enrollment ? $enrollment->completion_percentage : 0;
+                $course->completion_percentage = $enrollment ? $enrollment->progress_percentage : 0;
+            } else {
+                $course->is_enrolled = false;
+                $course->enrollment_status = null;
+                $course->completion_percentage = 0;
             }
         }
 
@@ -116,11 +127,11 @@ class CourseController extends BaseController
         // Load course details for each enrollment
         $courses = [];
         foreach ($enrollments as $enrollment) {
-            $course = $this->courseModel->getById($enrollment->course_id);
+            $course = $this->courseModel->find($enrollment->course_id);
             if ($course) {
                 $course->enrollment_status = $enrollment->status;
                 $course->enrolled_at = $enrollment->enrolled_at;
-                $course->completion_percentage = $enrollment->completion_percentage;
+                $course->completion_percentage = $enrollment->progress_percentage;
                 $course->is_enrolled = true;
                 $courses[] = $course;
             }
@@ -169,7 +180,71 @@ class CourseController extends BaseController
             $enrollment = $this->enrollmentModel->getUserEnrollment($currentUser->id, $courseId);
             $course->is_enrolled = $enrollment !== null;
             $course->enrollment_status = $enrollment ? $enrollment->status : null;
-            $course->completion_percentage = $enrollment ? $enrollment->completion_percentage : 0;
+            $course->completion_percentage = $enrollment ? $enrollment->progress_percentage : 0;
+
+            // Add completion percentage and gating status for each module
+            if ($enrollment) {
+                foreach ($course->modules as $module) {
+                    // Calculate module completion percentage (lesson-based)
+                    $stmt = $this->pdo->prepare("
+                        SELECT
+                            COUNT(l.id) as total_lessons,
+                            COUNT(CASE WHEN lp.status = 'completed' THEN 1 END) as completed_lessons
+                        FROM lessons l
+                        LEFT JOIN lesson_progress lp ON l.id = lp.lesson_id AND lp.user_id = :user_id
+                        WHERE l.module_id = :module_id AND l.is_published = 1
+                    ");
+                    $stmt->execute([
+                        'user_id' => $currentUser->id,
+                        'module_id' => $module->id
+                    ]);
+                    $progress = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                    $module->completion_percentage = 0;
+                    if ($progress['total_lessons'] > 0) {
+                        $module->completion_percentage = round(($progress['completed_lessons'] / $progress['total_lessons']) * 100);
+                    }
+
+                    // Check if user passed the quiz for this module
+                    $quizStmt = $this->pdo->prepare("
+                        SELECT COUNT(*) as cnt
+                        FROM quiz_attempts qa
+                        JOIN quizzes q ON qa.quiz_id = q.id
+                        WHERE q.module_id = :module_id AND qa.user_id = :user_id AND qa.passed = TRUE
+                    ");
+                    $quizStmt->execute(['module_id' => $module->id, 'user_id' => $currentUser->id]);
+                    $quizResult = $quizStmt->fetch(\PDO::FETCH_ASSOC);
+                    $module->quiz_passed = (int)$quizResult['cnt'] > 0;
+
+                    // Check if user submitted a project for this module
+                    $projectStmt = $this->pdo->prepare("
+                        SELECT COUNT(*) as cnt
+                        FROM project_submissions ps
+                        JOIN projects p ON ps.project_id = p.id
+                        WHERE p.module_id = :module_id AND ps.user_id = :user_id
+                    ");
+                    $projectStmt->execute(['module_id' => $module->id, 'user_id' => $currentUser->id]);
+                    $projectResult = $projectStmt->fetch(\PDO::FETCH_ASSOC);
+                    $module->project_submitted = (int)$projectResult['cnt'] > 0;
+                }
+            } else {
+                // Not enrolled - set all module completion to 0
+                foreach ($course->modules as $module) {
+                    $module->completion_percentage = 0;
+                    $module->quiz_passed = false;
+                    $module->project_submitted = false;
+                }
+            }
+        } else {
+            // Not authenticated - set enrollment to false and completion to 0
+            $course->is_enrolled = false;
+            $course->enrollment_status = null;
+            $course->completion_percentage = 0;
+            foreach ($course->modules as $module) {
+                $module->completion_percentage = 0;
+                $module->quiz_passed = false;
+                $module->project_submitted = false;
+            }
         }
 
         Response::success([

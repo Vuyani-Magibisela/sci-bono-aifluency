@@ -1,33 +1,22 @@
 /**
- * Project Upload Manager
- * Phase B: Complete Core Features
- * Handles project submission with drag-drop file upload
+ * Project Submission Manager
+ * Handles project detail display and submission (URL or text)
  */
 
 const ProjectUpload = {
     projectId: null,
     project: null,
-    selectedFiles: [],
-    uploadedFileIds: [],
 
     /**
-     * Initialize project upload page
+     * Initialize project submission page
      */
     async init(projectId) {
         this.projectId = projectId;
-
-        // Load project details
         await this.loadProject();
-
-        // Load submission history
-        await this.loadSubmissionHistory();
-
-        // Setup event listeners
-        this.setupEventListeners();
     },
 
     /**
-     * Load project details
+     * Load project details from API
      */
     async loadProject() {
         const spinner = document.getElementById('loading-spinner');
@@ -36,331 +25,208 @@ const ProjectUpload = {
         spinner.style.display = 'block';
 
         try {
-            const response = await apiRequest(`/api/projects/${this.projectId}`);
+            const response = await API.get(`/projects/${this.projectId}`);
 
-            if (response.success && response.project) {
-                this.project = response.project;
+            if (response.success && response.data && response.data.project) {
+                this.project = response.data.project;
                 this.renderProject();
+                await this.loadSubmissions();
+                this.setupEventListeners();
                 content.style.display = 'block';
             } else {
                 showToast('Project not found', 'error');
-                setTimeout(() => {
-                    window.location.href = 'student-dashboard.html';
-                }, 2000);
             }
         } catch (error) {
-            showToast('Failed to load project: ' + error.message, 'error');
+            console.error('Failed to load project:', error);
+            showToast('Failed to load project. Please try again.', 'error');
         } finally {
             spinner.style.display = 'none';
         }
     },
 
     /**
-     * Render project details
+     * Render project details into the page
      */
     renderProject() {
-        document.getElementById('project-title').textContent = this.project.title;
-        document.getElementById('breadcrumb-project').textContent = this.project.title;
-        document.getElementById('module-title').textContent = this.project.module_title || 'Module';
-        document.getElementById('max-score').textContent = this.project.max_score || 100;
+        const p = this.project;
 
-        document.getElementById('project-description').innerHTML = this.formatText(this.project.description);
-        document.getElementById('project-instructions').innerHTML = this.formatText(this.project.instructions);
-        document.getElementById('project-requirements').innerHTML = this.formatText(this.project.requirements);
+        document.getElementById('project-title').textContent = p.title;
+        document.getElementById('breadcrumb-project').textContent = p.title;
+        document.getElementById('module-title').textContent = p.module_title || 'Module ' + (p.module_id || '');
+        document.getElementById('max-score').textContent = p.max_score != null ? p.max_score : 100;
+
+        document.getElementById('project-description').innerHTML = this.formatText(p.description);
+        document.getElementById('project-instructions').innerHTML = this.formatText(p.instructions);
+        document.getElementById('project-requirements').innerHTML = this.formatText(p.requirements);
+
+        // Show due date if set
+        if (p.due_date) {
+            const due = new Date(p.due_date).toLocaleDateString('en-ZA', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const dueDateEl = document.getElementById('due-date-display');
+            if (dueDateEl) {
+                dueDateEl.textContent = 'Due: ' + due;
+                dueDateEl.style.display = 'inline-block';
+            }
+        }
     },
 
     /**
-     * Setup event listeners
+     * Load and render previous submissions
+     */
+    async loadSubmissions() {
+        const user = Auth.getUser();
+        if (!user) return;
+
+        try {
+            const response = await API.get(`/projects/${this.projectId}/submissions`);
+            const submissions = response.data?.submissions || [];
+
+            if (submissions.length > 0) {
+                this.renderSubmissionHistory(submissions);
+
+                // Show previous submission alert
+                const latest = submissions[0];
+                const prevSection = document.getElementById('previous-submissions');
+                const prevInfo = document.getElementById('previous-submission-info');
+                if (prevSection && prevInfo) {
+                    const submittedDate = latest.submitted_at
+                        ? new Date(latest.submitted_at).toLocaleDateString('en-ZA')
+                        : 'N/A';
+                    prevSection.style.display = 'block';
+                    prevInfo.textContent = `Last submitted on ${submittedDate}. Status: ${this.formatStatus(latest.status)}. You can submit a new version below.`;
+                }
+            }
+        } catch (error) {
+            console.warn('Could not load submission history:', error);
+        }
+    },
+
+    /**
+     * Set up form event listeners
      */
     setupEventListeners() {
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
         const submitBtn = document.getElementById('submit-btn');
-        const notesTextarea = document.getElementById('submission-notes');
+        const submissionUrl = document.getElementById('submission-url');
+        const submissionText = document.getElementById('submission-notes');
+        const tabUrl = document.getElementById('tab-url');
+        const tabText = document.getElementById('tab-text');
+        const panelUrl = document.getElementById('panel-url');
+        const panelText = document.getElementById('panel-text');
 
-        // Drop zone click
-        dropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
+        // Tab switching
+        if (tabUrl && tabText) {
+            tabUrl.addEventListener('click', () => {
+                tabUrl.classList.add('active');
+                tabText.classList.remove('active');
+                panelUrl.style.display = 'block';
+                panelText.style.display = 'none';
+                this.updateSubmitButton();
+            });
 
-        // File input change
-        fileInput.addEventListener('change', (e) => {
-            this.handleFiles(e.target.files);
-        });
+            tabText.addEventListener('click', () => {
+                tabText.classList.add('active');
+                tabUrl.classList.remove('active');
+                panelText.style.display = 'block';
+                panelUrl.style.display = 'none';
+                this.updateSubmitButton();
+            });
+        }
 
-        // Drag and drop events
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
-        });
+        // Validate on input
+        if (submissionUrl) {
+            submissionUrl.addEventListener('input', () => this.updateSubmitButton());
+        }
+        if (submissionText) {
+            submissionText.addEventListener('input', (e) => {
+                const counter = document.getElementById('notes-char-count');
+                if (counter) counter.textContent = e.target.value.length;
+                this.updateSubmitButton();
+            });
+        }
 
         // Submit button
-        submitBtn.addEventListener('click', () => {
-            this.submitProject();
-        });
-
-        // Notes character count
-        notesTextarea.addEventListener('input', (e) => {
-            document.getElementById('notes-char-count').textContent = e.target.value.length;
-        });
-    },
-
-    /**
-     * Handle selected files
-     */
-    handleFiles(files) {
-        const validFiles = [];
-
-        for (let file of files) {
-            // Validate file
-            const validation = this.validateFile(file);
-            if (!validation.valid) {
-                showToast(validation.error, 'error');
-                continue;
-            }
-
-            // Check for duplicates
-            const isDuplicate = this.selectedFiles.some(f => f.name === file.name && f.size === file.size);
-            if (isDuplicate) {
-                showToast(`File "${file.name}" already added`, 'warning');
-                continue;
-            }
-
-            validFiles.push(file);
-        }
-
-        if (validFiles.length > 0) {
-            this.selectedFiles.push(...validFiles);
-            this.renderFileList();
-            this.updateSubmitButton();
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => this.submitProject());
         }
     },
 
     /**
-     * Validate file
-     */
-    validateFile(file) {
-        const maxSize = 10 * 1024 * 1024; // 10MB
-        const allowedExtensions = ['pdf', 'doc', 'docx', 'zip', 'png', 'jpg', 'jpeg'];
-
-        // Check size
-        if (file.size > maxSize) {
-            return {
-                valid: false,
-                error: `File "${file.name}" exceeds 10MB limit`
-            };
-        }
-
-        // Check extension
-        const extension = file.name.split('.').pop().toLowerCase();
-        if (!allowedExtensions.includes(extension)) {
-            return {
-                valid: false,
-                error: `File type ".${extension}" not allowed`
-            };
-        }
-
-        return { valid: true };
-    },
-
-    /**
-     * Render file list
-     */
-    renderFileList() {
-        const fileList = document.getElementById('file-list');
-
-        if (this.selectedFiles.length === 0) {
-            fileList.style.display = 'none';
-            return;
-        }
-
-        fileList.style.display = 'block';
-        fileList.innerHTML = '<h3>Selected Files</h3>';
-
-        const list = document.createElement('div');
-        list.className = 'files-grid';
-
-        this.selectedFiles.forEach((file, index) => {
-            const fileCard = document.createElement('div');
-            fileCard.className = 'file-card';
-
-            const icon = this.getFileIcon(file.name);
-            const size = this.formatFileSize(file.size);
-
-            fileCard.innerHTML = `
-                <div class="file-icon">
-                    <i class="${icon}"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">${this.escapeHtml(file.name)}</div>
-                    <div class="file-size">${size}</div>
-                </div>
-                <button class="file-remove" onclick="ProjectUpload.removeFile(${index})" title="Remove file">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-            list.appendChild(fileCard);
-        });
-
-        fileList.appendChild(list);
-    },
-
-    /**
-     * Remove file from selection
-     */
-    removeFile(index) {
-        this.selectedFiles.splice(index, 1);
-        this.renderFileList();
-        this.updateSubmitButton();
-    },
-
-    /**
-     * Update submit button state
+     * Enable/disable submit button based on input
      */
     updateSubmitButton() {
         const submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = this.selectedFiles.length === 0;
+        if (!submitBtn) return;
+
+        const tabUrl = document.getElementById('tab-url');
+        const isUrlMode = tabUrl && tabUrl.classList.contains('active');
+
+        if (isUrlMode) {
+            const url = (document.getElementById('submission-url')?.value || '').trim();
+            submitBtn.disabled = url.length === 0;
+        } else {
+            const text = (document.getElementById('submission-notes')?.value || '').trim();
+            submitBtn.disabled = text.length === 0;
+        }
     },
 
     /**
-     * Submit project
+     * Submit the project to the API
      */
     async submitProject() {
-        if (this.selectedFiles.length === 0) {
-            showToast('Please select at least one file', 'error');
+        const submitBtn = document.getElementById('submit-btn');
+        const tabUrl = document.getElementById('tab-url');
+        const isUrlMode = tabUrl && tabUrl.classList.contains('active');
+
+        const submissionUrl = (document.getElementById('submission-url')?.value || '').trim();
+        const submissionText = (document.getElementById('submission-notes')?.value || '').trim();
+
+        if (isUrlMode && !submissionUrl) {
+            showToast('Please enter a URL for your submission', 'error');
+            return;
+        }
+        if (!isUrlMode && !submissionText) {
+            showToast('Please enter your submission text', 'error');
             return;
         }
 
-        const submitBtn = document.getElementById('submit-btn');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
         try {
-            // Upload each file
-            this.uploadedFileIds = [];
-            let uploadedCount = 0;
+            const body = {};
+            if (isUrlMode) {
+                body.submission_url = submissionUrl;
+            } else {
+                body.submission_text = submissionText;
+            }
 
-            for (const file of this.selectedFiles) {
-                const fileId = await this.uploadFile(file);
-                if (fileId) {
-                    this.uploadedFileIds.push(fileId);
-                    uploadedCount++;
+            const response = await API.post(`/projects/${this.projectId}/submit`, body);
 
-                    // Update progress
-                    submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Uploading... (${uploadedCount}/${this.selectedFiles.length})`;
+            if (response.success) {
+                showToast('Project submitted successfully!', 'success');
+
+                // Reset form
+                if (document.getElementById('submission-url')) document.getElementById('submission-url').value = '';
+                if (document.getElementById('submission-notes')) {
+                    document.getElementById('submission-notes').value = '';
+                    const counter = document.getElementById('notes-char-count');
+                    if (counter) counter.textContent = '0';
                 }
+
+                // Reload submissions
+                await this.loadSubmissions();
+            } else {
+                throw new Error(response.message || 'Submission failed');
             }
-
-            if (this.uploadedFileIds.length === 0) {
-                throw new Error('No files uploaded successfully');
-            }
-
-            // Create submission record
-            await this.createSubmission();
-
         } catch (error) {
+            console.error('Submission error:', error);
             showToast('Submission failed: ' + error.message, 'error');
+        } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Project';
-        }
-    },
-
-    /**
-     * Upload single file
-     */
-    async uploadFile(file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('type', 'project');
-        formData.append('metadata', JSON.stringify({
-            project_id: this.projectId,
-            project_title: this.project.title
-        }));
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                return data.file_id;
-            } else {
-                throw new Error(data.message || 'Upload failed');
-            }
-        } catch (error) {
-            console.error('File upload error:', error);
-            showToast(`Failed to upload "${file.name}"`, 'error');
-            return null;
-        }
-    },
-
-    /**
-     * Create submission record
-     */
-    async createSubmission() {
-        const notes = document.getElementById('submission-notes').value.trim();
-
-        const response = await apiRequest('/api/project-submissions', {
-            method: 'POST',
-            body: JSON.stringify({
-                project_id: this.projectId,
-                file_ids: this.uploadedFileIds,
-                notes: notes || null
-            })
-        });
-
-        if (response.success) {
-            showToast('Project submitted successfully!', 'success');
-
-            // Reset form
-            this.selectedFiles = [];
-            this.uploadedFileIds = [];
-            this.renderFileList();
-            document.getElementById('submission-notes').value = '';
-            document.getElementById('notes-char-count').textContent = '0';
-
-            // Reload submission history
-            await this.loadSubmissionHistory();
-
-            // Re-enable button
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Project';
-        } else {
-            throw new Error(response.message || 'Submission failed');
-        }
-    },
-
-    /**
-     * Load submission history
-     */
-    async loadSubmissionHistory() {
-        try {
-            const response = await apiRequest(`/api/project-submissions?project_id=${this.projectId}`);
-
-            if (response.success && response.submissions && response.submissions.length > 0) {
-                this.renderSubmissionHistory(response.submissions);
-            }
-        } catch (error) {
-            console.error('Failed to load submission history:', error);
+            this.updateSubmitButton();
         }
     },
 
@@ -370,150 +236,69 @@ const ProjectUpload = {
     renderSubmissionHistory(submissions) {
         const section = document.getElementById('submission-history-section');
         const list = document.getElementById('submission-history-list');
+        if (!section || !list) return;
 
         section.style.display = 'block';
         list.innerHTML = '';
-
-        // Show most recent submission alert
-        if (submissions.length > 0) {
-            const latest = submissions[0];
-            const prevSection = document.getElementById('previous-submissions');
-            const prevInfo = document.getElementById('previous-submission-info');
-
-            prevSection.style.display = 'block';
-            prevInfo.textContent = `Last submitted on ${this.formatDate(latest.submitted_at)}. Status: ${latest.status}. You can submit a new version below.`;
-        }
 
         submissions.forEach(submission => {
             const card = document.createElement('div');
             card.className = 'submission-card';
 
+            const submittedDate = submission.submitted_at
+                ? new Date(submission.submitted_at).toLocaleDateString('en-ZA', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                  })
+                : 'N/A';
+
             const statusClass = this.getStatusClass(submission.status);
+            const scoreHtml = submission.score != null
+                ? `<div class="submission-score"><i class="fas fa-star"></i> Score: <strong>${submission.score} / ${this.project.max_score || 100}</strong></div>`
+                : '';
+            const feedbackHtml = submission.feedback
+                ? `<div class="submission-feedback"><strong>Feedback:</strong><p>${this.escapeHtml(submission.feedback)}</p></div>`
+                : '';
+
+            let contentHtml = '';
+            const fileUrl = submission.submission_file_url || submission.submission_url;
+            if (fileUrl) {
+                contentHtml = `<div class="submission-content"><strong>Submitted URL:</strong> <a href="${this.escapeHtml(fileUrl)}" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> View Submission</a></div>`;
+            } else if (submission.submission_text) {
+                contentHtml = `<div class="submission-content"><strong>Submitted Text:</strong><p class="submission-text-preview">${this.escapeHtml(submission.submission_text.substring(0, 300))}${submission.submission_text.length > 300 ? '...' : ''}</p></div>`;
+            }
 
             card.innerHTML = `
                 <div class="submission-header">
-                    <div>
-                        <strong>Submitted:</strong> ${this.formatDate(submission.submitted_at)}
-                    </div>
-                    <span class="status-badge ${statusClass}">
-                        ${this.formatStatus(submission.status)}
-                    </span>
+                    <div><i class="fas fa-clock"></i> <strong>${submittedDate}</strong></div>
+                    <span class="status-badge ${statusClass}">${this.formatStatus(submission.status)}</span>
                 </div>
-                ${submission.score !== null ? `
-                    <div class="submission-score">
-                        <strong>Score:</strong> ${submission.score} / ${this.project.max_score}
-                    </div>
-                ` : ''}
-                ${submission.feedback ? `
-                    <div class="submission-feedback">
-                        <strong>Feedback:</strong>
-                        <p>${this.escapeHtml(submission.feedback)}</p>
-                    </div>
-                ` : ''}
-                ${submission.notes ? `
-                    <div class="submission-notes">
-                        <strong>Your Notes:</strong>
-                        <p>${this.escapeHtml(submission.notes)}</p>
-                    </div>
-                ` : ''}
-                <div class="submission-files">
-                    <strong>Files:</strong>
-                    <div class="file-links">
-                        ${this.renderSubmissionFiles(submission.files || [])}
-                    </div>
-                </div>
+                ${contentHtml}
+                ${scoreHtml}
+                ${feedbackHtml}
             `;
 
             list.appendChild(card);
         });
     },
 
-    /**
-     * Render submission files
-     */
-    renderSubmissionFiles(files) {
-        if (!files || files.length === 0) {
-            return '<p class="text-muted">No files</p>';
-        }
+    // ---- Helpers ----
 
-        return files.map(file => `
-            <a href="/api/files/${file.id}" target="_blank" class="file-link">
-                <i class="${this.getFileIcon(file.filename)}"></i>
-                ${this.escapeHtml(file.filename)}
-            </a>
-        `).join('');
-    },
-
-    /**
-     * Helper: Get file icon
-     */
-    getFileIcon(filename) {
-        const ext = filename.split('.').pop().toLowerCase();
-        const icons = {
-            'pdf': 'fas fa-file-pdf',
-            'doc': 'fas fa-file-word',
-            'docx': 'fas fa-file-word',
-            'zip': 'fas fa-file-archive',
-            'png': 'fas fa-file-image',
-            'jpg': 'fas fa-file-image',
-            'jpeg': 'fas fa-file-image'
-        };
-        return icons[ext] || 'fas fa-file';
-    },
-
-    /**
-     * Helper: Format file size
-     */
-    formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    },
-
-    /**
-     * Helper: Format text with line breaks
-     */
     formatText(text) {
         if (!text) return '<p class="text-muted">No information provided.</p>';
         return '<p>' + this.escapeHtml(text).replace(/\n/g, '<br>') + '</p>';
     },
 
-    /**
-     * Helper: Get status class
-     */
     getStatusClass(status) {
-        const classes = {
-            'submitted': 'status-pending',
-            'graded': 'status-graded',
-            'pending': 'status-pending'
-        };
-        return classes[status] || 'status-default';
+        const map = { submitted: 'status-pending', graded: 'status-graded', pending: 'status-pending', returned: 'status-returned' };
+        return map[status] || 'status-default';
     },
 
-    /**
-     * Helper: Format status
-     */
     formatStatus(status) {
-        const labels = {
-            'submitted': 'Submitted',
-            'graded': 'Graded',
-            'pending': 'Pending Review'
-        };
-        return labels[status] || status;
+        const map = { submitted: 'Submitted', graded: 'Graded', pending: 'Pending Review', returned: 'Returned for Revision' };
+        return map[status] || (status || 'Unknown');
     },
 
-    /**
-     * Helper: Format date
-     */
-    formatDate(dateString) {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-    },
-
-    /**
-     * Helper: Escape HTML
-     */
     escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');

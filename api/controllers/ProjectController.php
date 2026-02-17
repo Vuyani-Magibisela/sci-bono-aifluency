@@ -53,7 +53,7 @@ class ProjectController extends BaseController
             $total = $this->projectModel->count(['module_id' => $moduleId]);
         } elseif ($courseId) {
             if ($publishedOnly) {
-                $projects = $this->projectModel->getPublishedByCourse($courseId, $pageSize, $offset);
+                $projects = $this->projectModel->getPublishedByCourseWithModules($courseId, $pageSize, $offset);
                 $total = $this->projectModel->count(['course_id' => $courseId, 'is_published' => true]);
             } else {
                 $projects = $this->projectModel->getByCourse($courseId, $pageSize, $offset);
@@ -69,12 +69,35 @@ class ProjectController extends BaseController
             }
         }
 
-        // Add submission info for students
+        // Add submission info and quiz pass status for students
         if ($currentUser && $currentUser->role === 'student') {
             foreach ($projects as $project) {
-                $submission = $this->submissionModel->getUserSubmission($currentUser->id, $project->id);
-                $project->user_submission = $submission;
+                $project->user_submission = $this->submissionModel->getUserSubmission($currentUser->id, $project->id);
                 $project->is_overdue = $this->projectModel->isOverdue($project->id);
+
+                // Determine if the module quiz has been passed (unlocks the project)
+                if (!empty($project->module_id)) {
+                    $stmt = $this->pdo->prepare("
+                        SELECT COALESCE(MAX(qa.passed), 0) as quiz_passed
+                        FROM quiz_attempts qa
+                        JOIN quizzes q ON qa.quiz_id = q.id
+                        WHERE qa.user_id = ? AND q.module_id = ?
+                    ");
+                    $stmt->execute([$currentUser->id, $project->module_id]);
+                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    // Also unlock if no quiz exists for this module
+                    $hasQuiz = $this->pdo->prepare("SELECT COUNT(*) FROM quizzes WHERE module_id = ? AND is_published = 1");
+                    $hasQuiz->execute([$project->module_id]);
+                    $quizCount = (int)$hasQuiz->fetchColumn();
+                    $project->quiz_passed = ($quizCount === 0) || ($row && (bool)$row['quiz_passed']);
+                } else {
+                    $project->quiz_passed = true;
+                }
+
+                // Also unlock if user already submitted (don't lock them out after submitting)
+                if ($project->user_submission !== null) {
+                    $project->quiz_passed = true;
+                }
             }
         }
 
@@ -366,7 +389,12 @@ class ProjectController extends BaseController
         }
 
         $projectId = (int)$params['id'];
-        $data = $_POST;
+
+        // Accept JSON body or form data
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         $project = $this->projectModel->find($projectId);
 
@@ -374,20 +402,9 @@ class ProjectController extends BaseController
             Response::notFound('Project not found');
         }
 
-        // Validate input
-        $validator = Validator::make($data);
-
         // Must have either submission_url or submission_text
-        if (!isset($data['submission_url']) && !isset($data['submission_text'])) {
+        if (empty($data['submission_url']) && empty($data['submission_text'])) {
             Response::error('Either submission_url or submission_text is required', 400);
-        }
-
-        if (isset($data['submission_url'])) {
-            $validator->url('submission_url', 'Submission URL must be valid');
-        }
-
-        if ($validator->fails()) {
-            Response::validationError($validator->errors());
         }
 
         // Create submission
@@ -397,8 +414,8 @@ class ProjectController extends BaseController
             $submissionId = $this->submissionModel->submitProject([
                 'project_id' => $projectId,
                 'user_id' => $currentUser->id,
-                'submission_url' => isset($data['submission_url']) ? $data['submission_url'] : null,
-                'submission_text' => isset($data['submission_text']) ? Validator::sanitize($data['submission_text']) : null
+                'submission_file_url' => !empty($data['submission_url']) ? $data['submission_url'] : null,
+                'submission_text' => !empty($data['submission_text']) ? Validator::sanitize($data['submission_text']) : null
             ]);
 
             if (!$submissionId) {

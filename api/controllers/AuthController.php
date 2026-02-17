@@ -49,9 +49,20 @@ class AuthController extends BaseController
         $validator->required('password_confirmation', 'Password confirmation is required')
                   ->matches('password_confirmation', 'password', 'Passwords do not match');
 
-        // Role is optional, default to 'student'
+        // Role is optional, default to 'student' (no self-registration as orgadmin/superadmin)
+        $role = isset($data['role']) ? $data['role'] : 'student';
         if (isset($data['role'])) {
-            $validator->in('role', ['student', 'instructor', 'admin'], 'Invalid role specified');
+            $validator->in('role', ['student', 'teacher', 'schooladmin'], 'Invalid role specified');
+        }
+
+        // Role-specific field validation
+        if ($role === 'student') {
+            $validator->required('gender', 'Gender is required for students');
+            $validator->required('grade', 'Grade is required for students');
+            $validator->required('date_of_birth', 'Date of birth is required for students');
+            $validator->required('school_id', 'School is required for students');
+        } elseif (in_array($role, ['teacher', 'schooladmin'])) {
+            $validator->required('school_id', 'School is required');
         }
 
         // Check for validation errors
@@ -66,13 +77,35 @@ class AuthController extends BaseController
             ]);
         }
 
+        // Resolve organization from selected school
+        $primaryOrganizationId = null;
+        $primarySchoolId       = null;
+        if (!empty($data['school_id'])) {
+            $schoolId = (int)$data['school_id'];
+            $stmt = $this->pdo->prepare(
+                "SELECT id, organization_id FROM schools WHERE id = :id AND is_active = 1 LIMIT 1"
+            );
+            $stmt->execute([':id' => $schoolId]);
+            $school = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($school) {
+                $primarySchoolId       = $school['id'];
+                $primaryOrganizationId = $school['organization_id'];
+            }
+        }
+
         // Sanitize input
         $userData = [
-            'name' => Validator::sanitize($data['name']),
-            'email' => Validator::sanitizeEmail($data['email']),
-            'password' => $data['password'], // Will be hashed by User model
-            'role' => isset($data['role']) ? $data['role'] : 'student',
-            'is_active' => true
+            'name'                    => Validator::sanitize($data['name']),
+            'email'                   => Validator::sanitizeEmail($data['email']),
+            'password'                => $data['password'], // Will be hashed by User model
+            'role'                    => $role,
+            'is_active'               => true,
+            'contact_number'          => isset($data['contact_number']) ? Validator::sanitize($data['contact_number']) : null,
+            'gender'                  => isset($data['gender']) ? $data['gender'] : null,
+            'grade'                   => isset($data['grade']) ? Validator::sanitize($data['grade']) : null,
+            'date_of_birth'           => isset($data['date_of_birth']) ? $data['date_of_birth'] : null,
+            'primary_school_id'       => $primarySchoolId,
+            'primary_organization_id' => $primaryOrganizationId,
         ];
 
         // Create user
@@ -193,15 +226,15 @@ class AuthController extends BaseController
      */
     public function refresh(array $params = []): void
     {
-        // Get request data
-        $data = $_POST;
+        // index.php already parses the JSON body into $_POST.
+        // Accept both snake_case (frontend sends 'refresh_token')
+        // and camelCase ('refreshToken') for backwards compatibility.
+        $refreshToken = $_POST['refresh_token'] ?? $_POST['refreshToken'] ?? null;
 
         // Validate input
-        if (!isset($data['refreshToken']) || empty($data['refreshToken'])) {
+        if (empty($refreshToken)) {
             Response::error('Refresh token is required', 400);
         }
-
-        $refreshToken = $data['refreshToken'];
 
         // Refresh tokens using callback to fetch user
         $getUserCallback = function($userId) {

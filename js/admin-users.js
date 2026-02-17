@@ -300,14 +300,23 @@ const UserManagement = {
         document.getElementById('user-modal-title').textContent = user ? 'Edit User' : 'Create User';
         document.getElementById('submit-user-btn').textContent = user ? 'Update User' : 'Create User';
 
-        // Show/hide password field
+        // Configure password field
         const passwordGroup = document.getElementById('password-group');
+        const passwordInput = document.getElementById('user-password');
+        const passwordLabel = document.getElementById('password-label');
+        const passwordHint = document.getElementById('password-hint');
+        passwordGroup.style.display = 'block';
         if (user) {
-            passwordGroup.style.display = 'none';
-            document.getElementById('user-password').removeAttribute('required');
+            // Editing: password is optional
+            passwordInput.removeAttribute('required');
+            passwordInput.value = '';
+            passwordLabel.textContent = 'New Password (leave blank to keep current)';
+            passwordHint.textContent = 'Minimum 8 characters. Leave blank to keep current password.';
         } else {
-            passwordGroup.style.display = 'block';
-            document.getElementById('user-password').setAttribute('required', 'required');
+            // Creating: password is required
+            passwordInput.setAttribute('required', 'required');
+            passwordLabel.textContent = 'Password *';
+            passwordHint.textContent = 'Minimum 8 characters';
         }
 
         // Populate assignable roles
@@ -324,10 +333,29 @@ const UserManagement = {
             this.loadSchoolsForOrganization(user.primary_organization_id, 'user-school', user.primary_school_id);
 
             document.getElementById('user-title').value = user.organizational_title || '';
-            document.getElementById('user-active').checked = user.is_active;
+            document.getElementById('user-active').checked = !!user.is_active;
         } else {
             document.getElementById('user-form').reset();
             document.getElementById('user-active').checked = true;
+
+            // Auto-populate org/school for schooladmin
+            if (this.currentUser.role === 'schooladmin') {
+                const orgSelect = document.getElementById('user-organization');
+                if (this.currentUser.primary_organization_id) {
+                    orgSelect.value = this.currentUser.primary_organization_id;
+                    orgSelect.setAttribute('disabled', 'disabled');
+                    this.loadSchoolsForOrganization(
+                        this.currentUser.primary_organization_id, 'user-school',
+                        this.currentUser.primary_school_id
+                    ).then(() => {
+                        const schoolSelect = document.getElementById('user-school');
+                        if (this.currentUser.primary_school_id) {
+                            schoolSelect.value = this.currentUser.primary_school_id;
+                            schoolSelect.setAttribute('disabled', 'disabled');
+                        }
+                    });
+                }
+            }
         }
 
         // Show modal
@@ -382,11 +410,34 @@ const UserManagement = {
             }
         }
 
+        // FormData skips disabled fields — read org/school directly from DOM
+        if (!userData.organization_id) {
+            const orgVal = document.getElementById('user-organization')?.value;
+            if (orgVal) userData.organization_id = parseInt(orgVal);
+        }
+        if (!userData.school_id) {
+            const schoolVal = document.getElementById('user-school')?.value;
+            if (schoolVal) userData.school_id = parseInt(schoolVal);
+        }
+
         try {
             let response;
             if (this.editingUserId) {
-                // Update user
-                response = await API.put(`/users/${this.editingUserId}`, userData);
+                // Update user — remap field names to match backend's $allowedFields
+                const updateData = {
+                    name: userData.name,
+                    email: userData.email,
+                    role: userData.role,
+                    primary_organization_id: userData.organization_id,
+                    primary_school_id: userData.school_id,
+                    organizational_title: userData.organizational_title,
+                    is_active: userData.is_active !== false
+                };
+                // Only include password if the user typed one
+                if (userData.password && userData.password.trim()) {
+                    updateData.password = userData.password;
+                }
+                response = await API.put(`/users/${this.editingUserId}`, updateData);
             } else {
                 // Create user - use proper field names
                 const createData = {
@@ -788,6 +839,11 @@ const UserManagement = {
      */
     closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
+        // Re-enable any disabled selects so they work correctly next time the modal opens
+        if (modalId === 'user-modal') {
+            document.getElementById('user-organization')?.removeAttribute('disabled');
+            document.getElementById('user-school')?.removeAttribute('disabled');
+        }
     },
 
     showError(message) {

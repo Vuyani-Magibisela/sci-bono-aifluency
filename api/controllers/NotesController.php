@@ -21,13 +21,15 @@ class NotesController extends BaseController {
      * Get notes for a specific lesson
      * GET /api/notes/lesson/:lessonId
      */
-    public function getNotesByLesson($lessonId) {
+    public function getNotesByLesson($params) {
         try {
             // Verify authentication
             $currentUser = $this->getCurrentUser();
 
+            $lessonId = $params['lessonId'] ?? null;
+
             // Validate lesson ID
-            if (!is_numeric($lessonId) || $lessonId <= 0) {
+            if (!$lessonId || !is_numeric($lessonId) || $lessonId <= 0) {
                 Response::badRequest('Invalid lesson ID');
                 return;
             }
@@ -84,13 +86,17 @@ class NotesController extends BaseController {
 
             // Get request body
             $data = json_decode(file_get_contents('php://input'), true);
+            if (!is_array($data)) {
+                $data = [];
+            }
 
             // Validate input
-            $validator = new \App\Utils\Validator();
-            $validator->required($data, ['lesson_id', 'content']);
+            $validator = \App\Utils\Validator::make($data);
+            $validator->required('lesson_id', 'Lesson ID is required')
+                      ->required('content', 'Content is required');
 
-            if (!$validator->isValid()) {
-                Response::badRequest('Validation failed', $validator->getErrors());
+            if ($validator->fails()) {
+                Response::badRequest('Validation failed', $validator->errors());
                 return;
             }
 
@@ -114,9 +120,8 @@ class NotesController extends BaseController {
             );
 
             Response::success([
-                'message' => 'Note saved successfully',
                 'note' => $note
-            ], 201);
+            ], 'Note saved successfully', 201);
 
         } catch (Exception $e) {
             error_log("Error creating/updating note: " . $e->getMessage());
@@ -128,13 +133,15 @@ class NotesController extends BaseController {
      * Delete a note
      * DELETE /api/notes/:noteId
      */
-    public function deleteNote($noteId) {
+    public function deleteNote($params) {
         try {
             // Verify authentication
             $currentUser = $this->getCurrentUser();
 
+            $noteId = $params['noteId'] ?? null;
+
             // Validate note ID
-            if (!is_numeric($noteId) || $noteId <= 0) {
+            if (!$noteId || !is_numeric($noteId) || $noteId <= 0) {
                 Response::badRequest('Invalid note ID');
                 return;
             }

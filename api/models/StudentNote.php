@@ -1,12 +1,16 @@
 <?php
+namespace App\Models;
+
+use PDO;
+
 /**
  * StudentNote Model (Phase 5D Priority 4)
  * Handles student note operations
  */
-
 class StudentNote extends BaseModel {
-    protected $table = 'student_notes';
-    protected $fillable = ['user_id', 'lesson_id', 'note_content'];
+    protected string $table = 'student_notes';
+    protected array $fillable = ['user_id', 'lesson_id', 'note_content'];
+    protected array $hidden = [];
 
     /**
      * Get all notes for a specific user and lesson
@@ -19,7 +23,7 @@ class StudentNote extends BaseModel {
                 WHERE user_id = ? AND lesson_id = ?
                 ORDER BY updated_at DESC";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId, $lessonId]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,7 +32,7 @@ class StudentNote extends BaseModel {
     /**
      * Get all notes for a specific user
      * @param int $userId User ID
-     * @param int $limit Optional limit
+     * @param int|null $limit Optional limit
      * @return array Notes
      */
     public function getNotesByUser($userId, $limit = null) {
@@ -43,7 +47,7 @@ class StudentNote extends BaseModel {
             $sql .= " LIMIT ?";
         }
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
 
         if ($limit) {
             $stmt->execute([$userId, $limit]);
@@ -62,10 +66,10 @@ class StudentNote extends BaseModel {
      */
     public function getNoteById($noteId, $userId) {
         $sql = "SELECT * FROM {$this->table} WHERE id = ? AND user_id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$noteId, $userId]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     /**
@@ -75,7 +79,7 @@ class StudentNote extends BaseModel {
      * @param int $userId User ID
      * @param int $lessonId Lesson ID
      * @param string $content Note content
-     * @return array Created/updated note
+     * @return array|null Created/updated note
      */
     public function createOrUpdate($userId, $lessonId, $content) {
         // Check if note already exists
@@ -84,16 +88,20 @@ class StudentNote extends BaseModel {
         if (!empty($existing)) {
             // Update existing note
             $noteId = $existing[0]['id'];
-            $this->update($noteId, ['note_content' => $content]);
-            return $this->find($noteId);
+            $sql = "UPDATE {$this->table} SET note_content = ?, updated_at = NOW() WHERE id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$content, $noteId]);
+
+            return $this->getNoteById($noteId, $userId);
         } else {
             // Create new note
-            $noteId = $this->create([
-                'user_id' => $userId,
-                'lesson_id' => $lessonId,
-                'note_content' => $content
-            ]);
-            return $this->find($noteId);
+            $sql = "INSERT INTO {$this->table} (user_id, lesson_id, note_content, created_at, updated_at)
+                    VALUES (?, ?, ?, NOW(), NOW())";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$userId, $lessonId, $content]);
+            $noteId = $this->pdo->lastInsertId();
+
+            return $this->getNoteById($noteId, $userId);
         }
     }
 
@@ -110,7 +118,9 @@ class StudentNote extends BaseModel {
             return false;
         }
 
-        return $this->delete($noteId);
+        $sql = "DELETE FROM {$this->table} WHERE id = ? AND user_id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$noteId, $userId]);
     }
 
     /**
@@ -120,7 +130,7 @@ class StudentNote extends BaseModel {
      */
     public function getNoteCount($userId) {
         $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE user_id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -141,7 +151,7 @@ class StudentNote extends BaseModel {
                 WHERE sn.user_id = ? AND sn.note_content LIKE ?
                 ORDER BY sn.updated_at DESC";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId, '%' . $searchTerm . '%']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

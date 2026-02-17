@@ -71,7 +71,7 @@
                     </button>
                 </div>
                 <div class="notes-editor" id="notes-editor" style="display: none;">
-                    <div id="quill-editor" style="height: 200px;"></div>
+                    <textarea id="note-textarea" rows="8" placeholder="Write your notes here..."></textarea>
                     <div class="notes-actions">
                         <button class="btn-primary" id="save-note">
                             <i class="fas fa-save"></i> Save Note
@@ -97,6 +97,9 @@
                 <a href="#" class="nav-button next" id="next-lesson" style="display: none;">
                     Next Lesson <i class="fas fa-arrow-right"></i>
                 </a>
+                <a href="#" class="nav-button quiz" id="take-quiz-btn" style="display: none;">
+                    Take Quiz <i class="fas fa-arrow-right"></i>
+                </a>
                 <button class="nav-button complete" id="complete-lesson" style="display: none;">
                     <i class="fas fa-check"></i> Mark as Complete
                 </button>
@@ -120,6 +123,9 @@
     <script src="../../js/auth.js"></script>
     <script src="../../js/header-template.js"></script>
 
+    <!-- Utility Functions -->
+    <script src="../../js/utils.js"></script>
+
     <!-- Content Loader (Phase 5C) -->
     <script src="../../js/content-loader.js"></script>
 
@@ -130,6 +136,8 @@
     <script>
         let currentLesson = null;
         let allLessons = [];
+        let moduleQuizUrl = null;
+        let lessonCourseId = null;
 
         (async function() {
             // Get lesson ID from URL parameter (e.g., ?lesson_id=1)
@@ -156,12 +164,13 @@
                     content: '#lesson-content'
                 });
 
-                // Render breadcrumb (Phase 5D Priority 2)
+                // Render breadcrumb
                 if (currentLesson.module_id) {
                     try {
-                        const moduleResponse = await API.get(`/courses/1/modules/${currentLesson.module_id}`);
+                        const moduleResponse = await API.get(`/modules/${currentLesson.module_id}`);
+                        lessonCourseId = moduleResponse.data?.course_id || null;
                         Breadcrumb.render('breadcrumb-container', {
-                            course: { id: 1, title: 'AI Fluency Course' },
+                            course: { id: lessonCourseId, title: 'AI Fluency Course' },
                             module: { id: currentLesson.module_id, title: moduleResponse.data?.title || 'Module' },
                             lesson: { id: lessonId, title: currentLesson.title }
                         });
@@ -202,13 +211,30 @@
          * Setup navigation buttons
          */
         function setupNavigation() {
-            if (!currentLesson || allLessons.length === 0) return;
+            console.log('setupNavigation called');
+            console.log('currentLesson:', currentLesson);
+            console.log('allLessons:', allLessons);
 
-            const currentIndex = allLessons.findIndex(l => l.id === currentLesson.id);
-            if (currentIndex === -1) return;
+            if (!currentLesson || allLessons.length === 0) {
+                console.log('No currentLesson or allLessons is empty');
+                return;
+            }
+
+            // Ensure ID comparison works with type coercion
+            const currentId = parseInt(currentLesson.id);
+            const currentIndex = allLessons.findIndex(l => parseInt(l.id) === currentId);
+
+            console.log('currentId:', currentId, 'currentIndex:', currentIndex);
+
+            if (currentIndex === -1) {
+                console.log('Current lesson not found in allLessons array');
+                return;
+            }
 
             const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
             const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+
+            console.log('prevLesson:', prevLesson, 'nextLesson:', nextLesson);
 
             // Show navigation buttons container
             document.getElementById('nav-buttons').style.display = 'flex';
@@ -216,15 +242,23 @@
             // Setup previous button
             if (prevLesson) {
                 const prevBtn = document.getElementById('prev-lesson');
-                prevBtn.href = `lesson-dynamic.html?lesson_id=${prevLesson.id}`;
+                prevBtn.href = `/student/lessons/lesson-dynamic.html?lesson_id=${prevLesson.id}`;
                 prevBtn.style.display = 'inline-flex';
+                console.log('Previous button set to:', prevBtn.href);
             }
 
-            // Setup next button
+            // Setup next button or Take Quiz button on last lesson
             if (nextLesson) {
                 const nextBtn = document.getElementById('next-lesson');
-                nextBtn.href = `lesson-dynamic.html?lesson_id=${nextLesson.id}`;
+                nextBtn.href = `/student/lessons/lesson-dynamic.html?lesson_id=${nextLesson.id}`;
                 nextBtn.style.display = 'inline-flex';
+                console.log('Next button set to:', nextBtn.href);
+            } else if (currentLesson.module_id) {
+                // Last lesson — show Take Quiz button
+                moduleQuizUrl = `/student/quizzes/quiz-dynamic.html?module_id=${currentLesson.module_id}&course_id=${lessonCourseId || ''}`;
+                const takeQuizBtn = document.getElementById('take-quiz-btn');
+                takeQuizBtn.href = moduleQuizUrl;
+                takeQuizBtn.style.display = 'inline-flex';
             }
         }
 
@@ -239,6 +273,16 @@
             if (user) {
                 completeBtn.style.display = 'inline-flex';
 
+                // Check if lesson is already completed
+                if (currentLesson.progress && currentLesson.progress.status === 'completed') {
+                    completeBtn.innerHTML = '<i class="fas fa-check-double"></i> Completed';
+                    completeBtn.classList.add('completed');
+                    completeBtn.disabled = true;
+                    completeBtn.style.opacity = '0.7';
+                    completeBtn.style.cursor = 'not-allowed';
+                    return; // Don't add click listener
+                }
+
                 completeBtn.addEventListener('click', async function() {
                     try {
                         this.disabled = true;
@@ -246,18 +290,25 @@
 
                         await ContentLoader.trackLessonComplete(currentLesson.id);
 
-                        this.innerHTML = '<i class="fas fa-check"></i> Completed!';
+                        this.innerHTML = '<i class="fas fa-check-double"></i> Completed';
                         this.classList.add('completed');
+                        this.style.opacity = '0.7';
+                        this.style.cursor = 'not-allowed';
 
-                        // Show success message
+                        // Show success message and navigate
                         setTimeout(() => {
                             const nextBtn = document.getElementById('next-lesson');
                             if (nextBtn.style.display !== 'none') {
                                 if (confirm('Lesson marked as complete! Continue to next lesson?')) {
                                     window.location.href = nextBtn.href;
                                 }
+                            } else if (moduleQuizUrl) {
+                                // Last lesson — go to quiz
+                                if (confirm('Lesson marked as complete! Ready to take the module quiz?')) {
+                                    window.location.href = moduleQuizUrl;
+                                }
                             } else {
-                                alert('Lesson marked as complete! You\'ve finished this module.');
+                                alert('Lesson marked as complete! You\'ve finished all lessons in this module.');
                             }
                         }, 1000);
 
@@ -274,29 +325,11 @@
         /**
          * Initialize notes system (Phase 5D Priority 4)
          */
-        let quillEditor = null;
         let currentNoteContent = '';
 
         async function initializeNotes(lessonId) {
             // Show notes section
             document.getElementById('notes-section').style.display = 'block';
-
-            // Initialize Quill editor
-            if (typeof Quill !== 'undefined') {
-                quillEditor = new Quill('#quill-editor', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline'],
-                            ['link', 'blockquote', 'code-block'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['clean']
-                        ]
-                    },
-                    placeholder: 'Write your notes here...'
-                });
-            }
 
             // Load existing notes
             await loadNotes(lessonId);
@@ -317,9 +350,7 @@
             } else {
                 editor.style.display = 'block';
                 document.getElementById('notes-button-text').textContent = 'Hide Editor';
-                if (quillEditor) {
-                    quillEditor.focus();
-                }
+                document.getElementById('note-textarea').focus();
             }
         }
 
@@ -342,10 +373,8 @@
                     const note = notes[0]; // Get most recent note
                     currentNoteContent = note.note_content;
 
-                    // Set Quill content
-                    if (quillEditor) {
-                        quillEditor.root.innerHTML = currentNoteContent;
-                    }
+                    // Set textarea content
+                    document.getElementById('note-textarea').value = currentNoteContent;
 
                     // Display note
                     const noteDate = new Date(note.updated_at).toLocaleDateString('en-US', {
@@ -358,7 +387,7 @@
 
                     notesDisplay.innerHTML = `
                         <div class="note-item">
-                            <div class="note-content">${currentNoteContent}</div>
+                            <div class="note-content" style="white-space: pre-wrap;">${Utils.escapeHtml(currentNoteContent)}</div>
                             <div class="note-meta">
                                 <div class="note-date">
                                     <i class="fas fa-clock"></i>
@@ -385,21 +414,14 @@
             const editor = document.getElementById('notes-editor');
             editor.style.display = 'block';
             document.getElementById('notes-button-text').textContent = 'Hide Editor';
-            if (quillEditor) {
-                quillEditor.focus();
-            }
+            document.getElementById('note-textarea').focus();
         };
 
         async function saveNote(lessonId) {
             try {
-                if (!quillEditor) {
-                    alert('Editor not initialized');
-                    return;
-                }
+                const content = document.getElementById('note-textarea').value.trim();
 
-                const content = quillEditor.root.innerHTML;
-
-                if (!content || content === '<p><br></p>') {
+                if (!content) {
                     alert('Please write something in your note');
                     return;
                 }
@@ -446,9 +468,7 @@
             document.getElementById('notes-button-text').textContent = 'Add Note';
 
             // Reset editor to current saved content
-            if (quillEditor && currentNoteContent) {
-                quillEditor.root.innerHTML = currentNoteContent;
-            }
+            document.getElementById('note-textarea').value = currentNoteContent || '';
         }
 
         window.deleteNote = async function(noteId) {
@@ -596,6 +616,33 @@
     </style>
 
     <style>
+        #note-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        #note-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(75, 110, 251, 0.15);
+        }
+
+        .nav-button.quiz {
+            background: #f57c00;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-button.quiz:hover {
+            background: #e65100;
+        }
+
         .nav-button.complete {
             background: #4caf50;
             color: white;

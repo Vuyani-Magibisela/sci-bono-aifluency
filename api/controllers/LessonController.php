@@ -122,8 +122,8 @@ class LessonController extends BaseController
         $lesson->module = $this->moduleModel->find($lesson->module_id);
 
         // Get next and previous lessons
-        $lesson->next_lesson = $this->lessonModel->getNextLesson($lesson->module_id, $lesson->order);
-        $lesson->previous_lesson = $this->lessonModel->getPreviousLesson($lesson->module_id, $lesson->order);
+        $lesson->next_lesson = $this->lessonModel->getNextLesson($lesson->module_id, $lesson->order_index);
+        $lesson->previous_lesson = $this->lessonModel->getPreviousLesson($lesson->module_id, $lesson->order_index);
 
         // Add progress for authenticated users
         if ($currentUser) {
@@ -432,6 +432,17 @@ class LessonController extends BaseController
             Response::notFound('Lesson not found');
         }
 
+        // Get module and verify enrollment (multi-course isolation)
+        $module = $this->moduleModel->find($lesson->module_id);
+        if (!$module) {
+            Response::notFound('Module not found');
+        }
+
+        // Verify user is enrolled in the course
+        if (!$this->enrollmentModel->isUserEnrolled($currentUser->id, $module->course_id)) {
+            Response::forbidden('You must be enrolled in this course to complete lessons');
+        }
+
         $timeSpent = isset($data['time_spent_minutes']) ? (int)$data['time_spent_minutes'] : 0;
 
         try {
@@ -444,17 +455,10 @@ class LessonController extends BaseController
                 Response::serverError('Failed to complete lesson');
             }
 
-            // Update enrollment progress
-            $module = $this->moduleModel->find($lesson->module_id);
+            // Update enrollment progress (module already loaded above for enrollment check)
             if ($module) {
-                // Get course from module and update enrollment
-                $stmt = $this->pdo->prepare("SELECT course_id FROM modules WHERE id = :module_id");
-                $stmt->execute(['module_id' => $module->id]);
-                $result = $stmt->fetch(\PDO::FETCH_OBJ);
-
-                if ($result) {
-                    $this->enrollmentModel->calculateProgress($currentUser->id, $result->course_id);
-                }
+                // Update enrollment progress using module's course_id
+                $this->enrollmentModel->calculateProgress($currentUser->id, $module->course_id);
             }
 
             $this->progressModel->commit();

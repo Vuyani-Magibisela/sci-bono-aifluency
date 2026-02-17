@@ -9,6 +9,7 @@ const AdminLessons = {
     courses: [],
     currentLessonId: null,
     selectedModuleId: null,
+    selectedCourseId: null,  // NEW: Course filter for multi-course support
     quillEditor: null,
 
     /**
@@ -27,6 +28,10 @@ const AdminLessons = {
 
         // Load courses and modules first
         await this.loadCourses();
+
+        // NEW: Populate course dropdown
+        this.populateCourseDropdowns();
+
         await this.loadModules();
 
         // Load lessons
@@ -52,10 +57,15 @@ const AdminLessons = {
 
     /**
      * Load modules for filter dropdown
+     * NEW: Filters by selected course
      */
     async loadModules() {
         try {
-            const response = await API.get('/modules');
+            // NEW: Add course filter parameter (pattern from admin-modules.js:85)
+            const courseParam = this.selectedCourseId
+                ? `?course_id=${this.selectedCourseId}`
+                : '';
+            const response = await API.get(`/modules${courseParam}`);
             this.modules = response.data?.items || [];
 
             // Populate module dropdowns
@@ -65,6 +75,10 @@ const AdminLessons = {
             if (this.modules.length > 0) {
                 this.selectedModuleId = this.modules[0].id;
                 document.getElementById('filter-module').value = this.selectedModuleId;
+            } else {
+                // No modules for selected course
+                this.selectedModuleId = null;
+                document.getElementById('filter-module').value = '';
             }
         } catch (error) {
             console.error('AdminLessons: Error loading modules:', error);
@@ -94,6 +108,64 @@ const AdminLessons = {
 
         filterDropdown.innerHTML = options;
         formDropdown.innerHTML = formOptions;
+    },
+
+    /**
+     * Populate course dropdown selects
+     * NEW METHOD for multi-course support
+     */
+    populateCourseDropdowns() {
+        const filterDropdown = document.getElementById('filter-course');
+
+        let options = '<option value="">All Courses</option>';
+
+        this.courses.forEach(course => {
+            options += `<option value="${course.id}">${this.escapeHtml(course.title)}</option>`;
+        });
+
+        filterDropdown.innerHTML = options;
+
+        // Auto-select if only one course exists
+        if (this.courses.length === 1) {
+            this.selectedCourseId = this.courses[0].id;
+            filterDropdown.value = this.selectedCourseId;
+            this.updateCourseBreadcrumb();
+        }
+    },
+
+    /**
+     * Apply course filter
+     * NEW METHOD for multi-course support
+     */
+    applyCourseFilter() {
+        this.selectedCourseId = document.getElementById('filter-course').value
+            ? parseInt(document.getElementById('filter-course').value)
+            : null;
+
+        // Update breadcrumb
+        this.updateCourseBreadcrumb();
+
+        // Reload modules for new course (this will auto-reload lessons)
+        this.loadModules();
+
+        // Reload lessons
+        this.loadLessons();
+    },
+
+    /**
+     * Update breadcrumb with current course
+     * NEW METHOD for multi-course support
+     */
+    updateCourseBreadcrumb() {
+        const breadcrumbElem = document.getElementById('breadcrumb-course');
+        if (!breadcrumbElem) return;
+
+        if (this.selectedCourseId) {
+            const course = this.courses.find(c => c.id === this.selectedCourseId);
+            breadcrumbElem.textContent = course ? course.title : 'Unknown Course';
+        } else {
+            breadcrumbElem.textContent = 'All Courses';
+        }
     },
 
     /**
@@ -478,6 +550,9 @@ const AdminLessons = {
 
         // Form submission
         document.getElementById('lesson-form').addEventListener('submit', (e) => this.saveLesson(e));
+
+        // NEW: Course filter
+        document.getElementById('filter-course').addEventListener('change', () => this.applyCourseFilter());
 
         // Module filter
         document.getElementById('filter-module').addEventListener('change', () => this.applyFilters());

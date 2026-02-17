@@ -39,10 +39,10 @@ const Breadcrumb = (function() {
         // Build breadcrumb items
         const items = [];
 
-        // Home link
+        // Home link - use absolute path from site root
         items.push({
             label: 'Home',
-            url: 'aifluencystart.html',
+            url: '/student/courses.html',
             icon: 'fa-home'
         });
 
@@ -50,7 +50,7 @@ const Breadcrumb = (function() {
         if (trail.course) {
             items.push({
                 label: trail.course.title || 'Course',
-                url: trail.course.id ? `module-dynamic.html?module_id=${trail.module?.id || ''}` : null,
+                url: trail.course.id ? `/student/course-view.html?course_id=${trail.course.id}` : null,
                 icon: 'fa-book'
             });
         }
@@ -59,7 +59,7 @@ const Breadcrumb = (function() {
         if (trail.module) {
             items.push({
                 label: trail.module.title || 'Module',
-                url: trail.module.id ? `module-dynamic.html?module_id=${trail.module.id}` : null,
+                url: trail.module.id ? `/student/modules/module-dynamic.html?module_id=${trail.module.id}` : null,
                 icon: 'fa-layer-group'
             });
         }
@@ -125,20 +125,25 @@ const Breadcrumb = (function() {
 
         const trail = {
             course: {
-                id: 1,
-                title: additionalData.courseTitle || 'AI Fluency Course'
+                id: additionalData.courseId || null,
+                title: additionalData.courseTitle || 'AI Discovery Course'
             }
         };
 
         // Fetch module data if module_id present
         if (moduleId) {
             try {
-                const response = await API.get(`/courses/1/modules/${moduleId}`);
+                const response = await API.get(`/modules/${moduleId}`);
                 if (response.success) {
+                    const moduleInfo = response.data.module || response.data;
                     trail.module = {
                         id: moduleId,
-                        title: response.data.title
+                        title: moduleInfo.title
                     };
+                    // Use course_id from module response if not already set
+                    if (!trail.course.id && moduleInfo.course_id) {
+                        trail.course.id = moduleInfo.course_id;
+                    }
                 }
             } catch (error) {
                 console.error('Breadcrumb: Failed to fetch module data', error);

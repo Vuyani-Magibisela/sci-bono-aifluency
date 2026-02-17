@@ -1,6 +1,6 @@
 {
-    "name": "AI Fluency Course",
-    "short_name": "AI Fluency",
+    "name": "Sci-Bono AI Discovery Hub",
+    "short_name": "AI Discovery",
     "description": "Learn about artificial intelligence concepts and applications",
     "start_url": "/index.html",
     "display": "standalone",

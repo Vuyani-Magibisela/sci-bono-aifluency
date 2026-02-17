@@ -93,14 +93,13 @@ class QuizQuestion extends BaseModel
                 $studentAnswer = $studentAnswers[$question->id] ?? null;
                 $isCorrect = false;
 
-                // Check if answer is correct based on question type
-                if ($question->question_type === 'multiple_choice') {
-                    $isCorrect = ($studentAnswer === $question->correct_answer);
-                } elseif ($question->question_type === 'true_false') {
-                    $isCorrect = (strtolower($studentAnswer) === strtolower($question->correct_answer));
-                } elseif ($question->question_type === 'text') {
-                    // Case-insensitive comparison for text questions
-                    $isCorrect = (strtolower(trim($studentAnswer)) === strtolower(trim($question->correct_answer)));
+                // Compare answer index (correct_option is the 0-based index of the correct answer)
+                $correctOption = property_exists($question, 'correct_option')
+                    ? $question->correct_option
+                    : (property_exists($question, 'correct_answer') ? $question->correct_answer : null);
+
+                if ($studentAnswer !== null && $correctOption !== null) {
+                    $isCorrect = ((int)$studentAnswer === (int)$correctOption);
                 }
 
                 if ($isCorrect) {
@@ -111,7 +110,7 @@ class QuizQuestion extends BaseModel
                     'question_id' => $question->id,
                     'is_correct' => $isCorrect,
                     'student_answer' => $studentAnswer,
-                    'correct_answer' => $question->correct_answer,
+                    'correct_answer' => $correctOption,
                     'explanation' => $question->explanation,
                     'points_earned' => $isCorrect ? $question->points : 0,
                     'points_possible' => $question->points

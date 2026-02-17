@@ -44,6 +44,17 @@ const StudentDashboard = {
             const firstName = user.name ? user.name.split(' ')[0] : 'Student';
             welcomeElement.textContent = `Welcome back, ${firstName}!`;
         }
+
+        // Update sidebar profile with real user data
+        const sidebarName = document.getElementById('sidebar-profile-name');
+        if (sidebarName) {
+            sidebarName.textContent = user.name || 'Student';
+        }
+        const sidebarRole = document.getElementById('sidebar-profile-role');
+        if (sidebarRole) {
+            const role = user.role || 'student';
+            sidebarRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+        }
     },
 
     /**
@@ -150,9 +161,6 @@ const StudentDashboard = {
         const container = document.getElementById('enrolled-courses');
         if (!container) return;
 
-        // Get the parent dashboard card for animation
-        const parentCard = container.closest('.dashboard-card');
-
         if (courses.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Enrolled Courses',
@@ -160,13 +168,6 @@ const StudentDashboard = {
                 '/courses.html',
                 'Browse Courses'
             );
-            // Animate the parent card
-            if (parentCard) {
-                Animations.fadeInStagger([parentCard], {
-                    duration: 0.6,
-                    y: 20
-                });
-            }
             return;
         }
 
@@ -194,14 +195,6 @@ const StudentDashboard = {
         html += '</div>';
 
         container.innerHTML = html;
-
-        // Animate the parent card first
-        if (parentCard) {
-            Animations.fadeInStagger([parentCard], {
-                duration: 0.6,
-                y: 20
-            });
-        }
 
         // Animate progress bars after rendering
         const progressBars = container.querySelectorAll('.progress-fill');
@@ -233,9 +226,6 @@ const StudentDashboard = {
         const container = document.getElementById('recent-quiz-attempts');
         if (!container) return;
 
-        // Get the parent dashboard card for animation
-        const parentCard = container.closest('.dashboard-card');
-
         if (attempts.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Quiz Attempts',
@@ -243,13 +233,6 @@ const StudentDashboard = {
                 null,
                 null
             );
-            // Animate the parent card
-            if (parentCard) {
-                Animations.fadeInStagger([parentCard], {
-                    duration: 0.6,
-                    y: 20
-                });
-            }
             return;
         }
 
@@ -279,14 +262,6 @@ const StudentDashboard = {
 
         container.innerHTML = html;
 
-        // Animate the parent card first
-        if (parentCard) {
-            Animations.fadeInStagger([parentCard], {
-                duration: 0.6,
-                y: 20
-            });
-        }
-
         // Animate quiz attempt items with slide-in effect
         setTimeout(() => {
             Animations.slideIn('.quiz-attempt-item', 'up', {
@@ -305,9 +280,6 @@ const StudentDashboard = {
         const container = document.getElementById('certificates');
         if (!container) return;
 
-        // Get the parent dashboard card for animation
-        const parentCard = container.closest('.dashboard-card');
-
         if (certificates.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Certificates Yet',
@@ -315,13 +287,6 @@ const StudentDashboard = {
                 null,
                 null
             );
-            // Animate the parent card
-            if (parentCard) {
-                Animations.fadeInStagger([parentCard], {
-                    duration: 0.6,
-                    y: 20
-                });
-            }
             return;
         }
 
@@ -342,14 +307,6 @@ const StudentDashboard = {
 
         container.innerHTML = html;
 
-        // Animate the parent card first
-        if (parentCard) {
-            Animations.fadeInStagger([parentCard], {
-                duration: 0.6,
-                y: 20
-            });
-        }
-
         // Animate certificates with fade-in and slight scale effect
         setTimeout(() => {
             Animations.fadeInStagger('.certificate-card', {
@@ -365,27 +322,25 @@ const StudentDashboard = {
      * Render learning statistics with animations
      */
     renderLearningStats(stats) {
-        // First, set the stat values immediately (no animation for values)
-        // This prevents conflicts between card fade-in and counter animations
+        const completed = stats.completed_lessons || 0;
+        const total = stats.total_lessons || 0;
+
+        // Set stat values directly — no GSAP fade-in so cards are always visible
         this.setStatCardValue('total-courses', stats.total_courses || 0);
-        this.setStatCardValue('completed-lessons', `${stats.completed_lessons || 0}/${stats.total_lessons || 0}`);
+        this.setStatCardValue('completed-lessons', `${completed}/${total}`);
         this.setStatCardValue('quiz-average', `${stats.quiz_average || 0}%`);
         this.setStatCardValue('certificates-earned', stats.certificates_earned || 0);
 
-        // Then animate the stat cards (fade them in with values already set)
-        const statCards = document.querySelectorAll('.dashboard-grid .dashboard-card');
-        if (statCards.length > 0) {
-            Animations.fadeInStagger(statCards, {
-                duration: 0.6,
-                stagger: 0.1,
-                y: 20
-            });
+        // Update lessons card description with contextual progress text
+        const lessonsDesc = document.getElementById('lessons-description');
+        if (lessonsDesc) {
+            lessonsDesc.textContent = total > 0
+                ? `${completed} of ${total} completed`
+                : 'No lessons yet';
         }
 
-        // Render progress chart if element exists
-        if (stats.completed_lessons && stats.total_lessons) {
-            this.renderProgressChart(stats.completed_lessons, stats.total_lessons);
-        }
+        // Always render progress chart (even with 0 progress)
+        this.renderProgressChart(completed, total);
     },
 
     /**
@@ -455,9 +410,6 @@ const StudentDashboard = {
         const chartContainer = document.getElementById('progress-chart');
         if (!chartContainer) return;
 
-        // Get the parent dashboard card for animation
-        const parentCard = chartContainer.closest('.dashboard-card');
-
         const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
         chartContainer.innerHTML = `
@@ -472,14 +424,6 @@ const StudentDashboard = {
                 </svg>
             </div>
         `;
-
-        // Animate the parent card first
-        if (parentCard) {
-            Animations.fadeInStagger([parentCard], {
-                duration: 0.6,
-                y: 20
-            });
-        }
 
         // Animate the circular progress
         const circle = chartContainer.querySelector('#progress-circle');

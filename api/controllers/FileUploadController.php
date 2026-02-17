@@ -52,7 +52,6 @@ class FileUploadController extends BaseController
     public function __construct(\PDO $pdo)
     {
         parent::__construct($pdo);
-        }
     }
 
     /**

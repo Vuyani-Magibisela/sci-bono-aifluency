@@ -33,6 +33,79 @@
     <link rel="stylesheet" href="../../css/stylesModules.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+    <style>
+        .module-requirements-section {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border: 1px solid #e0e5ff;
+        }
+        .module-requirements-section h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .requirements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+        .requirement-item.completed i { color: #00D084; }
+        .requirement-item.pending i { color: #999; }
+        .requirements-note {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Quiz and Project card variants */
+        .chapter-card--quiz .chapter-card-icon,
+        .chapter-card--project .chapter-card-icon {
+            background: none;
+        }
+        .chapter-card--quiz .chapter-card-icon i { color: #f57c00; }
+        .chapter-card--project .chapter-card-icon i { color: #388e3c; }
+
+        .chapter-card-type {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+        }
+        .chapter-card--quiz .chapter-card-type {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .chapter-card--project .chapter-card-type {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        .chapter-card-status {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            margin: 0.5rem 0 0.75rem;
+        }
+        .chapter-card-status.status-done { color: #4caf50; }
+        .chapter-card-status.status-pending { color: #999; }
+    </style>
 </head>
 <body>
     <!-- Dynamic Header (Phase 1 Integration) -->
@@ -89,11 +162,20 @@
                 <div class="loading-spinner">Loading lessons...</div>
             </div>
 
-            <!-- Quiz link -->
-            <div class="module-quiz-section" id="quiz-section" style="display: none;">
-                <h2>Test Your Knowledge</h2>
-                <p>Ready to test what you've learned? Take the module quiz!</p>
-                <a href="#" id="quiz-link" class="btn-primary">Take Module Quiz</a>
+            <!-- Module Completion Requirements -->
+            <div class="module-requirements-section" id="module-requirements" style="display: none;">
+                <h2>Module Completion Requirements</h2>
+                <div class="requirements-list">
+                    <div class="requirement-item pending" id="req-quiz">
+                        <i class="fas fa-circle"></i>
+                        <span>Pass the Module Quiz</span>
+                    </div>
+                    <div class="requirement-item pending" id="req-project">
+                        <i class="fas fa-circle"></i>
+                        <span>Submit the Module Project</span>
+                    </div>
+                </div>
+                <p class="requirements-note">Complete both to unlock the next module.</p>
             </div>
         </div>
     </main>
@@ -114,6 +196,9 @@
     <script src="../../js/auth.js"></script>
     <script src="../../js/header-template.js"></script>
 
+    <!-- Utility Functions -->
+    <script src="../../js/utils.js"></script>
+
     <!-- Content Loader (Phase 5C) -->
     <script src="../../js/content-loader.js"></script>
 
@@ -123,7 +208,6 @@
     <!-- Module Page Logic -->
     <script>
         (async function() {
-            // Get module ID from URL parameter (e.g., ?module_id=1)
             const moduleId = ContentLoader.getUrlParam('module_id');
 
             if (!moduleId) {
@@ -131,46 +215,138 @@
                 return;
             }
 
+            // Proactively refresh the auth token before loading content.
+            // The quiz endpoint returns 200 even without auth (just omits user_best_score),
+            // so the normal 401-triggered refresh never fires. We must refresh here
+            // to ensure authenticated quiz status is returned.
             try {
-                // Load module and lessons from API
-                const moduleData = await ContentLoader.loadModule(moduleId);
+                if (Auth.isAuthenticated()) {
+                    await Auth.checkAuthOnPageLoad();
+                } else if (Storage.get('refresh_token')) {
+                    await API.refreshToken();
+                }
+            } catch (e) {
+                // Ignore refresh errors — page still loads, just without user-specific data
+            }
 
-                // Update page title
+            try {
+                // Load module and lessons
+                const moduleData = await ContentLoader.loadModule(moduleId);
+                const courseId = ContentLoader.getUrlParam('course_id') || moduleData.module.course_id;
+
+                // Page title
                 document.title = `AI Fluency - ${moduleData.module.title}`;
                 document.getElementById('page-title').textContent = document.title;
 
-                // Render breadcrumb (Phase 5D Priority 2)
+                // Breadcrumb
                 Breadcrumb.render('breadcrumb-container', {
-                    course: { id: 1, title: 'AI Fluency Course' },
-                    module: { id: moduleId, title: moduleData.module.title }
+                    course: { id: courseId, title: 'AI Fluency Course' },
+                    module: { title: moduleData.module.title }
                 });
 
-                // Render module content
+                // Render lessons
                 ContentLoader.renderModulePage(moduleData, {
                     title: '#module-title',
                     subtitle: '#module-subtitle',
                     lessonsContainer: '#lessons-container'
                 });
 
-                // Update intro text
+                // Intro text
                 const introContainer = document.getElementById('module-intro');
                 if (moduleData.module.description) {
                     introContainer.innerHTML = `
-                        <p>Welcome to ${moduleData.module.title}! ${moduleData.module.description}</p>
+                        <p>Welcome to ${ContentLoader.escapeHtml(moduleData.module.title)}! ${ContentLoader.escapeHtml(moduleData.module.description)}</p>
                         <p>Choose a lesson below to begin your learning journey.</p>
                     `;
                 }
 
-                // Check if quiz exists for this module
-                try {
-                    const quizData = await ContentLoader.loadQuiz(moduleId);
-                    if (quizData && quizData.questions.length > 0) {
-                        document.getElementById('quiz-section').style.display = 'block';
-                        document.getElementById('quiz-link').href = `quiz-dynamic.html?module_id=${moduleId}`;
+                // Load quiz and project in parallel
+                let quizData = null, quizPassed = false;
+                let projectData = null, projectSubmitted = false;
+
+                const [quizResult, projectResult] = await Promise.allSettled([
+                    ContentLoader.loadQuiz(moduleId),
+                    API.get(`/projects?module_id=${moduleId}`)
+                ]);
+
+                // Process quiz result
+                if (quizResult.status === 'fulfilled' && quizResult.value && quizResult.value.questions?.length > 0) {
+                    quizData = quizResult.value;
+                    // user_best_score is returned by GET /quizzes?module_id=X for authenticated users
+                    if (quizData.user_best_score !== null && quizData.user_best_score !== undefined) {
+                        quizPassed = quizData.user_best_score >= (quizData.passing_score || 70);
                     }
-                } catch (error) {
-                    console.log('No quiz available for this module');
                 }
+
+                // Process project result
+                if (projectResult.status === 'fulfilled' && projectResult.value?.success) {
+                    const items = projectResult.value.data?.items || [];
+                    if (items.length > 0) {
+                        projectData = items[0];
+                        projectSubmitted = projectData.user_submission !== null && projectData.user_submission !== undefined;
+                    }
+                }
+
+                // Append quiz and project cards to lessons grid
+                const lessonsContainer = document.getElementById('lessons-container');
+                const quizUrl = `../quizzes/quiz-dynamic.html?module_id=${moduleId}&course_id=${courseId || ''}`;
+
+                if (quizData) {
+                    const quizStatusClass = quizPassed ? 'status-done' : 'status-pending';
+                    const quizStatusIcon = quizPassed ? 'fa-check-circle' : 'fa-circle';
+                    const quizStatusText = quizPassed ? 'Passed' : 'Not attempted';
+                    const quizLinkText = quizPassed ? 'Retake Quiz' : 'Take Quiz';
+                    lessonsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="chapter-card chapter-card--quiz">
+                            <div class="chapter-card-icon"><i class="fas fa-clipboard-list"></i></div>
+                            <div class="chapter-card-content">
+                                <span class="chapter-card-type">Quiz</span>
+                                <h3>${ContentLoader.escapeHtml(quizData.title || 'Module Quiz')}</h3>
+                                ${quizData.description ? `<p>${ContentLoader.escapeHtml(quizData.description)}</p>` : '<p>Test your knowledge of this module.</p>'}
+                                <div class="chapter-card-status ${quizStatusClass}">
+                                    <i class="fas ${quizStatusIcon}"></i> ${quizStatusText}
+                                </div>
+                                <a href="${quizUrl}" class="chapter-link">${quizLinkText}</a>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                if (projectData) {
+                    const projStatusClass = projectSubmitted ? 'status-done' : 'status-pending';
+                    const projStatusIcon = projectSubmitted ? 'fa-check-circle' : 'fa-circle';
+                    const projStatusText = projectSubmitted ? 'Submitted' : 'Not submitted';
+                    const projLinkText = projectSubmitted ? 'View Submission' : 'Submit Project';
+                    lessonsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="chapter-card chapter-card--project">
+                            <div class="chapter-card-icon"><i class="fas fa-folder-open"></i></div>
+                            <div class="chapter-card-content">
+                                <span class="chapter-card-type">Project</span>
+                                <h3>${ContentLoader.escapeHtml(projectData.title || 'Module Project')}</h3>
+                                ${projectData.description ? `<p>${ContentLoader.escapeHtml(projectData.description)}</p>` : '<p>Apply what you\'ve learned in this module.</p>'}
+                                <div class="chapter-card-status ${projStatusClass}">
+                                    <i class="fas ${projStatusIcon}"></i> ${projStatusText}
+                                </div>
+                                <a href="/student/projects/submit.html?id=${projectData.id}" class="chapter-link">${projLinkText}</a>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // Update requirements section
+                const reqSection = document.getElementById('module-requirements');
+                const reqQuiz = document.getElementById('req-quiz');
+                const reqProject = document.getElementById('req-project');
+
+                if (quizPassed) {
+                    reqQuiz.classList.replace('pending', 'completed');
+                    reqQuiz.querySelector('i').className = 'fas fa-check-circle';
+                }
+                if (projectSubmitted) {
+                    reqProject.classList.replace('pending', 'completed');
+                    reqProject.querySelector('i').className = 'fas fa-check-circle';
+                }
+                reqSection.style.display = 'block';
 
             } catch (error) {
                 console.error('Error loading module:', error);

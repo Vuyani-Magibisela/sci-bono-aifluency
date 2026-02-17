@@ -63,17 +63,9 @@ class UserController extends BaseController
 
         // Apply organizational scoping based on current user's role
         if ($currentUser->role === 'superadmin') {
-            // SuperAdmins see all users system-wide
-            if ($search) {
-                $users = $this->userModel->searchUsers($search, $role, $pageSize, $offset);
-                $total = count($this->userModel->searchUsers($search, $role));
-            } else if ($role) {
-                $users = $this->userModel->getUsersByRole($role, $pageSize, $offset);
-                $total = $this->userModel->countByRole($role);
-            } else {
-                $users = $this->userModel->all([], 'created_at DESC', $pageSize, $offset);
-                $total = $this->userModel->count();
-            }
+            // SuperAdmins see all users system-wide with optional filters
+            $users = $this->userModel->getFilteredUsers($role, $search, $organizationId, $schoolId, $pageSize, $offset);
+            $total = $this->userModel->countFilteredUsers($role, $search, $organizationId, $schoolId);
         } elseif ($currentUser->role === 'orgadmin') {
             // OrgAdmins see users in their organization(s)
             $managedOrgIds = $this->getManagedOrganizationIds();
@@ -81,13 +73,12 @@ class UserController extends BaseController
                 $users = [];
                 $total = 0;
             } else {
-                // Use first managed org (or filter if specified)
-                $targetOrgId = $organizationId ?? $managedOrgIds[0];
-                if (!in_array($targetOrgId, $managedOrgIds)) {
-                    Response::forbidden('You cannot access users in this organization');
-                }
-                $users = $this->userModel->getUsersByOrganization($targetOrgId, $role, $pageSize, $offset);
-                $total = count($this->userModel->getUsersByOrganization($targetOrgId, $role, null, null));
+                // Use requested org only if it's one they manage, otherwise use their primary org
+                $targetOrgId = ($organizationId && in_array($organizationId, $managedOrgIds))
+                    ? $organizationId
+                    : $managedOrgIds[0];
+                $users = $this->userModel->getFilteredUsers($role, $search, $targetOrgId, $schoolId, $pageSize, $offset);
+                $total = $this->userModel->countFilteredUsers($role, $search, $targetOrgId, $schoolId);
             }
         } elseif ($currentUser->role === 'schooladmin') {
             // SchoolAdmins see users in their school only
@@ -95,8 +86,8 @@ class UserController extends BaseController
                 $users = [];
                 $total = 0;
             } else {
-                $users = $this->userModel->getUsersBySchool($currentUser->primary_school_id, $role, $pageSize, $offset);
-                $total = count($this->userModel->getUsersBySchool($currentUser->primary_school_id, $role, null, null));
+                $users = $this->userModel->getFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset);
+                $total = $this->userModel->countFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id);
             }
         } else {
             // Teachers and students cannot list users
@@ -148,7 +139,7 @@ class UserController extends BaseController
         $currentUser = $this->getCurrentUser();
 
         $isSelf = ($currentUser->id == $userId);
-        $isAdminOrInstructor = in_array($currentUser->role, ['admin', 'instructor']);
+        $isAdminOrInstructor = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin']);
 
         if (!$isSelf && !$isAdminOrInstructor) {
             Response::forbidden('You do not have permission to view this user');
@@ -692,7 +683,7 @@ class UserController extends BaseController
         $totalCourses = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
 
         // Completed lessons
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM lesson_completions WHERE user_id = ?");
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM lesson_progress WHERE user_id = ? AND status = 'completed'");
         $stmt->execute([$currentUser->id]);
         $completedLessons = (int)$stmt->fetch(\PDO::FETCH_OBJ)->count;
 

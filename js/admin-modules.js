@@ -333,23 +333,108 @@ const AdminModules = {
 
             const course = this.courses.find(c => c.id === module.course_id);
 
-            const details = `
-                Module Details:
+            // Store current module ID for edit action
+            this.currentModuleId = moduleId;
 
-                Title: ${module.title}
-                Course: ${course?.title || 'Unknown'}
-                Slug: ${module.slug}
-                Description: ${module.description || 'N/A'}
-                Order: ${module.order_index}
-                Status: ${module.is_published ? 'Published' : 'Draft'}
-                Lessons: ${module.lessons?.length || 0}
-                Created: ${this.formatDate(module.created_at)}
+            // Build details HTML
+            const detailsHtml = `
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Module Title</label>
+                        <div class="detail-value">${this.escapeHtml(module.title)}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Course</label>
+                        <div class="detail-value">
+                            <i class="fas fa-book"></i> ${this.escapeHtml(course?.title || 'Unknown Course')}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>URL Slug</label>
+                        <div class="detail-value detail-code">${this.escapeHtml(module.slug)}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Description</label>
+                        <div class="detail-value">${this.escapeHtml(module.description || 'No description provided')}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Order Index</label>
+                        <div class="detail-value">
+                            <i class="fas fa-sort"></i> Position ${module.order_index}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <div class="detail-value">
+                            ${module.is_published
+                                ? '<span class="status-badge published"><i class="fas fa-check-circle"></i> Published</span>'
+                                : '<span class="status-badge draft"><i class="fas fa-clock"></i> Draft</span>'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Lessons</label>
+                        <div class="detail-value">
+                            <i class="fas fa-file-alt"></i> ${module.lesson_count || 0} lesson${module.lesson_count === 1 ? '' : 's'}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>Created Date</label>
+                        <div class="detail-value">
+                            <i class="fas fa-calendar"></i> ${this.formatDate(module.created_at)}
+                        </div>
+                    </div>
+
+                    ${module.updated_at ? `
+                        <div class="detail-item">
+                            <label>Last Updated</label>
+                            <div class="detail-value">
+                                <i class="fas fa-clock"></i> ${this.formatDate(module.updated_at)}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
             `;
 
-            alert(details);
+            document.getElementById('module-details-content').innerHTML = detailsHtml;
+            this.showDetailsModal();
         } catch (error) {
             this.showError('Failed to load module details: ' + error.message);
         }
+    },
+
+    /**
+     * Show details modal
+     */
+    showDetailsModal() {
+        document.getElementById('module-details-modal').style.display = 'flex';
+    },
+
+    /**
+     * Close details modal
+     */
+    closeDetailsModal() {
+        document.getElementById('module-details-modal').style.display = 'none';
+        this.currentModuleId = null;
+    },
+
+    /**
+     * Edit module from details view
+     */
+    async editModuleFromDetails() {
+        if (!this.currentModuleId) return;
+
+        // Store the ID before closing modal (which resets it)
+        const moduleId = this.currentModuleId;
+        this.closeDetailsModal();
+        await this.editModule(moduleId);
     },
 
     /**
@@ -510,9 +595,14 @@ const AdminModules = {
 
         // Close modal on outside click
         window.addEventListener('click', (event) => {
-            const modal = document.getElementById('module-modal');
-            if (event.target === modal) {
+            const formModal = document.getElementById('module-modal');
+            const detailsModal = document.getElementById('module-details-modal');
+
+            if (event.target === formModal) {
                 this.hideModal();
+            }
+            if (event.target === detailsModal) {
+                this.closeDetailsModal();
             }
         });
 

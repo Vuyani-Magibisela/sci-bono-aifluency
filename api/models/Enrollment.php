@@ -15,9 +15,9 @@ class Enrollment extends BaseModel
         'user_id',
         'course_id',
         'status',
-        'enrollment_date',
-        'completion_date',
-        'completion_percentage',
+        'enrolled_at',
+        'completed_at',
+        'progress_percentage',
         'last_accessed_at'
     ];
     protected array $hidden = [];
@@ -39,7 +39,7 @@ class Enrollment extends BaseModel
             $conditions['status'] = $status;
         }
 
-        return $this->all($conditions, 'enrollment_date DESC', $limit, $offset);
+        return $this->all($conditions, 'enrolled_at DESC', $limit, $offset);
     }
 
     /**
@@ -59,7 +59,7 @@ class Enrollment extends BaseModel
             $conditions['status'] = $status;
         }
 
-        return $this->all($conditions, 'enrollment_date DESC', $limit, $offset);
+        return $this->all($conditions, 'enrolled_at DESC', $limit, $offset);
     }
 
     /**
@@ -118,7 +118,7 @@ class Enrollment extends BaseModel
             if ($existing->status === 'inactive') {
                 $this->update($existing->id, [
                     'status' => 'active',
-                    'enrollment_date' => date('Y-m-d H:i:s')
+                    'enrolled_at' => date('Y-m-d H:i:s')
                 ]);
                 return $existing->id;
             }
@@ -132,8 +132,8 @@ class Enrollment extends BaseModel
             'user_id' => $userId,
             'course_id' => $courseId,
             'status' => 'active',
-            'enrollment_date' => date('Y-m-d H:i:s'),
-            'completion_percentage' => 0
+            'enrolled_at' => date('Y-m-d H:i:s'),
+            'progress_percentage' => 0
         ]);
     }
 
@@ -165,14 +165,14 @@ class Enrollment extends BaseModel
     public function updateProgress(int $enrollmentId, float $completionPercentage): bool
     {
         $data = [
-            'completion_percentage' => $completionPercentage,
+            'progress_percentage' => $completionPercentage,
             'last_accessed_at' => date('Y-m-d H:i:s')
         ];
 
         // Mark as completed if 100%
         if ($completionPercentage >= 100) {
             $data['status'] = 'completed';
-            $data['completion_date'] = date('Y-m-d H:i:s');
+            $data['completed_at'] = date('Y-m-d H:i:s');
         }
 
         return $this->update($enrollmentId, $data);
@@ -224,7 +224,7 @@ class Enrollment extends BaseModel
             // Update enrollment
             $enrollment = $this->getUserEnrollment($userId, $courseId);
             if ($enrollment) {
-                $wasCompleted = $enrollment->completion_percentage >= 100;
+                $wasCompleted = $enrollment->progress_percentage >= 100;
                 $this->updateProgress($enrollment->id, $percentage);
 
                 // Auto-generate certificate on 100% completion (Phase 6)

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sci-Bono AI Discovery Hub">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Discovery Course - Sci-Bono AI Discovery Hub</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <style>
+        /* About Course Page Styles — Light Theme */
+        .about-course-page {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .course-hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .course-hero-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-hero-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+        }
+
+        .course-hero-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-hero-info h1 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .course-hero-meta {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* At a Glance Card */
+        .at-a-glance {
+            background-color: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .at-a-glance h2 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .glance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .glance-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .glance-item i {
+            color: var(--text-light);
+            margin-top: 3px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .glance-item .glance-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .glance-item .glance-value {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+        }
+
+        /* Course Description */
+        .course-description-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .course-description-section p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .course-actions .btn-start {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.7rem 1.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .course-actions .btn-start:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Modules Section */
+        .modules-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .modules-section > h2 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .module-card {
+            background-color: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .module-card:hover {
+            box-shadow: 0 4px 20px rgba(75, 110, 251, 0.1);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .module-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .module-icon i {
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-info h3 {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .module-info .module-meta {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-info .module-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .module-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-top: 1px solid var(--grey-light);
+            user-select: none;
+        }
+
+        .module-toggle:hover {
+            background-color: var(--background-light);
+        }
+
+        .module-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .module-toggle.open i {
+            transform: rotate(180deg);
+        }
+
+        .module-units {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .module-units.open {
+            display: block;
+        }
+
+        .unit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .unit-item .unit-name {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .unit-item .unit-duration {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .course-hero-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .course-hero-info h1 {
+                font-size: 1.5rem;
+            }
+
+            .glance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Header -->
+    <div id="header-placeholder"></div>
+
+    <main class="about-course-page">
+        <!-- Course Hero -->
+        <div class="course-hero">
+            <div class="course-hero-header">
+                <div class="course-hero-icon">
+                    <img src="images/AIFluency.png" alt="AI Discovery Course">
+                </div>
+                <div class="course-hero-info">
+                    <h1>AI Discovery Course</h1>
+                    <p class="course-hero-meta">4 hr 38 min &bull; Learning Path &bull; 7 Modules</p>
+                </div>
+            </div>
+
+            <div class="at-a-glance">
+                <h2>At a glance</h2>
+                <div class="glance-grid">
+                    <div class="glance-item">
+                        <i class="fas fa-signal"></i>
+                        <div>
+                            <div class="glance-label">Level</div>
+                            <div class="glance-value">Beginner</div>
+                        </div>
+                    </div>
+                    <div class="glance-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div>
+                            <div class="glance-label">Audience</div>
+                            <div class="glance-value">Grades 8–12</div>
+                        </div>
+                    </div>
+                    <div class="glance-item">
+                        <i class="fas fa-video"></i>
+                        <div>
+                            <div class="glance-label">Content</div>
+                            <div class="glance-value">44 Video Lessons</div>
+                        </div>
+                    </div>
+                    <div class="glance-item">
+                        <i class="fas fa-certificate"></i>
+                        <div>
+                            <div class="glance-label">Certificate</div>
+                            <div class="glance-value">On completion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Description -->
+        <div class="course-description-section">
+            <p>This learning path is designed to provide a comprehensive understanding of AI. It includes modules that cover various aspects of AI, starting with foundational concepts and progressing to more advanced topics. Each module is tailored to help students apply AI technologies to enhance their learning and problem-solving skills.</p>
+
+            <div class="course-actions">
+                <a href="public/signup.html" class="btn-start">Start <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Modules Section -->
+        <div class="modules-section">
+            <h2>Modules in this learning path</h2>
+
+            <!-- Module 1 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-brain"></i></div>
+                    <div class="module-info">
+                        <h3>Explore AI Basics</h3>
+                        <p class="module-meta">58 min &bull; Module &bull; 11 Units</p>
+                        <p class="module-desc">Discover the world of artificial intelligence by exploring its foundational concepts and history. Learn how AI technology powers everyday items and transforms your daily life.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI History</span><span class="unit-duration">7 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">What is Artificial Intelligence?</span><span class="unit-duration">11 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Data Everywhere</span><span class="unit-duration">8 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Understand Machine Learning</span><span class="unit-duration">8 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Deep Learning</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Natural Language Processing (NLP)</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI Algorithms</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI in Action</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">1 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <div class="module-info">
+                        <h3>Explore Generative AI</h3>
+                        <p class="module-meta">37 min &bull; Module &bull; 9 Units</p>
+                        <p class="module-desc">Discover the fundamentals of generative AI and how this technology is transforming our approach to creativity and productivity.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">What is Generative AI?</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Large Language Models</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI-Generated Content</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Prompt Engineering</span><span class="unit-duration">6 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI Image Generation</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI in Creative Arts</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">2 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <div class="module-info">
+                        <h3>Explore Internet Search and Beyond</h3>
+                        <p class="module-meta">48 min &bull; Module &bull; 9 Units</p>
+                        <p class="module-desc">Learn the intricacies of internet search engines and reasoning engines, and enhance your skills in prompt engineering and critical thinking.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">How Search Engines Work</span><span class="unit-duration">6 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI-Powered Search</span><span class="unit-duration">7 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Advanced Search Techniques</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Evaluating Search Results</span><span class="unit-duration">6 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Reasoning Engines</span><span class="unit-duration">7 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Critical Thinking Online</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">2 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-shield-halved"></i></div>
+                    <div class="module-info">
+                        <h3>Explore Responsible AI</h3>
+                        <p class="module-meta">34 min &bull; Module &bull; 7 Units</p>
+                        <p class="module-desc">Understand and implement responsible AI practices, including best practices, principles, and the global implications of human-AI interaction.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI Ethics &amp; Bias</span><span class="unit-duration">7 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Privacy &amp; Data Protection</span><span class="unit-duration">6 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Transparency &amp; Accountability</span><span class="unit-duration">6 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI Governance</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">3 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-robot"></i></div>
+                    <div class="module-info">
+                        <h3>Get Started with Microsoft Copilot</h3>
+                        <p class="module-meta">31 min &bull; Module &bull; 8 Units</p>
+                        <p class="module-desc">This module provides an introduction to Microsoft Copilot, covering its main functions, benefits, and strategies for effective interaction. Learn about GPT model fundamentals, setup, and tips for engaging conversations.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">What is Microsoft Copilot?</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Copilot Features</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Getting Started</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Effective Prompting</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Practical Exercises</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">2 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 6 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-laptop-code"></i></div>
+                    <div class="module-info">
+                        <h3>Boost Your Productivity with Microsoft Copilot</h3>
+                        <p class="module-meta">45 min &bull; Module &bull; 10 Units</p>
+                        <p class="module-desc">This module provides an in-depth look at how Microsoft Copilot can enhance your productivity. You'll learn how to use Copilot to bring your ideas to life, manage your time more effectively, and support your learning and skill development.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Copilot for Writing</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Copilot for Research</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Copilot for Analysis</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Image &amp; Document Analysis</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Creative Projects</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Job Search &amp; Skills</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Workplace Support</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">5 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">2 min</span></div></div>
+                </div>
+            </div>
+
+            <!-- Module 7 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon"><i class="fas fa-globe"></i></div>
+                    <div class="module-info">
+                        <h3>Explore AI for All</h3>
+                        <p class="module-meta">25 min &bull; Module &bull; 7 Units</p>
+                        <p class="module-desc">Discover how AI is transforming accessibility, job roles, and humanitarian efforts through real-world examples and case studies.</p>
+                    </div>
+                </div>
+                <div class="module-toggle" onclick="toggleModule(this)">
+                    Overview <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="module-units">
+                    <div class="unit-item"><div><span class="unit-name">Introduction</span><span class="unit-duration">2 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI &amp; Accessibility</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI in the Workplace</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">AI for Social Good</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Future of AI</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Module Assessment</span><span class="unit-duration">4 min</span></div></div>
+                    <div class="unit-item"><div><span class="unit-name">Summary</span><span class="unit-duration">3 min</span></div></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Dynamic Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/footer-template.js"></script>
+
+    <script>
+        function toggleModule(el) {
+            const card = el.closest('.module-card');
+            const units = card.querySelector('.module-units');
+            el.classList.toggle('open');
+            units.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

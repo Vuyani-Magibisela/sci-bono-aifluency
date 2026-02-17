@@ -288,7 +288,10 @@
                 <div id="results-details"></div>
                 <div class="results-actions">
                     <a href="#" id="retake-quiz" class="btn-secondary">Retake Quiz</a>
-                    <a href="#" id="back-to-module" class="btn-primary">Back to Module</a>
+                    <a href="#" id="back-to-module" class="btn-secondary">Back to Module</a>
+                    <a href="#" id="submit-project-btn" class="btn-primary" style="display: none;">
+                        <i class="fas fa-folder-open"></i> Submit Project
+                    </a>
                 </div>
             </div>
         </div>
@@ -320,6 +323,7 @@
     <script>
         let quizData = null;
         let moduleId = null;
+        let courseId = null;
         let timerInterval = null;
         let timeRemaining = null;
 
@@ -329,12 +333,27 @@
         let questionStartTime = null; // When current question was started
 
         (async function() {
-            // Get module ID from URL parameter
+            // Get URL parameters
             moduleId = ContentLoader.getUrlParam('module_id');
+            courseId = ContentLoader.getUrlParam('course_id');
 
             if (!moduleId) {
                 ContentLoader.showError('#questions-container', 'No module specified. Please select a quiz from a module page.');
                 return;
+            }
+
+            // Proactively refresh the auth token before loading content.
+            // ContentLoader.submitQuiz() uses Auth.getUser() which requires
+            // a valid local token_expiry — if expired it falls back to local
+            // scoring and never saves to the DB. Refresh here prevents that.
+            try {
+                if (Auth.isAuthenticated()) {
+                    await Auth.checkAuthOnPageLoad();
+                } else if (Storage.get('refresh_token')) {
+                    await API.refreshToken();
+                }
+            } catch (e) {
+                // Ignore refresh errors — quiz still loads, submission may use local scoring
             }
 
             try {
@@ -351,11 +370,12 @@
                 // Render quiz
                 renderQuiz();
 
-                // Render breadcrumb (Phase 5D Priority 2)
+                // Render breadcrumb
                 try {
-                    const moduleResponse = await API.get(`/courses/1/modules/${moduleId}`);
+                    const moduleResponse = await API.get(`/modules/${moduleId}`);
+                    const breadcrumbCourseId = courseId || moduleResponse.data?.course_id || null;
                     Breadcrumb.render('breadcrumb-container', {
-                        course: { id: 1, title: 'AI Fluency Course' },
+                        course: { id: breadcrumbCourseId, title: 'AI Fluency Course' },
                         module: { id: moduleId, title: moduleResponse.data?.title || 'Module' },
                         quiz: { id: quizData.id, title: quizData.title }
                     });
@@ -552,6 +572,24 @@
                 submitBtn.style.display = 'none';
                 document.getElementById('timer-display').style.display = 'none';
 
+                // Load project for this module and show Submit Project button
+                try {
+                    const projectResponse = await API.get(`/projects?module_id=${moduleId}`);
+                    const projects = projectResponse?.data?.items || [];
+                    if (projects.length > 0) {
+                        const project = projects[0];
+                        const submitProjectBtn = document.getElementById('submit-project-btn');
+                        submitProjectBtn.href = `/student/projects/submit.html?id=${project.id}`;
+                        submitProjectBtn.style.display = 'inline-flex';
+                        // If user already submitted a project, change label
+                        if (project.user_submission) {
+                            submitProjectBtn.innerHTML = '<i class="fas fa-folder-open"></i> View Submission';
+                        }
+                    }
+                } catch (e) {
+                    console.log('No project for this module');
+                }
+
             } catch (error) {
                 console.error('Error submitting quiz:', error);
                 alert('Failed to submit quiz. Please try again.');
@@ -585,8 +623,9 @@
             `;
 
             // Setup action buttons
-            document.getElementById('retake-quiz').href = `quiz-dynamic.html?module_id=${moduleId}`;
-            document.getElementById('back-to-module').href = `module-dynamic.html?module_id=${moduleId}`;
+            const courseParam = courseId ? `&course_id=${courseId}` : '';
+            document.getElementById('retake-quiz').href = `quiz-dynamic.html?module_id=${moduleId}${courseParam}`;
+            document.getElementById('back-to-module').href = `../modules/module-dynamic.html?module_id=${moduleId}${courseParam}`;
 
             // Show explanations in questions
             if (results.results) {

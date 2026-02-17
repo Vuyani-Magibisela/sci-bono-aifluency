@@ -7,7 +7,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-VNN90D4GDE');
     </script>
     <!-- Google ads -->
@@ -47,44 +46,8 @@
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
 <body>
-    <!-- Dynamic Header (Phase 1 Integration) -->
+    <!-- Dynamic Header -->
     <div id="header-placeholder"></div>
-
-    <!-- Static Header (Disabled - Keep for rollback)
-    <header>
-        <div class="logo">
-            <img src="../images/logo.svg" alt="Logo of Sci-Bono Discovery Center on a blue circular background">
-            <h1>Sci-Bono AI Fluency</h1>
-        </div>
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="courses.html" class="nav-link">Courses</a></li>
-                <li><a href="projects.html" class="nav-link">Projects</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-            </ul>
-        </nav>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="header-controls">
-        </div>
-    </header>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="close-menu" id="closeMenu" aria-label="Close menu">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html" class="mobile-nav-link">Home</a></li>
-            <li><a href="courses.html" class="mobile-nav-link">Courses</a></li>
-            <li><a href="projects.html" class="mobile-nav-link">Projects</a></li>
-            <li><a href="index.html#about" class="mobile-nav-link">About</a></li>
-        </ul>
-    </div>
-    -->
 
     <main>
         <section class="auth-section">
@@ -96,7 +59,29 @@
                         <p>Join us to start learning AI</p>
                     </div>
 
-                    <form class="auth-form" id="signupForm">
+                    <form class="auth-form" id="signupForm" novalidate>
+
+                        <!-- ── Role Selector ── -->
+                        <div class="role-selector">
+                            <label class="role-selector-label">I am a...</label>
+                            <div class="role-options">
+                                <button type="button" class="role-option active" data-role="student">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Student</span>
+                                </button>
+                                <button type="button" class="role-option" data-role="teacher">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <span>Teacher</span>
+                                </button>
+                                <button type="button" class="role-option" data-role="schooladmin">
+                                    <i class="fas fa-school"></i>
+                                    <span>School Admin</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="selectedRole" name="role" value="student">
+                        </div>
+
+                        <!-- ── Common fields ── -->
                         <div class="form-group">
                             <label for="fullname">
                                 <i class="fas fa-user"></i>
@@ -114,12 +99,28 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="contactNumber">
+                                <i class="fas fa-phone"></i>
+                                Contact Number
+                            </label>
+                            <input type="tel" id="contactNumber" name="contact_number"
+                                   placeholder="e.g. 011 123 4567" autocomplete="tel">
+                        </div>
+
+                        <div class="form-group">
                             <label for="password">
                                 <i class="fas fa-lock"></i>
                                 Password
                             </label>
-                            <input type="password" id="password" name="password" placeholder="Create a password" required minlength="8">
-                            <small class="form-hint">Minimum 8 characters</small>
+                            <input type="password" id="password" name="password"
+                                   placeholder="Create a password" required minlength="8">
+                            <ul class="pw-reqs" id="pwReqs">
+                                <li id="req-length"  class="pw-req"><i class="fas fa-circle"></i> At least 8 characters</li>
+                                <li id="req-upper"   class="pw-req"><i class="fas fa-circle"></i> One uppercase letter (A–Z)</li>
+                                <li id="req-lower"   class="pw-req"><i class="fas fa-circle"></i> One lowercase letter (a–z)</li>
+                                <li id="req-number"  class="pw-req"><i class="fas fa-circle"></i> One number (0–9)</li>
+                                <li id="req-special" class="pw-req"><i class="fas fa-circle"></i> One special character (!@#$%^&amp;*)</li>
+                            </ul>
                         </div>
 
                         <div class="form-group">
@@ -127,14 +128,163 @@
                                 <i class="fas fa-lock"></i>
                                 Confirm Password
                             </label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                   placeholder="Confirm your password" required>
                         </div>
 
+                        <!-- ── Student-only fields ── -->
+                        <div class="role-fields" id="studentFields">
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-school"></i>
+                                    School
+                                </label>
+                                <div class="school-combobox" id="studentCombo">
+                                    <div class="school-combobox-input-wrap">
+                                        <i class="fas fa-search school-combobox-icon"></i>
+                                        <input type="text" class="school-combobox-input"
+                                               placeholder="Type your school name..." autocomplete="off">
+                                        <button type="button" class="school-combobox-clear" aria-label="Clear" style="display:none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <ul class="school-combobox-list" role="listbox"></ul>
+                                    <input type="hidden" class="school-combobox-value">
+                                </div>
+                                <small class="form-hint school-combobox-hint">Start typing at least 1 character</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    District
+                                </label>
+                                <input type="text" id="studentDistrict"
+                                       placeholder="Auto-filled when school is selected" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-venus-mars"></i>
+                                    Gender
+                                </label>
+                                <div class="radio-group">
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_student" value="male">
+                                        <span class="radio-label">Male</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_student" value="female">
+                                        <span class="radio-label">Female</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_student" value="prefer_not_to_say">
+                                        <span class="radio-label">Prefer not to say</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" id="genderValue" name="gender">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="grade">
+                                    <i class="fas fa-list-ol"></i>
+                                    Grade
+                                </label>
+                                <select id="grade" name="grade">
+                                    <option value="">-- Select grade --</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dateOfBirth">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date of Birth
+                                </label>
+                                <input type="date" id="dateOfBirth" name="date_of_birth">
+                                <small class="form-hint">You must be at least 12 years old</small>
+                            </div>
+
+                        </div><!-- /#studentFields -->
+
+                        <!-- ── Teacher fields ── -->
+                        <div class="role-fields" id="teacherFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-school"></i>
+                                    School
+                                </label>
+                                <div class="school-combobox" id="teacherCombo">
+                                    <div class="school-combobox-input-wrap">
+                                        <i class="fas fa-search school-combobox-icon"></i>
+                                        <input type="text" class="school-combobox-input"
+                                               placeholder="Type your school name..." autocomplete="off">
+                                        <button type="button" class="school-combobox-clear" aria-label="Clear" style="display:none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <ul class="school-combobox-list" role="listbox"></ul>
+                                    <input type="hidden" class="school-combobox-value">
+                                </div>
+                                <small class="form-hint school-combobox-hint">Start typing at least 1 character</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    District
+                                </label>
+                                <input type="text" id="teacherDistrict"
+                                       placeholder="Auto-filled when school is selected" readonly>
+                            </div>
+
+                        </div><!-- /#teacherFields -->
+
+                        <!-- ── School Admin fields ── -->
+                        <div class="role-fields" id="schooladminFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-school"></i>
+                                    School
+                                </label>
+                                <div class="school-combobox" id="adminCombo">
+                                    <div class="school-combobox-input-wrap">
+                                        <i class="fas fa-search school-combobox-icon"></i>
+                                        <input type="text" class="school-combobox-input"
+                                               placeholder="Type your school name..." autocomplete="off">
+                                        <button type="button" class="school-combobox-clear" aria-label="Clear" style="display:none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <ul class="school-combobox-list" role="listbox"></ul>
+                                    <input type="hidden" class="school-combobox-value">
+                                </div>
+                                <small class="form-hint school-combobox-hint">Start typing at least 1 character</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    District
+                                </label>
+                                <input type="text" id="adminDistrict"
+                                       placeholder="Auto-filled when school is selected" readonly>
+                            </div>
+
+                        </div><!-- /#schooladminFields -->
+
+                        <!-- ── Terms ── -->
                         <div class="form-options">
                             <label class="checkbox-container">
                                 <input type="checkbox" id="terms" name="terms" required>
                                 <span class="checkmark"></span>
-                                I agree to the <a href="#" class="link-text">Terms & Conditions</a>
+                                I agree to the <a href="#" class="link-text">Terms &amp; Conditions</a>
                             </label>
                         </div>
 
@@ -163,193 +313,428 @@
         </div>
     </footer>
 
-    <!-- Authentication System (Phase 1) - Load BEFORE inline scripts -->
+    <!-- Core scripts -->
     <script src="../js/storage.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/header-template.js"></script>
-
-    <!-- Legacy Scripts -->
     <script src="../js/script.js"></script>
 
     <script>
-        // Check if already logged in
+    // ============================================================
+    // Signup page — role-based form with autocomplete school search
+    // ============================================================
+    (function () {
+        'use strict';
+
+        const API_BASE   = '/api';
+        let   allSchools = [];   // full list loaded once on page load
+
+        // ── Combobox config — maps role → combo element ID + district input ID ──
+        const COMBOS = {
+            student:     { comboId: 'studentCombo',  districtId: 'studentDistrict'  },
+            teacher:     { comboId: 'teacherCombo',  districtId: 'teacherDistrict'  },
+            schooladmin: { comboId: 'adminCombo',    districtId: 'adminDistrict'    },
+        };
+
+        let currentRole = 'student';
+
+        // ── Boot ───────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
             if (Auth.isAuthenticated()) {
-                // Already logged in, redirect to dashboard
                 window.location.href = Auth.getDashboardUrl();
+                return;
             }
+            setDOBMax();
+            loadSchools();
+            bindRoleSelector();
+            bindGenderRadios();
+            bindPasswordStrength();
+            bindFormSubmit();
+            bindPasswordConfirm();
+            ['fullname','email','password','confirmPassword'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('focus', clearError);
+            });
         });
 
-        // Handle signup form submission
-        document.getElementById('signupForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // ── DOB max (must be ≥ 12 years old) ──────────────────
+        function setDOBMax() {
+            const dob = document.getElementById('dateOfBirth');
+            if (!dob) return;
+            const d = new Date();
+            d.setFullYear(d.getFullYear() - 12);
+            dob.max = d.toISOString().split('T')[0];
+        }
 
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalHTML = submitBtn.innerHTML;
-            const fullname = document.getElementById('fullname').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const termsAccepted = document.getElementById('terms').checked;
-
-            // Clear any previous error messages
-            clearError();
-
-            // Validate inputs
-            if (!fullname || !email || !password || !confirmPassword) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            if (password.length < 8) {
-                showError('Password must be at least 8 characters long');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            if (!termsAccepted) {
-                showError('Please accept the Terms & Conditions');
-                return;
-            }
-
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        // ── Load all schools once ──────────────────────────────
+        async function loadSchools() {
+            // Show loading state in all comboboxes
+            Object.values(COMBOS).forEach(({ comboId }) => {
+                const combo = document.getElementById(comboId);
+                if (combo) combo.querySelector('.school-combobox-input').placeholder = 'Loading schools...';
+            });
 
             try {
-                // Attempt registration
-                const result = await Auth.register({
-                    name: fullname,
-                    email: email,
-                    password: password,
-                    password_confirmation: confirmPassword,
-                    role: 'student' // Default role
+                const res  = await fetch(`${API_BASE}/schools/public`);
+                const json = await res.json();
+                allSchools = (json.data && json.data.schools) ? json.data.schools : [];
+
+                // Restore placeholder and init each combobox
+                Object.entries(COMBOS).forEach(([role, cfg]) => {
+                    initCombobox(cfg.comboId, cfg.districtId);
                 });
 
-                if (result.success) {
-                    // Show success message
-                    showSuccess('Account created successfully! Redirecting to your dashboard...');
+                // Update hint
+                document.querySelectorAll('.school-combobox-hint').forEach(el => {
+                    el.textContent = `${allSchools.length.toLocaleString()} schools available — type to search`;
+                });
 
-                    // Redirect after short delay
-                    setTimeout(() => {
-                        Auth.handleLoginRedirect();
-                    }, 1500);
+            } catch (e) {
+                console.warn('Could not load schools:', e);
+                document.querySelectorAll('.school-combobox-hint').forEach(el => {
+                    el.textContent = 'Could not load schools. Please refresh the page.';
+                });
+            }
+        }
 
+        // ── Build a single combobox ────────────────────────────
+        function initCombobox(comboId, districtInputId) {
+            const combo       = document.getElementById(comboId);
+            if (!combo) return;
+
+            const input       = combo.querySelector('.school-combobox-input');
+            const list        = combo.querySelector('.school-combobox-list');
+            const hiddenVal   = combo.querySelector('.school-combobox-value');
+            const clearBtn    = combo.querySelector('.school-combobox-clear');
+            const districtEl  = document.getElementById(districtInputId);
+
+            input.placeholder = 'Type to search your school...';
+            let activeIndex   = -1;
+            let isSelected    = false;
+
+            // Helpers
+            function closeList() {
+                list.innerHTML = '';
+                list.classList.remove('open');
+                activeIndex = -1;
+            }
+
+            function selectSchool(school) {
+                input.value       = school.name + (school.city ? ' — ' + school.city : '');
+                hiddenVal.value   = school.id;
+                if (districtEl) districtEl.value = school.district || '';
+                clearBtn.style.display = '';
+                isSelected = true;
+                closeList();
+                // Mark combobox as valid
+                combo.classList.remove('has-error');
+                combo.classList.add('has-selection');
+            }
+
+            function clearSelection() {
+                input.value          = '';
+                hiddenVal.value      = '';
+                if (districtEl) districtEl.value = '';
+                clearBtn.style.display = 'none';
+                isSelected = false;
+                combo.classList.remove('has-selection');
+                input.focus();
+                closeList();
+            }
+
+            function renderList(matches) {
+                list.innerHTML = '';
+                if (!matches.length) {
+                    list.innerHTML = '<li class="school-combobox-empty">No schools found</li>';
+                    list.classList.add('open');
+                    return;
+                }
+                // Show up to 50 results
+                const show = matches.slice(0, 50);
+                show.forEach((s, i) => {
+                    const li = document.createElement('li');
+                    li.setAttribute('role', 'option');
+                    li.dataset.idx = i;
+                    // Highlight matched portion
+                    const q    = input.value.trim();
+                    const re   = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    const name = s.name.replace(re, '<mark>$1</mark>');
+                    li.innerHTML = `<span class="school-name">${name}</span>` +
+                        (s.district ? `<span class="school-district">${s.district}</span>` : '');
+                    li.addEventListener('mousedown', (e) => {
+                        e.preventDefault(); // keep focus on input
+                        selectSchool(s);
+                    });
+                    list.appendChild(li);
+                });
+                if (matches.length > 50) {
+                    const more = document.createElement('li');
+                    more.className = 'school-combobox-more';
+                    more.textContent = `${matches.length - 50} more — keep typing to narrow down`;
+                    list.appendChild(more);
+                }
+                list.classList.add('open');
+                activeIndex = -1;
+            }
+
+            // Input handler
+            input.addEventListener('input', () => {
+                isSelected = false;
+                hiddenVal.value = '';
+                if (districtEl) districtEl.value = '';
+                clearBtn.style.display = input.value ? '' : 'none';
+                combo.classList.remove('has-selection');
+
+                const q = input.value.trim().toLowerCase();
+                if (!q) { closeList(); return; }
+
+                const matches = allSchools.filter(s => s.name.toLowerCase().includes(q));
+                renderList(matches);
+            });
+
+            // Keyboard nav
+            input.addEventListener('keydown', (e) => {
+                const items = list.querySelectorAll('li[role="option"]');
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = Math.max(activeIndex - 1, 0);
+                } else if (e.key === 'Enter' && activeIndex >= 0) {
+                    e.preventDefault();
+                    items[activeIndex] && items[activeIndex].dispatchEvent(new MouseEvent('mousedown'));
+                    return;
+                } else if (e.key === 'Escape') {
+                    closeList();
+                    return;
                 } else {
-                    // Show error message
-                    showError(result.message || 'Registration failed. Please try again.');
+                    return;
+                }
+                items.forEach((li, i) => li.classList.toggle('active', i === activeIndex));
+                if (items[activeIndex]) {
+                    items[activeIndex].scrollIntoView({ block: 'nearest' });
+                }
+            });
 
-                    // Reset button
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalHTML;
+            // Close on blur (but not when clicking a list item — mousedown handles that)
+            input.addEventListener('blur', () => {
+                setTimeout(closeList, 150);
+            });
+
+            // Clear button
+            clearBtn.addEventListener('click', clearSelection);
+
+            // Expose selected value for form submission
+            combo._getSchoolId = () => hiddenVal.value;
+        }
+
+        // ── Role selector ──────────────────────────────────────
+        function bindRoleSelector() {
+            document.querySelectorAll('.role-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.role-option').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentRole = btn.dataset.role;
+                    document.getElementById('selectedRole').value = currentRole;
+
+                    const fields = { student: 'studentFields', teacher: 'teacherFields', schooladmin: 'schooladminFields' };
+                    Object.entries(fields).forEach(([r, id]) => {
+                        document.getElementById(id).style.display = (r === currentRole) ? '' : 'none';
+                    });
+
+                    // Toggle student-only required attrs
+                    const isStudent = currentRole === 'student';
+                    ['grade', 'dateOfBirth'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) isStudent ? el.setAttribute('required','') : el.removeAttribute('required');
+                    });
+                    document.getElementById('genderValue').required = isStudent;
+                });
+            });
+        }
+
+        // ── Gender radios ──────────────────────────────────────
+        function bindGenderRadios() {
+            document.querySelectorAll('input[name="gender_student"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    document.getElementById('genderValue').value = radio.value;
+                });
+            });
+        }
+
+        // ── Password strength checker ──────────────────────────
+        const PW_RULES = [
+            { id: 'req-length',  test: pw => pw.length >= 8 },
+            { id: 'req-upper',   test: pw => /[A-Z]/.test(pw) },
+            { id: 'req-lower',   test: pw => /[a-z]/.test(pw) },
+            { id: 'req-number',  test: pw => /[0-9]/.test(pw) },
+            // Matches backend: /[!@#$%^&*(),.?":{}|<>]/
+            { id: 'req-special', test: pw => /[!@#$%^&*(),.?":{}|<>]/.test(pw) },
+        ];
+
+        function checkPasswordStrength(pw) {
+            // Use forEach (not every) so ALL items are updated, not just up to the first failure
+            let allOk = true;
+            PW_RULES.forEach(r => {
+                const el = document.getElementById(r.id);
+                const ok = r.test(pw);
+                if (!ok) allOk = false;
+                if (el) {
+                    el.classList.toggle('pw-req-ok',   ok);
+                    el.classList.toggle('pw-req-fail', pw.length > 0 && !ok);
+                    el.querySelector('i').className = ok ? 'fas fa-check-circle' : 'fas fa-circle';
+                }
+            });
+            return allOk;
+        }
+
+        function bindPasswordStrength() {
+            const pw = document.getElementById('password');
+            pw.addEventListener('input', () => {
+                checkPasswordStrength(pw.value);
+                document.getElementById('pwReqs').style.display = 'block';
+            });
+            pw.addEventListener('focus', () => {
+                document.getElementById('pwReqs').style.display = 'block';
+            });
+        }
+
+        // ── Password confirm ───────────────────────────────────
+        function bindPasswordConfirm() {
+            document.getElementById('confirmPassword').addEventListener('input', function () {
+                const match = this.value === document.getElementById('password').value;
+                this.setCustomValidity(match ? '' : 'Passwords do not match');
+                this.classList.toggle('error', !match && this.value.length > 0);
+            });
+        }
+
+        // ── Get school ID from the active combobox ─────────────
+        function getSchoolId(role) {
+            const cfg   = COMBOS[role];
+            const combo = cfg ? document.getElementById(cfg.comboId) : null;
+            return combo ? combo.querySelector('.school-combobox-value').value : '';
+        }
+
+        // ── Form submit ────────────────────────────────────────
+        function bindFormSubmit() {
+            document.getElementById('signupForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn      = this.querySelector('button[type="submit"]');
+                const origHTML = btn.innerHTML;
+                const fullname = document.getElementById('fullname').value.trim();
+                const email    = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmP = document.getElementById('confirmPassword').value;
+                const terms    = document.getElementById('terms').checked;
+                const role     = document.getElementById('selectedRole').value;
+                const contact  = document.getElementById('contactNumber').value.trim();
+                clearError();
+
+                if (!fullname || !email || !password || !confirmP)
+                    return showError('Please fill in all required fields');
+                if (!checkPasswordStrength(password)) {
+                    document.getElementById('pwReqs').style.display = 'block';
+                    return showError('Password does not meet the requirements shown below');
+                }
+                if (password !== confirmP)
+                    return showError('Passwords do not match');
+                if (!terms)
+                    return showError('Please accept the Terms & Conditions');
+
+                const payload = { name: fullname, email, password, password_confirmation: confirmP, role };
+                if (contact) payload.contact_number = contact;
+
+                if (role === 'student') {
+                    const schoolId = getSchoolId('student');
+                    const gender   = document.getElementById('genderValue').value;
+                    const grade    = document.getElementById('grade').value;
+                    const dob      = document.getElementById('dateOfBirth').value;
+                    if (!schoolId) return showError('Please select your school');
+                    if (!gender)   return showError('Please select your gender');
+                    if (!grade)    return showError('Please select your grade');
+                    if (!dob)      return showError('Please enter your date of birth');
+                    Object.assign(payload, { school_id: schoolId, gender, grade, date_of_birth: dob });
+
+                } else if (role === 'teacher') {
+                    const schoolId = getSchoolId('teacher');
+                    if (!schoolId) return showError('Please select your school');
+                    payload.school_id = schoolId;
+
+                } else if (role === 'schooladmin') {
+                    const schoolId = getSchoolId('schooladmin');
+                    if (!schoolId) return showError('Please select your school');
+                    payload.school_id = schoolId;
                 }
 
-            } catch (error) {
-                console.error('Registration error:', error);
-                showError('An unexpected error occurred. Please try again.');
-
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalHTML;
-            }
-        });
-
-        /**
-         * Display error message to user
-         */
-        function showError(message) {
-            clearMessages();
-
-            let errorDiv = document.getElementById('error-message');
-
-            if (!errorDiv) {
-                errorDiv = document.createElement('div');
-                errorDiv.id = 'error-message';
-                errorDiv.className = 'alert alert-error';
-
-                const form = document.getElementById('signupForm');
-                form.insertBefore(errorDiv, form.firstChild);
-            }
-
-            errorDiv.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
-            `;
-            errorDiv.style.display = 'flex';
-
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                try {
+                    const result = await Auth.register(payload);
+                    if (result.success) {
+                        showSuccess('Account created! Redirecting...');
+                        setTimeout(() => Auth.handleLoginRedirect(), 1500);
+                    } else {
+                        // Show the most specific error available
+                        const errors = result.errors || {};
+                        const firstField = Object.keys(errors)[0];
+                        const msg = firstField
+                            ? errors[firstField]
+                            : (result.message || 'Registration failed. Please try again.');
+                        showError(msg);
+                        btn.disabled = false;
+                        btn.innerHTML = origHTML;
+                    }
+                } catch (err) {
+                    showError('An unexpected error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = origHTML;
+                }
+            });
         }
 
-        /**
-         * Display success message to user
-         */
-        function showSuccess(message) {
+        // ── Alerts ─────────────────────────────────────────────
+        function showError(msg) {
             clearMessages();
-
-            let successDiv = document.getElementById('success-message');
-
-            if (!successDiv) {
-                successDiv = document.createElement('div');
-                successDiv.id = 'success-message';
-                successDiv.className = 'alert alert-success';
-
+            let d = document.getElementById('error-message');
+            if (!d) {
+                d = document.createElement('div');
+                d.id = 'error-message'; d.className = 'alert alert-error';
                 const form = document.getElementById('signupForm');
-                form.insertBefore(successDiv, form.firstChild);
+                form.insertBefore(d, form.firstChild);
             }
-
-            successDiv.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <span>${message}</span>
-            `;
-            successDiv.style.display = 'flex';
+            d.innerHTML = `<i class="fas fa-exclamation-circle"></i><span>${msg}</span>`;
+            d.style.display = 'flex';
+            setTimeout(() => { d.style.display = 'none'; }, 6000);
         }
 
-        /**
-         * Clear all messages
-         */
+        function showSuccess(msg) {
+            clearMessages();
+            let d = document.getElementById('success-message');
+            if (!d) {
+                d = document.createElement('div');
+                d.id = 'success-message'; d.className = 'alert alert-success';
+                const form = document.getElementById('signupForm');
+                form.insertBefore(d, form.firstChild);
+            }
+            d.innerHTML = `<i class="fas fa-check-circle"></i><span>${msg}</span>`;
+            d.style.display = 'flex';
+        }
+
         function clearMessages() {
-            const errorDiv = document.getElementById('error-message');
-            const successDiv = document.getElementById('success-message');
-
-            if (errorDiv) errorDiv.style.display = 'none';
-            if (successDiv) successDiv.style.display = 'none';
+            ['error-message','success-message'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
         }
 
-        /**
-         * Clear error message
-         */
         function clearError() {
-            const errorDiv = document.getElementById('error-message');
-            if (errorDiv) errorDiv.style.display = 'none';
+            const el = document.getElementById('error-message');
+            if (el) el.style.display = 'none';
         }
 
-        // Real-time password match validation
-        document.getElementById('confirmPassword').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-
-            if (confirmPassword && password !== confirmPassword) {
-                this.setCustomValidity('Passwords do not match');
-                this.classList.add('error');
-            } else {
-                this.setCustomValidity('');
-                this.classList.remove('error');
-            }
-        });
-
-        // Clear error on input focus
-        const inputs = ['fullname', 'email', 'password', 'confirmPassword'];
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('focus', clearError);
-        });
+    }());
     </script>
 </body>
 </html>

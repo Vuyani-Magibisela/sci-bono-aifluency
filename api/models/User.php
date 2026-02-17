@@ -36,7 +36,14 @@ class User extends BaseModel
         'show_achievements',
         'show_certificates',
         'profile_views_count',
-        'last_profile_updated'
+        'last_profile_updated',
+        // Phase 13+: Demographic & org fields
+        'contact_number',
+        'gender',
+        'grade',
+        'date_of_birth',
+        'primary_organization_id',
+        'primary_school_id',
     ];
     protected array $hidden = ['password_hash'];
 
@@ -360,7 +367,7 @@ class User extends BaseModel
      */
     public function getRoles(): array
     {
-        return ['student', 'instructor', 'admin'];
+        return ['student', 'teacher', 'schooladmin', 'orgadmin', 'superadmin'];
     }
 
     // ========================================
@@ -765,6 +772,124 @@ class User extends BaseModel
                 ],
                 'risk_threshold' => $riskThreshold
             ];
+        }
+    }
+
+    /**
+     * Get users with combined filters (Phase 10 - Admin User Management)
+     *
+     * @param string|null $role     Filter by role
+     * @param string|null $search   Search in name/email
+     * @param int|null    $orgId    Filter by primary_organization_id
+     * @param int|null    $schoolId Filter by primary_school_id
+     * @param int|null    $limit    Pagination limit
+     * @param int|null    $offset   Pagination offset
+     * @return array
+     */
+    public function getFilteredUsers(
+        ?string $role = null,
+        ?string $search = null,
+        ?int $orgId = null,
+        ?int $schoolId = null,
+        ?int $limit = null,
+        ?int $offset = null
+    ): array {
+        $conditions = [];
+        $params = [];
+
+        if ($role !== null) {
+            $conditions[] = 'role = :role';
+            $params['role'] = $role;
+        }
+        if ($search !== null) {
+            $conditions[] = '(name LIKE :search OR email LIKE :search)';
+            $params['search'] = "%{$search}%";
+        }
+        if ($orgId !== null) {
+            $conditions[] = 'primary_organization_id = :org_id';
+            $params['org_id'] = $orgId;
+        }
+        if ($schoolId !== null) {
+            $conditions[] = 'primary_school_id = :school_id';
+            $params['school_id'] = $schoolId;
+        }
+
+        $sql = "SELECT * FROM {$this->table}";
+        if (!empty($conditions)) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        }
+        $sql .= ' ORDER BY created_at DESC';
+
+        try {
+            $stmt = $this->pdo->prepare($sql . ($limit !== null ? ' LIMIT :limit' : '') . ($limit !== null && $offset !== null ? ' OFFSET :offset' : ''));
+            foreach ($params as $key => $value) {
+                $stmt->bindValue(':' . $key, $value);
+            }
+            if ($limit !== null) {
+                $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+                if ($offset !== null) {
+                    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+                }
+            }
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            error_log('Database error in getFilteredUsers: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Count users with combined filters (Phase 10 - Admin User Management)
+     *
+     * @param string|null $role
+     * @param string|null $search
+     * @param int|null    $orgId
+     * @param int|null    $schoolId
+     * @return int
+     */
+    public function countFilteredUsers(
+        ?string $role = null,
+        ?string $search = null,
+        ?int $orgId = null,
+        ?int $schoolId = null
+    ): int {
+        $conditions = [];
+        $params = [];
+
+        if ($role !== null) {
+            $conditions[] = 'role = :role';
+            $params['role'] = $role;
+        }
+        if ($search !== null) {
+            $conditions[] = '(name LIKE :search OR email LIKE :search)';
+            $params['search'] = "%{$search}%";
+        }
+        if ($orgId !== null) {
+            $conditions[] = 'primary_organization_id = :org_id';
+            $params['org_id'] = $orgId;
+        }
+        if ($schoolId !== null) {
+            $conditions[] = 'primary_school_id = :school_id';
+            $params['school_id'] = $schoolId;
+        }
+
+        $sql = "SELECT COUNT(*) as cnt FROM {$this->table}";
+        if (!empty($conditions)) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        }
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue(':' . $key, $value);
+            }
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_OBJ);
+            return (int) ($row->cnt ?? 0);
+        } catch (\PDOException $e) {
+            error_log('Database error in countFilteredUsers: ' . $e->getMessage());
+            return 0;
         }
     }
 

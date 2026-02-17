@@ -9,7 +9,17 @@
  */
 
 const API = {
-    baseURL: '/api',
+    // Automatically detect the correct API base URL
+    // Extract base path from current location
+    baseURL: (() => {
+        const path = window.location.pathname;
+        // If path starts with /sci-bono-aifluency/, we're using localhost subdirectory
+        if (path.startsWith('/sci-bono-aifluency/')) {
+            return '/sci-bono-aifluency/api';
+        }
+        // Otherwise, we're using a virtual host pointing to the project root
+        return '/api';
+    })(),
     refreshing: false,
     requestQueue: [],
 

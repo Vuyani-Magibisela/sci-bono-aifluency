@@ -168,6 +168,12 @@ class QuizController extends BaseController
 
         $moduleId = (int)$data['module_id'];
 
+        // Check if module exists (same pattern as ModuleController:153-156)
+        $module = $this->moduleModel->find($moduleId);
+        if (!$module) {
+            Response::notFound('Module not found');
+        }
+
         // Check slug uniqueness within module
         if ($this->quizModel->findBySlug(Validator::sanitize($data['slug']), $moduleId)) {
             Response::error('Quiz slug already exists in this module', 409);
@@ -370,7 +376,12 @@ class QuizController extends BaseController
         }
 
         $quizId = (int)$params['id'];
-        $data = $_POST;
+
+        // Accept both JSON body and POST form data
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         $quiz = $this->quizModel->find($quizId);
 
@@ -383,16 +394,26 @@ class QuizController extends BaseController
             Response::error('You have reached the maximum number of attempts for this quiz', 403);
         }
 
-        // Validate answers
-        $validator = Validator::make($data);
-        $validator->required('answers', 'Quiz answers are required');
-
-        if ($validator->fails()) {
-            Response::validationError($validator->errors());
+        if (empty($data['answers'])) {
+            Response::error('Quiz answers are required', 400);
         }
 
-        $answers = $data['answers'];
+        $rawAnswers = $data['answers'];
         $timeSpent = isset($data['time_taken_minutes']) ? (int)$data['time_taken_minutes'] : 0;
+
+        // Transform array-of-objects format [{question_id, selected_answer}] to keyed format {id => answer}
+        $answers = [];
+        if (is_array($rawAnswers)) {
+            foreach ($rawAnswers as $answer) {
+                if (isset($answer['question_id']) && isset($answer['selected_answer'])) {
+                    $answers[(int)$answer['question_id']] = (int)$answer['selected_answer'];
+                } else {
+                    // Already in keyed format
+                    $answers = $rawAnswers;
+                    break;
+                }
+            }
+        }
 
         // Validate answers and calculate score
         $validation = $this->questionModel->validateAnswers($quizId, $answers);
@@ -520,6 +541,8 @@ class QuizController extends BaseController
                 'score' => $score,
                 'passed' => $passed,
                 'passing_score' => $quiz->passing_score,
+                'correct_count' => isset($validation['results']) ? count(array_filter($validation['results'], fn($r) => $r['is_correct'])) : 0,
+                'total_questions' => isset($validation['results']) ? count($validation['results']) : 0,
                 'results' => $validation['results'],
                 'achievements_unlocked' => $newAchievements
             ], 'Quiz submitted successfully', 201);
@@ -594,7 +617,7 @@ class QuizController extends BaseController
             LEFT JOIN modules m ON l.module_id = m.id
             LEFT JOIN courses c ON m.course_id = c.id
             WHERE qa.user_id = ?
-            ORDER BY qa.completed_at DESC
+            ORDER BY qa.time_completed DESC
             LIMIT ?
         ");
         $stmt->execute([$currentUser->id, $limit]);
@@ -602,6 +625,49 @@ class QuizController extends BaseController
 
         // Return attempts array directly for dashboard
         Response::success($attempts, 'Recent quiz attempts retrieved successfully');
+    }
+
+    /**
+     * Get quiz questions
+     *
+     * GET /api/quiz-questions?quiz_id=1
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getQuestions(array $params = []): void
+    {
+        $quizId = isset($_GET['quiz_id']) ? (int)$_GET['quiz_id'] : null;
+
+        if (!$quizId) {
+            Response::error('quiz_id is required', 400);
+        }
+
+        $quiz = $this->quizModel->find($quizId);
+        if (!$quiz) {
+            Response::notFound('Quiz not found');
+        }
+
+        if (!$quiz->is_published) {
+            $currentUser = JWTHandler::getCurrentUser();
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
+                Response::forbidden('This quiz is not published');
+            }
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT id, quiz_id, question_text AS question, options,
+                   correct_option AS correct_answer, explanation, points, order_index
+            FROM quiz_questions
+            WHERE quiz_id = ?
+            ORDER BY order_index ASC
+        ");
+        $stmt->execute([$quizId]);
+        $questions = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        $total = count($questions);
+
+        Response::paginated($questions, $total, 1, $total ?: 20, 'Questions retrieved successfully');
     }
 
     /**

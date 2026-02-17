@@ -56,10 +56,11 @@ const InstructorGrading = {
      */
     async loadQuizzes() {
         try {
-            const response = await apiRequest('/api/quizzes');
+            const response = await API.get('/quizzes');
 
             if (response.success) {
-                this.quizzes = response.quizzes || [];
+                const raw = response.data || {};
+                this.quizzes = Array.isArray(raw) ? raw : (raw.items || raw.data || []);
                 this.renderQuizFilter();
             }
         } catch (error) {
@@ -103,15 +104,16 @@ const InstructorGrading = {
             const quizId = document.getElementById('quiz-filter').value;
             const status = document.getElementById('status-filter').value;
 
-            let url = '/api/grading/pending?limit=100';
+            let url = '/grading/pending?limit=100';
             if (quizId) {
                 url += `&quiz_id=${quizId}`;
             }
 
-            const response = await apiRequest(url);
+            const response = await API.get(url);
 
             if (response.success) {
-                this.pendingQueue = response.attempts || [];
+                const raw = response.data || {};
+                this.pendingQueue = Array.isArray(raw) ? raw : (raw.attempts || raw.items || raw.data || []);
 
                 // Filter by status if needed (frontend filter for now)
                 if (status) {
@@ -132,7 +134,11 @@ const InstructorGrading = {
             }
         } catch (error) {
             loadingSpinner.style.display = 'none';
-            showToast('Failed to load grading queue: ' + error.message, 'error');
+            if (typeof showToast === 'function') {
+                showToast('Failed to load grading queue: ' + error.message, 'error');
+            } else {
+                console.error('Failed to load grading queue:', error);
+            }
         }
     },
 
@@ -218,7 +224,7 @@ const InstructorGrading = {
     async openGradingModal(attemptId) {
         const attempt = this.pendingQueue.find(a => a.id === attemptId);
         if (!attempt) {
-            showToast('Attempt not found', 'error');
+            if (typeof showToast === 'function') showToast('Attempt not found', 'error');
             return;
         }
 
@@ -257,7 +263,7 @@ const InstructorGrading = {
 
         try {
             // Get attempt details with answers
-            const response = await apiRequest(`/api/quiz-attempts/${attemptId}`);
+            const response = await API.get(`/quizzes/${attemptId}/attempts`);
 
             if (response.success && response.attempt) {
                 const attempt = response.attempt;
@@ -328,7 +334,7 @@ const InstructorGrading = {
      */
     async submitGrade() {
         if (!this.currentAttempt) {
-            showToast('No attempt selected', 'error');
+            if (typeof showToast === 'function') showToast('No attempt selected', 'error');
             return;
         }
 
@@ -337,7 +343,8 @@ const InstructorGrading = {
 
         // Validation
         if (isNaN(score) || score < 0 || score > 100) {
-            showToast('Please enter a valid score between 0 and 100', 'error');
+            if (typeof showToast === 'function') showToast('Please enter a valid score between 0 and 100', 'error');
+            else alert('Please enter a valid score between 0 and 100');
             return;
         }
 
@@ -346,25 +353,24 @@ const InstructorGrading = {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
         try {
-            const response = await apiRequest(`/api/grading/${this.currentAttempt.id}`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    score: score,
-                    feedback: feedback || null
-                })
+            const response = await API.post(`/grading/${this.currentAttempt.id}`, {
+                score: score,
+                feedback: feedback || null
             });
 
             if (response.success) {
-                showToast('Grade submitted successfully!', 'success');
+                if (typeof showToast === 'function') showToast('Grade submitted successfully!', 'success');
                 closeGradingModal();
-
-                // Refresh queue
                 await this.loadPendingQueue();
             } else {
-                showToast('Failed to submit grade: ' + (response.message || 'Unknown error'), 'error');
+                const msg = 'Failed to submit grade: ' + (response.message || 'Unknown error');
+                if (typeof showToast === 'function') showToast(msg, 'error');
+                else alert(msg);
             }
         } catch (error) {
-            showToast('Failed to submit grade: ' + error.message, 'error');
+            const msg = 'Failed to submit grade: ' + error.message;
+            if (typeof showToast === 'function') showToast(msg, 'error');
+            else alert(msg);
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Grade';
@@ -382,7 +388,7 @@ const InstructorGrading = {
         modal.style.display = 'block';
 
         try {
-            const response = await apiRequest(`/api/grading/analytics/${quizId}`);
+            const response = await API.get(`/grading/analytics/${quizId}`);
 
             if (response.success) {
                 this.renderAnalytics(response);

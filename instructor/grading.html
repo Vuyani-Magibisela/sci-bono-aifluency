@@ -3,187 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grading Queue - Sci-Bono AI Fluency</title>
+    <title>Grading Queue - AI Fluency</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
 <body>
-    <div id="header-container"></div>
-
-    <main class="container">
-        <div class="page-header">
-            <h1><i class="fas fa-clipboard-check"></i> Grading Queue</h1>
-            <p class="subtitle">Review and grade student quiz attempts</p>
-        </div>
-
-        <!-- Filter Controls -->
-        <div class="grading-filters">
-            <div class="filter-group">
-                <label for="quiz-filter">Filter by Quiz:</label>
-                <select id="quiz-filter" class="filter-select">
-                    <option value="">All Quizzes</option>
-                </select>
+    <!-- Dynamic Header -->
+    <div id="header-placeholder"></div>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
             </div>
 
-            <div class="filter-group">
-                <label for="status-filter">Status:</label>
-                <select id="status-filter" class="filter-select">
-                    <option value="">All Statuses</option>
-                    <option value="submitted" selected>Pending Grading</option>
-                    <option value="graded">Graded</option>
-                    <option value="reviewed">Reviewed</option>
-                </select>
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="profile-name">Instructor</div>
+                <div class="profile-role">Instructor</div>
             </div>
 
-            <div class="filter-group">
-                <button id="refresh-btn" class="btn btn-secondary">
-                    <i class="fas fa-sync-alt"></i> Refresh
+            <nav class="sidebar-nav">
+                <a href="/instructor/dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/instructor/courses.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>My Courses</span>
+                </a>
+                <a href="/instructor/students.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <a href="#" class="nav-item disabled" title="Coming Soon" onclick="return false;">
+                    <i class="fas fa-tasks"></i>
+                    <span>Assignments</span>
+                </a>
+                <a href="/instructor/grading.html" class="nav-item active">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Grading</span>
+                </a>
+                <a href="/instructor/analytics.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item disabled" title="Coming Soon" onclick="return false;">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="/profile/edit.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" onclick="Auth.logout(); return false;" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-topbar">
+                <div class="topbar-left">
+                    <h1><i class="fas fa-clipboard-check"></i> Grading Queue</h1>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-icon">
+                        <span id="pending-count" class="stat-badge">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span id="pending-number">0</span> Pending
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content" id="dashboard-content">
+                <!-- Filter Controls -->
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+                        <div class="filter-group">
+                            <label for="quiz-filter">Filter by Quiz:</label>
+                            <select id="quiz-filter" class="filter-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color, #ccc);">
+                                <option value="">All Quizzes</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="status-filter">Status:</label>
+                            <select id="status-filter" class="filter-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color, #ccc);">
+                                <option value="">All Statuses</option>
+                                <option value="submitted" selected>Pending Grading</option>
+                                <option value="graded">Graded</option>
+                                <option value="reviewed">Reviewed</option>
+                            </select>
+                        </div>
+
+                        <button id="refresh-btn" class="btn-secondary btn-sm">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grading Queue Table -->
+                <div class="dashboard-card">
+                    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading grading queue...
+                    </div>
+
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        <div class="empty-icon"><i class="fas fa-check-circle"></i></div>
+                        <h3>All Caught Up!</h3>
+                        <p>No pending quiz attempts to grade at the moment.</p>
+                    </div>
+
+                    <div id="grading-queue-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Grading Modal -->
+    <div id="grading-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Grade Quiz Attempt</h2>
+                <button class="modal-close" onclick="closeGradingModal()">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
 
-            <div class="filter-stats">
-                <span id="pending-count" class="stat-badge">
-                    <i class="fas fa-hourglass-half"></i>
-                    <span id="pending-number">0</span> Pending
-                </span>
-            </div>
-        </div>
-
-        <!-- Grading Queue Table -->
-        <div class="grading-queue-container">
-            <div id="loading-spinner" class="loading-spinner" style="display: none;">
-                <i class="fas fa-spinner fa-spin"></i> Loading grading queue...
-            </div>
-
-            <div id="empty-state" class="empty-state" style="display: none;">
-                <i class="fas fa-check-circle"></i>
-                <h3>All Caught Up!</h3>
-                <p>No pending quiz attempts to grade at the moment.</p>
-            </div>
-
-            <div id="grading-queue-list"></div>
-        </div>
-
-        <!-- Grading Modal -->
-        <div id="grading-modal" class="modal" style="display: none;">
-            <div class="modal-content modal-large">
-                <div class="modal-header">
-                    <h2><i class="fas fa-edit"></i> Grade Quiz Attempt</h2>
-                    <button class="modal-close" onclick="closeGradingModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
+            <div class="modal-body">
+                <!-- Student Info -->
+                <div class="student-info-card">
+                    <div class="info-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div class="info-item">
+                            <label>Student:</label>
+                            <span id="modal-student-name"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Quiz:</label>
+                            <span id="modal-quiz-title"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Submitted:</label>
+                            <span id="modal-submitted-date"></span>
+                        </div>
+                    </div>
+                    <div class="info-row" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div class="info-item">
+                            <label>Auto Score:</label>
+                            <span id="modal-auto-score" class="score-badge"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Time Spent:</label>
+                            <span id="modal-time-spent"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Attempt #:</label>
+                            <span id="modal-attempt-number"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="modal-body">
-                    <!-- Student Info -->
-                    <div class="student-info-card">
-                        <div class="info-row">
-                            <div class="info-item">
-                                <label>Student:</label>
-                                <span id="modal-student-name"></span>
-                            </div>
-                            <div class="info-item">
-                                <label>Quiz:</label>
-                                <span id="modal-quiz-title"></span>
-                            </div>
-                            <div class="info-item">
-                                <label>Submitted:</label>
-                                <span id="modal-submitted-date"></span>
-                            </div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-item">
-                                <label>Auto Score:</label>
-                                <span id="modal-auto-score" class="score-badge"></span>
-                            </div>
-                            <div class="info-item">
-                                <label>Time Spent:</label>
-                                <span id="modal-time-spent"></span>
-                            </div>
-                            <div class="info-item">
-                                <label>Attempt #:</label>
-                                <span id="modal-attempt-number"></span>
-                            </div>
-                        </div>
+                <!-- Answers Review -->
+                <div class="answers-section" style="margin-top: 1.5rem;">
+                    <h3>Student Answers</h3>
+                    <div id="modal-answers-list"></div>
+                </div>
+
+                <!-- Grading Form -->
+                <div class="grading-form" style="margin-top: 1.5rem;">
+                    <h3>Instructor Grade</h3>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="instructor-score">
+                            Final Score (0-100) <span style="color: red;">*</span>
+                        </label>
+                        <input type="number" id="instructor-score" min="0" max="100" step="0.5"
+                            placeholder="Enter final score" required
+                            style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color, #ccc); width: 200px;">
+                        <small style="display: block; margin-top: 0.25rem;">You can adjust the auto-calculated score based on your review</small>
                     </div>
 
-                    <!-- Answers Review -->
-                    <div class="answers-section">
-                        <h3>Student Answers</h3>
-                        <div id="modal-answers-list"></div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="instructor-feedback">
+                            Feedback for Student <span style="opacity: 0.6;">(optional)</span>
+                        </label>
+                        <textarea id="instructor-feedback" rows="6" placeholder="Provide constructive feedback..."
+                            maxlength="2000" style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color, #ccc);"></textarea>
+                        <small><span id="feedback-char-count">0</span> / 2000 characters</small>
                     </div>
 
-                    <!-- Grading Form -->
-                    <div class="grading-form">
-                        <h3>Instructor Grade</h3>
-
-                        <div class="form-group">
-                            <label for="instructor-score">
-                                Final Score (0-100)
-                                <span class="required">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                id="instructor-score"
-                                min="0"
-                                max="100"
-                                step="0.5"
-                                placeholder="Enter final score"
-                                required
-                            >
-                            <small>You can adjust the auto-calculated score based on your review</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="instructor-feedback">
-                                Feedback for Student
-                                <span class="optional">(optional)</span>
-                            </label>
-                            <textarea
-                                id="instructor-feedback"
-                                rows="6"
-                                placeholder="Provide constructive feedback on the student's performance..."
-                                maxlength="2000"
-                            ></textarea>
-                            <small><span id="feedback-char-count">0</span> / 2000 characters</small>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="closeGradingModal()">
-                                Cancel
-                            </button>
-                            <button type="button" id="submit-grade-btn" class="btn btn-primary">
-                                <i class="fas fa-check"></i> Submit Grade
-                            </button>
-                        </div>
+                    <div class="form-actions" style="margin-top: 1rem; display: flex; gap: 1rem;">
+                        <button type="button" class="btn-secondary" onclick="closeGradingModal()">Cancel</button>
+                        <button type="button" id="submit-grade-btn" class="btn-primary">
+                            <i class="fas fa-check"></i> Submit Grade
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Analytics Modal -->
-        <div id="analytics-modal" class="modal" style="display: none;">
-            <div class="modal-content modal-large">
-                <div class="modal-header">
-                    <h2><i class="fas fa-chart-bar"></i> Quiz Analytics</h2>
-                    <button class="modal-close" onclick="closeAnalyticsModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div id="analytics-content">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin"></i> Loading analytics...
-                        </div>
-                    </div>
+    <!-- Analytics Modal -->
+    <div id="analytics-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-chart-bar"></i> Quiz Analytics</h2>
+                <button class="modal-close" onclick="closeAnalyticsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="analytics-content">
+                    <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading analytics...</div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
+    <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
+    <script src="../js/script.js"></script>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('mobile-open');
+            });
+        }
+    </script>
+
+    <!-- Authentication System -->
     <script src="../js/storage.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
@@ -191,45 +250,48 @@
     <script src="../js/instructor-grading.js"></script>
 
     <script>
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', async function() {
-            await initializeHeader();
-
-            // Check if user can manage content (Phase 12 - Hierarchical RBAC)
-            const user = await getCurrentUser();
-            if (!user || !Auth.canManageContent()) {
-                showToast('Access denied. Content management role required.', 'error');
-                setTimeout(() => {
-                    window.location.href = 'student-dashboard.html';
-                }, 2000);
-                return;
-            }
-
-            // Initialize grading page
-            await InstructorGrading.init();
-        });
+        // Toast helper
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            if (!container) { alert(message); return; }
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + (type || 'info');
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
 
         // Modal controls
         function closeGradingModal() {
             document.getElementById('grading-modal').style.display = 'none';
         }
-
         function closeAnalyticsModal() {
             document.getElementById('analytics-modal').style.display = 'none';
         }
-
-        // Click outside modal to close
         window.onclick = function(event) {
-            const gradingModal = document.getElementById('grading-modal');
-            const analyticsModal = document.getElementById('analytics-modal');
-
-            if (event.target === gradingModal) {
-                closeGradingModal();
-            }
-            if (event.target === analyticsModal) {
-                closeAnalyticsModal();
-            }
+            if (event.target === document.getElementById('grading-modal')) closeGradingModal();
+            if (event.target === document.getElementById('analytics-modal')) closeAnalyticsModal();
         };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            const user = Auth.getUser();
+            if (!user || !Auth.canManageContent()) {
+                window.location.href = '/public/403.html';
+                return;
+            }
+
+            // Update sidebar profile
+            const profileName = document.querySelector('.profile-name');
+            if (profileName) profileName.textContent = user.name || 'Instructor';
+
+            await InstructorGrading.init();
+        });
+    </script>
+
+    <!-- Page Protection -->
+    <script>
+        Auth.requireAuth(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
     </script>
 </body>
 </html>

@@ -91,7 +91,7 @@ class Module extends BaseModel
             $lessonsStmt = $this->pdo->prepare("
                 SELECT * FROM lessons
                 WHERE module_id = :module_id
-                ORDER BY `order` ASC
+                ORDER BY `order_index` ASC
             ");
             $lessonsStmt->execute(['module_id' => $moduleId]);
             $module->lessons = $lessonsStmt->fetchAll(PDO::FETCH_OBJ);

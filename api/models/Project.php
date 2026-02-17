@@ -179,6 +179,38 @@ class Project extends BaseModel
     }
 
     /**
+     * Get published projects by course with module info (title, order)
+     *
+     * @param int $courseId Course ID
+     * @param int|null $limit Optional limit
+     * @param int|null $offset Optional offset
+     * @return array
+     */
+    public function getPublishedByCourseWithModules(int $courseId, ?int $limit = null, ?int $offset = null): array
+    {
+        try {
+            $sql = "SELECT p.*, m.title AS module_title, m.order_index AS module_order
+                    FROM {$this->table} p
+                    LEFT JOIN modules m ON p.module_id = m.id
+                    WHERE p.course_id = :course_id AND p.is_published = 1
+                    ORDER BY m.order_index ASC, p.`order` ASC";
+
+            if ($limit !== null) {
+                $sql .= " LIMIT {$limit}";
+            }
+
+            if ($offset !== null) {
+                $sql .= " OFFSET {$offset}";
+            }
+
+            return $this->query($sql, ['course_id' => $courseId]);
+        } catch (\PDOException $e) {
+            error_log("Database error in getPublishedByCourseWithModules: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Get upcoming projects (not yet due)
      *
      * @param int $courseId Course ID

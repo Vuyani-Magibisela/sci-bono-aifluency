@@ -23,8 +23,8 @@
                 <div class="profile-avatar">
                     <i class="fas fa-user"></i>
                 </div>
-                <div class="profile-name">John Doe</div>
-                <div class="profile-role">Student</div>
+                <div class="profile-name" id="sidebar-profile-name">John Doe</div>
+                <div class="profile-role" id="sidebar-profile-role">Student</div>
             </div>
 
             <nav class="sidebar-nav">
@@ -36,9 +36,13 @@
                     <i class="fas fa-book"></i>
                     <span>My Courses</span>
                 </a>
-                <a href="#" class="nav-item disabled" title="Coming Soon" onclick="return false;">
-                    <i class="fas fa-tasks"></i>
-                    <span>Assignments</span>
+                <a href="/student/projects/index.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="/student/quizzes/quiz-history.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quizzes</span>
                 </a>
                 <a href="/student/analytics.html" class="nav-item">
                     <i class="fas fa-chart-line"></i>
@@ -74,11 +78,6 @@
                     <div class="topbar-icon">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
-                    </div>
-                    <div class="topbar-profile">
-                        <div class="topbar-avatar">JD</div>
-                        <span>John Doe</span>
-                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </div>
@@ -117,7 +116,7 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-                        <div class="card-description">Overall progress</div>
+                        <div class="card-description" id="lessons-description">Overall progress</div>
                     </div>
 
                     <div class="dashboard-card">

@@ -195,6 +195,13 @@ $routes = [
         'auth' => true,
         'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
+    // Public school list for signup dropdown (no auth required) - MUST be before /schools/:id
+    [
+        'method' => 'GET',
+        'pattern' => '/schools/public',
+        'handler' => 'SchoolController@publicList',
+        'auth' => false
+    ],
     [
         'method' => 'GET',
         'pattern' => '/schools/:id',
@@ -433,7 +440,13 @@ $routes = [
         'auth' => true
     ],
 
-    // Quiz Question Routes (Admin Management - 3 endpoints)
+    // Quiz Question Routes (Admin Management - 4 endpoints)
+    [
+        'method' => 'GET',
+        'pattern' => '/quiz-questions',
+        'handler' => 'QuizController@getQuestions',
+        'auth' => false
+    ],
     [
         'method' => 'POST',
         'pattern' => '/quiz-questions',

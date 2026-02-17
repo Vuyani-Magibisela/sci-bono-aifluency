@@ -14,6 +14,10 @@ const AdminDashboard = {
     /**
      * Initialize the admin dashboard
      */
+    currentUser: null,
+    userRole: null,
+    schoolId: null,
+
     async init() {
         console.log('AdminDashboard: Initializing...');
 
@@ -33,8 +37,16 @@ const AdminDashboard = {
             return;
         }
 
+        // Store user info for role-based restrictions
+        this.currentUser = user;
+        this.userRole = user.role;
+        this.schoolId = user.primary_school_id || null;
+
         // Update welcome message
         this.updateWelcomeMessage(user);
+
+        // Apply role-based UI restrictions
+        this.applyRoleRestrictions(user);
 
         // Load dashboard data
         await this.loadDashboardData();
@@ -43,6 +55,52 @@ const AdminDashboard = {
         this.setupEventListeners();
 
         console.log('AdminDashboard: Initialization complete');
+    },
+
+    /**
+     * Apply role-based UI restrictions
+     */
+    applyRoleRestrictions(user) {
+        // Update sidebar profile with actual user info
+        const profileName = document.querySelector('.profile-name');
+        if (profileName) {
+            profileName.textContent = user.name || 'Admin User';
+        }
+
+        const profileRole = document.querySelector('.profile-role');
+        const roleLabels = {
+            superadmin: 'System Administrator',
+            orgadmin: 'Organization Administrator',
+            schooladmin: 'School Administrator'
+        };
+
+        if (profileRole) {
+            profileRole.textContent = roleLabels[user.role] || 'Administrator';
+        }
+
+        // School admin restrictions
+        if (user.role === 'schooladmin') {
+            // Hide "Create Course" button (school admins can't create courses)
+            const createCourseBtn = document.getElementById('btn-create-course');
+            if (createCourseBtn) {
+                createCourseBtn.style.display = 'none';
+            }
+
+            // Update card descriptions to school-specific labels
+            const descriptions = document.querySelectorAll('.card-description');
+            const schoolLabels = {
+                'System-wide users': 'School users',
+                'Published courses': 'Available courses',
+                'Active teachers': 'School teachers',
+                'Enrolled students': 'School students'
+            };
+            descriptions.forEach(desc => {
+                const replacement = schoolLabels[desc.textContent];
+                if (replacement) {
+                    desc.textContent = replacement;
+                }
+            });
+        }
     },
 
     /**
@@ -90,8 +148,14 @@ const AdminDashboard = {
      */
     async loadUsers(page = 1) {
         try {
-            const response = await API.get(`/users?page=${page}&limit=${this.usersPerPage}`);
-            return response.data || { users: [], total: 0, page: 1, pages: 1 };
+            const response = await API.get(`/users?page=${page}&pageSize=${this.usersPerPage}`);
+            const raw = response.data || {};
+            return {
+                users: raw.data || raw.users || [],
+                total: raw.total || 0,
+                page: raw.page || 1,
+                pages: raw.totalPages || raw.pages || 1
+            };
         } catch (error) {
             console.warn('AdminDashboard: Could not load users:', error);
             return { users: [], total: 0, page: 1, pages: 1 };
@@ -312,7 +376,7 @@ const AdminDashboard = {
         const container = document.getElementById('recent-activity');
         if (!container) return;
 
-        if (activities.length === 0) {
+        if (!Array.isArray(activities) || activities.length === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Recent Activity',
                 'System activity will appear here.',
@@ -467,12 +531,68 @@ const AdminDashboard = {
             refreshBtn.addEventListener('click', () => this.loadDashboardData());
         }
 
+        // Quick action buttons
+        const addUserBtn = document.getElementById('btn-add-user');
+        if (addUserBtn) {
+            addUserBtn.addEventListener('click', () => {
+                window.location.href = '/admin/users.html';
+            });
+        }
+
+        const createCourseBtn = document.getElementById('btn-create-course');
+        if (createCourseBtn) {
+            createCourseBtn.addEventListener('click', () => {
+                window.location.href = '/admin/courses.html';
+            });
+        }
+
+        const exportReportBtn = document.getElementById('btn-export-report');
+        if (exportReportBtn) {
+            exportReportBtn.addEventListener('click', () => this.exportDashboardReport());
+        }
+
+        const sendAnnouncementBtn = document.getElementById('btn-send-announcement');
+        if (sendAnnouncementBtn) {
+            sendAnnouncementBtn.addEventListener('click', () => {
+                alert('Announcements feature coming soon.');
+            });
+        }
+
         // Listen for auth state changes
         document.addEventListener('authStateChanged', (e) => {
             if (!e.detail.isAuthenticated) {
                 window.location.href = '/public/login.html';
             }
         });
+    },
+
+    /**
+     * Export dashboard stats as CSV
+     */
+    exportDashboardReport() {
+        const getValue = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.textContent.trim() : '0';
+        };
+
+        const rows = [
+            ['Metric', 'Value'],
+            ['Total Users', getValue('total-users')],
+            ['Active Courses', getValue('total-courses')],
+            ['Teachers', getValue('total-teachers')],
+            ['Students', getValue('total-students')]
+        ];
+
+        const csvContent = rows.map(r => r.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `dashboard-report-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     },
 
     /**

@@ -31,6 +31,7 @@ async function loadUserProfile() {
             const user = response.user;
 
             // Populate basic info
+            document.getElementById('name').value = user.name || '';
             document.getElementById('headline').value = user.headline || '';
             document.getElementById('bio').value = user.bio || '';
             document.getElementById('location').value = user.location || '';
@@ -117,6 +118,15 @@ async function handleProfileSave() {
     saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
     try {
+        // Save name via user endpoint
+        const nameValue = document.getElementById('name').value.trim();
+        if (nameValue) {
+            const nameResponse = await API.put(`/users/${currentUser.id}`, { name: nameValue });
+            if (!nameResponse.success) {
+                throw new Error(nameResponse.message || 'Failed to update name');
+            }
+        }
+
         // Collect profile data
         const profileData = {
             bio: document.getElementById('bio').value,

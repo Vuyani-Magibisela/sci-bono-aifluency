@@ -116,9 +116,7 @@ class ModuleController extends BaseController
         // Get module statistics
         $module->statistics = $this->moduleModel->getModuleStats($moduleId);
 
-        Response::success([
-            'module' => $module
-        ], 'Module retrieved successfully');
+        Response::success($module, 'Module retrieved successfully');
     }
 
     /**

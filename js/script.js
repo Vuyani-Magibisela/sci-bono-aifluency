@@ -1,24 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle Start Course button click
-    const startCourseBtn = document.getElementById('startCourse');
-    if (startCourseBtn) {
-        startCourseBtn.addEventListener('click', function() {
-            window.location.href = 'aifluencystart.html';
-        });
-    }
-
-    // Handle View Contents button click
-    const viewContentsBtn = document.getElementById('viewContents');
-    if (viewContentsBtn) {
-        viewContentsBtn.addEventListener('click', function() {
-            const coursesSection = document.getElementById('courses');
-            if (coursesSection) {
-                coursesSection.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    }
+    // Start Learning and View Course buttons are now <a> tags — no JS needed
 
     // Handle PDF download
     const downloadPdfBtn = document.getElementById('downloadPdf');
@@ -40,13 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add smooth scrolling to all links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    // Add smooth scrolling to all links (excluding navigation buttons)
+    document.querySelectorAll('a[href^="#"]:not(.nav-button)').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const href = this.getAttribute('href');
+            // Only apply smooth scroll if it's still a hash link (not changed dynamically)
+            if (href.startsWith('#') && href.length > 1) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            }
         });
     });
 
@@ -136,8 +124,8 @@ let deferredPrompt;
 const installButton = document.createElement('button');
 installButton.style.display = 'none';
 installButton.className = 'install-button';
-installButton.textContent = 'Install AI Fluency';
-installButton.setAttribute('aria-label', 'Install AI Fluency app');
+installButton.textContent = 'Install AI Discovery Hub';
+installButton.setAttribute('aria-label', 'Install AI Discovery Hub app');
 
 document.addEventListener('DOMContentLoaded', function() {
   const headerControls = document.querySelector('.header-controls');
