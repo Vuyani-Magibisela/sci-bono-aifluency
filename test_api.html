@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { color: #4B6EFB; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        .error { color: #FB4B4B; }
+        .success { color: #4BFB9D; }
+    </style>
+</head>
+<body>
+    <h1>API Test Results</h1>
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = '/sci-bono-aifluency/api';
+        const results = document.getElementById('results');
+
+        async function testAPIs() {
+            // Test 1: Courses list
+            results.innerHTML += '<h2>Testing Courses API...</h2>';
+            try {
+                const coursesResp = await fetch(API_BASE + '/courses?published=true');
+                const coursesData = await coursesResp.json();
+                if (coursesData.success) {
+                    results.innerHTML += '<p class="success">✓ Courses API Working</p>';
+                    results.innerHTML += '<p>Found ' + coursesData.data.items.length + ' courses</p>';
+                } else {
+                    results.innerHTML += '<p class="error">✗ Courses API returned error: ' + coursesData.message + '</p>';
+                }
+            } catch (e) {
+                results.innerHTML += '<p class="error">✗ Courses API Failed: ' + e.message + '</p>';
+            }
+
+            // Test 2: Course detail
+            results.innerHTML += '<h2>Testing Course Detail API...</h2>';
+            try {
+                const courseResp = await fetch(API_BASE + '/courses/1');
+                const courseData = await courseResp.json();
+                if (courseData.success && courseData.data.course.modules) {
+                    results.innerHTML += '<p class="success">✓ Course Detail API Working</p>';
+                    results.innerHTML += '<p>Course has ' + courseData.data.course.modules.length + ' modules</p>';
+                    const firstModule = courseData.data.course.modules[0];
+                    results.innerHTML += '<p>First module: ' + firstModule.title + ' (' + firstModule.lessons_count + ' lessons)</p>';
+                } else {
+                    results.innerHTML += '<p class="error">✗ Course Detail API returned error</p>';
+                }
+            } catch (e) {
+                results.innerHTML += '<p class="error">✗ Course Detail API Failed: ' + e.message + '</p>';
+            }
+
+            // Test 3: Lesson detail
+            results.innerHTML += '<h2>Testing Lesson API...</h2>';
+            try {
+                const lessonResp = await fetch(API_BASE + '/lessons/1');
+                const lessonData = await lessonResp.json();
+                if (lessonData.success && lessonData.data.lesson) {
+                    results.innerHTML += '<p class="success">✓ Lesson API Working</p>';
+                    results.innerHTML += '<p>Lesson Title: ' + lessonData.data.lesson.title + '</p>';
+                    results.innerHTML += '<p>Module: ' + lessonData.data.lesson.module.title + '</p>';
+                } else {
+                    results.innerHTML += '<p class="error">✗ Lesson API returned error</p>';
+                }
+            } catch (e) {
+                results.innerHTML += '<p class="error">✗ Lesson API Failed: ' + e.message + '</p>';
+            }
+        }
+
+        testAPIs();
+    </script>
+</body>
+</html>

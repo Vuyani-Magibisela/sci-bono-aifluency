@@ -1,0 +1,411 @@
+[08-Feb-2026 20:11:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:13:37 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:14:03 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:14:03 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 20:23:38 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 20:23:38 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 20:23:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:23:52 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:23:52 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 20:26:51 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:33:05 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 20:33:05 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 20:33:07 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:33:12 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:33:12 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 20:35:49 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:40:52 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:40:52 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 20:41:11 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 20:41:14 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 20:41:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 21:15:11 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:15:11 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 21:15:17 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 21:15:22 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 21:15:22 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 21:15:46 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 21:15:50 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 21:15:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 21:24:14 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 21:24:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 21:25:20 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:25:20 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 21:25:25 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[08-Feb-2026 21:25:31 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[08-Feb-2026 21:25:31 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[08-Feb-2026 21:25:52 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 21:25:52 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:26:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:26:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 21:27:19 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[08-Feb-2026 21:27:19 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:27:20 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[08-Feb-2026 21:27:20 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 04:48:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 04:48:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 04:48:54 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 04:48:58 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 04:48:58 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 04:51:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 04:51:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 04:51:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 04:51:24 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 04:51:24 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:07:48 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 09:07:48 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 09:07:59 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 09:08:02 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:08:02 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:12:48 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:12:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:13:00 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:13:00 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:13:11 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:13:11 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:13:14 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:13:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:13:33 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:13:33 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:14:40 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:14:40 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 09:18:06 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 09:18:06 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:14:08 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 10:14:08 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 10:14:10 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:14:13 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:14:13 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:15:09 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 10:15:09 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 10:15:12 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:15:14 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:15:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:17:10 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 10:17:10 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 10:17:12 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:17:14 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:17:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:28:00 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:28:02 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:28:02 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:29:10 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:29:16 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:29:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:30:48 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:30:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:32:02 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 82
+[09-Feb-2026 10:32:07 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:32:07 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 172
+[09-Feb-2026 10:40:03 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:40:03 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 10:40:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 10:40:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 10:40:07 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 10:40:11 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:40:11 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 10:40:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 10:40:52 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:40:52 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 10:41:42 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[09-Feb-2026 10:41:42 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[09-Feb-2026 10:41:42 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[09-Feb-2026 10:43:53 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[09-Feb-2026 10:43:53 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[09-Feb-2026 10:43:53 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[09-Feb-2026 10:44:09 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[09-Feb-2026 10:44:09 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[09-Feb-2026 10:44:09 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[09-Feb-2026 10:48:04 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[09-Feb-2026 10:48:04 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[09-Feb-2026 10:48:04 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[09-Feb-2026 10:57:08 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 10:57:10 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 10:57:12 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 10:57:12 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 10:57:13 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 10:57:16 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 10:57:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 16:08:43 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 16:08:43 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 16:08:47 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 16:08:50 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 16:08:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 16:10:40 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 16:10:42 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 16:10:42 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 16:11:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 16:11:18 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 16:11:18 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 21:06:53 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 21:06:53 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 21:07:04 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 21:07:11 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[09-Feb-2026 21:07:11 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[09-Feb-2026 21:10:56 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 21:10:56 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 21:11:00 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[09-Feb-2026 21:11:02 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 21:11:02 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 21:11:12 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 21:11:12 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 21:11:48 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[09-Feb-2026 21:11:48 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[09-Feb-2026 21:34:17 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[10-Feb-2026 05:47:01 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[10-Feb-2026 05:47:01 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[10-Feb-2026 05:47:04 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[10-Feb-2026 05:47:07 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[10-Feb-2026 05:47:07 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[10-Feb-2026 05:47:31 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[10-Feb-2026 05:47:31 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[10-Feb-2026 05:47:31 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[10-Feb-2026 05:47:46 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[10-Feb-2026 05:47:49 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[10-Feb-2026 05:47:49 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:11:13 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:11:13 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:11:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:11:20 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:11:20 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:11:46 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[11-Feb-2026 10:11:46 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[11-Feb-2026 10:11:46 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[11-Feb-2026 10:12:34 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:12:36 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:12:36 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:13:30 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:13:31 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:13:31 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:16:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:16:50 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:16:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:17:44 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:17:44 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:23:56 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:23:56 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:24:40 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:24:43 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:24:43 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:25:10 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:25:10 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:25:12 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[11-Feb-2026 10:25:16 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[11-Feb-2026 10:25:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[11-Feb-2026 10:30:21 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:30:21 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:34:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:34:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[11-Feb-2026 10:35:13 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[11-Feb-2026 10:35:13 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[12-Feb-2026 11:42:23 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[12-Feb-2026 11:42:23 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[12-Feb-2026 11:42:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[12-Feb-2026 11:42:57 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[12-Feb-2026 11:42:57 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[12-Feb-2026 11:43:22 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/models/Enrollment.php on line 227
+[12-Feb-2026 11:43:22 Africa/Johannesburg] Database error in update: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'field list'
+[12-Feb-2026 11:43:22 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'completion_percentage' in 'where clause'
+[12-Feb-2026 11:43:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[12-Feb-2026 11:43:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[14-Feb-2026 14:30:09 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[14-Feb-2026 14:30:09 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[14-Feb-2026 14:33:40 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:33:45 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[14-Feb-2026 14:33:45 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[14-Feb-2026 14:39:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:39:23 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[14-Feb-2026 14:39:23 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[14-Feb-2026 14:42:30 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:42:34 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[14-Feb-2026 14:42:34 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[14-Feb-2026 14:44:53 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:45:18 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[14-Feb-2026 14:45:18 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[14-Feb-2026 14:46:27 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:46:30 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[14-Feb-2026 14:46:30 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[14-Feb-2026 14:49:00 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[14-Feb-2026 14:49:00 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[14-Feb-2026 14:51:38 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[14-Feb-2026 14:51:47 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[14-Feb-2026 14:51:47 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[14-Feb-2026 14:59:05 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[15-Feb-2026 09:20:17 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 09:21:35 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[15-Feb-2026 09:22:05 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:22:05 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:22:37 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:22:37 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:25:03 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 09:28:32 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:28:32 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:28:48 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:28:48 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:28:51 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:28:51 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:28:57 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:28:57 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:29:40 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:29:40 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 09:29:46 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 09:29:46 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 10:41:32 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:42:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 10:42:48 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:42:52 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:42:54 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:42:57 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:43:04 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:43:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 10:43:16 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 10:45:24 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_organization_id in /var/www/html/sci-bono-aifluency/api/controllers/BaseController.php on line 177
+[15-Feb-2026 10:45:39 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_organization_id in /var/www/html/sci-bono-aifluency/api/controllers/BaseController.php on line 177
+[15-Feb-2026 11:04:09 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:04:44 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:04:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:04:50 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:04:52 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:04:57 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:05:03 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:05:06 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:05:23 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:13:15 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:13:15 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:13:18 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:13:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:13:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:17:17 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:20:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:20:21 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/SchoolController.php on line 68
+[15-Feb-2026 11:23:34 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:32:04 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:32:10 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$primary_school_id in /var/www/html/sci-bono-aifluency/api/controllers/UserController.php on line 94
+[15-Feb-2026 11:32:31 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 11:32:31 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 11:38:06 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[15-Feb-2026 11:38:10 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[15-Feb-2026 11:38:10 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[15-Feb-2026 11:41:34 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 11:41:34 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 11:41:40 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 11:41:40 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 11:41:45 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 11:41:45 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 11:41:54 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[15-Feb-2026 11:41:56 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[15-Feb-2026 11:41:56 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[15-Feb-2026 11:42:01 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 11:42:01 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 12:34:08 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 12:34:08 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 12:34:17 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[15-Feb-2026 12:34:20 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[15-Feb-2026 12:34:20 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[15-Feb-2026 12:34:26 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 12:34:26 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 16:48:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 16:48:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 16:49:18 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[15-Feb-2026 16:49:25 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[15-Feb-2026 16:49:28 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 16:49:28 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 17:38:06 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 17:38:06 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 17:38:23 Africa/Johannesburg] Database error in getQuizWithQuestions: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'order' in 'order clause'
+[15-Feb-2026 17:38:23 Africa/Johannesburg] Database error in getUserAttempts: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[15-Feb-2026 17:40:26 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 17:40:26 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 17:40:40 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[15-Feb-2026 21:11:07 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 21:11:07 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 21:11:23 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[15-Feb-2026 21:57:37 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[15-Feb-2026 21:57:42 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 21:57:42 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 21:58:09 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 21:58:10 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 21:58:18 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[15-Feb-2026 21:58:22 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[15-Feb-2026 21:58:22 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[15-Feb-2026 21:58:30 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 21:58:30 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[15-Feb-2026 21:59:05 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[15-Feb-2026 21:59:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:45:41 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:45:41 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:45:57 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[16-Feb-2026 04:46:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:46:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:47:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:47:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:48:14 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 89
+[16-Feb-2026 04:48:18 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[16-Feb-2026 04:48:18 Africa/Johannesburg] PHP Warning:  Undefined property: stdClass::$completion_percentage in /var/www/html/sci-bono-aifluency/api/controllers/CourseController.php on line 183
+[16-Feb-2026 04:49:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:49:29 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:50:33 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:50:33 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:50:57 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:50:57 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:51:44 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'order clause'
+[16-Feb-2026 04:51:44 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 04:51:59 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[16-Feb-2026 04:53:02 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'enrollment_date' in 'field list'
+[16-Feb-2026 05:01:40 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:01:54 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[16-Feb-2026 05:02:12 Africa/Johannesburg] Database error in getCourseStats: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.completion_percentage' in 'field list'
+[16-Feb-2026 05:12:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:13:00 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'progress_percentage' in 'where clause'
+[16-Feb-2026 05:29:04 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:29:16 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:29:48 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:37:39 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:38:06 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:38:24 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 05:38:30 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 09:20:58 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 09:21:05 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 16:18:52 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 16:19:14 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:02:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:03:05 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:03:11 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:03:30 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:06:07 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:07:15 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 17:08:01 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'progress_percentage' in 'where clause'
+[16-Feb-2026 17:08:14 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'progress_percentage' in 'where clause'
+[16-Feb-2026 17:08:24 Africa/Johannesburg] Database error in checkCriteria: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'progress_percentage' in 'where clause'
+[16-Feb-2026 20:42:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 21:31:04 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 21:32:49 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 21:32:59 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 21:33:16 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[16-Feb-2026 21:33:51 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[17-Feb-2026 05:10:34 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[17-Feb-2026 05:19:43 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[17-Feb-2026 05:20:01 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[17-Feb-2026 05:48:40 Africa/Johannesburg] PHP Warning:  Undefined variable $validator in /var/www/html/sci-bono-aifluency/api/controllers/ProjectController.php on line 391
+[17-Feb-2026 05:48:46 Africa/Johannesburg] PHP Warning:  Undefined variable $validator in /var/www/html/sci-bono-aifluency/api/controllers/ProjectController.php on line 391
+[17-Feb-2026 05:50:01 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'submission_url' in 'field list'
+[17-Feb-2026 05:50:04 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'submission_url' in 'field list'
+[17-Feb-2026 05:51:10 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'submission_url' in 'field list'
+[17-Feb-2026 05:51:37 Africa/Johannesburg] Database error in all: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'issue_date' in 'order clause'
+[17-Feb-2026 05:52:10 Africa/Johannesburg] Database error in create: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'submission_url' in 'field list'
+[17-Feb-2026 06:23:50 Africa/Johannesburg] [QuizIndex DEBUG] currentUser={"id":3,"email":"testfixed@test.com","role":"student"} headers={"Host":"aifluency.local","User-Agent":"curl\/7.81.0","Accept":"*\/*","Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTMwMTkzMywiZXhwIjoxNzcxMzA1NTMzLCJzdWIiOjMsImVtYWlsIjoidGVzdGZpeGVkQHRlc3QuY29tIiwicm9sZSI6InN0dWRlbnQiLCJ0eXBlIjoiYWNjZXNzIn0.Y9PQsFg8KMvfINc7_phX9p_nL5msFM0bOLMFdTaYouk"}
+[17-Feb-2026 06:24:21 Africa/Johannesburg] [QuizIndex DEBUG] currentUser={"id":3,"email":"testfixed@test.com","role":"student"} headers={"Host":"aifluency.local","User-Agent":"curl\/7.81.0","Accept":"*\/*","Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTMwMTkzMywiZXhwIjoxNzcxMzA1NTMzLCJzdWIiOjMsImVtYWlsIjoidGVzdGZpeGVkQHRlc3QuY29tIiwicm9sZSI6InN0dWRlbnQiLCJ0eXBlIjoiYWNjZXNzIn0.Y9PQsFg8KMvfINc7_phX9p_nL5msFM0bOLMFdTaYouk"}
+[17-Feb-2026 06:24:21 Africa/Johannesburg] [QuizIndex DEBUG] set user_best_score=85 on quiz_id=1
+[17-Feb-2026 06:24:21 Africa/Johannesburg] [QuizIndex DEBUG] final quizzes=[{"id":1,"module_id":1,"lesson_id":null,"title":"Knowledge Check Quiz","slug":"knowledge-check-quiz-quiz-001","description":"Test your knowledge of module 1 concepts","passing_score":70,"time_limit_minutes":30,"max_attempts":3,"is_published":1,"order":0,"created_at":"2025-11-04 14:58:16","updated_at":"2026-02-08 11:11:46","user_best_score":85,"can_attempt":true}]
+[17-Feb-2026 06:33:27 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[17-Feb-2026 06:33:27 Africa/Johannesburg] [RefreshDebug] refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz
+[17-Feb-2026 06:33:43 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":""}
+[17-Feb-2026 06:33:43 Africa/Johannesburg] [RefreshDebug] refreshToken=null
+[17-Feb-2026 06:34:26 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[17-Feb-2026 06:34:26 Africa/Johannesburg] [RefreshDebug] refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz
+[17-Feb-2026 06:34:51 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[17-Feb-2026 06:34:51 Africa/Johannesburg] [RefreshDebug] refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz
+[17-Feb-2026 06:35:07 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":""}
+[17-Feb-2026 06:35:07 Africa/Johannesburg] [RefreshDebug] refreshToken=null
+[17-Feb-2026 06:35:30 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[17-Feb-2026 06:35:30 Africa/Johannesburg] [RefreshDebug] refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz

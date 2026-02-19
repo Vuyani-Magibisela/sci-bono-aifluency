@@ -739,20 +739,20 @@ CREATE TABLE `user_achievements` (
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vuksDev`@`localhost`*/ /*!50003 TRIGGER `after_user_achievement_insert` AFTER INSERT ON `user_achievements` FOR EACH ROW BEGIN
+CREATE TRIGGER `after_user_achievement_insert` AFTER INSERT ON `user_achievements` FOR EACH ROW BEGIN
     DECLARE achievement_points INT;
     DECLARE achievement_tier VARCHAR(20);
 
-    
+
     SELECT points, tier INTO achievement_points, achievement_tier
     FROM achievements
     WHERE id = NEW.achievement_id;
 
-    
+
     INSERT INTO user_achievement_points (user_id, total_points, achievements_count, bronze_count, silver_count, gold_count, platinum_count)
     VALUES (
         NEW.user_id,
@@ -770,7 +770,7 @@ DELIMITER ;;
         silver_count = silver_count + CASE WHEN achievement_tier = 'silver' THEN 1 ELSE 0 END,
         gold_count = gold_count + CASE WHEN achievement_tier = 'gold' THEN 1 ELSE 0 END,
         platinum_count = platinum_count + CASE WHEN achievement_tier = 'platinum' THEN 1 ELSE 0 END;
-END */;;
+END;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1086,7 +1086,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_achievement_distribution` AS select `a`.`id` AS `achievement_id`,`a`.`name` AS `achievement_title`,`a`.`category_id` AS `category_id`,`ac`.`name` AS `category_name`,`a`.`tier` AS `tier`,`a`.`points` AS `points`,count(`ua`.`id`) AS `unlock_count`,min(`ua`.`unlocked_at`) AS `first_unlock_date`,max(`ua`.`unlocked_at`) AS `last_unlock_date`,count(distinct date_format(`ua`.`unlocked_at`,'%Y-%m')) AS `active_months` from ((`achievements` `a` left join `user_achievements` `ua` on((`a`.`id` = `ua`.`achievement_id`))) join `achievement_categories` `ac` on((`a`.`category_id` = `ac`.`id`))) group by `a`.`id`,`a`.`name`,`a`.`category_id`,`ac`.`name`,`a`.`tier`,`a`.`points` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1104,7 +1104,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_at_risk_students` AS select `e`.`user_id` AS `user_id`,`u`.`name` AS `student_name`,`u`.`email` AS `email`,`e`.`course_id` AS `course_id`,`c`.`title` AS `course_title`,`e`.`progress_percentage` AS `progress_percentage`,`e`.`enrolled_at` AS `enrolled_at`,(to_days(now()) - to_days(`e`.`last_accessed_at`)) AS `days_since_last_access`,`e`.`last_accessed_at` AS `last_accessed_at`,(select avg(`qa`.`score`) from (`quiz_attempts` `qa` join `quizzes` `q` on((`qa`.`quiz_id` = `q`.`id`))) where ((`qa`.`user_id` = `e`.`user_id`) and `q`.`module_id` in (select `modules`.`id` from `modules` where (`modules`.`course_id` = `e`.`course_id`)))) AS `avg_quiz_score`,(select count(0) from (`quiz_attempts` `qa` join `quizzes` `q` on((`qa`.`quiz_id` = `q`.`id`))) where ((`qa`.`user_id` = `e`.`user_id`) and `q`.`module_id` in (select `modules`.`id` from `modules` where (`modules`.`course_id` = `e`.`course_id`)) and (`qa`.`passed` = 0))) AS `failed_quiz_count`,(case when ((`e`.`progress_percentage` < 10) and ((to_days(now()) - to_days(`e`.`enrolled_at`)) > 30)) then 90 when ((`e`.`progress_percentage` < 25) and ((to_days(now()) - to_days(`e`.`last_accessed_at`)) > 14)) then 75 when ((`e`.`progress_percentage` < 50) and ((to_days(now()) - to_days(`e`.`last_accessed_at`)) > 7)) then 60 when ((to_days(now()) - to_days(`e`.`last_accessed_at`)) > 21) then 80 when ((select avg(`qa`.`score`) from (`quiz_attempts` `qa` join `quizzes` `q` on((`qa`.`quiz_id` = `q`.`id`))) where ((`qa`.`user_id` = `e`.`user_id`) and `q`.`module_id` in (select `modules`.`id` from `modules` where (`modules`.`course_id` = `e`.`course_id`)))) < 50) then 70 else 30 end) AS `risk_score` from ((`enrollments` `e` join `users` `u` on((`e`.`user_id` = `u`.`id`))) join `courses` `c` on((`e`.`course_id` = `c`.`id`))) where (`e`.`status` = 'active') */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1122,7 +1122,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_certificate_trends` AS select cast(`cert`.`issued_date` as date) AS `issue_date_day`,date_format(`cert`.`issued_date`,'%Y-%m') AS `issue_month`,`cert`.`course_id` AS `course_id`,`c`.`title` AS `course_title`,count(0) AS `certificates_issued` from (`certificates` `cert` join `courses` `c` on((`cert`.`course_id` = `c`.`id`))) group by cast(`cert`.`issued_date` as date),date_format(`cert`.`issued_date`,'%Y-%m'),`cert`.`course_id`,`c`.`title` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1140,7 +1140,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_course_popularity` AS select `c`.`id` AS `course_id`,`c`.`title` AS `course_title`,`c`.`description` AS `description`,`c`.`is_published` AS `is_published`,count(`e`.`id`) AS `total_enrollments`,sum((case when (`e`.`status` = 'active') then 1 else 0 end)) AS `active_enrollments`,sum((case when (`e`.`status` = 'completed') then 1 else 0 end)) AS `completions`,avg(`e`.`progress_percentage`) AS `avg_progress_percentage`,((sum((case when (`e`.`status` = 'completed') then 1 else 0 end)) / nullif(count(`e`.`id`),0)) * 100) AS `completion_rate`,max(`e`.`enrolled_at`) AS `last_enrollment_date`,(select count(distinct `qa`.`user_id`) from ((`quiz_attempts` `qa` join `quizzes` `q` on((`qa`.`quiz_id` = `q`.`id`))) join `modules` `m` on((`q`.`module_id` = `m`.`id`))) where (`m`.`course_id` = `c`.`id`)) AS `active_quiz_takers` from (`courses` `c` left join `enrollments` `e` on((`c`.`id` = `e`.`course_id`))) group by `c`.`id`,`c`.`title`,`c`.`description`,`c`.`is_published` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1158,7 +1158,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_enrollment_trends` AS select cast(`e`.`enrolled_at` as date) AS `enrollment_date`,date_format(`e`.`enrolled_at`,'%Y-%m') AS `enrollment_month`,`e`.`course_id` AS `course_id`,`c`.`title` AS `course_title`,count(0) AS `enrollments_count`,sum((case when (`e`.`status` = 'active') then 1 else 0 end)) AS `active_count`,sum((case when (`e`.`status` = 'completed') then 1 else 0 end)) AS `completed_count`,sum((case when (`e`.`status` = 'dropped') then 1 else 0 end)) AS `dropped_count` from (`enrollments` `e` join `courses` `c` on((`e`.`course_id` = `c`.`id`))) group by cast(`e`.`enrolled_at` as date),date_format(`e`.`enrolled_at`,'%Y-%m'),`e`.`course_id`,`c`.`title` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1176,7 +1176,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_lesson_completion_heatmap` AS select `lp`.`user_id` AS `user_id`,`lp`.`lesson_id` AS `lesson_id`,`l`.`title` AS `lesson_title`,`l`.`module_id` AS `module_id`,`m`.`title` AS `module_title`,cast(`lp`.`completed_at` as date) AS `completion_date`,dayofweek(`lp`.`completed_at`) AS `day_of_week`,hour(`lp`.`completed_at`) AS `hour_of_day`,`lp`.`time_spent_minutes` AS `time_spent_minutes`,`lp`.`status` AS `status` from ((`lesson_progress` `lp` join `lessons` `l` on((`lp`.`lesson_id` = `l`.`id`))) join `modules` `m` on((`l`.`module_id` = `m`.`id`))) where (`lp`.`status` = 'completed') */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1194,7 +1194,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_quiz_performance` AS select `qa`.`quiz_id` AS `quiz_id`,`q`.`title` AS `quiz_title`,`q`.`module_id` AS `module_id`,`m`.`title` AS `module_title`,count(distinct `qa`.`user_id`) AS `unique_students`,count(`qa`.`id`) AS `total_attempts`,avg(`qa`.`score`) AS `average_score`,min(`qa`.`score`) AS `min_score`,max(`qa`.`score`) AS `max_score`,sum((case when (`qa`.`passed` = 1) then 1 else 0 end)) AS `passed_count`,sum((case when (`qa`.`passed` = 0) then 1 else 0 end)) AS `failed_count`,avg(`qa`.`time_spent_seconds`) AS `avg_time_seconds`,min(`qa`.`time_completed`) AS `first_attempt_date`,max(`qa`.`time_completed`) AS `last_attempt_date` from ((`quiz_attempts` `qa` join `quizzes` `q` on((`qa`.`quiz_id` = `q`.`id`))) join `modules` `m` on((`q`.`module_id` = `m`.`id`))) where ((`qa`.`status` = 'submitted') or (`qa`.`status` = 'graded')) group by `qa`.`quiz_id`,`q`.`title`,`q`.`module_id`,`m`.`title` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1212,7 +1212,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_student_engagement` AS select `e`.`user_id` AS `user_id`,`e`.`course_id` AS `course_id`,`u`.`name` AS `student_name`,`u`.`email` AS `email`,count(distinct `lp`.`lesson_id`) AS `lessons_accessed`,sum(ifnull(`lp`.`time_spent_minutes`,0)) AS `total_time_minutes`,count(distinct (case when (`lp`.`status` = 'completed') then `lp`.`lesson_id` end)) AS `lessons_completed`,count(distinct `sn`.`id`) AS `notes_created`,count(distinct `b`.`id`) AS `bookmarks_created`,max(`lp`.`updated_at`) AS `last_lesson_activity`,`e`.`enrolled_at` AS `enrolled_at`,`e`.`progress_percentage` AS `progress_percentage`,`e`.`status` AS `enrollment_status` from ((((`enrollments` `e` join `users` `u` on((`e`.`user_id` = `u`.`id`))) left join `lesson_progress` `lp` on((`e`.`user_id` = `lp`.`user_id`))) left join `student_notes` `sn` on((`e`.`user_id` = `sn`.`user_id`))) left join `bookmarks` `b` on((`e`.`user_id` = `b`.`user_id`))) group by `e`.`user_id`,`e`.`course_id`,`u`.`name`,`u`.`email`,`e`.`enrolled_at`,`e`.`progress_percentage`,`e`.`status` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1230,7 +1230,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`ai_fluency_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 SQL SECURITY DEFINER */
 /*!50001 VIEW `v_user_acquisition` AS select cast(`users`.`created_at` as date) AS `signup_date`,date_format(`users`.`created_at`,'%Y-%m') AS `signup_month`,`users`.`role` AS `role`,count(0) AS `new_users_count`,sum((case when (`users`.`is_active` = 1) then 1 else 0 end)) AS `active_users_count` from `users` group by cast(`users`.`created_at` as date),date_format(`users`.`created_at`,'%Y-%m'),`users`.`role` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;

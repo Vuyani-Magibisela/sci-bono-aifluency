@@ -37,7 +37,7 @@ define('API_PREFIX', '/api');
 
 // CORS Settings
 define('CORS_ALLOWED_ORIGINS', [
-    'https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za',
+    'https://sci-bono-ai-hub.vuyanimagibisela.co.za',
     APP_URL
 ]);
 
