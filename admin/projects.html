@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module Management - AI Fluency Admin</title>
+    <title>Project Management - AI Fluency Admin</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
@@ -49,7 +49,7 @@
                     <i class="fas fa-book"></i>
                     <span>Courses</span>
                 </a>
-                <a href="/admin/modules.html" class="nav-item active">
+                <a href="/admin/modules.html" class="nav-item">
                     <i class="fas fa-layer-group"></i>
                     <span>Modules</span>
                 </a>
@@ -61,7 +61,7 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Quizzes</span>
                 </a>
-                <a href="/admin/projects.html" class="nav-item">
+                <a href="/admin/projects.html" class="nav-item active">
                     <i class="fas fa-project-diagram"></i>
                     <span>Projects</span>
                 </a>
@@ -86,118 +86,114 @@
             <!-- Top Bar -->
             <div class="dashboard-topbar">
                 <div class="topbar-left">
-                    <h1>Module Management</h1>
+                    <h1>Project Management</h1>
                 </div>
                 <div class="topbar-right">
-                    <button class="btn-primary" id="create-module-btn">
-                        <i class="fas fa-plus"></i> Create Module
+                    <button class="btn-primary" id="create-project-btn">
+                        <i class="fas fa-plus"></i> Create Project
                     </button>
                 </div>
             </div>
 
             <!-- Dashboard Content -->
             <div class="dashboard-content" id="dashboard-content">
-                <!-- Course Filter -->
+                <!-- Filters -->
                 <div class="dashboard-card" style="margin-bottom: 1.5rem;">
                     <div class="filters-bar">
-                        <div class="filter-group" style="flex: 2;">
+                        <div class="filter-group">
                             <label for="filter-course">Filter by Course:</label>
                             <select id="filter-course" class="filter-select">
-                                <option value="">Loading courses...</option>
+                                <option value="">All Courses</option>
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="filter-search">Search Modules:</label>
-                            <input type="text" id="filter-search" class="filter-input" placeholder="Search modules...">
+                            <label for="filter-module">Filter by Module:</label>
+                            <select id="filter-module" class="filter-select">
+                                <option value="">All Modules</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-search">Search Projects:</label>
+                            <input type="text" id="filter-search" class="filter-input" placeholder="Search projects...">
                         </div>
                     </div>
                 </div>
 
-                <!-- Modules List -->
+                <!-- Projects List -->
                 <div class="dashboard-card">
-                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3 style="margin: 0;">Modules</h3>
-                        <small style="color: #666;">Drag to reorder modules</small>
-                    </div>
-                    <div id="modules-list">
-                        <div class="loading-spinner">Loading modules...</div>
+                    <div id="projects-list">
+                        <div class="loading-spinner">Loading projects...</div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Module Details Modal -->
-    <div id="module-details-modal" class="modal">
-        <div class="modal-content">
+    <!-- Project Form Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
-                <h2>Module Details</h2>
-                <button class="modal-close" onclick="AdminModules.closeDetailsModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="details-container" id="module-details-content">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-primary" onclick="AdminModules.editModuleFromDetails()">
-                        <i class="fas fa-edit"></i> Edit Module
-                    </button>
-                    <button type="button" class="btn-secondary" onclick="AdminModules.closeDetailsModal()">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Module Form Modal -->
-    <div id="module-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-title">Create Module</h2>
+                <h2 id="modal-title">Create Project</h2>
                 <button class="modal-close" id="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="module-form">
-                    <input type="hidden" id="module-id" name="id">
+                <form id="project-form">
+                    <input type="hidden" id="project-id" name="id">
 
                     <div class="form-group">
-                        <label for="module-course">Course *</label>
-                        <select id="module-course" name="course_id" required>
+                        <label for="project-course">Course *</label>
+                        <select id="project-course" name="course_id" required>
                             <option value="">Select a course...</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="module-title">Module Title *</label>
-                        <input type="text" id="module-title" name="title" required maxlength="255">
+                        <label for="project-module">Module (optional)</label>
+                        <select id="project-module" name="module_id">
+                            <option value="">No specific module</option>
+                        </select>
+                        <small>Link this project to a specific module</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="module-slug">URL Slug *</label>
-                        <input type="text" id="module-slug" name="slug" required maxlength="255" pattern="[a-z0-9-]+">
-                        <small>Lowercase letters, numbers, and hyphens only (e.g., ai-foundations)</small>
+                        <label for="project-title">Project Title *</label>
+                        <input type="text" id="project-title" name="title" required maxlength="255">
                     </div>
 
                     <div class="form-group">
-                        <label for="module-description">Description</label>
-                        <textarea id="module-description" name="description" rows="4"></textarea>
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" name="description" rows="4" placeholder="Describe the project objectives and deliverables..."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="module-order">Order Index *</label>
-                        <input type="number" id="module-order" name="order_index" required min="1" value="1">
-                        <small>Module position in the course (1, 2, 3, etc.)</small>
+                        <label for="project-requirements">Requirements</label>
+                        <textarea id="project-requirements" name="requirements" rows="3" placeholder="List prerequisite modules, skills needed, tools required..."></textarea>
+                        <small>Specify which modules must be completed first and any required skills</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project-max-score">Max Score *</label>
+                            <input type="number" id="project-max-score" name="max_score" required min="1" max="1000" value="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="project-due-date">Due Date</label>
+                            <input type="date" id="project-due-date" name="due_date">
+                            <small>Leave empty for no deadline</small>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="module-published" name="is_published" checked>
-                            <span>Publish Module</span>
+                            <input type="checkbox" id="project-published" name="is_published" checked>
+                            <span>Publish Project</span>
                         </label>
                     </div>
 
                     <div class="modal-actions">
                         <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
-                        <button type="submit" class="btn-primary" id="save-module-btn">Save Module</button>
+                        <button type="submit" class="btn-primary" id="save-project-btn">Save Project</button>
                     </div>
                 </form>
             </div>
@@ -211,8 +207,8 @@
     <script src="../js/auth.js"></script>
     <script src="../js/header-template.js"></script>
 
-    <!-- Module Management Module (Phase 5B) -->
-    <script src="../js/admin-modules.js"></script>
+    <!-- Project Management Module -->
+    <script src="../js/admin-projects.js"></script>
 
     <!-- Page Protection -->
     <script>

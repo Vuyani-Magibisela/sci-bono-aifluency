@@ -51,7 +51,7 @@ class CourseView {
                 this.modules = this.course.modules || [];
 
                 // Update page title
-                document.title = `${this.course.title} - AI Discovery Hub`;
+                document.title = `${this.course.title} - AI Hub`;
                 document.getElementById('page-title').textContent = document.title;
 
                 // Render course header

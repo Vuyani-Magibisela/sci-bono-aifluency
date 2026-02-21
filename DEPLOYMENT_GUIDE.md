@@ -1,6 +1,6 @@
-# Sci-Bono AI Discovery Hub - Production Deployment Guide
+# Sci-Bono AI Hub - Production Deployment Guide
 
-**Target**: `https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/`
+**Target**: `https://sci-bono-ai-hub.vuyanimagibisela.co.za/`
 **Hosting**: cPanel shared hosting (PHP 8.3.28, MySQL)
 **Date**: 2026-02-17
 
@@ -78,30 +78,30 @@ Set via cPanel File Manager or SSH:
 ## Verification Checklist
 
 ### 1. HTTPS Redirect
-- Visit `http://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/`
+- Visit `http://sci-bono-ai-hub.vuyanimagibisela.co.za/`
 - Should redirect to `https://` version
 
 ### 2. Landing Page
-- Visit `https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/`
+- Visit `https://sci-bono-ai-hub.vuyanimagibisela.co.za/`
 - Should load the landing page (index.html)
 
 ### 3. API Health
 ```bash
-curl https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/api/courses
+curl https://sci-bono-ai-hub.vuyanimagibisela.co.za/api/courses
 ```
 Should return JSON with course data.
 
 ### 4. Security Check
 ```bash
 # .env should be blocked (403)
-curl -I https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/api/.env
+curl -I https://sci-bono-ai-hub.vuyanimagibisela.co.za/api/.env
 
 # Config should be blocked (403)
-curl -I https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/api/config/config.php
+curl -I https://sci-bono-ai-hub.vuyanimagibisela.co.za/api/config/config.php
 ```
 
 ### 5. Admin Login
-- Visit `https://sci-bono-ai-discovery-hub.vuyanimagibisela.co.za/public/login.html`
+- Visit `https://sci-bono-ai-hub.vuyanimagibisela.co.za/public/login.html`
 - Login with: `admin@vuyanimagibisela.co.za` / `Vu13#k*s3D`
 - Should redirect to admin dashboard
 

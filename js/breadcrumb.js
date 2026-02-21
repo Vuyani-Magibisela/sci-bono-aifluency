@@ -126,7 +126,7 @@ const Breadcrumb = (function() {
         const trail = {
             course: {
                 id: additionalData.courseId || null,
-                title: additionalData.courseTitle || 'AI Discovery Course'
+                title: additionalData.courseTitle || 'AI Fluency Course'
             }
         };
 

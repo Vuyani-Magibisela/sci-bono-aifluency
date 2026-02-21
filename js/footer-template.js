@@ -25,7 +25,7 @@ const FooterTemplate = {
                 <div class="footer-content">
                     <div class="footer-main">
                         <div class="footer-section footer-about">
-                            <h3>Sci-Bono AI Discovery Hub</h3>
+                            <h3>Sci-Bono AI Hub</h3>
                             <p>Empowering students with artificial intelligence literacy for the future.</p>
                             <div class="footer-social">
                                 <a href="#" aria-label="Facebook" title="Facebook">

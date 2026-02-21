@@ -121,6 +121,10 @@ class QuizController extends BaseController
         // Get quiz with questions
         $quiz = $this->quizModel->getQuizWithQuestions($quizId, $includeAnswers);
 
+        if (!$quiz) {
+            Response::notFound('Quiz not found');
+        }
+
         // Get quiz statistics for instructors/admins
         if ($includeAnswers) {
             $quiz->statistics = $this->quizModel->getQuizStats($quizId);

@@ -104,7 +104,7 @@ class Quiz extends BaseModel
             $questionsStmt = $this->pdo->prepare("
                 SELECT * FROM quiz_questions
                 WHERE quiz_id = :quiz_id
-                ORDER BY `order` ASC
+                ORDER BY order_index ASC
             ");
             $questionsStmt->execute(['quiz_id' => $quizId]);
             $questions = $questionsStmt->fetchAll(PDO::FETCH_OBJ);

@@ -1741,6 +1741,8 @@ footer {
     overflow-y: auto;
     transition: var(--transition);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-header {
@@ -1762,22 +1764,22 @@ footer {
 }
 
 .sidebar-profile {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--grey-light);
     text-align: center;
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0.5rem;
     color: var(--white);
-    font-size: 2rem;
+    font-size: 1.4rem;
 }
 
 .profile-avatar img {
@@ -1799,11 +1801,13 @@ footer {
 }
 
 .sidebar-nav {
-    padding: 1rem 0;
+    padding: 0.5rem 0;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .nav-item {
-    padding: 0.9rem 1.5rem;
+    padding: 0.65rem 1.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -1811,6 +1815,7 @@ footer {
     text-decoration: none;
     transition: var(--transition);
     border-left: 3px solid transparent;
+    font-size: 0.9rem;
 }
 
 .nav-item:hover {
