@@ -101,6 +101,7 @@ async function loadAdminAnalytics() {
         document.getElementById('achievement-distribution-container').innerHTML = loadingMessage;
 
         // Fetch all data in parallel
+        // API.get() returns {success, data}, unwrap .data from each response
         const [
             enrollmentData,
             coursePopularityData,
@@ -108,14 +109,14 @@ async function loadAdminAnalytics() {
             achievementData,
             platformUsageData,
             certificateData
-        ] = await Promise.all([
+        ] = (await Promise.all([
             API.get(`/analytics/admin/enrollment-trends?${filterParams}`),
             API.get(`/analytics/admin/course-popularity?${filterParams}`),
             API.get(`/analytics/admin/user-acquisition?${filterParams}`),
             API.get(`/analytics/admin/achievement-distribution?${filterParams}`),
             API.get(`/analytics/admin/platform-usage?${filterParams}`),
             API.get(`/analytics/admin/certificate-trends?${filterParams}`)
-        ]);
+        ])).map(r => r.data || {});
 
         // Update platform stats
         updatePlatformStats(
@@ -153,8 +154,8 @@ async function loadAdminAnalytics() {
 function updatePlatformStats(enrollmentData, courseData, userData, certificateData) {
     const totalEnrollments = enrollmentData.total_enrollments || 0;
     const completionRate = enrollmentData.completion_rate || 0;
-    const totalCourses = courseData.courses?.length || 0;
-    const totalUsers = userData.total_new_users || 0;
+    const totalCourses = courseData.total_courses || courseData.courses?.length || 0;
+    const totalUsers = userData.total_new_users || userData.total_users || 0;
     const totalCertificates = certificateData.total_certificates || 0;
     const avgScore = courseData.platform_avg_score || 0;
 
@@ -179,8 +180,14 @@ function renderEnrollmentTrends(data) {
     }
 
     const labels = trends.map(t => Utils.formatDateLabel(t.period));
-    const enrollmentCounts = trends.map(t => t.enrollment_count);
-    const completionRates = trends.map(t => t.completion_rate);
+    const enrollmentCounts = trends.map(t => t.enrollments_count || t.enrollment_count || 0);
+    const completionRates = trends.map(t => {
+        if (t.completion_rate !== undefined) return t.completion_rate;
+        if (t.avg_progress !== undefined) return parseFloat(t.avg_progress);
+        const total = parseInt(t.enrollments_count || t.enrollment_count || 0);
+        const completed = parseInt(t.completed_count || 0);
+        return total > 0 ? (completed / total) * 100 : 0;
+    });
 
     const chartData = {
         labels: labels,
@@ -279,8 +286,9 @@ function renderCoursePopularity(data) {
         return;
     }
 
-    // Sort by enrollment count
-    const sortedCourses = courses.sort((a, b) => b.enrollment_count - a.enrollment_count);
+    // Sort by enrollment count (handle both column names from view)
+    const getEnrollCount = (c) => parseInt(c.total_enrollments || c.enrollment_count || 0);
+    const sortedCourses = courses.sort((a, b) => getEnrollCount(b) - getEnrollCount(a));
     const topCourses = sortedCourses.slice(0, 10);
 
     container.innerHTML = `
@@ -288,6 +296,9 @@ function renderCoursePopularity(data) {
             ${topCourses.map((course, index) => {
                 const rank = index + 1;
                 const rankClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+                const enrollCount = getEnrollCount(course);
+                const completionRate = parseFloat(course.completion_rate || course.avg_progress_percentage || 0);
+                const avgScore = parseFloat(course.avg_quiz_score || 0);
 
                 return `
                     <li class="course-ranking-item">
@@ -297,13 +308,13 @@ function renderCoursePopularity(data) {
                         <div class="course-info">
                             <h4 class="course-title">${Utils.escapeHtml(course.course_title)}</h4>
                             <div class="course-stats">
-                                <span>👥 ${course.enrollment_count} enrolled</span>
-                                <span>✅ ${course.completion_rate?.toFixed(1) || 0}% complete</span>
-                                <span>📊 ${course.avg_quiz_score?.toFixed(1) || 0}% avg score</span>
+                                <span>👥 ${enrollCount} enrolled</span>
+                                <span>✅ ${completionRate.toFixed(1)}% complete</span>
+                                <span>📊 ${avgScore.toFixed(1)}% avg score</span>
                             </div>
                         </div>
                         <div class="course-metric">
-                            ${course.enrollment_count}
+                            ${enrollCount}
                         </div>
                     </li>
                 `;
@@ -335,34 +346,21 @@ function renderUserAcquisition(data) {
 
     const labels = trends.map(t => Utils.formatDateLabel(t.period));
 
-    // Group by role
-    const roleData = {};
-    trends.forEach(trend => {
-        if (!roleData[trend.role]) {
-            roleData[trend.role] = [];
-        }
-        roleData[trend.role].push(trend.user_count);
-    });
+    // Model returns columns: students_count, instructors_count, admins_count per period
+    const roleConfig = [
+        { key: 'students_count', label: 'Students', border: '#4B6EFB', bg: 'rgba(75, 110, 251, 0.5)' },
+        { key: 'instructors_count', label: 'Instructors', border: '#6E4BFB', bg: 'rgba(110, 75, 251, 0.5)' },
+        { key: 'admins_count', label: 'Admins', border: '#FB4B4B', bg: 'rgba(251, 75, 75, 0.5)' }
+    ];
 
-    // Create datasets for each role
-    const datasets = Object.keys(roleData).map((role, index) => {
-        const colors = {
-            student: { border: '#4B6EFB', bg: 'rgba(75, 110, 251, 0.5)' },
-            instructor: { border: '#6E4BFB', bg: 'rgba(110, 75, 251, 0.5)' },
-            admin: { border: '#FB4B4B', bg: 'rgba(251, 75, 75, 0.5)' }
-        };
-
-        const color = colors[role] || { border: '#999', bg: 'rgba(153, 153, 153, 0.5)' };
-
-        return {
-            label: role.charAt(0).toUpperCase() + role.slice(1) + 's',
-            data: roleData[role],
-            borderColor: color.border,
-            backgroundColor: color.bg,
-            tension: 0.4,
-            fill: false
-        };
-    });
+    const datasets = roleConfig.map(role => ({
+        label: role.label,
+        data: trends.map(t => parseInt(t[role.key] || 0)),
+        borderColor: role.border,
+        backgroundColor: role.bg,
+        tension: 0.4,
+        fill: false
+    }));
 
     const chartData = {
         labels: labels,
@@ -405,18 +403,22 @@ function renderAchievementDistribution(data) {
 
     // Sort by count and take top 12
     const topAchievements = achievements
-        .sort((a, b) => b.earned_count - a.earned_count)
+        .sort((a, b) => (parseInt(b.unlock_count || b.earned_count || 0)) - (parseInt(a.unlock_count || a.earned_count || 0)))
         .slice(0, 12);
 
     container.innerHTML = `
         <div class="achievement-grid">
-            ${topAchievements.map(achievement => `
+            ${topAchievements.map(achievement => {
+                const name = achievement.achievement_title || achievement.achievement_name || 'Achievement';
+                const count = parseInt(achievement.unlock_count || achievement.earned_count || 0);
+                return `
                 <div class="achievement-item">
-                    <div class="achievement-icon">${getAchievementIcon(achievement.achievement_name)}</div>
-                    <div class="achievement-name">${Utils.escapeHtml(achievement.achievement_name)}</div>
-                    <div class="achievement-count">${achievement.earned_count}</div>
+                    <div class="achievement-icon">${getAchievementIcon(name)}</div>
+                    <div class="achievement-name">${Utils.escapeHtml(name)}</div>
+                    <div class="achievement-count">${count}</div>
                 </div>
-            `).join('')}
+                `;
+            }).join('')}
         </div>
     `;
 
@@ -434,7 +436,7 @@ function renderAchievementDistribution(data) {
  * Render platform usage heatmap
  */
 function renderPlatformUsage(data) {
-    const usageData = data.usage_by_hour || [];
+    const usageData = data.usage_by_hour || data.heatmap_data || [];
 
     if (usageData.length === 0) {
         document.getElementById('platformUsageChart').parentElement.innerHTML =
@@ -518,8 +520,8 @@ function renderCertificateTrends(data) {
         return;
     }
 
-    const labels = trends.map(t => Utils.formatDateLabel(t.period));
-    const counts = trends.map(t => t.certificate_count);
+    const labels = trends.map(t => Utils.formatDateLabel(t.period || t.issue_date_day || t.issue_month));
+    const counts = trends.map(t => parseInt(t.certificate_count || t.certificates_issued || 0));
 
     const chartData = {
         labels: labels,
@@ -564,8 +566,8 @@ function generateAdminInsights(enrollmentData, courseData, userData, certificate
     // Enrollment growth insights
     const trends = enrollmentData.trends || [];
     if (trends.length >= 2) {
-        const recentEnrollments = trends[trends.length - 1].enrollment_count;
-        const previousEnrollments = trends[trends.length - 2].enrollment_count;
+        const recentEnrollments = trends[trends.length - 1].enrollments_count || trends[trends.length - 1].enrollment_count || 0;
+        const previousEnrollments = trends[trends.length - 2].enrollments_count || trends[trends.length - 2].enrollment_count || 0;
         const growthRate = previousEnrollments > 0
             ? ((recentEnrollments - previousEnrollments) / previousEnrollments) * 100
             : 0;
@@ -608,15 +610,16 @@ function generateAdminInsights(enrollmentData, courseData, userData, certificate
     // Course popularity insights
     const courses = courseData.courses || [];
     if (courses.length > 0) {
+        const getCount = (c) => parseInt(c.total_enrollments || c.enrollment_count || 0);
         const topCourse = courses.reduce((prev, current) =>
-            (prev.enrollment_count > current.enrollment_count) ? prev : current
+            (getCount(prev) > getCount(current)) ? prev : current
         );
 
         insights.push({
             type: 'info',
             icon: '🏆',
             title: 'Most Popular Course',
-            message: `"${topCourse.course_title}" leads with ${topCourse.enrollment_count} enrollments. Consider creating similar content.`
+            message: `"${topCourse.course_title}" leads with ${getCount(topCourse)} enrollments. Consider creating similar content.`
         });
     }
 

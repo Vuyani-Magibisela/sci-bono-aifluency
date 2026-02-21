@@ -366,6 +366,52 @@ class UserController extends BaseController
     }
 
     /**
+     * Change own password
+     *
+     * PUT /api/users/me/password
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function changePassword(array $params): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        $data = $_POST;
+
+        // Validate required fields
+        if (empty($data['current_password'])) {
+            Response::error('Current password is required', 400);
+        }
+        if (empty($data['new_password'])) {
+            Response::error('New password is required', 400);
+        }
+        if (empty($data['confirm_password'])) {
+            Response::error('Password confirmation is required', 400);
+        }
+        if ($data['new_password'] !== $data['confirm_password']) {
+            Response::error('New passwords do not match', 400);
+        }
+        if (strlen($data['new_password']) < 8) {
+            Response::error('New password must be at least 8 characters', 400);
+        }
+
+        // Verify current password
+        $verified = $this->userModel->verifyPassword($currentUser->email, $data['current_password']);
+        if (!$verified) {
+            Response::error('Current password is incorrect', 401);
+        }
+
+        // Update password
+        $updated = $this->userModel->updatePassword($currentUser->id, $data['new_password']);
+        if (!$updated) {
+            Response::serverError('Failed to update password');
+        }
+
+        Response::success(null, 'Password changed successfully');
+    }
+
+    /**
      * Delete user (Admin only)
      *
      * DELETE /api/users/:id

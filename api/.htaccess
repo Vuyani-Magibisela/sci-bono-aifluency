@@ -44,6 +44,7 @@ AddDefaultCharset UTF-8
 
 # Enable CORS (will be handled more granularly in PHP)
 <IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "https://sci-bono-ai-hub.vuyanimagibisela.co.za"
     Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
     Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
     Header always set Access-Control-Max-Age "3600"

@@ -124,6 +124,12 @@ $routes = [
     ],
     [
         'method' => 'PUT',
+        'pattern' => '/users/me/password',
+        'handler' => 'UserController@changePassword',
+        'auth' => true
+    ],
+    [
+        'method' => 'PUT',
         'pattern' => '/users/:id',
         'handler' => 'UserController@update',
         'auth' => true
@@ -935,6 +941,32 @@ $routes = [
         'method' => 'GET',
         'pattern' => '/bookmarks/stats',
         'handler' => 'BookmarksController@stats',
+        'auth' => true
+    ],
+
+    // Notification Routes
+    [
+        'method' => 'GET',
+        'pattern' => '/notifications/unread-count',
+        'handler' => 'NotificationController@unreadCount',
+        'auth' => true
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/notifications/read-all',
+        'handler' => 'NotificationController@markAllRead',
+        'auth' => true
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/notifications/:id/read',
+        'handler' => 'NotificationController@markRead',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/notifications',
+        'handler' => 'NotificationController@index',
         'auth' => true
     ],
 

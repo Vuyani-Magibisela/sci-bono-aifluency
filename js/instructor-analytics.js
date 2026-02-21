@@ -59,7 +59,7 @@ async function initializeFilters() {
     try {
         // Fetch instructor's courses
         const coursesResponse = await API.get('/courses');
-        const courses = coursesResponse.courses || [];
+        const courses = coursesResponse.data?.courses || coursesResponse.courses || [];
 
         if (courses.length === 0) {
             document.getElementById('filters-container').innerHTML = `
@@ -124,19 +124,20 @@ async function loadInstructorAnalytics() {
         document.getElementById('grading-workload-container').innerHTML = loadingMessage;
 
         // Fetch all data in parallel
+        // API.get() returns {success, data}, unwrap .data from each response
         const [
             distributionData,
             engagementData,
             questionData,
             atRiskData,
             gradingData
-        ] = await Promise.all([
+        ] = (await Promise.all([
             API.get(`/analytics/instructor/class/${currentCourseId}/distribution?${filterParams}`),
             API.get(`/analytics/instructor/class/${currentCourseId}/engagement?${filterParams}`),
             API.get(`/analytics/instructor/class/${currentCourseId}/question-effectiveness?${filterParams}`),
             API.get(`/analytics/instructor/class/${currentCourseId}/at-risk-students?${filterParams}`),
             API.get(`/analytics/instructor/class/${currentCourseId}/grading-workload?${filterParams}`)
-        ]);
+        ])).map(r => r.data || {});
 
         // Update summary cards
         updateSummaryCards(distributionData, atRiskData, gradingData);

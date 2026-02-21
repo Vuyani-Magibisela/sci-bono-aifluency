@@ -69,12 +69,13 @@ async function loadStudentAnalytics(userId) {
         const filterParams = AnalyticsFilters.getFilterParams();
 
         // Fetch all analytics data in parallel
-        const [velocityData, timeOnTaskData, proficiencyData, struggleData] = await Promise.all([
+        // API.get() returns {success, data}, unwrap .data from each response
+        const [velocityData, timeOnTaskData, proficiencyData, struggleData] = (await Promise.all([
             API.get(`/analytics/student/${userId}/velocity?${filterParams}`),
             API.get(`/analytics/student/${userId}/time-on-task?${filterParams}`),
             API.get(`/analytics/student/${userId}/skill-proficiency?${filterParams}`),
             API.get(`/analytics/student/${userId}/struggle-indicators?${filterParams}`)
-        ]);
+        ])).map(r => r.data || {});
 
         // Update summary cards
         updateSummaryCards(velocityData, timeOnTaskData, proficiencyData);

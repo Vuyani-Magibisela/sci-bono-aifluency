@@ -157,3 +157,497 @@
 [2026-02-03 17:20:35] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"ADMIN123"}
 [2026-02-03 17:20:41] Raw Input Length: 51, Content: {"email":"admin@sci-bono.org","password":"adin123"}
 [2026-02-03 17:20:46] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 15:55:29] Raw Input Length: 50, Content: {"email":"test@example.com","password":"password"}
+[2026-02-04 15:56:19] Raw Input Length: 55, Content: {"email":"admin@sci-bono.org","password":"password123"}
+[2026-02-04 15:56:58] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 15:59:01] Raw Input Length: 2, Content: {}
+[2026-02-04 15:59:24] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 15:59:31] Raw Input Length: 2, Content: {}
+[2026-02-04 16:00:56] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 16:23:25] Raw Input Length: 2, Content: {}
+[2026-02-04 16:23:40] Raw Input Length: 61, Content: {"email":"vuyani.magibisela@live.com","password":"V13#K*s3D"}
+[2026-02-04 16:23:46] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-04 16:23:53] Raw Input Length: 2, Content: {}
+[2026-02-04 16:24:05] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 17:19:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMjE1MDQ1LCJleHAiOjE3NzI4MDcwNDUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.ik0tmYNoVcXOZVL0crfighvEovYvmUKW3_fZdLNMIFM"}
+[2026-02-04 17:20:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMjE1MDQ1LCJleHAiOjE3NzI4MDcwNDUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.ik0tmYNoVcXOZVL0crfighvEovYvmUKW3_fZdLNMIFM"}
+[2026-02-04 17:21:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMjE1MDQ1LCJleHAiOjE3NzI4MDcwNDUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.ik0tmYNoVcXOZVL0crfighvEovYvmUKW3_fZdLNMIFM"}
+[2026-02-04 17:22:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMjE1MDQ1LCJleHAiOjE3NzI4MDcwNDUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.ik0tmYNoVcXOZVL0crfighvEovYvmUKW3_fZdLNMIFM"}
+[2026-02-04 17:23:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMjE1MDQ1LCJleHAiOjE3NzI4MDcwNDUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.ik0tmYNoVcXOZVL0crfighvEovYvmUKW3_fZdLNMIFM"}
+[2026-02-04 17:24:54] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 17:28:29] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 17:42:29] Raw Input Length: 2, Content: {}
+[2026-02-04 17:42:38] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-04 17:46:45] Raw Input Length: 2, Content: {}
+[2026-02-04 17:47:03] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 21:55:20] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 21:56:32] Raw Input Length: 2, Content: {}
+[2026-02-05 21:59:51] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 22:00:23] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 22:04:07] Raw Input Length: 2, Content: {}
+[2026-02-05 22:04:25] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 22:07:35] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-05 22:13:18] Raw Input Length: 125, Content: {"name":"Vuyani Magibisela","email":"vuyani.magibisela@sci-bono.co.za","role":"teacher","organization_id":1,"is_active":true}
+[2026-02-05 22:17:11] Raw Input Length: 125, Content: {"name":"Vuyani Magibisela","email":"vuyani.magibisela@sci-bono.co.za","role":"teacher","organization_id":1,"is_active":true}
+[2026-02-05 22:20:34] Raw Input Length: 125, Content: {"name":"Vuyani Magibisela","email":"vuyani.magibisela@sci-bono.co.za","role":"teacher","organization_id":1,"is_active":true}
+[2026-02-05 22:22:54] Raw Input Length: 205, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"Sci-Bono is the a science center that provides world class edutainment","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:33:50] Raw Input Length: 186, Content: {"name":"Sci-Bono Discovery Center","slug":"Sc-Bono","description":"Sci-Bono is the best edutainment center in the world","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:34:41] Raw Input Length: 37, Content: {"name":"Test Org","slug":"test-org"}
+[2026-02-05 22:35:37] Raw Input Length: 186, Content: {"name":"Sci-Bono Discovery Center","slug":"Sc-Bono","description":"Sci-Bono is the best edutainment center in the world","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:36:56] Raw Input Length: 186, Content: {"name":"Sci-Bono Discovery Center","slug":"Sc-Bono","description":"Sci-Bono is the best edutainment center in the world","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:37:58] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"the best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:43:57] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:00] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:01] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:01] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:01] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:02] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:02] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 22:44:02] Raw Input Length: 143, Content: {"name":"Sci-Bono Discovery Center","slug":"Sci-Bono","description":"The best","email":"vuyani.magibisela@sci-bono.co.za","phone":"0638393157"}
+[2026-02-05 23:03:26] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzIyMDU1LCJleHAiOjE3NzI5MTQwNTUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.7dXgI_zf38xdOJ1wuC2Kkoip-i4RFh-Dc77RJnFgpsI"}
+[2026-02-05 23:04:26] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzIyMDU1LCJleHAiOjE3NzI5MTQwNTUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.7dXgI_zf38xdOJ1wuC2Kkoip-i4RFh-Dc77RJnFgpsI"}
+[2026-02-05 23:05:26] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzIyMDU1LCJleHAiOjE3NzI5MTQwNTUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.7dXgI_zf38xdOJ1wuC2Kkoip-i4RFh-Dc77RJnFgpsI"}
+[2026-02-05 23:06:26] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzIyMDU1LCJleHAiOjE3NzI5MTQwNTUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.7dXgI_zf38xdOJ1wuC2Kkoip-i4RFh-Dc77RJnFgpsI"}
+[2026-02-05 23:07:26] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzIyMDU1LCJleHAiOjE3NzI5MTQwNTUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.7dXgI_zf38xdOJ1wuC2Kkoip-i4RFh-Dc77RJnFgpsI"}
+[2026-02-06 06:31:46] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 07:03:37] Raw Input Length: 140, Content: {"name":"Thutopele","slug":"Thuto","description":"Best edutainment organiztion","email":"thabo.kgakane@sci-bono.co.za","phone":"0112367845"}
+[2026-02-06 07:04:55] Raw Input Length: 151, Content: {"organization_id":2,"name":"Thutopele High School","slug":"Thuto-School","school_type":"secondary","email":"thutopele@gmail.com","phone":"0117891425"}
+[2026-02-06 07:27:45] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzUyMzA2LCJleHAiOjE3NzI5NDQzMDYsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.AArXKriyqvvPaW96YHnTp6DlngJKvIfzyZy_fL0AQuc"}
+[2026-02-06 07:28:45] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzUyMzA2LCJleHAiOjE3NzI5NDQzMDYsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.AArXKriyqvvPaW96YHnTp6DlngJKvIfzyZy_fL0AQuc"}
+[2026-02-06 07:29:45] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzUyMzA2LCJleHAiOjE3NzI5NDQzMDYsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.AArXKriyqvvPaW96YHnTp6DlngJKvIfzyZy_fL0AQuc"}
+[2026-02-06 07:30:45] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzUyMzA2LCJleHAiOjE3NzI5NDQzMDYsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.AArXKriyqvvPaW96YHnTp6DlngJKvIfzyZy_fL0AQuc"}
+[2026-02-06 07:41:19] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 07:43:02] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 11:05:47] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 11:15:38] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 12:11:18] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzY5MzM5LCJleHAiOjE3NzI5NjEzMzksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.kp1L8oBttK9U7psV4eYQ-Gr1lLmRCmNNChW4UOXdxUE"}
+[2026-02-06 12:12:18] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzY5MzM5LCJleHAiOjE3NzI5NjEzMzksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.kp1L8oBttK9U7psV4eYQ-Gr1lLmRCmNNChW4UOXdxUE"}
+[2026-02-06 12:13:18] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzY5MzM5LCJleHAiOjE3NzI5NjEzMzksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.kp1L8oBttK9U7psV4eYQ-Gr1lLmRCmNNChW4UOXdxUE"}
+[2026-02-06 12:14:18] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzY5MzM5LCJleHAiOjE3NzI5NjEzMzksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.kp1L8oBttK9U7psV4eYQ-Gr1lLmRCmNNChW4UOXdxUE"}
+[2026-02-06 12:15:18] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzY5MzM5LCJleHAiOjE3NzI5NjEzMzksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.kp1L8oBttK9U7psV4eYQ-Gr1lLmRCmNNChW4UOXdxUE"}
+[2026-02-06 13:02:06] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-06 13:02:12] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 13:57:20] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzc1NzMyLCJleHAiOjE3NzI5Njc3MzIsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.C0ZGgIgyfxTWdHa1qB4A8vKSP_-4Z7X-rwwGjIh53jQ"}
+[2026-02-06 13:58:20] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzc1NzMyLCJleHAiOjE3NzI5Njc3MzIsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.C0ZGgIgyfxTWdHa1qB4A8vKSP_-4Z7X-rwwGjIh53jQ"}
+[2026-02-06 13:59:21] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzc1NzMyLCJleHAiOjE3NzI5Njc3MzIsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.C0ZGgIgyfxTWdHa1qB4A8vKSP_-4Z7X-rwwGjIh53jQ"}
+[2026-02-06 14:00:31] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-06 14:00:49] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzc1NzMyLCJleHAiOjE3NzI5Njc3MzIsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.C0ZGgIgyfxTWdHa1qB4A8vKSP_-4Z7X-rwwGjIh53jQ"}
+[2026-02-06 14:01:49] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwMzc1NzMyLCJleHAiOjE3NzI5Njc3MzIsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.C0ZGgIgyfxTWdHa1qB4A8vKSP_-4Z7X-rwwGjIh53jQ"}
+[2026-02-06 14:05:32] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-06 17:10:03] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 10:42:39] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 11:37:44] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQwMTU5LCJleHAiOjE3NzMxMzIxNTksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.1PvmZxyxiPs5Ca9lo_jKblgXeDLzkqVC6jgJOYDzZfY"}
+[2026-02-08 11:38:43] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQwMTU5LCJleHAiOjE3NzMxMzIxNTksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.1PvmZxyxiPs5Ca9lo_jKblgXeDLzkqVC6jgJOYDzZfY"}
+[2026-02-08 11:39:44] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQwMTU5LCJleHAiOjE3NzMxMzIxNTksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.1PvmZxyxiPs5Ca9lo_jKblgXeDLzkqVC6jgJOYDzZfY"}
+[2026-02-08 11:40:44] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQwMTU5LCJleHAiOjE3NzMxMzIxNTksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.1PvmZxyxiPs5Ca9lo_jKblgXeDLzkqVC6jgJOYDzZfY"}
+[2026-02-08 11:41:44] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQwMTU5LCJleHAiOjE3NzMxMzIxNTksInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.1PvmZxyxiPs5Ca9lo_jKblgXeDLzkqVC6jgJOYDzZfY"}
+[2026-02-08 11:48:36] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 11:51:04] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 12:44:31] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MTE3LCJleHAiOjE3NzMxMzYxMTcsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.NTivvoUSEaPacEJSMNC5zWu55qgBtc-6dz7ryHNaXd8"}
+[2026-02-08 12:45:31] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MTE3LCJleHAiOjE3NzMxMzYxMTcsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.NTivvoUSEaPacEJSMNC5zWu55qgBtc-6dz7ryHNaXd8"}
+[2026-02-08 12:46:31] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MTE3LCJleHAiOjE3NzMxMzYxMTcsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.NTivvoUSEaPacEJSMNC5zWu55qgBtc-6dz7ryHNaXd8"}
+[2026-02-08 12:47:02] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MjY1LCJleHAiOjE3NzMxMzYyNjUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.I6bcuB_63C2kjfQSqnVpScfFjucrnfnUL-6tparE0hw"}
+[2026-02-08 12:47:31] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MTE3LCJleHAiOjE3NzMxMzYxMTcsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.NTivvoUSEaPacEJSMNC5zWu55qgBtc-6dz7ryHNaXd8"}
+[2026-02-08 12:48:02] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MjY1LCJleHAiOjE3NzMxMzYyNjUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.I6bcuB_63C2kjfQSqnVpScfFjucrnfnUL-6tparE0hw"}
+[2026-02-08 12:48:31] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MTE3LCJleHAiOjE3NzMxMzYxMTcsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.NTivvoUSEaPacEJSMNC5zWu55qgBtc-6dz7ryHNaXd8"}
+[2026-02-08 12:49:02] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MjY1LCJleHAiOjE3NzMxMzYyNjUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.I6bcuB_63C2kjfQSqnVpScfFjucrnfnUL-6tparE0hw"}
+[2026-02-08 12:50:02] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MjY1LCJleHAiOjE3NzMxMzYyNjUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.I6bcuB_63C2kjfQSqnVpScfFjucrnfnUL-6tparE0hw"}
+[2026-02-08 12:51:02] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTQ0MjY1LCJleHAiOjE3NzMxMzYyNjUsInN1YiI6MSwidHlwZSI6InJlZnJlc2gifQ.I6bcuB_63C2kjfQSqnVpScfFjucrnfnUL-6tparE0hw"}
+[2026-02-08 15:56:43] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 15:59:14] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 16:00:38] Raw Input Length: 2, Content: {}
+[2026-02-08 16:00:55] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 16:39:59] Raw Input Length: 2, Content: {}
+[2026-02-08 16:40:06] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-08 16:40:53] Raw Input Length: 2, Content: {}
+[2026-02-08 16:41:15] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 16:48:51] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-08 20:07:03] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 20:21:06] Raw Input Length: 2, Content: {}
+[2026-02-08 20:23:37] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 21:02:46] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc0MDIzLCJleHAiOjE3NzMxNjYwMjMsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.GlXhfnDvulrfinkPyPek5Hm6QnuMzGtrw9W9nkscJNI"}
+[2026-02-08 21:03:47] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc0MDIzLCJleHAiOjE3NzMxNjYwMjMsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.GlXhfnDvulrfinkPyPek5Hm6QnuMzGtrw9W9nkscJNI"}
+[2026-02-08 21:04:48] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc0MDIzLCJleHAiOjE3NzMxNjYwMjMsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.GlXhfnDvulrfinkPyPek5Hm6QnuMzGtrw9W9nkscJNI"}
+[2026-02-08 21:05:49] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc0MDIzLCJleHAiOjE3NzMxNjYwMjMsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.GlXhfnDvulrfinkPyPek5Hm6QnuMzGtrw9W9nkscJNI"}
+[2026-02-08 21:06:50] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc0MDIzLCJleHAiOjE3NzMxNjYwMjMsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.GlXhfnDvulrfinkPyPek5Hm6QnuMzGtrw9W9nkscJNI"}
+[2026-02-08 21:15:10] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 21:18:58] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc1MDE4LCJleHAiOjE3NzMxNjcwMTgsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.XBbniGWJai3o5aqn9QOxu1Ht3F3x0Y5-A9l-f8ntI3I"}
+[2026-02-08 21:19:58] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc1MDE4LCJleHAiOjE3NzMxNjcwMTgsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.XBbniGWJai3o5aqn9QOxu1Ht3F3x0Y5-A9l-f8ntI3I"}
+[2026-02-08 21:20:58] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc1MDE4LCJleHAiOjE3NzMxNjcwMTgsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.XBbniGWJai3o5aqn9QOxu1Ht3F3x0Y5-A9l-f8ntI3I"}
+[2026-02-08 21:21:58] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc1MDE4LCJleHAiOjE3NzMxNjcwMTgsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.XBbniGWJai3o5aqn9QOxu1Ht3F3x0Y5-A9l-f8ntI3I"}
+[2026-02-08 21:22:58] Raw Input Length: 299, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3NjaS1ib25vLWFpZmx1ZW5jeSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Qvc2NpLWJvbm8tYWlmbHVlbmN5IiwiaWF0IjoxNzcwNTc1MDE4LCJleHAiOjE3NzMxNjcwMTgsInN1YiI6NSwidHlwZSI6InJlZnJlc2gifQ.XBbniGWJai3o5aqn9QOxu1Ht3F3x0Y5-A9l-f8ntI3I"}
+[2026-02-08 21:25:11] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-08 22:10:57] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODExMCwiZXhwIjoxNzczMTcwMTEwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.sgwmifWTL5Vzs626gfEomgJgZcb68R8CCywknbr30hY"}
+[2026-02-08 22:11:58] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODExMCwiZXhwIjoxNzczMTcwMTEwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.sgwmifWTL5Vzs626gfEomgJgZcb68R8CCywknbr30hY"}
+[2026-02-08 22:12:59] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODExMCwiZXhwIjoxNzczMTcwMTEwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.sgwmifWTL5Vzs626gfEomgJgZcb68R8CCywknbr30hY"}
+[2026-02-08 22:14:00] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODExMCwiZXhwIjoxNzczMTcwMTEwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.sgwmifWTL5Vzs626gfEomgJgZcb68R8CCywknbr30hY"}
+[2026-02-08 22:15:01] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODExMCwiZXhwIjoxNzczMTcwMTEwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.sgwmifWTL5Vzs626gfEomgJgZcb68R8CCywknbr30hY"}
+[2026-02-08 22:21:02] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODcxMiwiZXhwIjoxNzczMTcwNzEyLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.it-fGna2FOlxNcAHuP8OGsYG0oE_HrcK4HsglX_EsUM"}
+[2026-02-08 22:22:02] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODcxMiwiZXhwIjoxNzczMTcwNzEyLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.it-fGna2FOlxNcAHuP8OGsYG0oE_HrcK4HsglX_EsUM"}
+[2026-02-08 22:23:02] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODcxMiwiZXhwIjoxNzczMTcwNzEyLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.it-fGna2FOlxNcAHuP8OGsYG0oE_HrcK4HsglX_EsUM"}
+[2026-02-08 22:24:02] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODcxMiwiZXhwIjoxNzczMTcwNzEyLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.it-fGna2FOlxNcAHuP8OGsYG0oE_HrcK4HsglX_EsUM"}
+[2026-02-08 22:25:02] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDU3ODcxMiwiZXhwIjoxNzczMTcwNzEyLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.it-fGna2FOlxNcAHuP8OGsYG0oE_HrcK4HsglX_EsUM"}
+[2026-02-09 04:48:50] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 04:51:05] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 09:07:13] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#K*s3D"}
+[2026-02-09 09:07:47] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 10:03:07] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:04:07] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:04:56] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:05:07] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:05:56] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:06:08] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:06:56] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:07:09] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MDYyMDg2NywiZXhwIjoxNzczMjEyODY3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.7AzrN7WW8UYX0veLmX3ENBNlJory_T5DBSuEeyCefX0"}
+[2026-02-09 10:14:08] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 10:14:22] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:16:43] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:17:09] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 10:17:18] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:22:04] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:22:32] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:22:37] Raw Input Length: 15, Content: {"lesson_id":2}
+[2026-02-09 10:23:18] Raw Input Length: 15, Content: {"lesson_id":2}
+[2026-02-09 10:23:21] Raw Input Length: 15, Content: {"lesson_id":3}
+[2026-02-09 10:23:52] Raw Input Length: 15, Content: {"lesson_id":3}
+[2026-02-09 10:23:55] Raw Input Length: 15, Content: {"lesson_id":4}
+[2026-02-09 10:26:47] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:26:51] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:27:54] Raw Input Length: 15, Content: {"lesson_id":4}
+[2026-02-09 10:28:15] Raw Input Length: 15, Content: {"lesson_id":2}
+[2026-02-09 10:28:23] Raw Input Length: 16, Content: {"lesson_id":11}
+[2026-02-09 10:30:56] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:31:05] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:31:08] Raw Input Length: 15, Content: {"lesson_id":2}
+[2026-02-09 10:31:14] Raw Input Length: 15, Content: {"lesson_id":2}
+[2026-02-09 10:31:30] Raw Input Length: 15, Content: {"lesson_id":1}
+[2026-02-09 10:31:35] Raw Input Length: 15, Content: {"lesson_id":4}
+[2026-02-09 10:41:38] Raw Input Length: 2, Content: {}
+[2026-02-09 10:41:42] Raw Input Length: 2, Content: {}
+[2026-02-09 10:41:45] Raw Input Length: 2, Content: {}
+[2026-02-09 10:43:05] Raw Input Length: 2, Content: {}
+[2026-02-09 10:43:12] Raw Input Length: 2, Content: {}
+[2026-02-09 10:43:53] Raw Input Length: 2, Content: {}
+[2026-02-09 10:43:58] Raw Input Length: 2, Content: {}
+[2026-02-09 10:44:09] Raw Input Length: 2, Content: {}
+[2026-02-09 10:44:19] Raw Input Length: 2, Content: {}
+[2026-02-09 10:48:04] Raw Input Length: 2, Content: {}
+[2026-02-09 10:48:09] Raw Input Length: 2, Content: {}
+[2026-02-09 10:49:41] Raw Input Length: 17, Content: {"lesson_id":"4"}
+[2026-02-09 10:57:25] Raw Input Length: 2, Content: {}
+[2026-02-09 10:57:30] Raw Input Length: 2, Content: {}
+[2026-02-09 10:57:37] Raw Input Length: 2, Content: {}
+[2026-02-09 10:57:41] Raw Input Length: 2, Content: {}
+[2026-02-09 10:57:46] Raw Input Length: 2, Content: {}
+[2026-02-09 10:59:09] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 10:59:15] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#k*s3D"}
+[2026-02-09 10:59:24] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#k*s3D"}
+[2026-02-09 10:59:34] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 10:59:46] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-09 11:00:23] Raw Input Length: 2, Content: {}
+[2026-02-09 11:00:31] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#K*s3D"}
+[2026-02-09 11:00:42] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#K*s3D"}
+[2026-02-09 15:33:38] Raw Input Length: 63, Content: {"email":"vuyani.magibisela@live.com","password":"V0y@n\!2024"}
+[2026-02-09 15:33:44] Raw Input Length: 63, Content: {"email":"vuyani.magibisela@live.com","password":"V0y@n\!2024"}
+[2026-02-09 16:08:42] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-09 16:09:35] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:40] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:45] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:49] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:53] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:56] Raw Input Length: 2, Content: {}
+[2026-02-09 16:09:59] Raw Input Length: 2, Content: {}
+[2026-02-09 16:10:02] Raw Input Length: 2, Content: {}
+[2026-02-09 16:10:05] Raw Input Length: 2, Content: {}
+[2026-02-09 16:10:08] Raw Input Length: 2, Content: {}
+[2026-02-09 16:10:10] Raw Input Length: 2, Content: {}
+[2026-02-09 16:10:54] Raw Input Length: 2, Content: {}
+[2026-02-09 16:11:01] Raw Input Length: 2, Content: {}
+[2026-02-09 16:11:09] Raw Input Length: 2, Content: {}
+[2026-02-09 21:06:52] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-10 05:41:59] Raw Input Length: 56, Content: {"email":"vuyani.magibisela@live.com","password":"test"}
+[2026-02-10 05:42:05] Raw Input Length: 2, Content: {}
+[2026-02-10 05:47:00] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-10 05:47:26] Raw Input Length: 2, Content: {}
+[2026-02-10 05:47:31] Raw Input Length: 2, Content: {}
+[2026-02-10 05:47:35] Raw Input Length: 2, Content: {}
+[2026-02-10 05:48:39] Raw Input Length: 2, Content: {}
+[2026-02-11 10:10:14] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-11 10:11:02] Raw Input Length: 2, Content: {}
+[2026-02-11 10:11:12] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-11 10:11:33] Raw Input Length: 2, Content: {}
+[2026-02-11 10:11:41] Raw Input Length: 2, Content: {}
+[2026-02-11 10:11:46] Raw Input Length: 2, Content: {}
+[2026-02-11 10:11:49] Raw Input Length: 2, Content: {}
+[2026-02-11 10:12:10] Raw Input Length: 2, Content: {}
+[2026-02-11 10:28:42] Raw Input Length: 2, Content: {}
+[2026-02-11 10:30:37] Raw Input Length: 2, Content: {}
+[2026-02-11 10:32:06] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-11 10:32:55] Raw Input Length: 2, Content: {}
+[2026-02-11 10:34:50] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-11 11:00:31] Raw Input Length: 2, Content: {}
+[2026-02-12 11:42:22] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-12 11:43:14] Raw Input Length: 2, Content: {}
+[2026-02-12 11:43:22] Raw Input Length: 2, Content: {}
+[2026-02-12 11:43:26] Raw Input Length: 2, Content: {}
+[2026-02-12 11:43:56] Raw Input Length: 2, Content: {}
+[2026-02-14 14:30:07] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-14 14:38:45] Raw Input Length: 2, Content: {}
+[2026-02-14 14:38:52] Raw Input Length: 2, Content: {}
+[2026-02-14 14:39:34] Raw Input Length: 2, Content: {}
+[2026-02-14 14:45:45] Raw Input Length: 2, Content: {}
+[2026-02-14 15:25:49] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:25:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:26:50] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:26:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:27:50] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:27:55] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:28:51] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:28:55] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:29:51] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-14 15:29:56] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTA3MjIwOCwiZXhwIjoxNzczNjY0MjA4LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.cUL9--3y6xlb2dzuFs93izdO67hyWE9x3jcdAILao_Y"}
+[2026-02-15 05:07:42] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 09:07:48] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-15 09:07:59] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-15 09:08:07] Raw Input Length: 54, Content: {"email":"admin@sci-bono.co.za","password":"admin123"}
+[2026-02-15 09:08:20] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 09:19:33] Raw Input Length: 219, Content: {"name":"Thabo Dlamini","email":"thabo.dlamini@gmail.com","password":"thabo@123","role":"schooladmin","primary_organization_id":2,"primary_school_id":2,"organizational_title":"Grade 10 Science Teacher","is_active":true}
+[2026-02-15 09:20:17] Raw Input Length: 58, Content: {"email":"thabo.dlamini@gmail.com","password":"thabo@123"}
+[2026-02-15 09:32:29] Raw Input Length: 2, Content: {}
+[2026-02-15 09:39:35] Raw Input Length: 218, Content: {"name":"Tshepo Madlanaga","email":"tshepo.madlanga@gmail.com","password":"tshepo@123","role":"teacher","primary_organization_id":2,"primary_school_id":2,"organizational_title":"Grade 12 Math Teacher","is_active":true}
+[2026-02-15 09:40:46] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"tshepo@123"}
+[2026-02-15 09:50:33] Raw Input Length: 134, Content: {"name":"Tshepo Madlanaga","email":"tshepo.madlanga@gmail.com","role":"teacher","organization_id":2,"school_id":null,"is_active":true}
+[2026-02-15 09:50:51] Raw Input Length: 131, Content: {"name":"Tshepo Madlanaga","email":"tshepo.madlanga@gmail.com","role":"teacher","organization_id":2,"school_id":2,"is_active":true}
+[2026-02-15 09:51:08] Raw Input Length: 131, Content: {"name":"Tshepo Madlanaga","email":"tshepo.madlanga@gmail.com","role":"teacher","organization_id":2,"school_id":2,"is_active":true}
+[2026-02-15 09:53:10] Raw Input Length: 131, Content: {"name":"Tshepo Madlanaga","email":"tshepo.madlanga@gmail.com","role":"teacher","organization_id":2,"school_id":2,"is_active":true}
+[2026-02-15 10:03:26] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTEzOTMwMCwiZXhwIjoxNzczNzMxMzAwLCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.5YSKAWnHb_0GeoAs6efz-XQaG9sOfNWRnpFxf_63Z8U"}
+[2026-02-15 10:04:26] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTEzOTMwMCwiZXhwIjoxNzczNzMxMzAwLCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.5YSKAWnHb_0GeoAs6efz-XQaG9sOfNWRnpFxf_63Z8U"}
+[2026-02-15 10:05:27] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTEzOTMwMCwiZXhwIjoxNzczNzMxMzAwLCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.5YSKAWnHb_0GeoAs6efz-XQaG9sOfNWRnpFxf_63Z8U"}
+[2026-02-15 10:06:27] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTEzOTMwMCwiZXhwIjoxNzczNzMxMzAwLCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.5YSKAWnHb_0GeoAs6efz-XQaG9sOfNWRnpFxf_63Z8U"}
+[2026-02-15 10:07:27] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTEzOTMwMCwiZXhwIjoxNzczNzMxMzAwLCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.5YSKAWnHb_0GeoAs6efz-XQaG9sOfNWRnpFxf_63Z8U"}
+[2026-02-15 10:16:27] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 10:19:08] Raw Input Length: 172, Content: {"name":"Gauteng Department of Education","slug":"GDE","description":"The gauteng department of education is responsible for all schools in gauteng.","email":"","phone":""}
+[2026-02-15 10:35:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MTI0NiwiZXhwIjoxNzczNzMzMjQ2LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.M-538IOblDKpcm4AvwpjApSzQRdFOob9SI2p4DrPaSI"}
+[2026-02-15 10:36:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MTI0NiwiZXhwIjoxNzczNzMzMjQ2LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.M-538IOblDKpcm4AvwpjApSzQRdFOob9SI2p4DrPaSI"}
+[2026-02-15 10:37:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MTI0NiwiZXhwIjoxNzczNzMzMjQ2LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.M-538IOblDKpcm4AvwpjApSzQRdFOob9SI2p4DrPaSI"}
+[2026-02-15 10:38:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MTI0NiwiZXhwIjoxNzczNzMzMjQ2LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.M-538IOblDKpcm4AvwpjApSzQRdFOob9SI2p4DrPaSI"}
+[2026-02-15 10:39:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MTI0NiwiZXhwIjoxNzczNzMzMjQ2LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.M-538IOblDKpcm4AvwpjApSzQRdFOob9SI2p4DrPaSI"}
+[2026-02-15 10:41:05] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"tshepo@123"}
+[2026-02-15 10:41:10] Raw Input Length: 2, Content: {}
+[2026-02-15 10:41:31] Raw Input Length: 58, Content: {"email":"thabo.dlamini@gmail.com","password":"thabo@123"}
+[2026-02-15 10:45:24] Raw Input Length: 224, Content: {"name":"Katlego Radebe","email":"katlego.radebe@gmail.com","password":"katlego@123","role":"teacher","primary_organization_id":1,"primary_school_id":null,"organizational_title":"Grade 9 Technology Teacher","is_active":true}
+[2026-02-15 10:45:38] Raw Input Length: 224, Content: {"name":"Katlego Radebe","email":"katlego.radebe@gmail.com","password":"katlego@123","role":"teacher","primary_organization_id":1,"primary_school_id":null,"organizational_title":"Grade 9 Technology Teacher","is_active":true}
+[2026-02-15 11:01:11] Raw Input Length: 225, Content: {"name":"Katlego Radebe","email":"katlego.radebe@gmail.com","password":"katlego@123","role":"schooladmin","primary_organization_id":3,"primary_school_id":2,"organizational_title":"Grade 9 Technology Teacher","is_active":true}
+[2026-02-15 11:04:20] Raw Input Length: 2, Content: {}
+[2026-02-15 11:04:43] Raw Input Length: 61, Content: {"email":"katlego.radebe@gmail.com","password":"katlego@123"}
+[2026-02-15 11:11:48] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MzM4NywiZXhwIjoxNzczNzM1Mzg3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.z8zS_JW5IfhsG598OnhA5BmLYShgVkhO-lXJCrU1NMo"}
+[2026-02-15 11:12:25] Raw Input Length: 156, Content: {"organization_id":3,"name":"Ferndale High school","slug":"FHS","school_type":"combined","email":"scibono.computerclubhouse@gmail.com","phone":"0838614823"}
+[2026-02-15 11:12:48] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MzM4NywiZXhwIjoxNzczNzM1Mzg3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.z8zS_JW5IfhsG598OnhA5BmLYShgVkhO-lXJCrU1NMo"}
+[2026-02-15 11:13:49] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MzM4NywiZXhwIjoxNzczNzM1Mzg3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.z8zS_JW5IfhsG598OnhA5BmLYShgVkhO-lXJCrU1NMo"}
+[2026-02-15 11:14:50] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MzM4NywiZXhwIjoxNzczNzM1Mzg3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.z8zS_JW5IfhsG598OnhA5BmLYShgVkhO-lXJCrU1NMo"}
+[2026-02-15 11:15:51] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0MzM4NywiZXhwIjoxNzczNzM1Mzg3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.z8zS_JW5IfhsG598OnhA5BmLYShgVkhO-lXJCrU1NMo"}
+[2026-02-15 11:32:29] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-15 12:00:29] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:00:44] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:01:30] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:01:44] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:02:30] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:02:44] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:03:32] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:03:45] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:04:32] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0NjI4MywiZXhwIjoxNzczNzM4MjgzLCJzdWIiOjEwLCJ0eXBlIjoicmVmcmVzaCJ9.fvHvKbL5_feppcUR8kBQj3EJEq-xUoBP_i3_iRPGwzE"}
+[2026-02-15 12:28:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0Nzk0OSwiZXhwIjoxNzczNzM5OTQ5LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.yNTTc2E-60hAoYSQ_wuE4gRwVgRV7pMKaWpFdss4q5A"}
+[2026-02-15 12:29:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0Nzk0OSwiZXhwIjoxNzczNzM5OTQ5LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.yNTTc2E-60hAoYSQ_wuE4gRwVgRV7pMKaWpFdss4q5A"}
+[2026-02-15 12:30:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0Nzk0OSwiZXhwIjoxNzczNzM5OTQ5LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.yNTTc2E-60hAoYSQ_wuE4gRwVgRV7pMKaWpFdss4q5A"}
+[2026-02-15 12:31:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE0Nzk0OSwiZXhwIjoxNzczNzM5OTQ5LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.yNTTc2E-60hAoYSQ_wuE4gRwVgRV7pMKaWpFdss4q5A"}
+[2026-02-15 12:34:07] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-15 12:35:05] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 13:30:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE1MTcwNSwiZXhwIjoxNzczNzQzNzA1LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.2TolQ0q9FyItqp5_JCVrb3RMcKZt7ScHVZpUD6fyaUs"}
+[2026-02-15 13:31:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE1MTcwNSwiZXhwIjoxNzczNzQzNzA1LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.2TolQ0q9FyItqp5_JCVrb3RMcKZt7ScHVZpUD6fyaUs"}
+[2026-02-15 13:32:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE1MTcwNSwiZXhwIjoxNzczNzQzNzA1LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.2TolQ0q9FyItqp5_JCVrb3RMcKZt7ScHVZpUD6fyaUs"}
+[2026-02-15 13:33:10] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE1MTcwNSwiZXhwIjoxNzczNzQzNzA1LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.2TolQ0q9FyItqp5_JCVrb3RMcKZt7ScHVZpUD6fyaUs"}
+[2026-02-15 13:34:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE1MTcwNSwiZXhwIjoxNzczNzQzNzA1LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.2TolQ0q9FyItqp5_JCVrb3RMcKZt7ScHVZpUD6fyaUs"}
+[2026-02-15 16:47:46] Raw Input Length: 245, Content: {"name":"Itumeleng Kgakane","email":"itumeleng.kgakane@gmail.com","password":"Itu@1234","password_confirmation":"Itu@1234","role":"student","contact_number":"0110001234","school_id":"523","gender":"male","grade":"9","date_of_birth":"2012-08-23"}
+[2026-02-15 16:49:18] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-15 16:49:25] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-15 16:49:56] Raw Input Length: 2, Content: {}
+[2026-02-15 16:54:06] Raw Input Length: 189, Content: {"name":"Tsepiso Dlamini","email":"tsepiso.dlamini@gmail.com","password":"tsepiso@123","password_confirmation":"tsepiso@123","role":"teacher","contact_number":"0834567825","school_id":"68"}
+[2026-02-15 16:54:24] Raw Input Length: 189, Content: {"name":"Tsepiso Dlamini","email":"tsepiso.dlamini@gmail.com","password":"tsepiso@123","password_confirmation":"tsepiso@123","role":"teacher","contact_number":"0834567825","school_id":"68"}
+[2026-02-15 17:00:54] Raw Input Length: 146, Content: {"name":"Test Teacher2","email":"teacher2@test.com","password":"Password1\!","password_confirmation":"Password1\!","role":"teacher","school_id":5}
+[2026-02-15 17:01:29] Raw Input Length: 146, Content: {"name":"Test Teacher3","email":"teacher3@test.com","password":"Password123","password_confirmation":"Password123","role":"teacher","school_id":5}
+[2026-02-15 17:01:39] Raw Input Length: 146, Content: {"name":"Test Teacher3","email":"teacher3@test.com","password":"Password1@3","password_confirmation":"Password1@3","role":"teacher","school_id":5}
+[2026-02-15 17:04:36] Raw Input Length: 136, Content: {"name":"Bad Pass","email":"bad@test.com","password":"Password123","password_confirmation":"Password123","role":"teacher","school_id":5}
+[2026-02-15 17:04:36] Raw Input Length: 144, Content: {"name":"Good Teacher","email":"goodteach@test.com","password":"Password1@","password_confirmation":"Password1@","role":"teacher","school_id":5}
+[2026-02-15 17:17:00] Raw Input Length: 189, Content: {"name":"Tsepiso Dlamini","email":"tsepiso.dlamini@gmail.com","password":"Tsepiso@123","password_confirmation":"Tsepiso@123","role":"teacher","contact_number":"0835467893","school_id":"68"}
+[2026-02-15 17:19:03] Raw Input Length: 2, Content: {}
+[2026-02-15 17:19:17] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 17:30:06] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-15 17:39:42] Raw Input Length: 2, Content: {}
+[2026-02-15 17:40:21] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-15 17:40:39] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-15 17:44:35] Raw Input Length: 185, Content: {"name":"Tsepiso Dlamini","email":"tsepiso.dlamini@gmail.com","role":"teacher","organization_id":3,"school_id":1735,"organizational_title":"Grade 9 Technology Teacher","is_active":true}
+[2026-02-15 18:14:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE2ODc1NywiZXhwIjoxNzczNzYwNzU3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.jxggDryYZcKKfLWUAvFikkCze-O4esbc8V5DYxOnPHI"}
+[2026-02-15 18:15:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE2ODc1NywiZXhwIjoxNzczNzYwNzU3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.jxggDryYZcKKfLWUAvFikkCze-O4esbc8V5DYxOnPHI"}
+[2026-02-15 18:16:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE2ODc1NywiZXhwIjoxNzczNzYwNzU3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.jxggDryYZcKKfLWUAvFikkCze-O4esbc8V5DYxOnPHI"}
+[2026-02-15 18:17:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE2ODc1NywiZXhwIjoxNzczNzYwNzU3LCJzdWIiOjEsInR5cGUiOiJyZWZyZXNoIn0.jxggDryYZcKKfLWUAvFikkCze-O4esbc8V5DYxOnPHI"}
+[2026-02-15 18:19:00] Raw Input Length: 2, Content: {}
+[2026-02-15 18:36:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE3MDAyMSwiZXhwIjoxNzczNzYyMDIxLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.d2gR7VaBolgjL4oT9ogsTigCsHRM_1CFkEJwX9R0vU0"}
+[2026-02-15 18:37:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE3MDAyMSwiZXhwIjoxNzczNzYyMDIxLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.d2gR7VaBolgjL4oT9ogsTigCsHRM_1CFkEJwX9R0vU0"}
+[2026-02-15 18:38:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE3MDAyMSwiZXhwIjoxNzczNzYyMDIxLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.d2gR7VaBolgjL4oT9ogsTigCsHRM_1CFkEJwX9R0vU0"}
+[2026-02-15 18:39:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE3MDAyMSwiZXhwIjoxNzczNzYyMDIxLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.d2gR7VaBolgjL4oT9ogsTigCsHRM_1CFkEJwX9R0vU0"}
+[2026-02-15 18:40:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE3MDAyMSwiZXhwIjoxNzczNzYyMDIxLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.d2gR7VaBolgjL4oT9ogsTigCsHRM_1CFkEJwX9R0vU0"}
+[2026-02-15 19:05:56] Raw Input Length: 189, Content: {"name":"Tsepiso Dlamini","email":"tsepiso.dlamini@gmail.com","password":"tsepiso@123","password_confirmation":"tsepiso@123","role":"teacher","contact_number":"0834567825","school_id":"68"}
+[2026-02-15 21:08:33] Raw Input Length: 62, Content: {"email":"tsepiso.dlamini@gmail.com","password":"tsepisi@123"}
+[2026-02-15 21:08:57] Raw Input Length: 62, Content: {"email":"tsepiso.dlamini@gmail.com","password":"Tsepiso@123"}
+[2026-02-15 21:10:28] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"tumi@123"}
+[2026-02-15 21:11:05] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-15 21:11:23] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-15 21:57:37] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-15 21:57:54] Raw Input Length: 2, Content: {}
+[2026-02-15 21:58:08] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-15 22:04:33] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE4MjUzNywiZXhwIjoxNzczNzc0NTM3LCJzdWIiOjE1LCJ0eXBlIjoicmVmcmVzaCJ9.aJCsnuM3t_0Y2RldJQ115oJCHNFb-by1zpsC6r93E4E"}
+[2026-02-15 22:05:33] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE4MjUzNywiZXhwIjoxNzczNzc0NTM3LCJzdWIiOjE1LCJ0eXBlIjoicmVmcmVzaCJ9.aJCsnuM3t_0Y2RldJQ115oJCHNFb-by1zpsC6r93E4E"}
+[2026-02-15 22:06:34] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE4MjUzNywiZXhwIjoxNzczNzc0NTM3LCJzdWIiOjE1LCJ0eXBlIjoicmVmcmVzaCJ9.aJCsnuM3t_0Y2RldJQ115oJCHNFb-by1zpsC6r93E4E"}
+[2026-02-15 22:07:34] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE4MjUzNywiZXhwIjoxNzczNzc0NTM3LCJzdWIiOjE1LCJ0eXBlIjoicmVmcmVzaCJ9.aJCsnuM3t_0Y2RldJQ115oJCHNFb-by1zpsC6r93E4E"}
+[2026-02-15 22:08:35] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTE4MjUzNywiZXhwIjoxNzczNzc0NTM3LCJzdWIiOjE1LCJ0eXBlIjoicmVmcmVzaCJ9.aJCsnuM3t_0Y2RldJQ115oJCHNFb-by1zpsC6r93E4E"}
+[2026-02-15 22:09:21] Raw Input Length: 2, Content: {}
+[2026-02-16 04:45:20] Raw Input Length: 60, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@123"}
+[2026-02-16 04:45:32] Raw Input Length: 60, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@123"}
+[2026-02-16 04:45:40] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-16 04:45:57] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-16 04:47:29] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#K*s3D"}
+[2026-02-16 04:47:35] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#K*s3D"}
+[2026-02-16 04:47:49] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 04:50:32] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-16 04:50:43] Raw Input Length: 2, Content: {}
+[2026-02-16 04:50:56] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 04:51:22] Raw Input Length: 2, Content: {}
+[2026-02-16 04:51:43] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-16 04:51:59] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-16 04:53:02] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-16 04:57:00] Raw Input Length: 16, Content: {"course_id": 1}
+[2026-02-16 05:01:22] Raw Input Length: 2, Content: {}
+[2026-02-16 05:01:31] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#K*s3D"}
+[2026-02-16 05:01:39] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 05:02:23] Raw Input Length: 2, Content: {}
+[2026-02-16 05:03:32] Raw Input Length: 2, Content: {}
+[2026-02-16 05:03:49] Raw Input Length: 53, Content: {"lesson_id":"12","content":"This is a nice chapter"}
+[2026-02-16 05:10:31] Raw Input Length: 2, Content: {}
+[2026-02-16 05:10:45] Raw Input Length: 51, Content: {"lesson_id":"12","content":"This module is great"}
+[2026-02-16 05:11:04] Raw Input Length: 82, Content: {"lesson_id":"12","content":"This module is great\nNeed to learn more about this"}
+[2026-02-16 05:11:16] Raw Input Length: 2, Content: {}
+[2026-02-16 05:11:22] Raw Input Length: 2, Content: {}
+[2026-02-16 05:12:00] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-16 05:12:14] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-16 05:12:42] Raw Input Length: 2, Content: {}
+[2026-02-16 05:13:00] Raw Input Length: 2, Content: {}
+[2026-02-16 05:13:04] Raw Input Length: 2, Content: {}
+[2026-02-16 05:13:21] Raw Input Length: 2, Content: {}
+[2026-02-16 05:16:11] Raw Input Length: 2, Content: {}
+[2026-02-16 05:16:27] Raw Input Length: 60, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshep@123"}
+[2026-02-16 05:16:36] Raw Input Length: 60, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshep@123"}
+[2026-02-16 05:17:11] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"tshepo@123"}
+[2026-02-16 05:38:36] Raw Input Length: 2, Content: {}
+[2026-02-16 05:41:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIwOTk0MCwiZXhwIjoxNzczODAxOTQwLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.p-t8dD_phvPk19mcdaBSERp1PqpdnckYzbmKytHtg0I"}
+[2026-02-16 05:42:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIwOTk0MCwiZXhwIjoxNzczODAxOTQwLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.p-t8dD_phvPk19mcdaBSERp1PqpdnckYzbmKytHtg0I"}
+[2026-02-16 05:43:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIwOTk0MCwiZXhwIjoxNzczODAxOTQwLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.p-t8dD_phvPk19mcdaBSERp1PqpdnckYzbmKytHtg0I"}
+[2026-02-16 05:44:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIwOTk0MCwiZXhwIjoxNzczODAxOTQwLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.p-t8dD_phvPk19mcdaBSERp1PqpdnckYzbmKytHtg0I"}
+[2026-02-16 05:45:11] Raw Input Length: 265, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIwOTk0MCwiZXhwIjoxNzczODAxOTQwLCJzdWIiOjExLCJ0eXBlIjoicmVmcmVzaCJ9.p-t8dD_phvPk19mcdaBSERp1PqpdnckYzbmKytHtg0I"}
+[2026-02-16 05:46:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMDI1NywiZXhwIjoxNzczODAyMjU3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.KtAbkd1ToSjm4OxqOSqqcYVxwzyaOjIGe29uuAd6JcM"}
+[2026-02-16 05:47:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMDI1NywiZXhwIjoxNzczODAyMjU3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.KtAbkd1ToSjm4OxqOSqqcYVxwzyaOjIGe29uuAd6JcM"}
+[2026-02-16 05:48:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMDI1NywiZXhwIjoxNzczODAyMjU3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.KtAbkd1ToSjm4OxqOSqqcYVxwzyaOjIGe29uuAd6JcM"}
+[2026-02-16 05:49:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMDI1NywiZXhwIjoxNzczODAyMjU3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.KtAbkd1ToSjm4OxqOSqqcYVxwzyaOjIGe29uuAd6JcM"}
+[2026-02-16 05:50:11] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMDI1NywiZXhwIjoxNzczODAyMjU3LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.KtAbkd1ToSjm4OxqOSqqcYVxwzyaOjIGe29uuAd6JcM"}
+[2026-02-16 06:08:51] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMTgzMSwiZXhwIjoxNzczODAzODMxLCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.I9K4cAGSxI1NjpPW8mx2ANgQ8QC6s5oKzU_I-lzY91A"}
+[2026-02-16 06:15:45] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMTgzMSwiZXhwIjoxNzczODAzODMxLCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.I9K4cAGSxI1NjpPW8mx2ANgQ8QC6s5oKzU_I-lzY91A"}
+[2026-02-16 06:16:45] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTIxMTgzMSwiZXhwIjoxNzczODAzODMxLCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.I9K4cAGSxI1NjpPW8mx2ANgQ8QC6s5oKzU_I-lzY91A"}
+[2026-02-16 09:20:51] Raw Input Length: 53, Content: {"email":"admin@sci-bono.org","password":"admin@123"}
+[2026-02-16 09:20:57] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-16 09:57:00] Raw Input Length: 2, Content: {}
+[2026-02-16 14:38:43] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"tshepo@123"}
+[2026-02-16 14:39:50] Raw Input Length: 2, Content: {}
+[2026-02-16 16:18:43] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#k*s3D"}
+[2026-02-16 16:18:50] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 17:03:28] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 17:07:38] Raw Input Length: 2, Content: {}
+[2026-02-16 17:07:44] Raw Input Length: 2, Content: {}
+[2026-02-16 17:07:52] Raw Input Length: 2, Content: {}
+[2026-02-16 17:08:00] Raw Input Length: 2, Content: {}
+[2026-02-16 17:08:04] Raw Input Length: 2, Content: {}
+[2026-02-16 17:08:14] Raw Input Length: 2, Content: {}
+[2026-02-16 17:08:17] Raw Input Length: 2, Content: {}
+[2026-02-16 17:08:24] Raw Input Length: 2, Content: {}
+[2026-02-16 17:13:52] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:14:12] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:14:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:14:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:15:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:15:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:15:53] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:16:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:16:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:16:54] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:17:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:17:14] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:17:55] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:18:13] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 17:18:14] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI1MTUzMCwiZXhwIjoxNzczODQzNTMwLCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.fWDek7Hzbsd7BEESdpgiLy9T_8yVTVI7-YPkCPBMyW4"}
+[2026-02-16 20:42:57] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-16 21:30:33] Raw Input Length: 2, Content: {}
+[2026-02-16 21:33:56] Raw Input Length: 2, Content: {}
+[2026-02-16 21:43:13] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-16 21:44:49] Raw Input Length: 2, Content: {}
+[2026-02-16 21:45:03] Raw Input Length: 60, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshep1234"}
+[2026-02-16 21:45:04] Raw Input Length: 59, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshep123"}
+[2026-02-16 21:45:11] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshepo@123"}
+[2026-02-16 21:45:13] Raw Input Length: 62, Content: {"email":"tshepo.madlanga@gmail.com","password":"Tshepo@1234"}
+[2026-02-16 21:45:30] Raw Input Length: 60, Content: {"email":"tshepo.madlanga@gmail.com","password":"tespo@123"}
+[2026-02-16 21:45:37] Raw Input Length: 61, Content: {"email":"tshepo.madlanga@gmail.com","password":"tshepo@123"}
+[2026-02-16 22:18:53] Raw Input Length: 15, Content: {"course_id":1}
+[2026-02-16 22:41:29] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI3MTEzOCwiZXhwIjoxNzczODYzMTM4LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.9r_UTgPsNvn1dihVkwk4BGFirXoxxiLmS_9On4i5Tvk"}
+[2026-02-16 22:42:29] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI3MTEzOCwiZXhwIjoxNzczODYzMTM4LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.9r_UTgPsNvn1dihVkwk4BGFirXoxxiLmS_9On4i5Tvk"}
+[2026-02-16 22:43:30] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI3MTEzOCwiZXhwIjoxNzczODYzMTM4LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.9r_UTgPsNvn1dihVkwk4BGFirXoxxiLmS_9On4i5Tvk"}
+[2026-02-16 22:44:31] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI3MTEzOCwiZXhwIjoxNzczODYzMTM4LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.9r_UTgPsNvn1dihVkwk4BGFirXoxxiLmS_9On4i5Tvk"}
+[2026-02-16 22:45:31] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTI3MTEzOCwiZXhwIjoxNzczODYzMTM4LCJzdWIiOjksInR5cGUiOiJyZWZyZXNoIn0.9r_UTgPsNvn1dihVkwk4BGFirXoxxiLmS_9On4i5Tvk"}
+[2026-02-17 05:10:26] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#k*s3D"}
+[2026-02-17 05:10:33] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-17 05:10:56] Raw Input Length: 2, Content: {}
+[2026-02-17 05:28:20] Raw Input Length: 788, Content: {"quiz_id":1,"answers":[{"question_id":81,"selected_answer":0,"time_spent":21},{"question_id":4,"selected_answer":3,"time_spent":28},{"question_id":80,"selected_answer":1,"time_spent":25},{"question_id":84,"selected_answer":2,"time_spent":17},{"question_id":2,"selected_answer":2,"time_spent":45},{"question_id":82,"selected_answer":0,"time_spent":9},{"question_id":3,"selected_answer":0,"time_spent":16},{"question_id":1,"selected_answer":3,"time_spent":24},{"question_id":78,"selected_answer":1,"time_spent":9},{"question_id":75,"selected_answer":3,"time_spent":34},{"question_id":83,"selected_answer":1,"time_spent":17},{"question_id":77,"selected_answer":3,"time_spent":17},{"question_id":79,"selected_answer":0,"time_spent":19},{"question_id":76,"selected_answer":3,"time_spent":1}]}
+[2026-02-17 05:40:52] Raw Input Length: 793, Content: {"quiz_id":1,"answers":[{"question_id":76,"selected_answer":0,"time_spent":139},{"question_id":80,"selected_answer":0,"time_spent":52},{"question_id":4,"selected_answer":3,"time_spent":41},{"question_id":75,"selected_answer":1,"time_spent":168},{"question_id":81,"selected_answer":1,"time_spent":16},{"question_id":78,"selected_answer":1,"time_spent":38},{"question_id":82,"selected_answer":3,"time_spent":26},{"question_id":79,"selected_answer":1,"time_spent":20},{"question_id":1,"selected_answer":0,"time_spent":22},{"question_id":3,"selected_answer":2,"time_spent":20},{"question_id":77,"selected_answer":1,"time_spent":18},{"question_id":83,"selected_answer":0,"time_spent":31},{"question_id":84,"selected_answer":1,"time_spent":37},{"question_id":2,"selected_answer":2,"time_spent":12}]}
+[2026-02-17 05:48:40] Raw Input Length: 901, Content: {"submission_text":"- admin/courses.html\n    - When logged in as school admin, The user should not be able to edit the course or make any changes to the courses. They should only manage courses that they have students in, which will be the students on the school they are admin for.\n- admin/instructors/teachers.html - instructor option(shown as coming soon)\n    - Not created yet we need to create it\n    - This is where the School admin will see all the teachers in their school who are registered in the platform\n- admin/students/learners.html  - student option(shown as coming soon)\n    - \n    - not created yet\n    - Where teachers and School admins manage learners who are registered under that school.\n- instructor/dashboard.html - http://aifluency.local/instructor/dashboard.html\n    - Getting error - Oops! Something went wrong\n        \n        courses.forEach is not a function"}
+[2026-02-17 05:48:46] Raw Input Length: 901, Content: {"submission_text":"- admin/courses.html\n    - When logged in as school admin, The user should not be able to edit the course or make any changes to the courses. They should only manage courses that they have students in, which will be the students on the school they are admin for.\n- admin/instructors/teachers.html - instructor option(shown as coming soon)\n    - Not created yet we need to create it\n    - This is where the School admin will see all the teachers in their school who are registered in the platform\n- admin/students/learners.html  - student option(shown as coming soon)\n    - \n    - not created yet\n    - Where teachers and School admins manage learners who are registered under that school.\n- instructor/dashboard.html - http://aifluency.local/instructor/dashboard.html\n    - Getting error - Oops! Something went wrong\n        \n        courses.forEach is not a function"}
+[2026-02-17 05:49:30] Raw Input Length: 21, Content: {"submission_url":""}
+[2026-02-17 05:50:01] Raw Input Length: 901, Content: {"submission_text":"- admin/courses.html\n    - When logged in as school admin, The user should not be able to edit the course or make any changes to the courses. They should only manage courses that they have students in, which will be the students on the school they are admin for.\n- admin/instructors/teachers.html - instructor option(shown as coming soon)\n    - Not created yet we need to create it\n    - This is where the School admin will see all the teachers in their school who are registered in the platform\n- admin/students/learners.html  - student option(shown as coming soon)\n    - \n    - not created yet\n    - Where teachers and School admins manage learners who are registered under that school.\n- instructor/dashboard.html - http://aifluency.local/instructor/dashboard.html\n    - Getting error - Oops! Something went wrong\n        \n        courses.forEach is not a function"}
+[2026-02-17 05:50:04] Raw Input Length: 901, Content: {"submission_text":"- admin/courses.html\n    - When logged in as school admin, The user should not be able to edit the course or make any changes to the courses. They should only manage courses that they have students in, which will be the students on the school they are admin for.\n- admin/instructors/teachers.html - instructor option(shown as coming soon)\n    - Not created yet we need to create it\n    - This is where the School admin will see all the teachers in their school who are registered in the platform\n- admin/students/learners.html  - student option(shown as coming soon)\n    - \n    - not created yet\n    - Where teachers and School admins manage learners who are registered under that school.\n- instructor/dashboard.html - http://aifluency.local/instructor/dashboard.html\n    - Getting error - Oops! Something went wrong\n        \n        courses.forEach is not a function"}
+[2026-02-17 05:51:10] Raw Input Length: 152, Content: {"submission_url":"https://docs.google.com/document/d/1e0IOOS_0bnr34hsvoxt9VpoYH7zoo5Ui/edit?usp=sharing&ouid=100237913313027813821&rtpof=true&sd=true"}
+[2026-02-17 05:51:30] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"VU13#k*s3D"}
+[2026-02-17 05:51:36] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-17 05:52:10] Raw Input Length: 152, Content: {"submission_url":"https://docs.google.com/document/d/1e0IOOS_0bnr34hsvoxt9VpoYH7zoo5Ui/edit?usp=sharing&ouid=100237913313027813821&rtpof=true&sd=true"}
+[2026-02-17 05:53:46] Raw Input Length: 50, Content: {"submission_url":"https://drive.google.com/test"}
+[2026-02-17 05:54:05] Raw Input Length: 152, Content: {"submission_url":"https://docs.google.com/document/d/1e0IOOS_0bnr34hsvoxt9VpoYH7zoo5Ui/edit?usp=sharing&ouid=100237913313027813821&rtpof=true&sd=true"}
+[2026-02-17 06:16:40] Raw Input Length: 51, Content: {"email":"testfixed@test.com","password":"test123"}
+[2026-02-17 06:29:59] Raw Input Length: 55, Content: {"email":"testfixed@test.com","password":"password123"}
+[2026-02-17 06:31:23] Raw Input Length: 52, Content: {"email":"testfixed@test.com","password":"password"}
+[2026-02-17 06:31:23] Raw Input Length: 51, Content: {"email":"testfixed@test.com","password":"test123"}
+[2026-02-17 06:31:23] Raw Input Length: 55, Content: {"email":"testfixed@test.com","password":"Password123"}
+[2026-02-17 06:31:23] Raw Input Length: 52, Content: {"email":"testfixed@test.com","password":"Test1234"}
+[2026-02-17 06:31:23] Raw Input Length: 53, Content: {"email":"testfixed@test.com","password":"testfixed"}
+[2026-02-17 06:31:23] Raw Input Length: 50, Content: {"email":"testfixed@test.com","password":"123456"}
+[2026-02-17 06:31:23] Raw Input Length: 57, Content: {"email":"testfixed@test.com","password":"password123\!"}
+[2026-02-17 06:32:12] Raw Input Length: 20, Content: {"refresh_token":""}
+[2026-02-17 06:32:51] Raw Input Length: 20, Content: {"refresh_token":""}
+[2026-02-17 06:33:02] Raw Input Length: 269, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[2026-02-17 06:33:27] Raw Input Length: 269, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[2026-02-17 06:33:43] Raw Input Length: 20, Content: {"refresh_token":""}
+[2026-02-17 06:34:26] Raw Input Length: 269, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[2026-02-17 06:34:51] Raw Input Length: 269, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[2026-02-17 06:35:07] Raw Input Length: 20, Content: {"refresh_token":""}
+[2026-02-17 06:35:30] Raw Input Length: 269, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
+[2026-02-17 06:46:42] Raw Input Length: 264, Content: {"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYWlmbHVlbmN5LmxvY2FsIiwiYXVkIjoiaHR0cDovL2FpZmx1ZW5jeS5sb2NhbCIsImlhdCI6MTc3MTMwMDI5NiwiZXhwIjoxNzczODkyMjk2LCJzdWIiOjUsInR5cGUiOiJyZWZyZXNoIn0.PETVo2njDCHlt_mdGdZ4Zv6L0jbEz8HN3p7HLCKob_I"}
+[2026-02-17 17:21:00] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-02-17 17:21:19] Raw Input Length: 2, Content: {}
+[2026-02-17 17:21:28] Raw Input Length: 60, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@123"}
+[2026-02-17 17:21:29] Raw Input Length: 61, Content: {"email":"itumeleng.kgakane@gmail.com","password":"Itu@1234"}
+[2026-02-17 17:21:43] Raw Input Length: 2, Content: {}
+[2026-02-17 17:21:51] Raw Input Length: 62, Content: {"email":"vuyani.magibisela@live.com","password":"Vu13#k*s3D"}
+[2026-02-17 17:22:14] Raw Input Length: 2, Content: {}
