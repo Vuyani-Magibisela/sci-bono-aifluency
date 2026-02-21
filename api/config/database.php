@@ -5,12 +5,12 @@
  * PDO Database connection for Sci-Bono AI Fluency LMS
  */
 
-// Database configuration from .env, loaded via $_ENV from config.php
-$host = $_ENV['DB_HOST'] ?? 'localhost';
-$port = $_ENV['DB_PORT'] ?? 3306;
-$dbname = $_ENV['DB_NAME'] ?? 'ai_fluency_lms';
-$username = $_ENV['DB_USER'] ?? 'root';
-$password = $_ENV['DB_PASSWORD'] ?? '';
+// Use constants defined by config.php (loaded via Dotenv, which strips quotes properly)
+$host = defined('DB_HOST') ? DB_HOST : ($_ENV['DB_HOST'] ?? 'localhost');
+$port = defined('DB_PORT') ? DB_PORT : ($_ENV['DB_PORT'] ?? 3306);
+$dbname = defined('DB_NAME') ? DB_NAME : ($_ENV['DB_NAME'] ?? 'ai_fluency_lms');
+$username = defined('DB_USER') ? DB_USER : ($_ENV['DB_USER'] ?? 'root');
+$password = defined('DB_PASSWORD') ? DB_PASSWORD : ($_ENV['DB_PASSWORD'] ?? '');
 
 
 // DSN (Data Source Name)
@@ -23,26 +23,18 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
-// error_log("DB_HOST: " . $host);
-// error_log("DB_PORT: " . $port);
-// error_log("DB_NAME: " . $dbname);
-// error_log("DB_USER: " . $username);
-// error_log("DB_PASSWORD_LENGTH: " . strlen($password)); // Log length, not value for security
-
 try {
     // Create PDO instance
     $pdo = new PDO($dsn, $username, $password, $options);
-    // error_log("Database connection successful.");
 } catch (PDOException $e) {
-    // In production, log the error instead of displaying it, REVERTED TO DISPLAY FOR DEBUGGING
-    if ($_ENV['APP_DEBUG'] === 'true') {
-        die("Database connection failed: " . $e->getMessage() . "\n"); 
-        // error_log("Database connection failed: " . $e->getMessage());
-        // throw new PDOException("Database connection failed: " . $e->getMessage());
+    // Log the actual error for debugging
+    error_log("Database connection failed: " . $e->getMessage());
+
+    // Throw exception so index.php's catch block returns proper JSON error
+    if (defined('APP_DEBUG') && APP_DEBUG) {
+        throw new \RuntimeException("Database connection failed: " . $e->getMessage(), 500, $e);
     } else {
-        die("Database connection failed. Please contact support.\n"); 
-        // error_log("Database connection failed: " . $e->getMessage());
-        // throw new PDOException("Database connection failed. Please contact support.");
+        throw new \RuntimeException("Database connection failed. Please contact support.", 500, $e);
     }
 }
 

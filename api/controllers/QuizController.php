@@ -425,6 +425,10 @@ class QuizController extends BaseController
         $score = $validation['score'];
         $passed = $score >= $quiz->passing_score;
 
+        // Calculate correct answers count
+        $totalQuestions = isset($validation['results']) ? count($validation['results']) : 0;
+        $correctAnswers = isset($validation['results']) ? count(array_filter($validation['results'], fn($r) => !empty($r['is_correct']))) : 0;
+
         // Create quiz attempt
         try {
             $this->attemptModel->beginTransaction();
@@ -433,6 +437,8 @@ class QuizController extends BaseController
                 'quiz_id' => $quizId,
                 'user_id' => $currentUser->id,
                 'score' => $score,
+                'total_questions' => $totalQuestions,
+                'correct_answers' => $correctAnswers,
                 'answers' => $answers,
                 'time_taken_minutes' => $timeSpent,
                 'passed' => $passed
@@ -440,6 +446,7 @@ class QuizController extends BaseController
 
             if (!$attemptId) {
                 $this->attemptModel->rollback();
+                error_log("Quiz attempt creation failed for quiz_id=$quizId, user_id={$currentUser->id}, score=$score, total=$totalQuestions, correct=$correctAnswers");
                 Response::serverError('Failed to submit quiz attempt');
             }
 

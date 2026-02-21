@@ -89,6 +89,11 @@ const HeaderTemplate = {
 
         // Set active link
         this.setActiveLink();
+
+        // Initialize notifications (if logged in)
+        if (isAuthenticated) {
+            this.initNotifications();
+        }
     },
 
     /**
@@ -105,6 +110,13 @@ const HeaderTemplate = {
                     <i class="fas fa-tachometer-alt"></i>
                     <span class="btn-text">Dashboard</span>
                 </a>
+                <div class="notification-bell-wrapper">
+                    <button class="notification-bell-btn" aria-label="Notifications" onclick="NotificationManager.toggleDropdown()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notification-badge" style="display:none;">0</span>
+                    </button>
+                    <div class="notification-dropdown" id="notification-dropdown"></div>
+                </div>
                 <div class="user-menu">
                     <button class="user-menu-toggle" aria-label="User menu" aria-haspopup="true" aria-expanded="false">
                         <div class="user-avatar">
@@ -127,7 +139,7 @@ const HeaderTemplate = {
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
                         </a>
-                        <a href="settings.html" class="user-menu-item" role="menuitem">
+                        <a href="/profile/edit.html" class="user-menu-item" role="menuitem">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
@@ -333,6 +345,28 @@ const HeaderTemplate = {
         };
 
         return roleMap[role.toLowerCase()] || role;
+    },
+
+    /**
+     * Load and initialize the notification system
+     */
+    initNotifications() {
+        if (typeof NotificationManager !== 'undefined') {
+            NotificationManager.init();
+            return;
+        }
+
+        // Dynamically load notifications.js
+        const basePath = document.querySelector('script[src*="header-template"]')?.src || '';
+        const dir = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+        const script = document.createElement('script');
+        script.src = dir + 'notifications.js';
+        script.onload = () => {
+            if (typeof NotificationManager !== 'undefined') {
+                NotificationManager.init();
+            }
+        };
+        document.head.appendChild(script);
     },
 
     /**
