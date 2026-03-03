@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '731b08d271c2d9b11bea8494033bf77bffef85cf',
+        'reference' => 'c3d75a8d1bcf813c39d508a7312507e0cd33795a',
         'name' => 'sci-bono/ai-fluency-lms',
         'dev' => true,
     ),
@@ -63,6 +63,15 @@
             'aliases' => array(),
             'reference' => '4f7fd7836c6f332bb2933569e566a0d6c4cbed74',
             'dev_requirement' => true,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v7.0.2',
+            'version' => '7.0.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'reference' => 'ebf1655bd5b99b3f97e1a3ec0a69e5f4cd7ea088',
+            'dev_requirement' => false,
         ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.4',
@@ -133,7 +142,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '731b08d271c2d9b11bea8494033bf77bffef85cf',
+            'reference' => 'c3d75a8d1bcf813c39d508a7312507e0cd33795a',
             'dev_requirement' => false,
         ),
         'sebastian/cli-parser' => array(

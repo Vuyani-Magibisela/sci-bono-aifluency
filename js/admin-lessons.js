@@ -12,6 +12,11 @@ const AdminLessons = {
     selectedCourseId: null,  // NEW: Course filter for multi-course support
     quillEditor: null,
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the lesson management interface
      */
@@ -24,6 +29,12 @@ const AdminLessons = {
             console.error('AdminLessons: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create button for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-lesson-btn');
+            if (createBtn) createBtn.style.display = 'none';
         }
 
         // Load courses and modules first
@@ -230,6 +241,7 @@ const AdminLessons = {
                         <button class="action-btn view" onclick="AdminLessons.viewLesson(${lesson.id})" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminLessons.editLesson(${lesson.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -241,6 +253,7 @@ const AdminLessons = {
                         <button class="action-btn delete" onclick="AdminLessons.deleteLesson(${lesson.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -258,10 +271,12 @@ const AdminLessons = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-file-alt"></i></div>
                 <h3>No Lessons Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first lesson to start building course content.</p>
                 <button class="btn-primary" onclick="AdminLessons.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Lesson
                 </button>
+                ` : '<p>No lessons available yet.</p>'}
             </div>
         `;
     },

@@ -11,6 +11,11 @@ const AdminCourses = {
         search: ''
     },
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the course management interface
      */
@@ -23,6 +28,14 @@ const AdminCourses = {
             console.error('AdminCourses: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create/edit buttons for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-course-btn');
+            if (createBtn) createBtn.style.display = 'none';
+            const detailsEditBtn = document.getElementById('details-edit-btn');
+            if (detailsEditBtn) detailsEditBtn.style.display = 'none';
         }
 
         // Load courses
@@ -107,6 +120,7 @@ const AdminCourses = {
                         <button class="action-btn view" onclick="AdminCourses.viewCourse(${course.id})" title="View Details">
                             <i class="fas fa-eye"></i> View
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminCourses.editCourse(${course.id})" title="Edit Course">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -119,6 +133,7 @@ const AdminCourses = {
                         <button class="action-btn delete" onclick="AdminCourses.deleteCourse(${course.id})" title="Delete Course">
                             <i class="fas fa-trash"></i> Delete
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -136,10 +151,12 @@ const AdminCourses = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-book"></i></div>
                 <h3>No Courses Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first course to get started.</p>
                 <button class="btn-primary" onclick="AdminCourses.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Course
                 </button>
+                ` : '<p>No courses available yet.</p>'}
             </div>
         `;
     },

@@ -37,6 +37,24 @@ class CourseController extends BaseController
         // Public endpoint - no authentication required for published courses
         $currentUser = JWTHandler::getCurrentUser();
 
+        // Debug: log auth header detection for diagnosing enrollment display issue
+        if (APP_DEBUG) {
+            $debugInfo = [
+                'currentUser' => $currentUser ? $currentUser->id : null,
+                'HTTP_AUTHORIZATION' => isset($_SERVER['HTTP_AUTHORIZATION']) ? 'present' : 'missing',
+                'REDIRECT_HTTP_AUTHORIZATION' => isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']) ? 'present' : 'missing',
+                'getallheaders_auth' => 'missing',
+            ];
+            if (function_exists('getallheaders')) {
+                foreach (getallheaders() as $k => $v) {
+                    if (strtolower($k) === 'authorization') {
+                        $debugInfo['getallheaders_auth'] = 'present (key: ' . $k . ')';
+                    }
+                }
+            }
+            error_log('CourseController::index auth debug: ' . json_encode($debugInfo));
+        }
+
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 20;
         $publishedOnly = isset($_GET['published']) ? filter_var($_GET['published'], FILTER_VALIDATE_BOOLEAN) : true;
@@ -262,8 +280,8 @@ class CourseController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and teacher can create courses
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create courses
+        $this->requireRole(['superadmin']);
         $currentUser = $this->getCurrentUser();
 
         $data = $_POST;
@@ -451,8 +469,8 @@ class CourseController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete courses
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete courses
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Course ID is required', 400);

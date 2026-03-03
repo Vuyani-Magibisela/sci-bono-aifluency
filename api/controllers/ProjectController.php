@@ -60,7 +60,7 @@ class ProjectController extends BaseController
                 $total = $this->projectModel->count(['course_id' => $courseId]);
             }
         } else {
-            if (!$currentUser || !in_array($currentUser->role, ['admin', 'instructor'])) {
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
                 $projects = $this->projectModel->all(['is_published' => true], 'title ASC', $pageSize, $offset);
                 $total = $this->projectModel->count(['is_published' => true]);
             } else {
@@ -136,7 +136,7 @@ class ProjectController extends BaseController
 
         // Check if project is published
         if (!$project->is_published) {
-            if (!$currentUser || !in_array($currentUser->role, ['admin', 'instructor'])) {
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
                 Response::forbidden('This project is not published');
             }
         }
@@ -167,10 +167,13 @@ class ProjectController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create projects
+        $this->requireRole(['superadmin']);
 
-        $data = $_POST;
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         // Validate input
         $validator = Validator::make($data);
@@ -242,8 +245,8 @@ class ProjectController extends BaseController
      */
     public function update(array $params): void
     {
-        // Only admin and instructor can update projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can update projects
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);
@@ -257,7 +260,10 @@ class ProjectController extends BaseController
             Response::notFound('Project not found');
         }
 
-        $data = $_POST;
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         // Validate input
         $validator = Validator::make($data);
@@ -332,8 +338,8 @@ class ProjectController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete projects
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);

@@ -89,8 +89,17 @@ class UserController extends BaseController
                 $users = $this->userModel->getFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset);
                 $total = $this->userModel->countFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id);
             }
+        } elseif ($currentUser->role === 'teacher') {
+            // Teachers see users in their school only (view-only)
+            if (!$currentUser->primary_school_id) {
+                $users = [];
+                $total = 0;
+            } else {
+                $users = $this->userModel->getFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset);
+                $total = $this->userModel->countFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id);
+            }
         } else {
-            // Teachers and students cannot list users
+            // Students cannot list users
             Response::forbidden('Insufficient permissions to list users');
         }
 
@@ -266,7 +275,13 @@ class UserController extends BaseController
         }
 
         $isSelf = ($currentUser->id == $userId);
-        $isAdminUpdate = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin']);
+
+        // Only superadmin can edit other users; any user can edit their own profile
+        if (!$isSelf && $currentUser->role !== 'superadmin') {
+            Response::forbidden('Only superadmin can edit other users');
+        }
+
+        $isAdminUpdate = ($currentUser->role === 'superadmin');
 
         // Get request data
         $data = $_POST;
@@ -277,7 +292,7 @@ class UserController extends BaseController
             $allowedFields = ['name', 'profile_picture_url', 'bio', 'headline', 'location',
                             'website_url', 'github_url', 'linkedin_url', 'twitter_url'];
         } elseif ($isAdminUpdate) {
-            // Admin users managing other users - check hierarchical permissions
+            // SuperAdmin managing other users
             if (!$isSelf) {
                 // Check role hierarchy - can't manage equal or higher roles
                 $roleHierarchy = [
@@ -421,8 +436,8 @@ class UserController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete users
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete users
+        $this->requireRole(['superadmin']);
 
         // Get user ID from params
         if (!isset($params['id'])) {

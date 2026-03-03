@@ -145,8 +145,8 @@ class LessonController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create lessons
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create lessons
+        $this->requireRole(['superadmin']);
 
         $data = $_POST;
 
@@ -230,8 +230,8 @@ class LessonController extends BaseController
      */
     public function update(array $params): void
     {
-        // Only admin and instructor can update lessons
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can update lessons
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Lesson ID is required', 400);
@@ -324,8 +324,8 @@ class LessonController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete lessons
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete lessons
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Lesson ID is required', 400);

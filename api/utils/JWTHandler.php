@@ -104,12 +104,14 @@ class JWTHandler
     public static function extractTokenFromHeader(): ?string
     {
         // Try getallheaders() first (available in Apache SAPI)
+        // Use case-insensitive lookup since header key casing varies by environment
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
-            if (isset($headers['Authorization'])) {
-                $authHeader = $headers['Authorization'];
-                if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
-                    return $matches[1];
+            foreach ($headers as $key => $value) {
+                if (strtolower($key) === 'authorization') {
+                    if (preg_match('/Bearer\s+(.*)$/i', $value, $matches)) {
+                        return $matches[1];
+                    }
                 }
             }
         }
@@ -117,6 +119,14 @@ class JWTHandler
         // Fallback to $_SERVER for CLI and other environments
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+            if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        // Fallback for CGI/FastCGI where .htaccess sets REDIRECT_HTTP_AUTHORIZATION
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
             if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
                 return $matches[1];
             }

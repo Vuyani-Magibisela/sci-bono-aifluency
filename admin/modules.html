@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Management - AI Fluency Admin</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
 <body>
@@ -41,9 +41,17 @@
                     <i class="fas fa-th-large"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/admin/users.html" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
+                </a>
+                <a href="/admin/instructors/teachers.html" class="nav-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Instructors</span>
+                </a>
+                <a href="/admin/students/learners.html" class="nav-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
                 </a>
                 <a href="/admin/courses.html" class="nav-item">
                     <i class="fas fa-book"></i>
@@ -139,7 +147,7 @@
                     <!-- Populated by JavaScript -->
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-primary" onclick="AdminModules.editModuleFromDetails()">
+                    <button type="button" class="btn-primary superadmin-only" id="details-edit-btn" onclick="AdminModules.editModuleFromDetails()">
                         <i class="fas fa-edit"></i> Edit Module
                     </button>
                     <button type="button" class="btn-secondary" onclick="AdminModules.closeDetailsModal()">Close</button>
@@ -216,8 +224,8 @@
 
     <!-- Page Protection -->
     <script>
-        // Require authentication - admins only
-        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Require authentication - superadmin only for content management
+        Auth.requireAuth(['superadmin']);
     </script>
 </body>
 </html>

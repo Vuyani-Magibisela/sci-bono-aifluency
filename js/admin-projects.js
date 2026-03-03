@@ -12,6 +12,11 @@ const AdminProjects = {
     selectedModuleId: null,
     searchTerm: '',
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the project management interface
      */
@@ -23,6 +28,14 @@ const AdminProjects = {
             console.error('AdminProjects: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create/edit buttons for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-project-btn');
+            if (createBtn) createBtn.style.display = 'none';
+            const viewEditBtn = document.getElementById('view-edit-btn');
+            if (viewEditBtn) viewEditBtn.style.display = 'none';
         }
 
         await this.loadCourses();
@@ -146,6 +159,8 @@ const AdminProjects = {
             this.renderProjects();
         } catch (error) {
             console.error('AdminProjects: Error loading projects:', error);
+            this.projects = [];
+            this.renderProjects();
             this.showError('Failed to load projects: ' + error.message);
         }
     },
@@ -214,6 +229,7 @@ const AdminProjects = {
                         <button class="action-btn view" onclick="AdminProjects.viewProject(${project.id})" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminProjects.editProject(${project.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -225,6 +241,7 @@ const AdminProjects = {
                         <button class="action-btn delete" onclick="AdminProjects.deleteProject(${project.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -242,10 +259,12 @@ const AdminProjects = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-project-diagram"></i></div>
                 <h3>No Projects Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first project to give students hands-on assignments.</p>
                 <button class="btn-primary" onclick="AdminProjects.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Project
                 </button>
+                ` : '<p>No projects available yet.</p>'}
             </div>
         `;
     },
@@ -274,21 +293,86 @@ const AdminProjects = {
             const module = this.modules.find(m => m.id === project.module_id);
             const course = this.courses.find(c => c.id === project.course_id);
 
-            const details = `
-Project Details:
+            const statusBadge = project.is_published
+                ? '<span class="status-badge published">Published</span>'
+                : '<span class="status-badge draft">Draft</span>';
 
-Title: ${project.title}
-Course: ${course?.title || 'Unknown'}
-Module: ${module?.title || 'None'}
-Description: ${project.description || 'N/A'}
-Requirements: ${project.requirements || 'None'}
-Max Score: ${project.max_score || 100}
-Due Date: ${project.due_date ? this.formatDate(project.due_date) : 'No deadline'}
-Status: ${project.is_published ? 'Published' : 'Draft'}
-Created: ${this.formatDate(project.created_at)}
-            `.trim();
+            const isOverdue = project.due_date && new Date(project.due_date) < new Date();
 
-            alert(details);
+            const html = `
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1.25rem;">${this.escapeHtml(project.title)}</h3>
+                        ${statusBadge}
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.25rem;">Course</div>
+                            <div style="font-weight: 600;">${this.escapeHtml(course?.title || 'Unknown')}</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.25rem;">Module</div>
+                            <div style="font-weight: 600;">${this.escapeHtml(module?.title || 'None')}</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.25rem;">Max Score</div>
+                            <div style="font-weight: 600;">${project.max_score || 100} points</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.25rem;">Due Date</div>
+                            <div style="font-weight: 600; ${isOverdue ? 'color: #dc3545;' : ''}">${project.due_date ? this.formatDate(project.due_date) + (isOverdue ? ' (Overdue)' : '') : 'No deadline'}</div>
+                        </div>
+                    </div>
+
+                    ${project.description ? `
+                    <div>
+                        <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.5rem;">Description</div>
+                        <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 8px; line-height: 1.6;">${this.escapeHtml(project.description)}</div>
+                    </div>` : ''}
+
+                    ${project.requirements ? `
+                    <div>
+                        <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.5rem;">Requirements</div>
+                        <div style="padding: 0.75rem; background: #fff3cd; border-radius: 8px; border-left: 3px solid #ffc107; line-height: 1.6;">${this.escapeHtml(project.requirements)}</div>
+                    </div>` : ''}
+
+                    ${project.statistics ? `
+                    <div>
+                        <div style="font-size: 0.75rem; color: #6c757d; text-transform: uppercase; margin-bottom: 0.5rem;">Submissions</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                            <div style="padding: 0.75rem; background: #e8f4fd; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.25rem; font-weight: 700; color: #0d6efd;">${project.statistics.total_submissions || 0}</div>
+                                <div style="font-size: 0.7rem; color: #6c757d;">Total</div>
+                            </div>
+                            <div style="padding: 0.75rem; background: #d4edda; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.25rem; font-weight: 700; color: #198754;">${project.statistics.graded_submissions || 0}</div>
+                                <div style="font-size: 0.7rem; color: #6c757d;">Graded</div>
+                            </div>
+                            <div style="padding: 0.75rem; background: #fff3cd; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.25rem; font-weight: 700; color: #ffc107;">${project.statistics.pending_submissions || 0}</div>
+                                <div style="font-size: 0.7rem; color: #6c757d;">Pending</div>
+                            </div>
+                        </div>
+                    </div>` : ''}
+
+                    <div style="font-size: 0.8rem; color: #adb5bd; text-align: right;">
+                        Created: ${this.formatDate(project.created_at)}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('view-modal-title').textContent = 'Project Details';
+            document.getElementById('view-modal-body').innerHTML = html;
+
+            // Wire up Edit button
+            const editBtn = document.getElementById('view-edit-btn');
+            editBtn.onclick = () => {
+                this.hideModal('view-modal');
+                this.editProject(projectId);
+            };
+
+            this.showModal('view-modal');
         } catch (error) {
             this.showError('Failed to load project details: ' + error.message);
         }
@@ -454,14 +538,17 @@ Created: ${this.formatDate(project.created_at)}
         // Create project button
         document.getElementById('create-project-btn').addEventListener('click', () => this.showCreateModal());
 
-        // Close modal
+        // Close modals
         document.getElementById('close-modal').addEventListener('click', () => this.hideModal('project-modal'));
         document.getElementById('cancel-btn').addEventListener('click', () => this.hideModal('project-modal'));
+        document.getElementById('close-view-modal').addEventListener('click', () => this.hideModal('view-modal'));
 
-        // Close modal on outside click
+        // Close modals on outside click
         window.addEventListener('click', (event) => {
             if (event.target.id === 'project-modal') {
                 this.hideModal('project-modal');
+            } else if (event.target.id === 'view-modal') {
+                this.hideModal('view-modal');
             }
         });
 

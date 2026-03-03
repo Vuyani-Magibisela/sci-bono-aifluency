@@ -79,6 +79,7 @@ class QuizController extends BaseController
                 $bestScore = $this->quizModel->getUserBestScore($quiz->id, $currentUser->id);
                 $quiz->user_best_score = $bestScore;
                 $quiz->can_attempt = $this->quizModel->canUserAttempt($quiz->id, $currentUser->id);
+                $quiz->user_attempt_count = $this->attemptModel->countUserAttempts($quiz->id, $currentUser->id);
             }
         }
 
@@ -152,8 +153,8 @@ class QuizController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create quizzes
+        $this->requireRole(['superadmin']);
 
         $data = $_POST;
 
@@ -233,8 +234,8 @@ class QuizController extends BaseController
      */
     public function update(array $params): void
     {
-        // Only admin and instructor can update quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can update quizzes
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -323,8 +324,8 @@ class QuizController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete quizzes
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -667,10 +668,11 @@ class QuizController extends BaseController
         }
 
         $stmt = $this->pdo->prepare("
-            SELECT id, quiz_id, question_text AS question, options,
-                   correct_option AS correct_answer, explanation, points, order_index
+            SELECT MIN(id) AS id, quiz_id, question_text AS question, options,
+                   correct_option AS correct_answer, explanation, points, MIN(order_index) AS order_index
             FROM quiz_questions
             WHERE quiz_id = ?
+            GROUP BY quiz_id, question_text, options, correct_option, explanation, points
             ORDER BY order_index ASC
         ");
         $stmt->execute([$quizId]);
@@ -692,7 +694,7 @@ class QuizController extends BaseController
      */
     public function createQuestion(array $params = []): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Validate required fields
@@ -768,7 +770,7 @@ class QuizController extends BaseController
      */
     public function updateQuestion(array $params): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $questionId = (int)$params['id'];
         $data = json_decode(file_get_contents('php://input'), true);
 
@@ -839,7 +841,7 @@ class QuizController extends BaseController
      */
     public function deleteQuestion(array $params): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $questionId = (int)$params['id'];
 
         // Verify question exists

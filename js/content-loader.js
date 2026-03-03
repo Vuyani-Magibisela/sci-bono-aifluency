@@ -175,15 +175,37 @@ const ContentLoader = {
             // Map lesson to chapter card format
             const icon = this.getLessonIcon(lesson.order_index);
 
+            // Determine button text and styling based on progress
+            const status = lesson.progress?.status || 'not_started';
+            let linkText, linkIcon, completedClass, statusIndicator;
+
+            if (status === 'completed') {
+                linkText = 'Completed';
+                linkIcon = 'fa-check-circle';
+                completedClass = ' completed';
+                statusIndicator = '<span class="chapter-card-status status-done"><i class="fas fa-check-circle"></i> Completed</span>';
+            } else if (status === 'in_progress') {
+                linkText = 'Continue Lesson';
+                linkIcon = 'fa-play-circle';
+                completedClass = '';
+                statusIndicator = '<span class="chapter-card-status status-pending"><i class="fas fa-spinner"></i> In Progress</span>';
+            } else {
+                linkText = 'Begin Lesson';
+                linkIcon = 'fa-arrow-right';
+                completedClass = '';
+                statusIndicator = '';
+            }
+
             return `
-                <div class="chapter-card">
+                <div class="chapter-card${completedClass}">
                     <div class="chapter-card-icon">
                         <i class="fas fa-${icon}"></i>
                     </div>
                     <div class="chapter-card-content">
                         <h3>${this.escapeHtml(lesson.title)}</h3>
                         ${lesson.subtitle ? `<p>${this.escapeHtml(lesson.subtitle)}</p>` : ''}
-                        <a href="../lessons/lesson-dynamic.html?lesson_id=${lesson.id}" class="chapter-link">Begin Lesson</a>
+                        ${statusIndicator}
+                        <a href="../lessons/lesson-dynamic.html?lesson_id=${lesson.id}" class="chapter-link"><i class="fas ${linkIcon}"></i> ${linkText}</a>
                     </div>
                 </div>
             `;

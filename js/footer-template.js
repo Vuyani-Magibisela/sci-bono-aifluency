@@ -25,19 +25,19 @@ const FooterTemplate = {
                 <div class="footer-content">
                     <div class="footer-main">
                         <div class="footer-section footer-about">
-                            <h3>Sci-Bono AI Hub</h3>
+                            <h3>Sci-Bono Ai Hub</h3>
                             <p>Empowering students with artificial intelligence literacy for the future.</p>
                             <div class="footer-social">
-                                <a href="#" aria-label="Facebook" title="Facebook">
+                                <a href="https://www.facebook.com/SciBono01" aria-label="Facebook" title="Facebook" target="_blank" rel="noopener noreferrer">
                                     <i class="fab fa-facebook"></i>
                                 </a>
-                                <a href="#" aria-label="Twitter" title="Twitter">
-                                    <i class="fab fa-twitter"></i>
+                                <a href="https://www.x.com/SciBono" aria-label="X" title="X" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-x-twitter"></i>
                                 </a>
-                                <a href="#" aria-label="LinkedIn" title="LinkedIn">
-                                    <i class="fab fa-linkedin"></i>
+                                <a href="https://www.instagram.com/scibono_discovery_centre/" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="#" aria-label="YouTube" title="YouTube">
+                                <a href="https://www.youtube.com/@SciBono01" aria-label="YouTube" title="YouTube" target="_blank" rel="noopener noreferrer">
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             </div>
@@ -47,19 +47,8 @@ const FooterTemplate = {
                             <h4>Quick Links</h4>
                             <ul>
                                 <li><a href="/index.html">Home</a></li>
-                                <li><a href="/courses.html">Courses</a></li>
-                                <li><a href="/projects.html">Projects</a></li>
-                                <li><a href="#about">About Us</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-section footer-resources">
-                            <h4>Resources</h4>
-                            <ul>
-                                <li><a href="/module1.html">Module 1: AI Foundations</a></li>
-                                <li><a href="/module2.html">Module 2: Generative AI</a></li>
-                                <li><a href="/module3.html">Module 3: Advanced Search</a></li>
-                                <li><a href="/module4.html">Module 4: Responsible AI</a></li>
+                                <li><a href="/about-course.html">Courses</a></li>
+                                <li><a href="/student/projects/index.html">Projects</a></li>
                             </ul>
                         </div>
 
@@ -68,7 +57,7 @@ const FooterTemplate = {
                             <ul>
                                 <li>
                                     <i class="fas fa-envelope"></i>
-                                    <a href="mailto:info@scibono.co.za">info@scibono.co.za</a>
+                                    <a href="mailto:vuyani.magibisela@sci-bono.co.za">vuyani.magibisela@sci-bono.co.za</a>
                                 </li>
                                 <li>
                                     <i class="fas fa-phone"></i>

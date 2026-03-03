@@ -25,6 +25,7 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         array (
             'PhpParser\\' => 10,
             'PhpOption\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'G' => 
         array (
@@ -69,6 +70,10 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (
@@ -124,6 +129,7 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         'App\\Controllers\\LessonController' => __DIR__ . '/../..' . '/controllers/LessonController.php',
         'App\\Controllers\\ModuleController' => __DIR__ . '/../..' . '/controllers/ModuleController.php',
         'App\\Controllers\\NotesController' => __DIR__ . '/../..' . '/controllers/NotesController.php',
+        'App\\Controllers\\NotificationController' => __DIR__ . '/../..' . '/controllers/NotificationController.php',
         'App\\Controllers\\OrganizationController' => __DIR__ . '/../..' . '/controllers/OrganizationController.php',
         'App\\Controllers\\ProjectController' => __DIR__ . '/../..' . '/controllers/ProjectController.php',
         'App\\Controllers\\QuizController' => __DIR__ . '/../..' . '/controllers/QuizController.php',
@@ -131,12 +137,14 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         'App\\Controllers\\UserController' => __DIR__ . '/../..' . '/controllers/UserController.php',
         'App\\Models\\Achievement' => __DIR__ . '/../..' . '/models/Achievement.php',
         'App\\Models\\BaseModel' => __DIR__ . '/../..' . '/models/BaseModel.php',
+        'App\\Models\\Bookmark' => __DIR__ . '/../..' . '/models/Bookmark.php',
         'App\\Models\\Certificate' => __DIR__ . '/../..' . '/models/Certificate.php',
         'App\\Models\\Course' => __DIR__ . '/../..' . '/models/Course.php',
         'App\\Models\\Enrollment' => __DIR__ . '/../..' . '/models/Enrollment.php',
         'App\\Models\\Lesson' => __DIR__ . '/../..' . '/models/Lesson.php',
         'App\\Models\\LessonProgress' => __DIR__ . '/../..' . '/models/LessonProgress.php',
         'App\\Models\\Module' => __DIR__ . '/../..' . '/models/Module.php',
+        'App\\Models\\Notification' => __DIR__ . '/../..' . '/models/Notification.php',
         'App\\Models\\Organization' => __DIR__ . '/../..' . '/models/Organization.php',
         'App\\Models\\Project' => __DIR__ . '/../..' . '/models/Project.php',
         'App\\Models\\ProjectSubmission' => __DIR__ . '/../..' . '/models/ProjectSubmission.php',
@@ -144,6 +152,7 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         'App\\Models\\QuizAttempt' => __DIR__ . '/../..' . '/models/QuizAttempt.php',
         'App\\Models\\QuizQuestion' => __DIR__ . '/../..' . '/models/QuizQuestion.php',
         'App\\Models\\School' => __DIR__ . '/../..' . '/models/School.php',
+        'App\\Models\\StudentNote' => __DIR__ . '/../..' . '/models/StudentNote.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/models/User.php',
         'App\\Utils\\JWTHandler' => __DIR__ . '/../..' . '/utils/JWTHandler.php',
         'App\\Utils\\Response' => __DIR__ . '/../..' . '/utils/Response.php',
@@ -228,6 +237,13 @@ class ComposerStaticInit7a30a314b0670321388082219974e941
         'GrahamCampbell\\ResultType\\Error' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Error.php',
         'GrahamCampbell\\ResultType\\Result' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Result.php',
         'GrahamCampbell\\ResultType\\Success' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Success.php',
+        'PHPMailer\\PHPMailer\\DSNConfigurator' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/DSNConfigurator.php',
+        'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
+        'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
+        'PHPMailer\\PHPMailer\\OAuthTokenProvider' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuthTokenProvider.php',
+        'PHPMailer\\PHPMailer\\PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/PHPMailer.php',
+        'PHPMailer\\PHPMailer\\POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/POP3.php',
+        'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/SMTP.php',
         'PHPUnit\\Event\\Application\\Finished' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/Finished.php',
         'PHPUnit\\Event\\Application\\FinishedSubscriber' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/FinishedSubscriber.php',
         'PHPUnit\\Event\\Application\\Started' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/Started.php',

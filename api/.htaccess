@@ -11,6 +11,10 @@ RedirectMatch 403 ^/api/vendor/
 RedirectMatch 403 ^/api/composer\.(json|lock)$
 RedirectMatch 403 ^/api/\.git
 
+# Pass Authorization header through for CGI/FastCGI compatibility
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 # Allow access to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

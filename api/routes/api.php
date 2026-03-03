@@ -95,6 +95,18 @@ $routes = [
         'handler' => 'AuthController@me',
         'auth' => true
     ],
+    [
+        'method' => 'POST',
+        'pattern' => '/auth/forgot-password',
+        'handler' => 'AuthController@forgotPassword',
+        'auth' => false
+    ],
+    [
+        'method' => 'POST',
+        'pattern' => '/auth/reset-password',
+        'handler' => 'AuthController@resetPassword',
+        'auth' => false
+    ],
 
     // User Routes
     [
@@ -139,14 +151,14 @@ $routes = [
         'pattern' => '/users/:id',
         'handler' => 'UserController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'POST',
         'pattern' => '/users',
         'handler' => 'UserController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
 
     // Organization Routes (Phase 12 - Hierarchical RBAC)
@@ -294,21 +306,21 @@ $routes = [
         'pattern' => '/courses',
         'handler' => 'CourseController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/courses/:id',
         'handler' => 'CourseController@update',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/courses/:id',
         'handler' => 'CourseController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
 
     // Module Routes (5 endpoints)
@@ -329,21 +341,21 @@ $routes = [
         'pattern' => '/modules',
         'handler' => 'ModuleController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/modules/:id',
         'handler' => 'ModuleController@update',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/modules/:id',
         'handler' => 'ModuleController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
 
     // Lesson Routes (7 endpoints)
@@ -364,21 +376,21 @@ $routes = [
         'pattern' => '/lessons',
         'handler' => 'LessonController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/lessons/:id',
         'handler' => 'LessonController@update',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/lessons/:id',
         'handler' => 'LessonController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'POST',
@@ -411,21 +423,21 @@ $routes = [
         'pattern' => '/quizzes',
         'handler' => 'QuizController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/quizzes/:id',
         'handler' => 'QuizController@update',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/quizzes/:id',
         'handler' => 'QuizController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'POST',
@@ -458,21 +470,21 @@ $routes = [
         'pattern' => '/quiz-questions',
         'handler' => 'QuizController@createQuestion',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/quiz-questions/:id',
         'handler' => 'QuizController@updateQuestion',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/quiz-questions/:id',
         'handler' => 'QuizController@deleteQuestion',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
 
     // Project Routes (8 endpoints)
@@ -493,21 +505,21 @@ $routes = [
         'pattern' => '/projects',
         'handler' => 'ProjectController@create',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'PUT',
         'pattern' => '/projects/:id',
         'handler' => 'ProjectController@update',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin', 'teacher']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'DELETE',
         'pattern' => '/projects/:id',
         'handler' => 'ProjectController@delete',
         'auth' => true,
-        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+        'roles' => ['superadmin']
     ],
     [
         'method' => 'POST',

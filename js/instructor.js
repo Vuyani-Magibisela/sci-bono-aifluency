@@ -75,11 +75,13 @@ const InstructorDashboard = {
 
         try {
             // Load data in parallel
-            const [courses, gradingQueue, stats] = await Promise.all([
+            const [courses, gradingQueue] = await Promise.all([
                 this.loadMyCourses(),
-                this.loadGradingQueue(),
-                this.loadInstructorStats()
+                this.loadGradingQueue()
             ]);
+
+            // Compute stats from loaded data
+            const stats = this.computeStats(courses, gradingQueue);
 
             // Update UI with loaded data
             this.renderMyCourses(courses);
@@ -148,28 +150,34 @@ const InstructorDashboard = {
     },
 
     /**
-     * Load instructor statistics
+     * Compute instructor stats from loaded courses and grading data
      */
-    async loadInstructorStats() {
-        try {
-            const response = await API.get('/users/me/stats');
-            return response.data || this.getDefaultStats();
-        } catch (error) {
-            console.warn('InstructorDashboard: Could not load stats:', error);
-            return this.getDefaultStats();
-        }
-    },
+    computeStats(courses, gradingQueue) {
+        const courseList = Array.isArray(courses) ? courses : [];
+        const totalCourses = courseList.length;
 
-    /**
-     * Get default stats when API fails
-     */
-    getDefaultStats() {
+        // Sum enrollment counts from courses
+        let totalStudents = 0;
+        let totalCompletion = 0;
+        let coursesWithCompletion = 0;
+
+        courseList.forEach(course => {
+            totalStudents += (course.enrollment_count || 0);
+            if (course.completion_rate !== undefined && course.completion_rate !== null) {
+                totalCompletion += parseFloat(course.completion_rate) || 0;
+                coursesWithCompletion++;
+            }
+        });
+
+        const avgCompletion = coursesWithCompletion > 0
+            ? Math.round(totalCompletion / coursesWithCompletion)
+            : 0;
+
         return {
-            total_courses: 0,
-            total_students: 0,
-            total_enrollments: 0,
-            pending_grading: 0,
-            average_completion_rate: 0
+            total_courses: totalCourses,
+            total_students: totalStudents,
+            pending_grading: gradingQueue ? gradingQueue.total : 0,
+            average_completion_rate: avgCompletion
         };
     },
 

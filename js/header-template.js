@@ -41,7 +41,7 @@ const HeaderTemplate = {
                             <li><a href="/index.html" class="nav-link">Home</a></li>
                             <li><a href="${this.getCoursesUrl(user)}" class="nav-link">Courses</a></li>
                             ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="nav-link">Projects</a></li>' : ''}
-                            <li><a href="#about" class="nav-link">About</a></li>
+                            <li><a href="/about.html" class="nav-link">About</a></li>
                         </ul>
                     </nav>
 
@@ -65,7 +65,7 @@ const HeaderTemplate = {
                             <li><a href="/index.html" class="mobile-nav-link">Home</a></li>
                             <li><a href="${this.getCoursesUrl(user)}" class="mobile-nav-link">Courses</a></li>
                             ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="mobile-nav-link">Projects</a></li>' : ''}
-                            <li><a href="#about" class="mobile-nav-link">About</a></li>
+                            <li><a href="/about.html" class="mobile-nav-link">About</a></li>
                             ${isAuthenticated ? `
                                 <li class="mobile-nav-divider"></li>
                                 <li><a href="${Auth.getDashboardUrl()}" class="mobile-nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>

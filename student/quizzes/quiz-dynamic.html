@@ -38,7 +38,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">AI Fluency - Quiz</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .quiz-container {
             max-width: 800px;
@@ -572,8 +572,23 @@
                 // Submit quiz
                 const results = await ContentLoader.submitQuiz(quizData.id, answers);
 
-                // Display results
-                displayResults(results);
+                // Fetch attempt count to determine if correct answers should be revealed
+                let userAttemptCount = 0;
+                let maxAttempts = quizData.max_attempts || 4;
+                try {
+                    if (Auth.isAuthenticated()) {
+                        const attemptResponse = await API.get(`/quizzes/${quizData.id}/attempts`);
+                        const attempts = attemptResponse.data?.attempts || [];
+                        userAttemptCount = attempts.length;
+                    }
+                } catch (e) {
+                    console.warn('Could not fetch attempt count:', e);
+                }
+
+                // Display results — show correct answers only when <= 2 attempts remaining
+                const attemptsRemaining = maxAttempts - userAttemptCount;
+                const showCorrectAnswers = attemptsRemaining <= 2;
+                displayResults(results, showCorrectAnswers, userAttemptCount, maxAttempts);
 
                 // Hide questions and submit button
                 document.getElementById('questions-container').style.display = 'none';
@@ -608,8 +623,12 @@
 
         /**
          * Display quiz results
+         * @param {object} results - Quiz submission results
+         * @param {boolean} showCorrectAnswers - Whether to reveal correct answers (only when <= 2 attempts remaining)
+         * @param {number} userAttemptCount - Total attempts the user has made
+         * @param {number} maxAttempts - Maximum allowed attempts
          */
-        function displayResults(results) {
+        function displayResults(results, showCorrectAnswers = false, userAttemptCount = 0, maxAttempts = 4) {
             const resultsContainer = document.getElementById('results-container');
             const scoreDisplay = document.getElementById('score-display');
             const resultsMessage = document.getElementById('results-message');
@@ -621,6 +640,12 @@
             scoreDisplay.textContent = `${results.score}%`;
             scoreDisplay.className = 'score-display ' + (results.passed ? 'pass' : 'fail');
 
+            // Build attempt info
+            const attemptsRemaining = maxAttempts - userAttemptCount;
+            const attemptInfo = userAttemptCount > 0
+                ? `<p style="color:#666;font-size:0.9rem;">Attempts used: ${userAttemptCount}/${maxAttempts} (${attemptsRemaining} remaining)</p>`
+                : '';
+
             // Display message
             resultsMessage.innerHTML = `
                 <p>You answered <strong>${results.correct_count}</strong> out of <strong>${results.total_questions}</strong> questions correctly.</p>
@@ -628,6 +653,8 @@
                     '<strong style="color: #4caf50;">Congratulations! You passed the quiz!</strong>' :
                     '<strong style="color: #f44336;">You did not pass this time. Please review the material and try again.</strong>'
                 }</p>
+                ${attemptInfo}
+                ${!showCorrectAnswers && !results.passed ? '<p style="color:#888;font-size:0.85rem;margin-top:0.5rem;"><i class="fas fa-info-circle"></i> Correct answers will be shown when you have 2 or fewer attempts remaining.</p>' : ''}
             `;
 
             // Setup action buttons
@@ -635,26 +662,42 @@
             document.getElementById('retake-quiz').href = `quiz-dynamic.html?module_id=${moduleId}${courseParam}`;
             document.getElementById('back-to-module').href = `../modules/module-dynamic.html?module_id=${moduleId}${courseParam}`;
 
-            // Show explanations in questions
+            // Hide retake button if no attempts remaining
+            if (attemptsRemaining <= 0) {
+                document.getElementById('retake-quiz').style.display = 'none';
+            }
+
+            // Show explanations and correct answers in questions — match by question_id
             if (results.results) {
-                results.results.forEach((result, index) => {
-                    const questionContainer = document.querySelectorAll('.question-container')[index];
-                    if (questionContainer && result.explanation) {
+                results.results.forEach((result) => {
+                    // Find the question container by data-question-id attribute
+                    const questionContainer = document.querySelector(
+                        `.question-container[data-question-id="${result.question_id}"]`
+                    );
+                    if (!questionContainer) return;
+
+                    // Show explanation only when correct answers are revealed
+                    if (showCorrectAnswers && result.explanation) {
                         const explanation = document.createElement('div');
                         explanation.className = 'explanation show';
                         explanation.innerHTML = `<strong>Explanation:</strong> ${result.explanation}`;
                         questionContainer.appendChild(explanation);
                     }
 
+                    // Find the matching question in quizData to get the randomized correctAnswer index
+                    const question = quizData.questions.find(q => q.id === result.question_id);
+                    if (!question) return;
+
                     // Highlight correct/incorrect answers
                     const options = questionContainer.querySelectorAll('.option');
                     options.forEach((option, optIndex) => {
-                        const question = quizData.questions[index];
-                        if (optIndex === question.correctAnswer) {
-                            option.classList.add('correct');
-                        }
+                        // Always highlight the user's wrong selection in red
                         if (option.classList.contains('selected') && !result.is_correct) {
                             option.classList.add('incorrect');
+                        }
+                        // Only highlight correct answer in green when allowed
+                        if (showCorrectAnswers && optIndex === question.correctAnswer) {
+                            option.classList.add('correct');
                         }
                     });
                 });

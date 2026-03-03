@@ -44,6 +44,7 @@ class User extends BaseModel
         'date_of_birth',
         'primary_organization_id',
         'primary_school_id',
+        'education_context',
     ];
     protected array $hidden = ['password_hash'];
 

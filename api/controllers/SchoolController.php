@@ -101,22 +101,24 @@ class SchoolController extends BaseController
         $search         = isset($_GET['search']) ? trim($_GET['search']) : '';
         $organizationId = isset($_GET['organization_id']) ? (int)$_GET['organization_id'] : null;
 
-        $sql = "SELECT id, name, district, city, school_type
-                FROM schools
-                WHERE is_active = 1";
+        $sql = "SELECT s.id, s.name, s.district, s.city, s.school_type,
+                       o.organization_type
+                FROM schools s
+                LEFT JOIN organizations o ON s.organization_id = o.id
+                WHERE s.is_active = 1";
         $bindings = [];
 
         if ($organizationId) {
-            $sql .= " AND organization_id = :organization_id";
+            $sql .= " AND s.organization_id = :organization_id";
             $bindings[':organization_id'] = $organizationId;
         }
 
         if (strlen($search) >= 2) {
-            $sql .= " AND name LIKE :search";
+            $sql .= " AND s.name LIKE :search";
             $bindings[':search'] = '%' . $search . '%';
         }
 
-        $sql .= " ORDER BY name ASC LIMIT 5000";
+        $sql .= " ORDER BY s.name ASC LIMIT 5000";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($bindings);
