@@ -997,6 +997,35 @@ $routes = [
         'auth' => true,
         'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
+
+    // Feedback Routes
+    [
+        'method' => 'POST',
+        'pattern' => '/feedback',
+        'handler' => 'FeedbackController@submit',
+        'auth' => false
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/feedback',
+        'handler' => 'FeedbackController@index',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/feedback/:id',
+        'handler' => 'FeedbackController@show',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
+    [
+        'method' => 'PUT',
+        'pattern' => '/feedback/:id/status',
+        'handler' => 'FeedbackController@updateStatus',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin']
+    ],
 ];
 
 // Match route
