@@ -556,13 +556,20 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
             // Collect answers with per-question timing data (Phase 6 - Task 5)
+            // Map randomized option index back to original DB index so the
+            // backend compares against the correct correct_option value.
             const answers = [];
             quizData.questions.forEach((question, index) => {
                 const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
                 if (selectedOption) {
+                    const randomizedIndex = parseInt(selectedOption.value);
+                    // Translate back to original DB index using the mapping
+                    const originalIndex = question.originalIndices
+                        ? question.originalIndices[randomizedIndex]
+                        : randomizedIndex;
                     answers.push({
                         question_id: question.id,
-                        selected_answer: parseInt(selectedOption.value),
+                        selected_answer: originalIndex,
                         time_spent: questionTimers[question.id] || 0 // Include time spent on this question
                     });
                 }
@@ -571,6 +578,25 @@
             try {
                 // Submit quiz
                 const results = await ContentLoader.submitQuiz(quizData.id, answers);
+
+                // Clear cached API responses so subsequent pages get fresh gating data
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => {
+                            caches.open(name).then(cache => {
+                                cache.keys().then(requests => {
+                                    requests.forEach(req => {
+                                        if (req.url.includes('/api/courses/') ||
+                                            req.url.includes('/api/lessons') ||
+                                            req.url.includes('/api/modules')) {
+                                            cache.delete(req);
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
 
                 // Fetch attempt count to determine if correct answers should be revealed
                 let userAttemptCount = 0;

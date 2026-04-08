@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v43';
+const CACHE_NAME = 'ai-fluency-cache-v44';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -71,6 +71,8 @@ const urlsToCache = [
 
 // Install event - cache all initial resources
 self.addEventListener('install', event => {
+  // Skip waiting so the new service worker activates immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -85,22 +87,12 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Network-first strategy for API requests (always get fresh data)
+  // Network-only strategy for API requests (never cache user-specific data)
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(request)
-        .then(response => {
-          // Clone and cache successful API responses (except auth endpoints)
-          if (response && response.status === 200 && !url.pathname.includes('/auth/')) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
         .catch(error => {
-          // Network failed, try cache as fallback for GET requests
+          // Network failed, try cache as fallback for GET requests (offline support)
           if (request.method === 'GET') {
             return caches.match(request).then(cached => {
               if (cached) {
@@ -164,7 +156,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches and take control immediately
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
@@ -176,6 +168,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

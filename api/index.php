@@ -25,6 +25,9 @@ try {
 
     // Set response headers
     header('Content-Type: application/json; charset=UTF-8');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    header('Pragma: no-cache');
+    header('Expires: 0');
 
     // Handle CORS
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';

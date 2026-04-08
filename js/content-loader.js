@@ -103,14 +103,23 @@ const ContentLoader = {
             quiz.questions = quiz.questions.map(question => {
                 const q = { ...question };
 
-                // Store original correct answer before shuffling
-                const correctAnswerText = q.options[q.correctAnswer];
+                // Build indexed options to track original positions
+                const indexedOptions = q.options.map((text, i) => ({ text, originalIndex: i }));
 
-                // Shuffle options
-                q.options = this.shuffleArray([...q.options]);
+                // Shuffle
+                const shuffled = this.shuffleArray(indexedOptions);
 
-                // Find new index of correct answer
-                q.correctAnswer = q.options.indexOf(correctAnswerText);
+                // Replace options with shuffled text
+                q.options = shuffled.map(o => o.text);
+
+                // Map from new (randomized) index → original DB index
+                q.originalIndices = shuffled.map(o => o.originalIndex);
+
+                // Keep the original DB correct answer for local scoring
+                q.originalCorrectAnswer = q.correctAnswer;
+
+                // Update correctAnswer to the new position (for UI highlighting)
+                q.correctAnswer = shuffled.findIndex(o => o.originalIndex === q.originalCorrectAnswer);
 
                 return q;
             });
@@ -411,7 +420,11 @@ const ContentLoader = {
             if (!question) return null;
 
             totalPoints += question.points;
-            const isCorrect = question.correctAnswer === answer.selected_answer;
+            // selected_answer is the original DB index; compare against original correct answer
+            const correctIdx = question.originalCorrectAnswer !== undefined
+                ? question.originalCorrectAnswer
+                : question.correctAnswer;
+            const isCorrect = correctIdx === answer.selected_answer;
 
             if (isCorrect) {
                 correctCount++;
