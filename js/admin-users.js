@@ -796,7 +796,8 @@ const UserManagement = {
         container.innerHTML = '<div class="loading-spinner">Loading schools...</div>';
 
         try {
-            const response = await API.get('/schools');
+            // Only fetch schools that have registered users (server-side filter)
+            const response = await API.get('/schools?has_users=1');
 
             if (!response.success) throw new Error('Failed to load schools');
 
@@ -812,14 +813,14 @@ const UserManagement = {
         const container = document.getElementById('schools-list');
 
         if (!schools || schools.length === 0) {
-            container.innerHTML = '<p>No schools found.</p>';
+            container.innerHTML = '<p>No schools with registered users found.</p>';
             return;
         }
 
         const html = `
             <div class="school-list">
                 ${schools.map(school => `
-                    <div class="school-card">
+                    <div class="school-card" onclick="UserManagement.viewSchoolDetails(${school.id})" style="cursor: pointer;" title="Click to view details">
                         <h4>${this.escapeHtml(school.name)}</h4>
                         <div class="school-stats">
                             <div><i class="fas fa-building"></i> ${school.organization_name || 'N/A'}</div>
@@ -832,6 +833,118 @@ const UserManagement = {
         `;
 
         container.innerHTML = html;
+    },
+
+    /**
+     * View school details in modal
+     */
+    async viewSchoolDetails(schoolId) {
+        const modal = document.getElementById('school-detail-modal');
+        const body = document.getElementById('school-detail-body');
+
+        // Show modal with loading state
+        body.innerHTML = '<div class="loading-spinner">Loading school details...</div>';
+        modal.classList.add('active');
+
+        try {
+            const response = await API.get(`/schools/${schoolId}`);
+
+            if (!response.success) {
+                throw new Error(response.message || 'Failed to load school details');
+            }
+
+            const school = response.data;
+            const stats = school.statistics || {};
+
+            document.getElementById('school-detail-title').textContent = school.name;
+
+            body.innerHTML = `
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Organization</label>
+                        <div class="detail-value">${this.escapeHtml(school.organization_name || 'N/A')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>School Type</label>
+                        <div class="detail-value">${this.escapeHtml(school.school_type || 'combined')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Email</label>
+                        <div class="detail-value">${this.escapeHtml(school.email || 'N/A')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>City</label>
+                        <div class="detail-value">${this.escapeHtml(school.city || 'N/A')}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-users" style="color: #3b82f6;"></i> User Breakdown
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Total Users</label>
+                        <div class="detail-value">${stats.total_users || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Students</label>
+                        <div class="detail-value">${stats.total_students || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Teachers</label>
+                        <div class="detail-value">${stats.total_teachers || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>School Admins</label>
+                        <div class="detail-value">${stats.total_school_admins || 0}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-chart-line" style="color: #10b981;"></i> Learning Progress
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Total Enrollments</label>
+                        <div class="detail-value">${stats.total_enrollments || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Avg Progress</label>
+                        <div class="detail-value">${stats.avg_progress || 0}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Completed Courses</label>
+                        <div class="detail-value">${stats.completed_courses || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Avg Quiz Score</label>
+                        <div class="detail-value">${stats.avg_quiz_score || 0}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Quiz Attempts</label>
+                        <div class="detail-value">${stats.total_quiz_attempts || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Certificates Earned</label>
+                        <div class="detail-value">${stats.total_certificates || 0}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-clock" style="color: #f59e0b;"></i> Activity
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Recent Signups (30 days)</label>
+                        <div class="detail-value">${stats.recent_signups || 0}</div>
+                    </div>
+                </div>
+            `;
+
+        } catch (error) {
+            console.error('Error loading school details:', error);
+            body.innerHTML = `<p style="color: #ef4444;">Failed to load school details: ${this.escapeHtml(error.message)}</p>`;
+        }
     },
 
     /**

@@ -262,6 +262,10 @@
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
                 </a>
+                <a href="/admin/feedback.html" class="nav-item">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>User Feedback</span>
+                </a>
                 <div class="nav-divider"></div>
                 <a href="/student/courses.html" class="nav-item">
                     <i class="fas fa-graduation-cap"></i>
@@ -330,7 +334,7 @@
             <div class="chart-card full-width">
                 <h3>📈 Enrollment Trends Over Time</h3>
                 <p class="chart-description">New enrollments and completion rates by time period</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="enrollmentTrendsChart">
                     <canvas id="enrollmentTrendsChart"></canvas>
                 </div>
             </div>
@@ -348,7 +352,7 @@
             <div class="chart-card half-width">
                 <h3>👤 User Acquisition Trends</h3>
                 <p class="chart-description">New user signups by role</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="userAcquisitionChart">
                     <canvas id="userAcquisitionChart"></canvas>
                 </div>
             </div>
@@ -366,7 +370,7 @@
             <div class="chart-card half-width">
                 <h3>⏱️ Platform Usage Statistics</h3>
                 <p class="chart-description">User activity by time of day</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="platformUsageChart">
                     <canvas id="platformUsageChart"></canvas>
                 </div>
             </div>
@@ -375,7 +379,7 @@
             <div class="chart-card half-width">
                 <h3>📜 Certificate Issuance Trends</h3>
                 <p class="chart-description">Certificates issued over time</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="certificateTrendsChart">
                     <canvas id="certificateTrendsChart"></canvas>
                 </div>
             </div>

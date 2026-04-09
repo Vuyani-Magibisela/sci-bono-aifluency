@@ -88,20 +88,26 @@ async function loadAdminAnalytics() {
     const loadingMessage = '<div class="loading-spinner">Loading analytics data...</div>';
 
     try {
-        // Show loading states
-        document.getElementById('enrollmentTrendsChart').parentElement.innerHTML =
-            '<canvas id="enrollmentTrendsChart"></canvas>';
-        document.getElementById('userAcquisitionChart').parentElement.innerHTML =
-            '<canvas id="userAcquisitionChart"></canvas>';
-        document.getElementById('platformUsageChart').parentElement.innerHTML =
-            '<canvas id="platformUsageChart"></canvas>';
-        document.getElementById('certificateTrendsChart').parentElement.innerHTML =
-            '<canvas id="certificateTrendsChart"></canvas>';
-        document.getElementById('course-popularity-container').innerHTML = loadingMessage;
-        document.getElementById('achievement-distribution-container').innerHTML = loadingMessage;
+        // Reset chart canvases — they may have been replaced by "no data" messages on previous loads.
+        // Use data-chart attribute on .chart-container divs for reliable lookup.
+        document.querySelectorAll('.chart-container[data-chart]').forEach(container => {
+            container.innerHTML = `<canvas id="${container.dataset.chart}"></canvas>`;
+        });
 
-        // Fetch all data in parallel
-        // API.get() returns {success, data}, unwrap .data from each response
+        const courseContainer = document.getElementById('course-popularity-container');
+        const achievementContainer = document.getElementById('achievement-distribution-container');
+        if (courseContainer) courseContainer.innerHTML = loadingMessage;
+        if (achievementContainer) achievementContainer.innerHTML = loadingMessage;
+
+        // Fetch all data in parallel (using allSettled so one failure doesn't kill the whole dashboard)
+        const results = await Promise.allSettled([
+            API.get(`/analytics/admin/enrollment-trends?${filterParams}`),
+            API.get(`/analytics/admin/course-popularity?${filterParams}`),
+            API.get(`/analytics/admin/user-acquisition?${filterParams}`),
+            API.get(`/analytics/admin/achievement-distribution?${filterParams}`),
+            API.get(`/analytics/admin/platform-usage?${filterParams}`),
+            API.get(`/analytics/admin/certificate-trends?${filterParams}`)
+        ]);
         const [
             enrollmentData,
             coursePopularityData,
@@ -109,14 +115,7 @@ async function loadAdminAnalytics() {
             achievementData,
             platformUsageData,
             certificateData
-        ] = (await Promise.all([
-            API.get(`/analytics/admin/enrollment-trends?${filterParams}`),
-            API.get(`/analytics/admin/course-popularity?${filterParams}`),
-            API.get(`/analytics/admin/user-acquisition?${filterParams}`),
-            API.get(`/analytics/admin/achievement-distribution?${filterParams}`),
-            API.get(`/analytics/admin/platform-usage?${filterParams}`),
-            API.get(`/analytics/admin/certificate-trends?${filterParams}`)
-        ])).map(r => r.data || {});
+        ] = results.map(r => r.status === 'fulfilled' ? (r.value.data || {}) : {});
 
         // Update platform stats
         updatePlatformStats(
@@ -168,13 +167,22 @@ function updatePlatformStats(enrollmentData, courseData, userData, certificateDa
 }
 
 /**
+ * Get the chart container element for a given canvas ID.
+ * Uses data-chart attribute for reliable lookup even after the canvas has been replaced.
+ */
+function getChartContainer(canvasId) {
+    return document.querySelector(`.chart-container[data-chart="${canvasId}"]`);
+}
+
+/**
  * Render enrollment trends line chart
  */
 function renderEnrollmentTrends(data) {
     const trends = data.trends || [];
+    const container = getChartContainer('enrollmentTrendsChart');
 
     if (trends.length === 0) {
-        document.getElementById('enrollmentTrendsChart').parentElement.innerHTML =
+        if (container) container.innerHTML =
             '<div class="no-data-message">No enrollment data available for this period.</div>';
         return;
     }
@@ -339,7 +347,8 @@ function renderUserAcquisition(data) {
     const trends = data.trends || [];
 
     if (trends.length === 0) {
-        document.getElementById('userAcquisitionChart').parentElement.innerHTML =
+        const container = getChartContainer('userAcquisitionChart');
+        if (container) container.innerHTML =
             '<div class="no-data-message">No user acquisition data available.</div>';
         return;
     }
@@ -439,7 +448,8 @@ function renderPlatformUsage(data) {
     const usageData = data.usage_by_hour || data.heatmap_data || [];
 
     if (usageData.length === 0) {
-        document.getElementById('platformUsageChart').parentElement.innerHTML =
+        const container = getChartContainer('platformUsageChart');
+        if (container) container.innerHTML =
             '<div class="no-data-message">No usage data available.</div>';
         return;
     }
@@ -515,7 +525,8 @@ function renderCertificateTrends(data) {
     const trends = data.trends || [];
 
     if (trends.length === 0) {
-        document.getElementById('certificateTrendsChart').parentElement.innerHTML =
+        const container = getChartContainer('certificateTrendsChart');
+        if (container) container.innerHTML =
             '<div class="no-data-message">No certificates issued in this period.</div>';
         return;
     }

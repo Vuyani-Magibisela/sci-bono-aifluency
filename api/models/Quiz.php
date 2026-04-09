@@ -143,7 +143,7 @@ class Quiz extends BaseModel
             $stmt = $this->pdo->prepare("
                 SELECT * FROM quiz_attempts
                 WHERE quiz_id = :quiz_id AND user_id = :user_id
-                ORDER BY created_at DESC
+                ORDER BY started_at DESC
             ");
             $stmt->execute([
                 'quiz_id' => $quizId,

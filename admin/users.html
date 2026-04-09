@@ -66,6 +66,12 @@
             padding: 1rem;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .school-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
         }
         .school-card h4 {
             margin: 0 0 0.5rem 0;
@@ -204,6 +210,10 @@
                 <a href="/admin/analytics.html" class="nav-item">
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
+                </a>
+                <a href="/admin/feedback.html" class="nav-item">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>User Feedback</span>
                 </a>
                 <div class="nav-divider"></div>
                 <a href="/student/courses.html" class="nav-item">
@@ -472,6 +482,22 @@
                     <button type="submit" class="btn-primary" id="submit-school-btn">Create School</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- School Detail Modal -->
+    <div id="school-detail-modal" class="modal" onclick="if(event.target===this) UserManagement.closeModal('school-detail-modal')">
+        <div class="modal-content" style="max-width: 700px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 id="school-detail-title" style="margin: 0;">School Details</h2>
+                <button type="button" onclick="UserManagement.closeModal('school-detail-modal')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280; padding: 0.25rem;">&times;</button>
+            </div>
+            <div id="school-detail-body">
+                <div class="loading-spinner">Loading...</div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="UserManagement.closeModal('school-detail-modal')">Close</button>
+            </div>
         </div>
     </div>
 

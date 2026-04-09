@@ -36,6 +36,35 @@ class AdvancedAnalyticsController extends BaseController
     }
 
     // ================================================================
+    // DATE RANGE HELPER
+    // ================================================================
+
+    /**
+     * Resolve date range from query parameters.
+     * Supports both preset range (e.g. ?range=30) and custom dates (?start_date=...&end_date=...).
+     * Returns [start_date, end_date] as Y-m-d strings.
+     */
+    private function resolveDateRange(string $defaultRange = '180'): array
+    {
+        // Custom dates take priority
+        if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+            return [$_GET['start_date'], $_GET['end_date']];
+        }
+
+        // Preset range in days (e.g. 7, 30, 90, 180, 365)
+        $range = $_GET['range'] ?? $defaultRange;
+        if ($range === 'all') {
+            return ['2000-01-01', date('Y-m-d')];
+        }
+
+        $days = (int) $range;
+        return [
+            date('Y-m-d', strtotime("-{$days} days")),
+            date('Y-m-d')
+        ];
+    }
+
+    // ================================================================
     // AUTHENTICATION HELPERS
     // ================================================================
 
@@ -540,8 +569,7 @@ class AdvancedAnalyticsController extends BaseController
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $groupBy = $_GET['group_by'] ?? 'month'; // 'day', 'week', 'month'
-        $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
-        $endDate = $_GET['end_date'] ?? date('Y-m-d');
+        [$startDate, $endDate] = $this->resolveDateRange();
 
         try {
             $trends = $this->enrollmentModel->getEnrollmentTrends([
@@ -567,11 +595,29 @@ class AdvancedAnalyticsController extends BaseController
     {
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
+        [$startDate, $endDate] = $this->resolveDateRange();
+
         try {
-            $sql = "SELECT * FROM v_course_popularity
+            // Filter by enrollment date range
+            $sql = "SELECT
+                        c.id as course_id,
+                        c.title as course_title,
+                        c.description,
+                        c.is_published,
+                        COUNT(e.id) as total_enrollments,
+                        SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) as active_enrollments,
+                        SUM(CASE WHEN e.status = 'completed' THEN 1 ELSE 0 END) as completions,
+                        AVG(e.progress_percentage) as avg_progress_percentage,
+                        (SUM(CASE WHEN e.status = 'completed' THEN 1 ELSE 0 END) / NULLIF(COUNT(e.id), 0) * 100) as completion_rate,
+                        MAX(e.enrolled_at) as last_enrollment_date
+                    FROM courses c
+                    LEFT JOIN enrollments e ON c.id = e.course_id
+                        AND e.enrolled_at >= :start_date AND e.enrolled_at <= :end_date
+                    GROUP BY c.id, c.title, c.description, c.is_published
                     ORDER BY total_enrollments DESC";
 
-            $stmt = $this->pdo->query($sql);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
             $popularity = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             Response::success([
@@ -595,8 +641,7 @@ class AdvancedAnalyticsController extends BaseController
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
         $groupBy = $_GET['group_by'] ?? 'month';
-        $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
-        $endDate = $_GET['end_date'] ?? date('Y-m-d');
+        [$startDate, $endDate] = $this->resolveDateRange();
 
         try {
             $trends = $this->userModel->getAcquisitionTrends([
@@ -622,11 +667,29 @@ class AdvancedAnalyticsController extends BaseController
     {
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
+        [$startDate, $endDate] = $this->resolveDateRange();
+
         try {
-            $sql = "SELECT * FROM v_achievement_distribution
+            // Filter achievements unlocked within the date range
+            $sql = "SELECT
+                        a.id as achievement_id,
+                        a.name as achievement_title,
+                        a.category_id,
+                        ac.name as category_name,
+                        a.tier,
+                        a.points,
+                        COUNT(ua.id) as unlock_count,
+                        MIN(ua.unlocked_at) as first_unlock_date,
+                        MAX(ua.unlocked_at) as last_unlock_date
+                    FROM achievements a
+                    LEFT JOIN user_achievements ua ON a.id = ua.achievement_id
+                        AND ua.unlocked_at >= :start_date AND ua.unlocked_at <= :end_date
+                    INNER JOIN achievement_categories ac ON a.category_id = ac.id
+                    GROUP BY a.id, a.name, a.category_id, ac.name, a.tier, a.points
                     ORDER BY unlock_count DESC";
 
-            $stmt = $this->pdo->query($sql);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
             $distribution = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             // Tier breakdown
@@ -662,16 +725,16 @@ class AdvancedAnalyticsController extends BaseController
     {
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
-        $dateRange = $_GET['range'] ?? '30'; // days
+        [$startDate, $endDate] = $this->resolveDateRange('30');
 
         try {
-            // Active users
+            // Active users (logged in within date range)
             $activeUsersSql = "SELECT COUNT(DISTINCT id) as active_users
                 FROM users
-                WHERE last_login_at >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+                WHERE last_login_at >= :start_date AND last_login_at <= :end_date";
 
             $stmt = $this->pdo->prepare($activeUsersSql);
-            $stmt->execute(['days' => $dateRange]);
+            $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
             $activeUsers = $stmt->fetch(\PDO::FETCH_ASSOC)['active_users'];
 
             // Total users
@@ -685,12 +748,12 @@ class AdvancedAnalyticsController extends BaseController
                     HOUR(completed_at) as hour_of_day,
                     COUNT(*) as activity_count
                 FROM lesson_progress
-                WHERE completed_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+                WHERE completed_at >= :start_date AND completed_at <= :end_date
                 AND status = 'completed'
                 GROUP BY DAYOFWEEK(completed_at), HOUR(completed_at)";
 
             $stmt = $this->pdo->prepare($heatmapSql);
-            $stmt->execute(['days' => $dateRange]);
+            $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
             $heatmapData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             Response::success([
@@ -715,9 +778,7 @@ class AdvancedAnalyticsController extends BaseController
     {
         $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
 
-        $groupBy = $_GET['group_by'] ?? 'month';
-        $startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
-        $endDate = $_GET['end_date'] ?? date('Y-m-d');
+        [$startDate, $endDate] = $this->resolveDateRange();
 
         try {
             $sql = "SELECT * FROM v_certificate_trends

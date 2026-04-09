@@ -446,7 +446,9 @@ class QuizController extends BaseController
                 'correct_answers' => $correctAnswers,
                 'answers' => $answers,
                 'time_taken_minutes' => $timeSpent,
-                'passed' => $passed
+                'passed' => $passed ? 1 : 0,
+                'status' => 'submitted',
+                'attempt_number' => $this->attemptModel->countUserAttempts($currentUser->id, $quizId) + 1
             ]);
 
             if (!$attemptId) {
@@ -461,9 +463,9 @@ class QuizController extends BaseController
                     if (!isset($result['question_id'])) continue;
 
                     $questionId = (int)$result['question_id'];
-                    $userAnswer = $result['student_answer'] ?? $result['selected_answer'] ?? null;
-                    $correctAnswer = $result['correct_answer'] ?? null;
-                    $questionText = $result['question_text'] ?? '';
+                    $userAnswer = (string)($result['student_answer'] ?? $result['selected_answer'] ?? '');
+                    $correctAnswer = (string)($result['correct_answer'] ?? '');
+                    $questionText = (string)($result['question_text'] ?? '');
                     $isCorrect = isset($result['is_correct']) ? ($result['is_correct'] ? 1 : 0) : 0;
                     $pointsAwarded = $result['points_earned'] ?? $result['points_awarded'] ?? 0;
                     $pointsPossible = $result['points_possible'] ?? 10;

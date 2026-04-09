@@ -94,6 +94,9 @@ const HeaderTemplate = {
         if (isAuthenticated) {
             this.initNotifications();
         }
+
+        // Load the feedback widget on every page
+        this.loadFeedbackWidget();
     },
 
     /**
@@ -367,6 +370,19 @@ const HeaderTemplate = {
             }
         };
         document.head.appendChild(script);
+    },
+
+    /**
+     * Dynamically load the feedback widget script
+     */
+    loadFeedbackWidget() {
+        if (document.getElementById('feedback-widget-script')) return;
+        const basePath = document.querySelector('script[src*="header-template"]')?.src || '';
+        const dir = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+        const script = document.createElement('script');
+        script.id = 'feedback-widget-script';
+        script.src = dir + 'feedback-widget.js';
+        document.body.appendChild(script);
     },
 
     /**

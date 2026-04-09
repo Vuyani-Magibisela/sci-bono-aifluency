@@ -997,6 +997,13 @@ $routes = [
         'auth' => true,
         'roles' => ['superadmin', 'orgadmin', 'schooladmin']
     ],
+    [
+        'method' => 'GET',
+        'pattern' => '/admin/user-stats',
+        'handler' => 'AdminController@getUserStats',
+        'auth' => true,
+        'roles' => ['superadmin', 'orgadmin', 'schooladmin']
+    ],
 
     // Feedback Routes
     [

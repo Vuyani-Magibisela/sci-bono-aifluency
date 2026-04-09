@@ -18,7 +18,6 @@ class QuizAttempt extends BaseModel
         'answers',
         'time_taken_minutes',
         'passed',
-        'completed_at',
         'attempt_number',
         'time_started',
         'time_completed',
@@ -45,7 +44,7 @@ class QuizAttempt extends BaseModel
      */
     public function getByUser(int $userId, ?int $limit = null, ?int $offset = null): array
     {
-        $attempts = $this->all(['user_id' => $userId], 'created_at DESC', $limit, $offset);
+        $attempts = $this->all(['user_id' => $userId], 'started_at DESC', $limit, $offset);
 
         // Parse JSON answers for each attempt
         foreach ($attempts as $attempt) {
@@ -67,7 +66,7 @@ class QuizAttempt extends BaseModel
      */
     public function getByQuiz(int $quizId, ?int $limit = null, ?int $offset = null): array
     {
-        $attempts = $this->all(['quiz_id' => $quizId], 'created_at DESC', $limit, $offset);
+        $attempts = $this->all(['quiz_id' => $quizId], 'started_at DESC', $limit, $offset);
 
         // Parse JSON answers for each attempt
         foreach ($attempts as $attempt) {
@@ -92,7 +91,7 @@ class QuizAttempt extends BaseModel
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
                 WHERE user_id = :user_id AND quiz_id = :quiz_id
-                ORDER BY created_at DESC
+                ORDER BY started_at DESC
             ");
             $stmt->execute([
                 'user_id' => $userId,
@@ -127,7 +126,7 @@ class QuizAttempt extends BaseModel
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
                 WHERE user_id = :user_id AND quiz_id = :quiz_id
-                ORDER BY score DESC, created_at DESC
+                ORDER BY score DESC, started_at DESC
                 LIMIT 1
             ");
             $stmt->execute([
@@ -160,12 +159,29 @@ class QuizAttempt extends BaseModel
             $data['answers'] = json_encode($data['answers']);
         }
 
-        // Set completed_at to now if not provided
-        if (!isset($data['completed_at'])) {
-            $data['completed_at'] = date('Y-m-d H:i:s');
+        // Set time_completed to now if not provided
+        if (!isset($data['time_completed'])) {
+            $data['time_completed'] = date('Y-m-d H:i:s');
         }
 
-        return $this->create($data);
+        // Set time_started if not provided
+        if (!isset($data['time_started'])) {
+            $data['time_started'] = date('Y-m-d H:i:s');
+        }
+
+        // Ensure passed is integer (0 or 1) for tinyint column
+        if (isset($data['passed'])) {
+            $data['passed'] = $data['passed'] ? 1 : 0;
+        }
+
+        $result = $this->create($data);
+
+        if ($result === null) {
+            error_log("createAttempt FAILED - data keys: " . implode(', ', array_keys($data))
+                . " | quiz_id={$data['quiz_id']}, user_id={$data['user_id']}, score={$data['score']}");
+        }
+
+        return $result;
     }
 
     /**

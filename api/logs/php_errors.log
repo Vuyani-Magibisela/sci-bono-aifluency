@@ -409,3 +409,26 @@
 [17-Feb-2026 06:35:07 Africa/Johannesburg] [RefreshDebug] refreshToken=null
 [17-Feb-2026 06:35:30 Africa/Johannesburg] [RefreshDebug] $_POST={"refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJhdWQiOiJodHRwOlwvXC9haWZsdWVuY3kubG9jYWwiLCJpYXQiOjE3NzEzMDI3MTksImV4cCI6MTc3Mzg5NDcxOSwic3ViIjozLCJ0eXBlIjoicmVmcmVzaCJ9.9P6QFjHlazuxz1uZ_jExxgXTR3VH1-dylWBkrtt58yA"}
 [17-Feb-2026 06:35:30 Africa/Johannesburg] [RefreshDebug] refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz
+[03-Mar-2026 16:30:00 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:06 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:10 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:13 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:17 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:21 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:24 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[03-Mar-2026 16:30:30 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:20 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:24 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:27 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:31 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:41 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[05-Mar-2026 16:19:45 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'vuyanjcb_scibono_ai_hub'@'localhost' (using password: YES)
+[06-Mar-2026 12:09:33 Africa/Johannesburg] PHP Warning:  ini_set(): Session ini settings cannot be changed after headers have already been sent in /var/www/html/sci-bono-aifluency/api/config/config.php on line 87
+[06-Mar-2026 12:09:33 Africa/Johannesburg] PHP Warning:  ini_set(): Session ini settings cannot be changed after headers have already been sent in /var/www/html/sci-bono-aifluency/api/config/config.php on line 88
+[12-Mar-2026 15:03:26 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:03:38 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:03:54 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:03:59 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:04:08 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:04:13 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)
+[12-Mar-2026 15:04:22 Africa/Johannesburg] Database connection failed: SQLSTATE[HY000] [1045] Access denied for user 'uobrogslmhd3b'@'localhost' (using password: YES)

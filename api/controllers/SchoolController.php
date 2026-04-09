@@ -37,11 +37,18 @@ class SchoolController extends BaseController
         $limit = isset($_GET['limit']) ? min(100, max(1, (int)$_GET['limit'])) : 20;
         $offset = ($page - 1) * $limit;
         $organizationId = isset($_GET['organization_id']) ? (int)$_GET['organization_id'] : null;
+        $hasUsers = isset($_GET['has_users']) && $_GET['has_users'];
 
         if ($currentUser->role === 'superadmin') {
-            // SuperAdmins see all schools
-            $schools = $this->schoolModel->getAll($organizationId, $limit, $offset);
-            $total = $this->schoolModel->getTotalCount($organizationId);
+            if ($hasUsers) {
+                // Optimised path: only schools with active users, count included
+                $schools = $this->schoolModel->getSchoolsWithUsers($organizationId);
+                $total = count($schools);
+            } else {
+                // Normal paginated list
+                $schools = $this->schoolModel->getAll($organizationId, $limit, $offset);
+                $total = $this->schoolModel->getTotalCount($organizationId);
+            }
         } elseif ($currentUser->role === 'orgadmin') {
             // OrgAdmins see schools in their organizations
             $managedOrgIds = $this->getManagedOrganizationIds();
@@ -55,14 +62,23 @@ class SchoolController extends BaseController
                 return;
             }
 
-            $schools = $this->schoolModel->getSchoolsByOrganizationIds($managedOrgIds);
-            if ($organizationId) {
-                $schools = array_filter($schools, function($school) use ($organizationId) {
-                    return $school['organization_id'] == $organizationId;
-                });
+            if ($hasUsers) {
+                $schools = $this->schoolModel->getSchoolsWithUsers($organizationId);
+                // Scope to managed orgs
+                $schools = array_values(array_filter($schools, function($school) use ($managedOrgIds) {
+                    return in_array($school['organization_id'], $managedOrgIds);
+                }));
+                $total = count($schools);
+            } else {
+                $schools = $this->schoolModel->getSchoolsByOrganizationIds($managedOrgIds);
+                if ($organizationId) {
+                    $schools = array_filter($schools, function($school) use ($organizationId) {
+                        return $school['organization_id'] == $organizationId;
+                    });
+                }
+                $total = count($schools);
+                $schools = array_slice($schools, $offset, $limit);
             }
-            $total = count($schools);
-            $schools = array_slice($schools, $offset, $limit);
         } else {
             // SchoolAdmins see only their school
             if ($currentUser->primary_school_id) {
@@ -75,9 +91,12 @@ class SchoolController extends BaseController
             }
         }
 
-        // Enrich with statistics
-        foreach ($schools as &$school) {
-            $school['user_count'] = $this->schoolModel->getUserCount($school['id']);
+        // Enrich with user counts only when not using has_users (which already includes them)
+        if (!$hasUsers) {
+            $userCounts = $this->schoolModel->getAllUserCounts();
+            foreach ($schools as &$school) {
+                $school['user_count'] = $userCounts[(int)$school['id']] ?? 0;
+            }
         }
 
         Response::success([
@@ -145,7 +164,7 @@ class SchoolController extends BaseController
         $this->requireSchoolManagementPermission((object)$school);
 
         // Add statistics
-        $school['statistics'] = $this->schoolModel->getStatistics($schoolId);
+        $school['statistics'] = $this->schoolModel->getDetailedStatistics($schoolId);
 
         Response::success($school);
     }
@@ -262,7 +281,7 @@ class SchoolController extends BaseController
 
         // Get pagination and filter parameters
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $limit = isset($_GET['limit']) ? min(100, max(1, (int)$_GET['limit'])) : 20;
+        $limit = isset($_GET['limit']) ? min(5000, max(1, (int)$_GET['limit'])) : 20;
         $offset = ($page - 1) * $limit;
         $role = $_GET['role'] ?? null;
 
