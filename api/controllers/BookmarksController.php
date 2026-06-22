@@ -50,10 +50,13 @@ class BookmarksController extends BaseController {
      * Check if a lesson is bookmarked
      * GET /api/bookmarks/check/:lessonId
      */
-    public function checkBookmark($lessonId) {
+    public function checkBookmark(array $params = []) {
         try {
             // Verify authentication
             $currentUser = $this->getCurrentUser();
+
+            // Extract lessonId from params array
+            $lessonId = $params['lessonId'] ?? null;
 
             // Validate lesson ID
             if (!is_numeric($lessonId) || $lessonId <= 0) {
@@ -125,10 +128,13 @@ class BookmarksController extends BaseController {
      * Remove a bookmark
      * DELETE /api/bookmarks/:lessonId
      */
-    public function delete($lessonId) {
+    public function delete(array $params = []) {
         try {
             // Verify authentication
             $currentUser = $this->getCurrentUser();
+
+            // Extract lessonId from params array
+            $lessonId = $params['lessonId'] ?? null;
 
             // Validate lesson ID
             if (!is_numeric($lessonId) || $lessonId <= 0) {

@@ -1,0 +1,314 @@
+/* ==========================================================================
+   Walkthrough — Driver.js theme overrides + floating help button
+   Sci-Bono brand: primary #4B6EFB
+   ========================================================================== */
+
+/* ----- Driver.js popover overrides ----- */
+.driver-popover.sci-bono-tour-popover {
+    background: #ffffff;
+    color: #1f2937;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(10, 14, 39, 0.25), 0 2px 8px rgba(10, 14, 39, 0.08);
+    padding: 0;
+    font-family: 'Poppins', 'Montserrat', system-ui, -apple-system, sans-serif;
+    max-width: 360px;
+    border: 1px solid rgba(75, 110, 251, 0.12);
+}
+
+.sci-bono-tour-popover .driver-popover-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1f2937;
+    padding: 18px 20px 6px;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.sci-bono-tour-popover .driver-popover-description {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: #4b5563;
+    padding: 0 20px 14px;
+}
+
+.sci-bono-tour-popover .driver-popover-footer {
+    padding: 12px 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.sci-bono-tour-popover .driver-popover-progress-text {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7280;
+    letter-spacing: 0.02em;
+}
+
+.sci-bono-tour-popover .driver-popover-navigation-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.sci-bono-tour-popover button.driver-popover-next-btn,
+.sci-bono-tour-popover button.driver-popover-prev-btn,
+.sci-bono-tour-popover button.driver-popover-close-btn {
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: none;
+    text-shadow: none;
+    line-height: 1.2;
+}
+
+.sci-bono-tour-popover button.driver-popover-next-btn {
+    background: #4B6EFB;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(75, 110, 251, 0.3);
+}
+
+.sci-bono-tour-popover button.driver-popover-next-btn:hover {
+    background: #3a5af0;
+    box-shadow: 0 4px 12px rgba(75, 110, 251, 0.4);
+    transform: translateY(-1px);
+}
+
+.sci-bono-tour-popover button.driver-popover-prev-btn {
+    background: transparent;
+    color: #4B6EFB;
+    border: 1px solid rgba(75, 110, 251, 0.3);
+}
+
+.sci-bono-tour-popover button.driver-popover-prev-btn:hover {
+    background: rgba(75, 110, 251, 0.06);
+    border-color: #4B6EFB;
+}
+
+.sci-bono-tour-popover button.driver-popover-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    color: #9ca3af;
+    padding: 4px 8px;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.sci-bono-tour-popover button.driver-popover-close-btn:hover {
+    color: #4b5563;
+}
+
+/* Highlighted element pulse glow */
+.driver-active-element,
+.driver-active-element * {
+    z-index: 10000;
+}
+
+.driver-overlay {
+    fill: rgba(10, 14, 39, 0.65) !important;
+}
+
+/* Subtle pulsing ring around the highlighted stage */
+.driver-highlighted-element {
+    box-shadow: 0 0 0 4px rgba(75, 110, 251, 0.45),
+                0 0 0 8px rgba(75, 110, 251, 0.15) !important;
+    animation: tourPulse 2s ease-in-out infinite;
+    border-radius: 6px;
+}
+
+@keyframes tourPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 4px rgba(75, 110, 251, 0.45),
+                    0 0 0 8px rgba(75, 110, 251, 0.15);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(75, 110, 251, 0.55),
+                    0 0 0 12px rgba(75, 110, 251, 0.20);
+    }
+}
+
+/* Mobile popover sizing */
+@media (max-width: 600px) {
+    .driver-popover.sci-bono-tour-popover {
+        max-width: 90vw;
+    }
+
+    .sci-bono-tour-popover .driver-popover-title {
+        font-size: 1rem;
+        padding: 14px 16px 4px;
+    }
+
+    .sci-bono-tour-popover .driver-popover-description {
+        font-size: 0.88rem;
+        padding: 0 16px 12px;
+    }
+
+    .sci-bono-tour-popover .driver-popover-footer {
+        padding: 10px 16px 12px;
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================================================
+   Header Help Button (sits in .header-controls beside the notification bell)
+   ========================================================================== */
+.tour-help-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Poppins', 'Montserrat', system-ui, sans-serif;
+}
+
+.tour-help-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(75, 110, 251, 0.1);
+    color: #4B6EFB;
+    border: 1px solid rgba(75, 110, 251, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    position: relative;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    padding: 0;
+    margin: 0 4px;
+}
+
+.tour-help-btn:hover,
+.tour-help-btn:focus-visible {
+    background: #4B6EFB;
+    color: #ffffff;
+    transform: scale(1.06);
+    box-shadow: 0 4px 12px rgba(75, 110, 251, 0.35);
+    outline: none;
+}
+
+.tour-help-btn:focus-visible {
+    box-shadow: 0 4px 12px rgba(75, 110, 251, 0.35),
+                0 0 0 3px rgba(75, 110, 251, 0.25);
+}
+
+/* "NEW" pulsing dot */
+#tour-new-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #FB4B4B;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: tourBadgePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes tourBadgePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 75, 75, 0.7);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 6px rgba(251, 75, 75, 0);
+    }
+}
+
+/* Help menu dropdown — drops DOWN from the header button */
+.tour-help-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(10, 14, 39, 0.18),
+                0 2px 8px rgba(10, 14, 39, 0.06);
+    border: 1px solid rgba(75, 110, 251, 0.1);
+    min-width: 240px;
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.96);
+    transform-origin: top right;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 9999;
+}
+
+.tour-help-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.tour-help-menu::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 14px;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-left: 1px solid rgba(75, 110, 251, 0.1);
+    border-top: 1px solid rgba(75, 110, 251, 0.1);
+    transform: rotate(45deg);
+}
+
+.tour-help-menu .tour-menu-header {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    padding: 8px 12px 6px;
+}
+
+.tour-help-menu button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #1f2937;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tour-help-menu button:hover,
+.tour-help-menu button:focus-visible {
+    background: rgba(75, 110, 251, 0.08);
+    color: #4B6EFB;
+    outline: none;
+}
+
+.tour-help-menu button i {
+    width: 18px;
+    color: #4B6EFB;
+}
+
+/* Mobile sizing — keep button visible in header */
+@media (max-width: 600px) {
+    .tour-help-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .tour-help-menu {
+        min-width: 220px;
+        right: -8px;
+    }
+}

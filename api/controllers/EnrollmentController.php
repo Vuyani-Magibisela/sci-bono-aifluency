@@ -40,6 +40,7 @@ class EnrollmentController extends BaseController
         $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 20;
         $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
         $courseId = isset($_GET['course_id']) ? (int)$_GET['course_id'] : null;
+        $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
         $status = isset($_GET['status']) ? $_GET['status'] : null;
 
         if ($page < 1) $page = 1;
@@ -52,6 +53,11 @@ class EnrollmentController extends BaseController
             $userId = $currentUser->id;
         }
 
+        // Teachers/schooladmins: lock school_id to their own regardless of query param.
+        if (in_array($currentUser->role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            $schoolId = isset($currentUser->primary_school_id) ? (int)$currentUser->primary_school_id : null;
+        }
+
         // Get enrollments based on filters
         if ($userId && $courseId) {
             $enrollment = $this->enrollmentModel->getUserEnrollment($userId, $courseId);
@@ -61,10 +67,16 @@ class EnrollmentController extends BaseController
             $enrollments = $this->enrollmentModel->getByUser($userId, $status, $pageSize, $offset);
             $total = $this->enrollmentModel->count(['user_id' => $userId]);
         } elseif ($courseId) {
-            // Only instructors/admins can see all enrollments for a course
+            // Only instructors/admins can see enrollments for a course
             $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
-            $enrollments = $this->enrollmentModel->getByCourse($courseId, $status, $pageSize, $offset);
-            $total = $this->enrollmentModel->count(['course_id' => $courseId]);
+            if ($schoolId) {
+                // School-scoped: join with users.primary_school_id
+                $enrollments = $this->enrollmentModel->getBySchoolAndCourse($schoolId, $courseId, $status, $pageSize, $offset);
+                $total = $this->enrollmentModel->countBySchoolAndCourse($schoolId, $courseId, $status);
+            } else {
+                $enrollments = $this->enrollmentModel->getByCourse($courseId, $status, $pageSize, $offset);
+                $total = $this->enrollmentModel->count(['course_id' => $courseId]);
+            }
         } else {
             // Only admins can see all enrollments
             $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);

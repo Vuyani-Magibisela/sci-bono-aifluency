@@ -130,7 +130,7 @@ class ModuleController extends BaseController
     public function create(array $params = []): void
     {
         // Only admin and instructor can create modules
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
 
         $data = $_POST;
 
@@ -211,7 +211,7 @@ class ModuleController extends BaseController
     public function update(array $params): void
     {
         // Only admin and instructor can update modules
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Module ID is required', 400);
@@ -301,7 +301,7 @@ class ModuleController extends BaseController
     public function delete(array $params): void
     {
         // Only admin can delete modules
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Module ID is required', 400);

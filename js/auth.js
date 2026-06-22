@@ -239,6 +239,17 @@ const Auth = {
      */
     async checkAuthOnPageLoad() {
         if (!this.isAuthenticated()) {
+            // Token expired or missing — try refresh if we have a refresh token
+            const refreshToken = Storage.get('refresh_token');
+            if (refreshToken) {
+                console.log('Token expired but refresh token exists, attempting refresh...');
+                const refreshed = await API.refreshToken();
+                if (refreshed) {
+                    console.log('Token refreshed successfully');
+                    return true;
+                }
+                console.log('Token refresh failed, user is not authenticated');
+            }
             return false;
         }
 

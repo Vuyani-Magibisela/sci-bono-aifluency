@@ -12,8 +12,10 @@ use App\Utils\JWTHandler;
  */
 class FileUploadController extends BaseController
 {
-    // File upload configuration
-    private const UPLOAD_BASE_DIR = '/var/www/html/sci-bono-aifluency/uploads';
+    // File upload configuration.
+    // Resolve relative to this file so the path is correct regardless of install location
+    // (local /var/www/html/... vs cPanel /home/<user>/public_html/...).
+    private const UPLOAD_BASE_DIR = __DIR__ . '/../../uploads';
     private const MAX_FILE_SIZE = 10485760; // 10MB in bytes
 
     private const ALLOWED_TYPES = [
@@ -46,6 +48,12 @@ class FileUploadController extends BaseController
             ],
             'max_size' => 5242880, // 5MB
             'directory' => 'documents'
+        ],
+        'certificate_template' => [
+            'extensions' => ['png', 'jpg', 'jpeg', 'pdf'],
+            'mime_types' => ['image/png', 'image/jpeg', 'application/pdf'],
+            'max_size' => 5242880, // 5MB
+            'directory' => 'certificate_templates'
         ]
     ];
 
@@ -107,7 +115,9 @@ class FileUploadController extends BaseController
         // Create upload directory if needed
         $uploadDir = self::UPLOAD_BASE_DIR . '/' . $config['directory'] . '/' . $userId;
         if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true)) {
+            if (!@mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+                $err = error_get_last();
+                error_log("Failed to mkdir {$uploadDir}: " . ($err['message'] ?? 'unknown error'));
                 Response::error('Failed to create upload directory', 500);
                 return;
             }
@@ -134,8 +144,12 @@ class FileUploadController extends BaseController
                 'metadata' => json_encode($metadata)
             ]);
 
-            // Generate access URL
-            $fileUrl = '/api/files/' . $fileId;
+            // Generate access URL. Certificate template backgrounds are loaded as CSS
+            // background-image in the browser, which can't send a JWT header — so we
+            // hand back the public, unauthenticated variant for that file type.
+            $fileUrl = $uploadType === 'certificate_template'
+                ? '/api/files/' . $fileId . '/public'
+                : '/api/files/' . $fileId;
 
             Response::success([
                 'file_id' => $fileId,
@@ -182,11 +196,14 @@ class FileUploadController extends BaseController
             return;
         }
 
-        // Check permissions (user can only access their own files or if admin/instructor)
+        // Permissions: owner OR admin tier OR certificate templates (readable by anyone authenticated, since
+        // they back-ground student certificates rendered in the browser).
         $userModel = new \App\Models\User($this->pdo);
-        $currentUser = $userModel->find($userId);
+        $fullUser = $userModel->find($userId);
+        $isAdmin = $fullUser && in_array($fullUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'], true);
+        $isPubliclyReadable = ($fileRecord['file_type'] === 'certificate_template');
 
-        if ($fileRecord['user_id'] != $userId && !in_array($currentUser->role, ['admin', 'instructor'])) {
+        if ($fileRecord['user_id'] != $userId && !$isAdmin && !$isPubliclyReadable) {
             Response::error('Unauthorized to access this file', 403);
             return;
         }
@@ -202,6 +219,47 @@ class FileUploadController extends BaseController
         header('Content-Disposition: inline; filename="' . $fileRecord['original_filename'] . '"');
         header('Content-Length: ' . $fileRecord['file_size']);
         header('Cache-Control: private, max-age=3600');
+
+        readfile($fileRecord['file_path']);
+        exit;
+    }
+
+    /**
+     * Serve a publicly-readable file (no auth).
+     *
+     * GET /api/files/:id/public
+     *
+     * Only files of type `certificate_template` are exposed here — these back
+     * student-facing certificate renders and admin live-preview <img>/CSS
+     * background-image requests that can't carry a JWT header. Any other
+     * file type returns 404 so this endpoint can't leak private uploads.
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function getPublicFile(array $params = []): void
+    {
+        $fileId = $params['id'] ?? null;
+        if (!$fileId) {
+            Response::error('File ID is required', 400);
+            return;
+        }
+
+        $fileRecord = $this->getFileRecord((int)$fileId);
+        if (!$fileRecord || $fileRecord['file_type'] !== 'certificate_template') {
+            Response::error('File not found', 404);
+            return;
+        }
+
+        if (!file_exists($fileRecord['file_path'])) {
+            Response::error('File not found on server', 404);
+            return;
+        }
+
+        header('Content-Type: ' . $fileRecord['mime_type']);
+        header('Content-Disposition: inline; filename="' . $fileRecord['original_filename'] . '"');
+        header('Content-Length: ' . $fileRecord['file_size']);
+        header('Cache-Control: public, max-age=3600');
 
         readfile($fileRecord['file_path']);
         exit;

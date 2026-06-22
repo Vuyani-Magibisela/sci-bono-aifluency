@@ -51,7 +51,7 @@ class CourseView {
                 this.modules = this.course.modules || [];
 
                 // Update page title
-                document.title = `${this.course.title} - AI Discovery Hub`;
+                document.title = `${this.course.title} - AI Hub`;
                 document.getElementById('page-title').textContent = document.title;
 
                 // Render course header
@@ -86,7 +86,7 @@ class CourseView {
         headerContainer.innerHTML = `
             <h1>${this.course.title}</h1>
             <p>${this.course.description || 'No description available.'}</p>
-            <p class="course-gating-info"><i class="fas fa-info-circle"></i> After completing each module, you must pass a quiz and submit a project to unlock the next module.</p>
+            <p class="course-gating-info"><i class="fas fa-info-circle"></i> Pass each module's quiz to unlock the next module. To finish the course and earn your certificate, complete every lesson, pass every quiz, and submit every project.</p>
             ${enrollmentBadge}
             <div class="course-meta">
                 <div class="meta-item">
@@ -113,8 +113,14 @@ class CourseView {
     renderProgressSection() {
         const progressContainer = document.getElementById('progress-section');
 
-        // Count modules where both quiz and project are done
-        const completedModules = this.modules.filter(m => m.quiz_passed && m.project_submitted).length;
+        // A module counts as fully complete only when all three artifacts are done:
+        // every lesson finished, the quiz passed, and the project submitted.
+        // This matches the certificate-issuance rule.
+        const completedModules = this.modules.filter(m =>
+            (m.completion_percentage || 0) >= 100 &&
+            m.quiz_passed &&
+            m.project_submitted
+        ).length;
         const totalModules = this.modules.length;
         const completionPercentage = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
 
@@ -159,11 +165,24 @@ class CourseView {
      */
     renderModuleCard(module, index) {
         const moduleNumber = index + 1;
-        // First module always unlocked; subsequent modules require previous module's quiz AND project done
-        let isLocked = false;
-        if (this.course.is_enrolled && index > 0) {
-            const prevModule = this.modules[index - 1];
-            isLocked = !(prevModule.quiz_passed && prevModule.project_submitted);
+        // Backend (CourseController) sets module.is_unlocked using the
+        // sequential quiz-pass rule. Module 1 is always unlocked. Falls back
+        // to the previous-module quiz_passed flag if is_unlocked is missing
+        // (older API responses).
+        let isLocked;
+        let lockedReason;
+        if (typeof module.is_unlocked === 'boolean') {
+            isLocked = !module.is_unlocked;
+            lockedReason = module.locked_reason
+                || (index > 0 ? `Pass the quiz in "${this.modules[index - 1].title}" to unlock this module` : null);
+        } else {
+            isLocked = false;
+            lockedReason = null;
+            if (this.course.is_enrolled && index > 0) {
+                const prevModule = this.modules[index - 1];
+                isLocked = !prevModule.quiz_passed;
+                lockedReason = `Pass the quiz in "${prevModule.title}" to unlock this module`;
+            }
         }
         const progress = module.completion_percentage || 0;
         const lessonsCount = module.lessons_count || 0;
@@ -228,7 +247,7 @@ class CourseView {
                     ${isLocked ? `
                         <div class="module-requirements">
                             <i class="fas fa-lock"></i>
-                            <span>Complete Quiz and Project in Module ${index} to unlock</span>
+                            <span>${this.escapeHtml(lockedReason || `Pass the quiz in Module ${index} to unlock`)}</span>
                         </div>
                     ` : ''}
 
@@ -257,6 +276,15 @@ class CourseView {
      */
     navigateToModule(moduleId) {
         window.location.href = `/student/modules/module-dynamic.html?module_id=${moduleId}&course_id=${this.courseId}`;
+    }
+
+    /**
+     * Escape text for safe insertion into HTML.
+     */
+    escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s == null ? '' : String(s);
+        return div.innerHTML;
     }
 
     /**

@@ -12,6 +12,11 @@ const AdminQuizzes = {
     selectedModuleId: null,
     currentQuizQuestions: [],
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the quiz management interface
      */
@@ -24,6 +29,12 @@ const AdminQuizzes = {
             console.error('AdminQuizzes: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create button for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-quiz-btn');
+            if (createBtn) createBtn.style.display = 'none';
         }
 
         // Load courses and modules first
@@ -155,11 +166,12 @@ const AdminQuizzes = {
                         <span><i class="fas fa-redo"></i> ${quiz.max_attempts} attempts</span>
                     </div>
                     <div class="lesson-actions" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e0e0;">
-                        <button class="action-btn edit" onclick="AdminQuizzes.manageQuestions(${quiz.id})" title="Manage Questions">
-                            <i class="fas fa-list"></i> Questions
-                        </button>
                         <button class="action-btn view" onclick="AdminQuizzes.viewQuiz(${quiz.id})" title="View">
                             <i class="fas fa-eye"></i>
+                        </button>
+                        ${this.isSuperAdmin() ? `
+                        <button class="action-btn edit" onclick="AdminQuizzes.manageQuestions(${quiz.id})" title="Manage Questions">
+                            <i class="fas fa-list"></i> Questions
                         </button>
                         <button class="action-btn edit" onclick="AdminQuizzes.editQuiz(${quiz.id})" title="Edit">
                             <i class="fas fa-edit"></i>
@@ -172,6 +184,7 @@ const AdminQuizzes = {
                         <button class="action-btn delete" onclick="AdminQuizzes.deleteQuiz(${quiz.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -189,10 +202,12 @@ const AdminQuizzes = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-question-circle"></i></div>
                 <h3>No Quizzes Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first quiz to assess student knowledge.</p>
                 <button class="btn-primary" onclick="AdminQuizzes.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Quiz
                 </button>
+                ` : '<p>No quizzes available yet.</p>'}
             </div>
         `;
     },

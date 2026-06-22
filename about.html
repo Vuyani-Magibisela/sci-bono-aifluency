@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4B6EFB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sci-Bono AI Hub">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Sci-Bono AI Hub</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <style>
+        .about-page {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Hero */
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+        }
+
+        .about-hero h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .about-hero p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        /* Sections */
+        .about-section {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .about-section h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .about-section p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
+        }
+
+        /* Mission / Vision cards */
+        .mv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .mv-card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .mv-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .mv-card h3 {
+            font-size: 1.15rem;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .mv-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        /* Pillars */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .pillar-card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: 12px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .pillar-card:hover {
+            box-shadow: 0 4px 20px rgba(75, 110, 251, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .pillar-card .pillar-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .pillar-card .pillar-icon i {
+            color: #fff;
+            font-size: 1.3rem;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .pillar-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* Who is it for */
+        .audience-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        .audience-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        .audience-list li i {
+            color: var(--primary-color);
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        /* CTA */
+        .about-cta {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #fff;
+        }
+
+        .about-cta h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+
+        .about-cta p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .about-cta .btn-cta {
+            display: inline-block;
+            background: #fff;
+            color: var(--primary-color);
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .about-cta .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Divider between sections */
+        .about-section + .about-section {
+            border-top: 1px solid var(--grey-light);
+        }
+
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .about-hero p {
+                font-size: 1rem;
+            }
+
+            .about-section {
+                padding: 2rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Header -->
+    <div id="header-placeholder"></div>
+
+    <main class="about-page">
+        <!-- Hero -->
+        <section class="about-hero">
+            <h1>About the Sci-Bono AI Hub</h1>
+            <p>Sci-Bono Discovery Centre's ICT contribution to empowering South Africa with AI knowledge and skills — open to anyone ready to learn, build, and make an impact.</p>
+        </section>
+
+        <!-- What We Are -->
+        <section class="about-section">
+            <h2>What is the AI Hub?</h2>
+            <p>The Sci-Bono AI Hub is a free, open learning platform created by the ICT department at Sci-Bono Discovery Centre in Johannesburg. It exists to give every South African — learner, student, educator, professional, or curious mind — a clear pathway into artificial intelligence, from understanding the basics all the way to building and running AI agents.</p>
+            <p>More than a course catalogue, the platform is a living repository of AI learning resources. Whether you are hearing the term "machine learning" for the first time or you are ready to deploy your own project, there is a place for you here.</p>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="about-section">
+            <h2>Mission &amp; Vision</h2>
+            <div class="mv-grid">
+                <div class="mv-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Our Mission</h3>
+                    <p>To democratise AI education in South Africa by providing accessible, project-based learning that equips people with the knowledge and hands-on skills to harness artificial intelligence for personal growth and community development.</p>
+                </div>
+                <div class="mv-card">
+                    <i class="fas fa-eye"></i>
+                    <h3>Our Vision</h3>
+                    <p>A South Africa where every community has people who understand, use, and build with AI — turning technology into a tool for opportunity, innovation, and positive change.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How We Teach -->
+        <section class="about-section">
+            <h2>How We Teach</h2>
+            <p>The AI Hub is built on the belief that you learn AI by doing AI. Every module pairs theory with real-world application, and every course culminates in a hands-on project. Participants don't just absorb information — they build things, solve problems, and implement what they learn to better themselves and their communities.</p>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fas fa-hammer"></i></div>
+                    <h3>Project-Based</h3>
+                    <p>Every course requires participants to get their hands dirty building real projects that apply AI concepts.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fas fa-layer-group"></i></div>
+                    <h3>Progressive Depth</h3>
+                    <p>Start with AI basics, advance through generative AI, prompt engineering, and work your way up to building and running agents.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fas fa-users"></i></div>
+                    <h3>Community Impact</h3>
+                    <p>Projects are designed to solve real problems — encouraging participants to use AI to uplift their communities.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fas fa-door-open"></i></div>
+                    <h3>Open to All</h3>
+                    <p>No prerequisites, no fees. If you have curiosity and internet access, you can start learning today.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Who Is It For -->
+        <section class="about-section">
+            <h2>Who Is It For?</h2>
+            <p>The AI Hub is for anyone interested in learning about AI. Our community includes:</p>
+            <ul class="audience-list">
+                <li><i class="fas fa-graduation-cap"></i><span><strong>High-school learners (Grades 8–12)</strong> — getting a head start on the technology shaping their future careers.</span></li>
+                <li><i class="fas fa-university"></i><span><strong>University students</strong> — supplementing their studies with practical AI skills and portfolio-ready projects.</span></li>
+                <li><i class="fas fa-chalkboard-teacher"></i><span><strong>Educators and trainers</strong> — building AI literacy so they can bring these skills into their own classrooms.</span></li>
+                <li><i class="fas fa-briefcase"></i><span><strong>Working professionals</strong> — upskilling to stay relevant in an AI-driven job market.</span></li>
+                <li><i class="fas fa-lightbulb"></i><span><strong>Curious minds</strong> — anyone who wants to understand what AI is, how it works, and what they can do with it.</span></li>
+            </ul>
+        </section>
+
+        <!-- About Sci-Bono -->
+        <section class="about-section">
+            <h2>About Sci-Bono Discovery Centre</h2>
+            <p>Sci-Bono Discovery Centre is South Africa's largest science centre, located in Newtown, Johannesburg. As a Gauteng Department of Education initiative, Sci-Bono is dedicated to advancing science, technology, engineering, and mathematics (STEM) education across the province.</p>
+            <p>The AI Hub is an extension of that mission — bringing the ICT department's expertise in digital skills training to a wider audience through an accessible online platform focused entirely on artificial intelligence.</p>
+        </section>
+
+        <!-- CTA -->
+        <section class="about-cta">
+            <h2>Ready to Start Learning?</h2>
+            <p>Join the AI Hub and start building the AI skills that will shape your future.</p>
+            <a href="/public/signup.html" class="btn-cta">Sign Up — It's Free <i class="fas fa-arrow-right"></i></a>
+        </section>
+    </main>
+
+    <!-- Dynamic Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-template.js"></script>
+    <script src="js/footer-template.js"></script>
+</body>
+</html>

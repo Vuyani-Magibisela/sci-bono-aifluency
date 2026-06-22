@@ -28,9 +28,9 @@ const InstructorDashboard = {
             return;
         }
 
-        // Update welcome message and sidebar profile
-        this.updateWelcomeMessage(user);
+        // Update sidebar profile immediately; welcome is set after school loads
         this.updateSidebarProfile(user);
+        this.updateWelcomeMessage(user);
 
         // Load dashboard data
         await this.loadDashboardData();
@@ -44,11 +44,15 @@ const InstructorDashboard = {
     /**
      * Update the welcome message with user's name
      */
-    updateWelcomeMessage(user) {
+    updateWelcomeMessage(user, schoolName) {
         const welcomeElement = document.getElementById('welcome-message');
         if (welcomeElement) {
             const firstName = user.name ? user.name.split(' ')[0] : 'Instructor';
             welcomeElement.textContent = `Welcome, ${firstName}!`;
+        }
+        const bannerSubtitle = document.querySelector('.welcome-banner p');
+        if (bannerSubtitle && schoolName) {
+            bannerSubtitle.innerHTML = `Instructor at <strong>${this.escapeHtml(schoolName)}</strong> &mdash; manage your courses and engage with your students`;
         }
     },
 
@@ -74,12 +78,28 @@ const InstructorDashboard = {
         this.showLoadingState();
 
         try {
-            // Load data in parallel
-            const [courses, gradingQueue, stats] = await Promise.all([
+            const user = Auth.getUser();
+
+            // Load data in parallel (school-scoped data is only fetched when assigned)
+            const [courses, gradingQueue, schoolStats, school] = await Promise.all([
                 this.loadMyCourses(),
                 this.loadGradingQueue(),
-                this.loadInstructorStats()
+                this.loadSchoolStats(user),
+                this.loadSchoolInfo(user)
             ]);
+
+            // Refresh welcome banner with school name if available
+            if (school && school.name) {
+                this.updateWelcomeMessage(user, school.name);
+            }
+
+            // Show a gentle banner if the teacher has no school AND no courses
+            if (!user.primary_school_id && (!courses || courses.length === 0)) {
+                this.renderUnassignedBanner();
+            }
+
+            // Compute stats from loaded data
+            const stats = this.computeStats(courses, gradingQueue, schoolStats);
 
             // Update UI with loaded data
             this.renderMyCourses(courses);
@@ -96,15 +116,79 @@ const InstructorDashboard = {
     },
 
     /**
+     * Fetch the student count for the teacher's assigned school.
+     * Returns null if the teacher has no school assignment.
+     */
+    async loadSchoolStats(user) {
+        if (!user || !user.primary_school_id) {
+            return null;
+        }
+        try {
+            const response = await API.get(`/users?school_id=${user.primary_school_id}&role=student&pageSize=1`);
+            const payload = response.data || {};
+            return { total_students: Number(payload.total) || 0 };
+        } catch (error) {
+            console.warn('InstructorDashboard: Could not load school stats:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Fetch school details (name, etc.) for the teacher's assigned school.
+     */
+    async loadSchoolInfo(user) {
+        if (!user || !user.primary_school_id) {
+            return null;
+        }
+        try {
+            const response = await API.get(`/schools/${user.primary_school_id}`);
+            return response.data || null;
+        } catch (error) {
+            console.warn('InstructorDashboard: Could not load school info:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Render a banner prompting admin to assign the teacher to a school.
+     */
+    renderUnassignedBanner() {
+        const host = document.getElementById('dashboard-content');
+        if (!host || document.getElementById('unassigned-banner')) return;
+        const banner = document.createElement('div');
+        banner.id = 'unassigned-banner';
+        banner.className = 'welcome-banner';
+        banner.style.background = 'linear-gradient(135deg, #FB4B4B 0%, #FFA500 100%)';
+        banner.style.marginBottom = '1.5rem';
+        banner.innerHTML = `
+            <h2>You are not yet assigned to a school or course</h2>
+            <p>Ask a SuperAdmin to assign you under <strong>Admin &rarr; Users</strong> so students from your school appear here.</p>
+        `;
+        const welcome = host.querySelector('.welcome-banner');
+        if (welcome && welcome.parentNode === host) {
+            host.insertBefore(banner, welcome.nextSibling);
+        } else {
+            host.prepend(banner);
+        }
+    },
+
+    /**
      * Load courses taught by this instructor
      */
     async loadMyCourses() {
         try {
             const user = Auth.getUser();
-            // Use instructor_id filter if available, and include unpublished
-            const endpoint = user
-                ? `/courses?instructor_id=${user.id}&published=false`
-                : '/courses';
+            // Teachers see published courses with at least one enrolled student from
+            // their assigned school. Superadmins without a school still fall back to
+            // ?instructor_id= for their own courses.
+            let endpoint;
+            if (user && user.primary_school_id) {
+                endpoint = `/courses?school_id=${user.primary_school_id}&published=true`;
+            } else if (user) {
+                endpoint = `/courses?instructor_id=${user.id}&published=false`;
+            } else {
+                endpoint = '/courses';
+            }
             const response = await API.get(endpoint);
             const raw = response.data || {};
             // Response::paginated returns { items: [...], pagination: {...} }
@@ -119,23 +203,27 @@ const InstructorDashboard = {
      * Load grading queue (pending quizzes and projects)
      */
     async loadGradingQueue() {
+        const user = Auth.getUser();
+        const schoolQuery = user && user.primary_school_id
+            ? `&school_id=${user.primary_school_id}`
+            : '';
         let projects = [];
         let quizzes = [];
 
-        // Load pending project submissions (endpoint may not exist yet)
+        // Pending project submissions (school-scoped).
         try {
-            const projectsResponse = await API.get('/projects/submissions/pending');
-            const raw = projectsResponse.data || [];
-            projects = Array.isArray(raw) ? raw : (raw.items || []);
+            const projectsResponse = await API.get(`/projects/submissions/pending?limit=5${schoolQuery}`);
+            const raw = projectsResponse.data || {};
+            projects = Array.isArray(raw) ? raw : (raw.submissions || raw.items || []);
         } catch (error) {
             console.warn('InstructorDashboard: Could not load project submissions:', error);
         }
 
-        // Load quiz attempts that need review (endpoint may not exist yet)
+        // Pending quiz attempts needing manual grading (short-answer/essay).
         try {
-            const quizzesResponse = await API.get('/quizzes/attempts/pending-review');
-            const raw = quizzesResponse.data || [];
-            quizzes = Array.isArray(raw) ? raw : (raw.items || []);
+            const quizzesResponse = await API.get(`/grading/pending?limit=5${schoolQuery}`);
+            const raw = quizzesResponse.data || {};
+            quizzes = Array.isArray(raw) ? raw : (raw.attempts || raw.items || []);
         } catch (error) {
             console.warn('InstructorDashboard: Could not load quiz reviews:', error);
         }
@@ -148,28 +236,39 @@ const InstructorDashboard = {
     },
 
     /**
-     * Load instructor statistics
+     * Compute instructor stats from loaded courses, grading data, and school stats.
+     * When school-level stats are available (teacher assigned to a school), the
+     * school's student count takes precedence over the per-course enrollment sum.
      */
-    async loadInstructorStats() {
-        try {
-            const response = await API.get('/users/me/stats');
-            return response.data || this.getDefaultStats();
-        } catch (error) {
-            console.warn('InstructorDashboard: Could not load stats:', error);
-            return this.getDefaultStats();
-        }
-    },
+    computeStats(courses, gradingQueue, schoolStats) {
+        const courseList = Array.isArray(courses) ? courses : [];
+        const totalCourses = courseList.length;
 
-    /**
-     * Get default stats when API fails
-     */
-    getDefaultStats() {
+        let enrollmentSum = 0;
+        let totalCompletion = 0;
+        let coursesWithCompletion = 0;
+
+        courseList.forEach(course => {
+            enrollmentSum += (course.enrollment_count || 0);
+            if (course.completion_rate !== undefined && course.completion_rate !== null) {
+                totalCompletion += parseFloat(course.completion_rate) || 0;
+                coursesWithCompletion++;
+            }
+        });
+
+        const totalStudents = (schoolStats && schoolStats.total_students != null)
+            ? schoolStats.total_students
+            : enrollmentSum;
+
+        const avgCompletion = coursesWithCompletion > 0
+            ? Math.round(totalCompletion / coursesWithCompletion)
+            : 0;
+
         return {
-            total_courses: 0,
-            total_students: 0,
-            total_enrollments: 0,
-            pending_grading: 0,
-            average_completion_rate: 0
+            total_courses: totalCourses,
+            total_students: totalStudents,
+            pending_grading: gradingQueue ? gradingQueue.total : 0,
+            average_completion_rate: avgCompletion
         };
     },
 
@@ -183,12 +282,11 @@ const InstructorDashboard = {
         if (!Array.isArray(courses)) courses = [];
 
         if (courses.length === 0) {
-            container.innerHTML = this.getEmptyState(
-                'No Courses Yet',
-                'You haven\'t created any courses yet. Contact an administrator to create your first course.',
-                null,
-                null
-            );
+            const user = Auth.getUser();
+            const message = user && user.primary_school_id
+                ? 'You are not yet listed as the instructor on any course. An administrator can assign you in Course Management.'
+                : 'No courses yet. Ask an administrator to assign you to a school and course.';
+            container.innerHTML = this.getEmptyState('No Courses Yet', message, null, null);
             return;
         }
 
@@ -244,7 +342,7 @@ const InstructorDashboard = {
         if (queue.total === 0) {
             container.innerHTML = this.getEmptyState(
                 'No Pending Grading',
-                'All caught up! No submissions waiting for review.',
+                'Nothing needs your review right now. Quizzes in this course are auto-graded; items requiring instructor review will appear here.',
                 null,
                 null
             );

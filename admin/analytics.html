@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Analytics - AI Fluency LMS</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Chart.js -->
@@ -194,6 +202,180 @@
             background: #F5F5F5;
             color: #666;
         }
+
+        .school-students-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .school-students-table th,
+        .school-students-table td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .school-students-table th {
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            background: #fafafa;
+        }
+
+        .school-students-table tbody tr:hover {
+            background: #f9faff;
+        }
+
+        .school-students-table .progress-cell {
+            min-width: 100px;
+        }
+
+        .school-students-progress-bar {
+            background: #eee;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+
+        .school-students-progress-bar > div {
+            height: 100%;
+            background: linear-gradient(90deg, #4B6EFB, #6E4BFB);
+        }
+
+        .school-students-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .school-students-badge.active { background: #E8F5E9; color: #388E3C; }
+        .school-students-badge.stale { background: #FFF3E0; color: #E65100; }
+        .school-students-badge.never { background: #ECEFF1; color: #546E7A; }
+
+        .school-pagination-btn {
+            padding: 0.4rem 0.8rem;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .school-pagination-btn:hover:not(:disabled) { background: #f5f5f5; }
+        .school-pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Modal visibility — global .modal has display:none; this toggles it on */
+        .modal.active { display: flex; }
+
+        /* Schools Overview grid (All-Schools state) */
+        .schools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .school-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .school-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            border-color: #4B6EFB;
+        }
+        .school-card-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+        .school-card-org {
+            color: #6b7280;
+            font-size: 0.82rem;
+            margin-bottom: 0.9rem;
+            min-height: 1em;
+        }
+        .school-card-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        .school-card-stat {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .school-card-stat strong {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4B6EFB;
+            line-height: 1.2;
+        }
+        .school-card-footer {
+            margin-top: 0.9rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f3f4f6;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        /* School stats modal */
+        .school-stats-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin: 0.5rem 0 1rem 0;
+        }
+        .school-stats-modal-stat {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .school-stats-modal-stat .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #4B6EFB;
+            line-height: 1.1;
+        }
+        .school-stats-modal-stat .label {
+            font-size: 0.78rem;
+            color: #6b7280;
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .school-stats-modal-progress-wrap {
+            margin: 1rem 0 0.5rem 0;
+        }
+        .school-stats-modal-progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 0.35rem;
+        }
+        .school-stats-modal-progress-bar {
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .school-stats-modal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4B6EFB, #6E4BFB);
+            border-radius: 999px;
+        }
     </style>
 </head>
 <body>
@@ -218,9 +400,17 @@
                     <i class="fas fa-th-large"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/admin/users.html" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
+                </a>
+                <a href="/admin/instructors/teachers.html" class="nav-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Instructors</span>
+                </a>
+                <a href="/admin/students/learners.html" class="nav-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
                 </a>
                 <a href="/admin/courses.html" class="nav-item">
                     <i class="fas fa-book"></i>
@@ -238,9 +428,30 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Quizzes</span>
                 </a>
+                <a href="/admin/projects.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="/admin/certificates.html" class="nav-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+                <a href="/admin/certificate-templates.html" class="nav-item">
+                    <i class="fas fa-paint-brush"></i>
+                    <span>Cert. Templates</span>
+                </a>
                 <a href="/admin/analytics.html" class="nav-item active">
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
+                </a>
+                <a href="/admin/feedback.html" class="nav-item">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>User Feedback</span>
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/student/courses.html" class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>My Courses</span>
                 </a>
                 <a href="../index.html" class="nav-item">
                     <i class="fas fa-sign-out-alt"></i>
@@ -259,6 +470,16 @@
 
         <!-- Filters -->
         <div id="filters-container"></div>
+
+        <!-- School Filter (superadmin only) -->
+        <div class="analytics-school-filter" id="school-filter-wrap" style="display:none; margin-bottom: 1.5rem; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <label for="school-filter-select" style="font-weight:600; margin-right: 0.75rem;">
+                <i class="fas fa-school"></i> School:
+            </label>
+            <select id="school-filter-select" style="padding: 0.5rem 0.75rem; min-width: 260px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.95rem;">
+                <option value="">All Schools (platform-wide)</option>
+            </select>
+        </div>
 
         <!-- Platform Overview Stats -->
         <div class="platform-stats-grid">
@@ -305,7 +526,7 @@
             <div class="chart-card full-width">
                 <h3>📈 Enrollment Trends Over Time</h3>
                 <p class="chart-description">New enrollments and completion rates by time period</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="enrollmentTrendsChart">
                     <canvas id="enrollmentTrendsChart"></canvas>
                 </div>
             </div>
@@ -323,7 +544,7 @@
             <div class="chart-card half-width">
                 <h3>👤 User Acquisition Trends</h3>
                 <p class="chart-description">New user signups by role</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="userAcquisitionChart">
                     <canvas id="userAcquisitionChart"></canvas>
                 </div>
             </div>
@@ -341,7 +562,7 @@
             <div class="chart-card half-width">
                 <h3>⏱️ Platform Usage Statistics</h3>
                 <p class="chart-description">User activity by time of day</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="platformUsageChart">
                     <canvas id="platformUsageChart"></canvas>
                 </div>
             </div>
@@ -350,7 +571,7 @@
             <div class="chart-card half-width">
                 <h3>📜 Certificate Issuance Trends</h3>
                 <p class="chart-description">Certificates issued over time</p>
-                <div class="chart-container">
+                <div class="chart-container" data-chart="certificateTrendsChart">
                     <canvas id="certificateTrendsChart"></canvas>
                 </div>
             </div>
@@ -358,10 +579,61 @@
 
         <!-- Insights Section -->
         <div id="insights-container"></div>
+
+        <!-- Schools Overview Section (shown only for superadmin + no school selected) -->
+        <section id="schools-list-section" style="display:none; margin-top: 2.5rem;">
+            <h2 style="margin: 0 0 0.25rem 0;">🏫 Schools Overview</h2>
+            <p style="margin: 0 0 1rem 0; color: #666; font-size: 0.95rem;">Click a school to see full stats.</p>
+            <div id="schools-grid" class="schools-grid"></div>
+        </section>
+
+        <!-- School Detail Section (shown only when a school is selected) -->
+        <section id="school-detail-section" style="display:none; margin-top: 2.5rem;">
+            <h2 id="school-detail-title" style="margin: 0 0 1rem 0;">🏫 School Detail</h2>
+            <div id="school-detail-meta" style="margin-bottom: 1.25rem; color: #666; font-size: 0.95rem;"></div>
+            <div id="school-detail-stats" class="platform-stats-grid" style="margin-bottom: 1.5rem;"></div>
+
+            <div class="chart-card full-width" style="background:white; padding:1.5rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <h3 style="margin:0;">👥 Students</h3>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input type="search" id="school-students-search" placeholder="Search name or email…"
+                               style="padding: 0.5rem 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; min-width: 240px; font-size:0.9rem;">
+                        <select id="school-students-sort" style="padding: 0.5rem 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; font-size:0.9rem;">
+                            <option value="last_login_at">Sort: Last login</option>
+                            <option value="progress">Sort: Progress %</option>
+                            <option value="name">Sort: Name</option>
+                            <option value="created_at">Sort: Signup date</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="school-students-table-wrap">
+                    <div class="loading-spinner">Loading students…</div>
+                </div>
+                <div id="school-students-pagination" style="margin-top: 1rem; display:flex; gap:0.5rem; align-items:center; justify-content:flex-end;"></div>
+            </div>
+        </section>
         </main>
     </div>
 
+    <!-- School Stats Modal (populated on card click) -->
+    <div id="school-stats-modal" class="modal" onclick="if(event.target===this) closeSchoolStatsModal()">
+        <div class="modal-content" style="max-width: 720px;">
+            <div class="modal-header">
+                <h2 id="school-stats-modal-title" style="margin:0;">School Stats</h2>
+                <button type="button" class="modal-close" onclick="closeSchoolStatsModal()" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body" id="school-stats-modal-body">
+                <div class="loading-spinner">Loading…</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeSchoolStatsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script src="../js/storage.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/utils.js"></script>

@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#4B6EFB">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,7 +39,7 @@
     <title id="page-title">AI Fluency - Module</title>
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/stylesModules.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
     <style>
         .module-requirements-section {
@@ -175,7 +183,7 @@
                         <span>Submit the Module Project</span>
                     </div>
                 </div>
-                <p class="requirements-note">Complete both to unlock the next module.</p>
+                <p class="requirements-note">Pass the quiz to unlock the next module. Submit the project to count toward your course completion certificate.</p>
             </div>
         </div>
     </main>
@@ -276,6 +284,23 @@
                     if (quizData.user_best_score !== null && quizData.user_best_score !== undefined) {
                         quizPassed = quizData.user_best_score >= (quizData.passing_score || 70);
                     }
+
+                    // Fallback: if authenticated but attempt data missing (auth:false endpoint issue),
+                    // fetch from the auth:true /quizzes/:id/attempts endpoint
+                    if (Auth.isAuthenticated() && (quizData.user_attempt_count === undefined || quizData.user_attempt_count === null)) {
+                        try {
+                            const attemptResponse = await API.get(`/quizzes/${quizData.id}/attempts`);
+                            const attempts = attemptResponse.data?.attempts || [];
+                            quizData.user_attempt_count = attempts.length;
+                            // Derive best score from attempts if also missing
+                            if ((quizData.user_best_score === null || quizData.user_best_score === undefined) && attempts.length > 0) {
+                                quizData.user_best_score = Math.max(...attempts.map(a => parseFloat(a.score) || 0));
+                                quizPassed = quizData.user_best_score >= (quizData.passing_score || 70);
+                            }
+                        } catch (e) {
+                            console.warn('Could not fetch quiz attempts fallback:', e);
+                        }
+                    }
                 }
 
                 // Process project result
@@ -292,10 +317,38 @@
                 const quizUrl = `../quizzes/quiz-dynamic.html?module_id=${moduleId}&course_id=${courseId || ''}`;
 
                 if (quizData) {
-                    const quizStatusClass = quizPassed ? 'status-done' : 'status-pending';
-                    const quizStatusIcon = quizPassed ? 'fa-check-circle' : 'fa-circle';
-                    const quizStatusText = quizPassed ? 'Passed' : 'Not attempted';
-                    const quizLinkText = quizPassed ? 'Retake Quiz' : 'Take Quiz';
+                    const bestScore = quizData.user_best_score;
+                    const attemptCount = quizData.user_attempt_count || 0;
+                    const maxAttempts = quizData.max_attempts;
+                    const passingScore = quizData.passing_score || 70;
+
+                    let quizStatusClass, quizStatusIcon, quizStatusText, quizLinkText;
+
+                    if (quizPassed) {
+                        quizStatusClass = 'status-done';
+                        quizStatusIcon = 'fa-check-circle';
+                        quizStatusText = `Passed (${Math.round(bestScore)}%)`;
+                        quizLinkText = 'Retake Quiz';
+                    } else if (bestScore !== null && bestScore !== undefined) {
+                        quizStatusClass = 'status-pending';
+                        quizStatusIcon = 'fa-times-circle';
+                        quizStatusText = `Best: ${Math.round(bestScore)}% (need ${passingScore}%)`;
+                        quizLinkText = 'Retry Quiz';
+                    } else {
+                        quizStatusClass = 'status-pending';
+                        quizStatusIcon = 'fa-circle';
+                        quizStatusText = 'Not attempted';
+                        quizLinkText = 'Take Quiz';
+                    }
+
+                    // Build attempt count display
+                    let attemptDisplay = '';
+                    if (attemptCount > 0 || maxAttempts) {
+                        attemptDisplay = maxAttempts
+                            ? `<span style="font-size:0.8rem;color:#666;">Attempts: ${attemptCount}/${maxAttempts}</span>`
+                            : `<span style="font-size:0.8rem;color:#666;">Attempts: ${attemptCount}</span>`;
+                    }
+
                     lessonsContainer.insertAdjacentHTML('beforeend', `
                         <div class="chapter-card chapter-card--quiz">
                             <div class="chapter-card-icon"><i class="fas fa-clipboard-list"></i></div>
@@ -306,6 +359,7 @@
                                 <div class="chapter-card-status ${quizStatusClass}">
                                     <i class="fas ${quizStatusIcon}"></i> ${quizStatusText}
                                 </div>
+                                ${attemptDisplay}
                                 <a href="${quizUrl}" class="chapter-link">${quizLinkText}</a>
                             </div>
                         </div>

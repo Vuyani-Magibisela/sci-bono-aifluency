@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Management - AI Fluency Admin</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
 <body>
@@ -33,9 +41,17 @@
                     <i class="fas fa-th-large"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/admin/users.html" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
+                </a>
+                <a href="/admin/instructors/teachers.html" class="nav-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Instructors</span>
+                </a>
+                <a href="/admin/students/learners.html" class="nav-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
                 </a>
                 <a href="/admin/courses.html" class="nav-item">
                     <i class="fas fa-book"></i>
@@ -53,9 +69,30 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Quizzes</span>
                 </a>
+                <a href="/admin/projects.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="/admin/certificates.html" class="nav-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+                <a href="/admin/certificate-templates.html" class="nav-item">
+                    <i class="fas fa-paint-brush"></i>
+                    <span>Cert. Templates</span>
+                </a>
                 <a href="/admin/analytics.html" class="nav-item">
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
+                </a>
+                <a href="/admin/feedback.html" class="nav-item">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>User Feedback</span>
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/student/courses.html" class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>My Courses</span>
                 </a>
                 <a href="index.html" class="nav-item">
                     <i class="fas fa-sign-out-alt"></i>
@@ -122,7 +159,7 @@
                     <!-- Populated by JavaScript -->
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-primary" onclick="AdminModules.editModuleFromDetails()">
+                    <button type="button" class="btn-primary superadmin-only" id="details-edit-btn" onclick="AdminModules.editModuleFromDetails()">
                         <i class="fas fa-edit"></i> Edit Module
                     </button>
                     <button type="button" class="btn-secondary" onclick="AdminModules.closeDetailsModal()">Close</button>
@@ -199,8 +236,8 @@
 
     <!-- Page Protection -->
     <script>
-        // Require authentication - admins only
-        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Require authentication - superadmin only for content management
+        Auth.requireAuth(['superadmin']);
     </script>
 </body>
 </html>

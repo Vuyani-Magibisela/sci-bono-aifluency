@@ -178,11 +178,17 @@ CREATE TABLE IF NOT EXISTS modules (
 
     -- Module metadata
     title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
     description TEXT,
+    objectives TEXT DEFAULT NULL,
     order_index INT NOT NULL,
+    duration_hours INT DEFAULT 0,
 
     -- Media
     thumbnail_url VARCHAR(255) DEFAULT NULL,
+
+    -- Publishing
+    is_published BOOLEAN DEFAULT FALSE,
 
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -193,7 +199,9 @@ CREATE TABLE IF NOT EXISTS modules (
 
     -- Indexes
     INDEX idx_course_id (course_id),
-    INDEX idx_order (course_id, order_index)
+    INDEX idx_order (course_id, order_index),
+    INDEX idx_is_published (is_published),
+    UNIQUE INDEX idx_slug_course (course_id, slug)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -248,26 +256,38 @@ CREATE TABLE IF NOT EXISTS lessons (
 CREATE TABLE IF NOT EXISTS quizzes (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    -- Foreign key
+    -- Foreign keys
     module_id INT NOT NULL,
+    lesson_id INT DEFAULT NULL,
 
     -- Quiz metadata
     title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
     description TEXT,
 
     -- Quiz settings
     passing_score INT DEFAULT 70,
     time_limit_minutes INT DEFAULT NULL,
+    max_attempts INT DEFAULT 3,
+
+    -- Publishing and ordering
+    is_published BOOLEAN DEFAULT FALSE,
+    `order` INT DEFAULT 0,
 
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    -- Foreign key constraint
+    -- Foreign key constraints
     FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE SET NULL,
 
     -- Indexes
-    INDEX idx_module_id (module_id)
+    INDEX idx_module_id (module_id),
+    INDEX idx_lesson_id (lesson_id),
+    INDEX idx_quiz_published (is_published),
+    UNIQUE INDEX idx_quiz_slug (module_id, slug),
+    INDEX idx_quiz_order (module_id, `order`)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

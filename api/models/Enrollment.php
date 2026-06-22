@@ -160,19 +160,28 @@ class Enrollment extends BaseModel
      *
      * @param int $enrollmentId Enrollment ID
      * @param float $completionPercentage Completion percentage
+     * @param bool|null $courseComplete Set true to flip status to 'completed';
+     *                  false to keep/reset to 'active'; null to leave status untouched.
+     *                  (Course-completion is now lessons + quizzes + projects, not just lesson %.)
      * @return bool
      */
-    public function updateProgress(int $enrollmentId, float $completionPercentage): bool
+    public function updateProgress(int $enrollmentId, float $completionPercentage, ?bool $courseComplete = null): bool
     {
         $data = [
             'progress_percentage' => $completionPercentage,
             'last_accessed_at' => date('Y-m-d H:i:s')
         ];
 
-        // Mark as completed if 100%
-        if ($completionPercentage >= 100) {
+        if ($courseComplete === true) {
             $data['status'] = 'completed';
             $data['completed_at'] = date('Y-m-d H:i:s');
+        } elseif ($courseComplete === false) {
+            // Don't downgrade if user already explicitly dropped the course.
+            $current = $this->find($enrollmentId);
+            if ($current && $current->status === 'completed') {
+                $data['status'] = 'active';
+                $data['completed_at'] = null;
+            }
         }
 
         return $this->update($enrollmentId, $data);
@@ -218,30 +227,34 @@ class Enrollment extends BaseModel
             ]);
             $completed = $completedStmt->fetch(PDO::FETCH_ASSOC);
 
-            // Calculate percentage
+            // Calculate percentage (lesson-completion fraction — still useful for the progress bar)
             $percentage = round(($completed['completed'] / $total['total']) * 100, 2);
 
             // Update enrollment
             $enrollment = $this->getUserEnrollment($userId, $courseId);
             if ($enrollment) {
-                $wasCompleted = $enrollment->progress_percentage >= 100;
-                $this->updateProgress($enrollment->id, $percentage);
+                // Composite course-completion rule: lessons + quizzes + projects.
+                // Already-certified users are grandfathered as 'completed' so the
+                // stricter new rule doesn't retroactively flip their status.
+                $certificateModel = new \App\Models\Certificate($this->pdo);
+                $existingCert = $certificateModel->getUserCourseCertificate($userId, $courseId);
+                $eligible = $existingCert
+                    ? true
+                    : $certificateModel->isEligibleForCertificate($userId, $courseId);
+                $this->updateProgress($enrollment->id, $percentage, $eligible);
 
-                // Auto-generate certificate on 100% completion (Phase 6)
-                if ($percentage >= 100 && !$wasCompleted) {
+                // Auto-generate certificate when eligibility is met and a cert is missing.
+                // Self-healing: every calculateProgress call retries issuance for any stuck
+                // enrollment. Idempotency is enforced by getUserCourseCertificate + issueCertificate.
+                if ($eligible) {
                     try {
-                        $certificateModel = new \App\Models\Certificate($this->pdo);
-
-                        // Check if certificate doesn't already exist
                         $existingCert = $certificateModel->getUserCourseCertificate($userId, $courseId);
-
                         if (!$existingCert) {
                             $certificateId = $certificateModel->issueCertificate($userId, $courseId);
                             error_log("Auto-generated certificate ID {$certificateId} for user {$userId}, course {$courseId}");
                         }
                     } catch (\Exception $e) {
                         error_log("Failed to auto-generate certificate: " . $e->getMessage());
-                        // Don't fail progress update if certificate generation fails
                     }
                 }
             }
@@ -281,6 +294,258 @@ class Enrollment extends BaseModel
         }
     }
 
+    /**
+     * Get enrollments for a specific course, filtered to a school's students only.
+     *
+     * @param int $schoolId users.primary_school_id
+     * @param int $courseId
+     * @param string|null $status Optional enrollment status
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array Enrollment rows (as objects)
+     */
+    public function getBySchoolAndCourse(int $schoolId, int $courseId, ?string $status = null, ?int $limit = null, ?int $offset = null): array
+    {
+        $sql = "SELECT e.*
+                FROM {$this->table} e
+                INNER JOIN users u ON u.id = e.user_id AND u.primary_school_id = :school_id
+                WHERE e.course_id = :course_id";
+        $bind = ['school_id' => $schoolId, 'course_id' => $courseId];
+        if ($status !== null) {
+            $sql .= " AND e.status = :status";
+            $bind['status'] = $status;
+        }
+        $sql .= " ORDER BY e.enrolled_at DESC";
+        if ($limit !== null) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset !== null) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
+        return $this->query($sql, $bind);
+    }
+
+    /**
+     * Count enrollments for a course, scoped to a school's students.
+     */
+    public function countBySchoolAndCourse(int $schoolId, int $courseId, ?string $status = null): int
+    {
+        $sql = "SELECT COUNT(*) AS total
+                FROM {$this->table} e
+                INNER JOIN users u ON u.id = e.user_id AND u.primary_school_id = :school_id
+                WHERE e.course_id = :course_id";
+        $bind = ['school_id' => $schoolId, 'course_id' => $courseId];
+        if ($status !== null) {
+            $sql .= " AND e.status = :status";
+            $bind['status'] = $status;
+        }
+        $rows = $this->query($sql, $bind);
+        return isset($rows[0]) ? (int) $rows[0]->total : 0;
+    }
+
+    /**
+     * Aggregate enrollment summary per student for a given school.
+     *
+     * Returns one row per student at the school with:
+     *   - id, name, email, is_active, created_at (from users)
+     *   - enrollment_count: count of distinct courses the student is enrolled in
+     *   - completed_count: count of enrollments with status='completed' (drives the "Completed" progress filter)
+     *   - avg_progress: average progress_percentage across their enrollments (0 if none)
+     *   - last_active_at: MAX(enrollments.last_accessed_at) — drives the active/stale badge
+     *   - latest_enrolled_at: most recent enrolled_at timestamp (null if none)
+     *   - single_course_title: course title when enrollment_count = 1; MAX() otherwise (UI decides)
+     *
+     * Used to populate the instructor students table so Progress and Course columns
+     * are meaningful without requiring a per-course filter.
+     *
+     * @param int $schoolId users.primary_school_id
+     * @param int|null $limit
+     * @param int|null $offset
+     * @param string|null $search matches name/email (case-insensitive)
+     * @param bool|null $isActive filter on users.is_active
+     * @param string|null $progressFilter one of: 'not-started', 'in-progress', 'completed' (null = no filter)
+     * @param string|null $sortBy one of: 'name', 'progress', 'last_active' (null/unknown = 'name')
+     * @param string|null $sortOrder 'asc' or 'desc' (default 'asc')
+     * @return array Array of student summary objects
+     */
+    public function getSchoolStudentSummaries(
+        int $schoolId,
+        ?int $limit = null,
+        ?int $offset = null,
+        ?string $search = null,
+        ?bool $isActive = null,
+        ?string $progressFilter = null,
+        ?string $sortBy = null,
+        ?string $sortOrder = null
+    ): array {
+        [$where, $having, $params] = $this->buildSchoolStudentSummaryClauses($schoolId, $search, $isActive, $progressFilter);
+        $orderBy = $this->buildSchoolStudentSummaryOrderBy($sortBy, $sortOrder);
+
+        $sql = "SELECT
+                    u.id, u.name, u.email, u.is_active, u.created_at,
+                    COUNT(DISTINCT e.course_id) AS enrollment_count,
+                    COUNT(DISTINCT CASE WHEN e.status = 'completed' THEN e.course_id END) AS completed_count,
+                    COALESCE(AVG(e.progress_percentage), 0) AS avg_progress,
+                    MAX(e.last_accessed_at) AS last_active_at,
+                    MAX(e.enrolled_at) AS latest_enrolled_at,
+                    MAX(c.title) AS single_course_title
+                FROM users u
+                LEFT JOIN enrollments e ON e.user_id = u.id
+                LEFT JOIN courses c ON c.id = e.course_id
+                WHERE {$where}
+                GROUP BY u.id, u.name, u.email, u.is_active, u.created_at
+                {$having}
+                ORDER BY {$orderBy}";
+        if ($limit !== null) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset !== null) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
+        return $this->query($sql, $params);
+    }
+
+    /**
+     * Count of distinct students matching getSchoolStudentSummaries() filters.
+     * Must mirror the same WHERE + HAVING so pagination totals reflect the active filter
+     * (especially the progress filter, which is applied via HAVING on aggregates).
+     */
+    public function countSchoolStudentSummaries(
+        int $schoolId,
+        ?string $search = null,
+        ?bool $isActive = null,
+        ?string $progressFilter = null
+    ): int {
+        [$where, $having, $params] = $this->buildSchoolStudentSummaryClauses($schoolId, $search, $isActive, $progressFilter);
+
+        $sql = "SELECT COUNT(*) AS cnt FROM (
+                    SELECT u.id
+                    FROM users u
+                    LEFT JOIN enrollments e ON e.user_id = u.id
+                    WHERE {$where}
+                    GROUP BY u.id
+                    {$having}
+                ) AS sub";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(\PDO::FETCH_OBJ);
+        return $row ? (int)$row->cnt : 0;
+    }
+
+    /**
+     * Shared WHERE/HAVING builder for getSchoolStudentSummaries and countSchoolStudentSummaries.
+     * Returns [whereClause, havingClause, params] — havingClause is '' or a full "HAVING ..." string.
+     *
+     * Progress filter semantics (must match the frontend badge logic):
+     *   - 'completed'    → student has at least one enrollment with status='completed'
+     *   - 'in-progress'  → some progress recorded, but no course fully completed
+     *   - 'not-started'  → no enrollments, or every enrollment is at 0% and not completed
+     */
+    private function buildSchoolStudentSummaryClauses(
+        int $schoolId,
+        ?string $search,
+        ?bool $isActive,
+        ?string $progressFilter
+    ): array {
+        $params = ['school_id' => $schoolId];
+        $where = "u.primary_school_id = :school_id AND u.role = 'student'";
+
+        if ($search !== null && trim($search) !== '') {
+            // Distinct placeholders for each occurrence — the project's PDO config sets
+            // ATTR_EMULATE_PREPARES=false (api/config/database.php), under which native
+            // prepared statements forbid reusing one named placeholder across multiple
+            // tokens. Reusing :q here silently threw PDOException, BaseModel::query()
+            // swallowed it and returned [], producing "No Students Found" for every search.
+            $where .= " AND (LOWER(u.name) LIKE :q_name OR LOWER(u.email) LIKE :q_email)";
+            $needle = '%' . strtolower(trim($search)) . '%';
+            $params['q_name'] = $needle;
+            $params['q_email'] = $needle;
+        }
+
+        if ($isActive !== null) {
+            $where .= " AND u.is_active = :is_active";
+            $params['is_active'] = $isActive ? 1 : 0;
+        }
+
+        $having = '';
+        switch ($progressFilter) {
+            case 'completed':
+                $having = "HAVING COUNT(DISTINCT CASE WHEN e.status = 'completed' THEN e.course_id END) >= 1";
+                break;
+            case 'in-progress':
+                $having = "HAVING COUNT(DISTINCT CASE WHEN e.status = 'completed' THEN e.course_id END) = 0"
+                       . " AND COALESCE(MAX(e.progress_percentage), 0) > 0";
+                break;
+            case 'not-started':
+                $having = "HAVING COUNT(DISTINCT CASE WHEN e.status = 'completed' THEN e.course_id END) = 0"
+                       . " AND COALESCE(MAX(e.progress_percentage), 0) = 0";
+                break;
+        }
+
+        return [$where, $having, $params];
+    }
+
+    /**
+     * Whitelisted ORDER BY for getSchoolStudentSummaries. Unknown values fall back to name ASC.
+     * For last_active sorts, NULLs are placed last in both directions so unknown-activity rows
+     * never push known-activity rows off the visible page.
+     */
+    private function buildSchoolStudentSummaryOrderBy(?string $sortBy, ?string $sortOrder): string
+    {
+        $dir = (strtolower((string)$sortOrder) === 'desc') ? 'DESC' : 'ASC';
+        switch ($sortBy) {
+            case 'progress':
+                return "avg_progress {$dir}, u.name ASC";
+            case 'last_active':
+                return "last_active_at IS NULL, last_active_at {$dir}, u.name ASC";
+            case 'name':
+            default:
+                return "u.name {$dir}";
+        }
+    }
+
+    /**
+     * Aggregate stats for an instructor's school: active learners (any enrollment
+     * touched in the last 7 days) and average progress across all enrollments.
+     *
+     * @param int $schoolId users.primary_school_id
+     * @return array{active_count:int, avg_progress:float}
+     */
+    public function getSchoolAggregateStats(int $schoolId): array
+    {
+        $activeSql = "SELECT COUNT(DISTINCT u.id) AS active_count
+                      FROM users u
+                      INNER JOIN enrollments e ON e.user_id = u.id
+                      WHERE u.primary_school_id = :school_id
+                        AND u.role = 'student'
+                        AND e.last_accessed_at >= NOW() - INTERVAL 7 DAY";
+
+        $progressSql = "SELECT COALESCE(AVG(e.progress_percentage), 0) AS avg_progress
+                        FROM enrollments e
+                        INNER JOIN users u ON u.id = e.user_id
+                        WHERE u.primary_school_id = :school_id
+                          AND u.role = 'student'";
+
+        try {
+            $stmt = $this->pdo->prepare($activeSql);
+            $stmt->execute(['school_id' => $schoolId]);
+            $activeRow = $stmt->fetch(PDO::FETCH_OBJ);
+
+            $stmt = $this->pdo->prepare($progressSql);
+            $stmt->execute(['school_id' => $schoolId]);
+            $progressRow = $stmt->fetch(PDO::FETCH_OBJ);
+
+            return [
+                'active_count' => (int)($activeRow->active_count ?? 0),
+                'avg_progress' => round((float)($progressRow->avg_progress ?? 0), 2),
+            ];
+        } catch (\PDOException $e) {
+            error_log('Database error in getSchoolAggregateStats: ' . $e->getMessage());
+            return ['active_count' => 0, 'avg_progress' => 0.0];
+        }
+    }
+
     // ================================================================
     // PHASE 10: ADVANCED ANALYTICS METHODS
     // ================================================================
@@ -298,32 +563,43 @@ class Enrollment extends BaseModel
             $groupBy = $options['group_by'] ?? 'month';
             $startDate = $options['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
             $endDate = $options['end_date'] ?? date('Y-m-d');
+            $schoolId = isset($options['school_id']) ? (int)$options['school_id'] : null;
 
             // Determine grouping format
             $dateFormat = match($groupBy) {
-                'day' => 'DATE(enrolled_at)',
-                'week' => 'DATE_FORMAT(enrolled_at, "%Y-%U")',
-                'month' => 'DATE_FORMAT(enrolled_at, "%Y-%m")',
-                default => 'DATE_FORMAT(enrolled_at, "%Y-%m")'
+                'day' => 'DATE(e.enrolled_at)',
+                'week' => 'DATE_FORMAT(e.enrolled_at, "%Y-%U")',
+                'month' => 'DATE_FORMAT(e.enrolled_at, "%Y-%m")',
+                default => 'DATE_FORMAT(e.enrolled_at, "%Y-%m")'
             };
+
+            $schoolJoin = $schoolId
+                ? 'INNER JOIN users u ON e.user_id = u.id AND u.primary_school_id = :school_id AND u.is_active = 1'
+                : '';
 
             $sql = "SELECT
                     $dateFormat as period,
                     COUNT(*) as enrollments_count,
-                    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
-                    SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_count,
-                    SUM(CASE WHEN status = 'dropped' THEN 1 ELSE 0 END) as dropped_count,
-                    AVG(progress_percentage) as avg_progress
-                FROM {$this->table}
-                WHERE DATE(enrolled_at) BETWEEN :start_date AND :end_date
+                    SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) as active_count,
+                    SUM(CASE WHEN e.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+                    SUM(CASE WHEN e.status = 'dropped' THEN 1 ELSE 0 END) as dropped_count,
+                    AVG(e.progress_percentage) as avg_progress
+                FROM {$this->table} e
+                $schoolJoin
+                WHERE DATE(e.enrolled_at) BETWEEN :start_date AND :end_date
                 GROUP BY $dateFormat
                 ORDER BY period ASC";
 
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
+            $params = [
                 'start_date' => $startDate,
                 'end_date' => $endDate
-            ]);
+            ];
+            if ($schoolId) {
+                $params['school_id'] = $schoolId;
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
             $trends = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Calculate totals

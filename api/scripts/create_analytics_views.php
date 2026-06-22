@@ -1,6 +1,7 @@
 <?php
 // Create Analytics Views for Phase 10
-require_once __DIR__ . '/api/config/database.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/database.php';
 
 echo "Creating Analytics Views for Phase 10...\n\n";
 
@@ -10,8 +11,7 @@ $views = [
         SELECT
             e.user_id,
             e.course_id,
-            u.first_name,
-            u.last_name,
+            u.name,
             u.email,
             COUNT(DISTINCT lp.lesson_id) as lessons_accessed,
             SUM(IFNULL(lp.time_spent_minutes, 0)) as total_time_minutes,
@@ -27,7 +27,7 @@ $views = [
         LEFT JOIN lesson_progress lp ON e.user_id = lp.user_id
         LEFT JOIN student_notes sn ON e.user_id = sn.user_id
         LEFT JOIN bookmarks b ON e.user_id = b.user_id
-        GROUP BY e.user_id, e.course_id, u.first_name, u.last_name, u.email, e.enrolled_at, e.progress_percentage, e.status
+        GROUP BY e.user_id, e.course_id, u.name, u.email, e.enrolled_at, e.progress_percentage, e.status
     ",
 
     'v_quiz_performance' => "
@@ -62,9 +62,9 @@ $views = [
             course_id,
             c.title as course_title,
             COUNT(*) as enrollments_count,
-            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
-            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_count,
-            SUM(CASE WHEN status = 'dropped' THEN 1 ELSE 0 END) as dropped_count
+            SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) as active_count,
+            SUM(CASE WHEN e.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+            SUM(CASE WHEN e.status = 'dropped' THEN 1 ELSE 0 END) as dropped_count
         FROM enrollments e
         INNER JOIN courses c ON e.course_id = c.id
         GROUP BY DATE(enrolled_at), DATE_FORMAT(enrolled_at, '%Y-%m'), course_id, c.title
@@ -86,7 +86,7 @@ $views = [
         CREATE OR REPLACE VIEW v_achievement_distribution AS
         SELECT
             a.id as achievement_id,
-            a.title as achievement_title,
+            a.name as achievement_title,
             a.category_id,
             ac.name as category_name,
             a.tier,
@@ -98,7 +98,7 @@ $views = [
         FROM achievements a
         LEFT JOIN user_achievements ua ON a.id = ua.achievement_id
         INNER JOIN achievement_categories ac ON a.category_id = ac.id
-        GROUP BY a.id, a.title, a.category_id, ac.name, a.tier, a.points
+        GROUP BY a.id, a.name, a.category_id, ac.name, a.tier, a.points
     ",
 
     'v_certificate_trends' => "
@@ -118,8 +118,7 @@ $views = [
         CREATE OR REPLACE VIEW v_at_risk_students AS
         SELECT
             e.user_id,
-            u.first_name,
-            u.last_name,
+            u.name,
             u.email,
             e.course_id,
             c.title as course_title,
@@ -212,6 +211,10 @@ $errorCount = 0;
 
 foreach ($views as $viewName => $viewSQL) {
     try {
+        // Drop any existing table or view with this name first
+        // (handles the case where a table was accidentally created instead of a view)
+        $pdo->exec("DROP TABLE IF EXISTS `$viewName`");
+        $pdo->exec("DROP VIEW IF EXISTS `$viewName`");
         $pdo->exec($viewSQL);
         echo "✓ Created view: $viewName\n";
         $successCount++;

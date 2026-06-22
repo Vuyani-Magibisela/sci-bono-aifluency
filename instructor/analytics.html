@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNN90D4GDE"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNN90D4GDE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instructor Analytics - AI Fluency LMS</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Chart.js -->
@@ -138,10 +148,137 @@
             font-weight: 600;
             font-size: 1.25rem;
         }
+
+        .grading-workload-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .grading-workload-stat {
+            background: white;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .grading-workload-stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .grading-workload-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4B6EFB;
+        }
+
+        .grading-workload-recent-heading {
+            margin: 0 0 0.75rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-header { padding: 1.25rem; }
+            .analytics-header h1 { font-size: 1.4rem; }
+
+            .grading-workload-summary {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .grading-workload-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .workload-stats {
+                flex-wrap: wrap;
+                gap: 0.5rem 1rem;
+            }
+
+            .workload-badge {
+                font-size: 1rem;
+                padding: 0.35rem 0.75rem;
+            }
+
+            .at-risk-table th,
+            .at-risk-table td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Dynamic Header -->
+    <div id="header-placeholder"></div>
     <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="profile-name">Instructor</div>
+                <div class="profile-role">Instructor</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/instructor/dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/student/courses.html" class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>My Courses</span>
+                </a>
+                <a href="/instructor/courses.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Course Management</span>
+                </a>
+                <a href="/instructor/students.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <a href="/instructor/grading.html" class="nav-item">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Grading</span>
+                </a>
+                <a href="/instructor/certificates.html" class="nav-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+                <a href="/instructor/analytics.html" class="nav-item active">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/profile/edit.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" onclick="Auth.logout(); return false;" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
         <!-- Header -->
         <div class="analytics-header">
             <h1>📊 Instructor Analytics Dashboard</h1>
@@ -200,7 +337,7 @@
             <div class="chart-card full-width">
                 <h3>📊 Class Performance Distribution</h3>
                 <p class="chart-description">Distribution of student scores across grade ranges</p>
-                <div class="chart-container">
+                <div class="chart-container" id="classDistributionContainer">
                     <canvas id="classDistributionChart"></canvas>
                 </div>
             </div>
@@ -209,7 +346,7 @@
             <div class="chart-card half-width">
                 <h3>🎯 Student Engagement Overview</h3>
                 <p class="chart-description">Average engagement scores by metric</p>
-                <div class="chart-container">
+                <div class="chart-container" id="engagementContainer">
                     <canvas id="engagementChart"></canvas>
                 </div>
             </div>
@@ -218,7 +355,7 @@
             <div class="chart-card half-width">
                 <h3>❓ Question Effectiveness Analysis</h3>
                 <p class="chart-description">Difficulty vs. discrimination index for quiz questions</p>
-                <div class="chart-container">
+                <div class="chart-container" id="questionEffectivenessContainer">
                     <canvas id="questionEffectivenessChart"></canvas>
                 </div>
             </div>
@@ -263,14 +400,35 @@
 
         <!-- Insights Section -->
         <div id="insights-container"></div>
+        </main>
     </div>
 
-    <!-- Scripts -->
-    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('mobile-open');
+            });
+        }
+    </script>
+
+    <!-- Authentication System -->
+    <script src="../js/storage.js"></script>
     <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/header-template.js"></script>
+
+    <!-- Instructor Analytics Module -->
     <script src="../js/utils.js"></script>
     <script src="../js/charts.js"></script>
     <script src="../js/filters.js"></script>
     <script src="../js/instructor-analytics.js"></script>
+
+    <!-- Page Protection -->
+    <script>
+        Auth.requireAuth(['teacher', 'superadmin', 'orgadmin', 'schooladmin']);
+    </script>
 </body>
 </html>

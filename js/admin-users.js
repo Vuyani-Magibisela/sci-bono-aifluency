@@ -796,7 +796,8 @@ const UserManagement = {
         container.innerHTML = '<div class="loading-spinner">Loading schools...</div>';
 
         try {
-            const response = await API.get('/schools');
+            // Only fetch schools that have registered users (server-side filter)
+            const response = await API.get('/schools?has_users=1');
 
             if (!response.success) throw new Error('Failed to load schools');
 
@@ -812,14 +813,14 @@ const UserManagement = {
         const container = document.getElementById('schools-list');
 
         if (!schools || schools.length === 0) {
-            container.innerHTML = '<p>No schools found.</p>';
+            container.innerHTML = '<p>No schools with registered users found.</p>';
             return;
         }
 
         const html = `
             <div class="school-list">
                 ${schools.map(school => `
-                    <div class="school-card">
+                    <div class="school-card" onclick="UserManagement.viewSchoolDetails(${school.id})" style="cursor: pointer;" title="Click to view details">
                         <h4>${this.escapeHtml(school.name)}</h4>
                         <div class="school-stats">
                             <div><i class="fas fa-building"></i> ${school.organization_name || 'N/A'}</div>
@@ -832,6 +833,267 @@ const UserManagement = {
         `;
 
         container.innerHTML = html;
+    },
+
+    /**
+     * View school details in modal
+     */
+    async viewSchoolDetails(schoolId) {
+        const modal = document.getElementById('school-detail-modal');
+        const body = document.getElementById('school-detail-body');
+
+        // Show modal with loading state
+        body.innerHTML = '<div class="loading-spinner">Loading school details...</div>';
+        modal.classList.add('active');
+
+        try {
+            const response = await API.get(`/schools/${schoolId}`);
+
+            if (!response.success) {
+                throw new Error(response.message || 'Failed to load school details');
+            }
+
+            const school = response.data;
+            const stats = school.statistics || {};
+
+            document.getElementById('school-detail-title').textContent = school.name;
+
+            body.innerHTML = `
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Organization</label>
+                        <div class="detail-value">${this.escapeHtml(school.organization_name || 'N/A')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>School Type</label>
+                        <div class="detail-value">${this.escapeHtml(school.school_type || 'combined')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Email</label>
+                        <div class="detail-value">${this.escapeHtml(school.email || 'N/A')}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>City</label>
+                        <div class="detail-value">${this.escapeHtml(school.city || 'N/A')}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-users" style="color: #3b82f6;"></i> User Breakdown
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Total Users</label>
+                        <div class="detail-value">${stats.total_users || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Students</label>
+                        <div class="detail-value">${stats.total_students || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Teachers</label>
+                        <div class="detail-value">${stats.total_teachers || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>School Admins</label>
+                        <div class="detail-value">${stats.total_school_admins || 0}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-chart-line" style="color: #10b981;"></i> Learning Progress
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Total Enrollments</label>
+                        <div class="detail-value">${stats.total_enrollments || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Avg Progress</label>
+                        <div class="detail-value">${stats.avg_progress || 0}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Completed Courses</label>
+                        <div class="detail-value">${stats.completed_courses || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Avg Quiz Score</label>
+                        <div class="detail-value">${stats.avg_quiz_score || 0}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Quiz Attempts</label>
+                        <div class="detail-value">${stats.total_quiz_attempts || 0}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Certificates Earned</label>
+                        <div class="detail-value">${stats.total_certificates || 0}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-clock" style="color: #f59e0b;"></i> Activity
+                </h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Recent Signups (30 days)</label>
+                        <div class="detail-value">${stats.recent_signups || 0}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                    <i class="fas fa-chalkboard-teacher" style="color: #8b5cf6;"></i> Teachers at this School
+                </h3>
+                <div id="school-teachers-list" data-school-id="${school.id}">
+                    <div class="loading-spinner">Loading teachers...</div>
+                </div>
+
+                <div id="assign-teacher-section" style="margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                    <label for="assign-teacher-select" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
+                        Assign a teacher to this school
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+                        <select id="assign-teacher-select" style="flex: 1; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                            <option value="">Loading teachers...</option>
+                        </select>
+                        <button type="button" class="btn-primary" id="assign-teacher-btn" data-school-id="${school.id}">
+                            <i class="fas fa-plus"></i> Assign
+                        </button>
+                    </div>
+                    <small style="color: #6b7280;">Picks from teachers who are not yet assigned to this school. The teacher's dashboard will immediately scope to this school.</small>
+                </div>
+            `;
+
+            // Wire up assignment controls and load teacher data
+            this.loadSchoolTeachers(school.id);
+            document.getElementById('assign-teacher-btn').onclick = () => {
+                const select = document.getElementById('assign-teacher-select');
+                const teacherId = select.value;
+                if (!teacherId) {
+                    this.showToast('Pick a teacher first', 'error');
+                    return;
+                }
+                this.assignTeacherToSchool(teacherId, school.id);
+            };
+
+        } catch (error) {
+            console.error('Error loading school details:', error);
+            body.innerHTML = `<p style="color: #ef4444;">Failed to load school details: ${this.escapeHtml(error.message)}</p>`;
+        }
+    },
+
+    /**
+     * Load the list of teachers currently assigned to a school,
+     * plus the list of teachers available to assign.
+     */
+    async loadSchoolTeachers(schoolId) {
+        const listEl = document.getElementById('school-teachers-list');
+        const selectEl = document.getElementById('assign-teacher-select');
+        if (!listEl || !selectEl) return;
+
+        try {
+            // Both calls in parallel: current teachers + all teachers
+            const [assignedRes, allRes] = await Promise.all([
+                API.get(`/users?school_id=${schoolId}&role=teacher&pageSize=100`),
+                API.get(`/users?role=teacher&pageSize=200`)
+            ]);
+
+            const assignedPayload = assignedRes.data || {};
+            const allPayload = allRes.data || {};
+            const assigned = Array.isArray(assignedPayload) ? assignedPayload : (assignedPayload.data || []);
+            const all = Array.isArray(allPayload) ? allPayload : (allPayload.data || []);
+
+            // Render current teachers
+            if (assigned.length === 0) {
+                listEl.innerHTML = '<p style="color: #6b7280; font-style: italic;">No teachers assigned yet.</p>';
+            } else {
+                listEl.innerHTML = `
+                    <table class="admin-table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th style="width: 120px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${assigned.map(t => `
+                                <tr>
+                                    <td><strong>${this.escapeHtml(t.name || '')}</strong></td>
+                                    <td>${this.escapeHtml(t.email || '')}</td>
+                                    <td>
+                                        <button type="button" class="btn-secondary btn-sm"
+                                                onclick="UserManagement.removeTeacherFromSchool(${t.id}, ${schoolId})">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            // Populate the assign dropdown with teachers not already at this school
+            const assignedIds = new Set(assigned.map(t => String(t.id)));
+            const candidates = all.filter(t => !assignedIds.has(String(t.id)));
+
+            if (candidates.length === 0) {
+                selectEl.innerHTML = '<option value="">No teachers available to assign</option>';
+                selectEl.disabled = true;
+            } else {
+                selectEl.disabled = false;
+                selectEl.innerHTML = '<option value="">Select a teacher...</option>' +
+                    candidates.map(t => {
+                        const currentSchool = t.primary_school_id ? ` (currently at school #${t.primary_school_id})` : '';
+                        return `<option value="${t.id}">${this.escapeHtml(t.name || 'Unnamed')} — ${this.escapeHtml(t.email || '')}${currentSchool}</option>`;
+                    }).join('');
+            }
+        } catch (error) {
+            console.error('Error loading teachers for school:', error);
+            listEl.innerHTML = `<p style="color: #ef4444;">Failed to load teachers: ${this.escapeHtml(error.message)}</p>`;
+        }
+    },
+
+    /**
+     * Assign a teacher to a school by setting primary_school_id.
+     */
+    async assignTeacherToSchool(teacherId, schoolId) {
+        const btn = document.getElementById('assign-teacher-btn');
+        if (btn) btn.disabled = true;
+
+        try {
+            const response = await API.put(`/users/${teacherId}`, { primary_school_id: schoolId });
+            if (response && response.success === false) {
+                throw new Error(response.message || 'Failed to assign teacher');
+            }
+            this.showToast('Teacher assigned successfully', 'success');
+            await this.loadSchoolTeachers(schoolId);
+        } catch (error) {
+            console.error('Error assigning teacher:', error);
+            this.showToast('Failed to assign teacher: ' + error.message, 'error');
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    },
+
+    /**
+     * Unassign a teacher from a school (sets primary_school_id to null).
+     */
+    async removeTeacherFromSchool(teacherId, schoolId) {
+        if (!confirm('Remove this teacher from the school? Their dashboard will no longer show school data until they are reassigned.')) {
+            return;
+        }
+        try {
+            const response = await API.put(`/users/${teacherId}`, { primary_school_id: null });
+            if (response && response.success === false) {
+                throw new Error(response.message || 'Failed to remove teacher');
+            }
+            this.showToast('Teacher removed from school', 'success');
+            await this.loadSchoolTeachers(schoolId);
+        } catch (error) {
+            console.error('Error removing teacher:', error);
+            this.showToast('Failed to remove teacher: ' + error.message, 'error');
+        }
     },
 
     /**

@@ -288,6 +288,16 @@ class Validator
     }
 
     /**
+     * Normalize an email for storage and uniqueness checks.
+     * Lowercases + trims before sanitizing so "John@Example.com" and
+     * "john@example.com" collapse to the same canonical value.
+     */
+    public static function normalizeEmail(string $email): string
+    {
+        return filter_var(strtolower(trim($email)), FILTER_SANITIZE_EMAIL);
+    }
+
+    /**
      * Validate password strength
      *
      * @param string $field Field name

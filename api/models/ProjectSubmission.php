@@ -162,18 +162,20 @@ class ProjectSubmission extends BaseModel
      * Get pending submissions for grading
      *
      * @param int|null $courseId Optional course filter
+     * @param int|null $schoolId Optional filter by students.primary_school_id (teacher scope)
      * @param int|null $limit Optional limit
      * @param int|null $offset Optional offset
      * @return array
      */
-    public function getPendingSubmissions(?int $courseId = null, ?int $limit = null, ?int $offset = null): array
+    public function getPendingSubmissions(?int $courseId = null, ?int $schoolId = null, ?int $limit = null, ?int $offset = null): array
     {
         try {
             $sql = "SELECT
                         ps.*,
                         p.title as project_title,
                         p.course_id,
-                        u.name as student_name
+                        u.name as student_name,
+                        u.email as student_email
                     FROM {$this->table} ps
                     JOIN projects p ON ps.project_id = p.id
                     JOIN users u ON ps.user_id = u.id
@@ -184,6 +186,10 @@ class ProjectSubmission extends BaseModel
             if ($courseId !== null) {
                 $sql .= " AND p.course_id = :course_id";
                 $params['course_id'] = $courseId;
+            }
+            if ($schoolId !== null) {
+                $sql .= " AND u.primary_school_id = :school_id";
+                $params['school_id'] = $schoolId;
             }
 
             $sql .= " ORDER BY ps.submitted_at ASC";

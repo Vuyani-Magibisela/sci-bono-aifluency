@@ -103,14 +103,23 @@ const ContentLoader = {
             quiz.questions = quiz.questions.map(question => {
                 const q = { ...question };
 
-                // Store original correct answer before shuffling
-                const correctAnswerText = q.options[q.correctAnswer];
+                // Build indexed options to track original positions
+                const indexedOptions = q.options.map((text, i) => ({ text, originalIndex: i }));
 
-                // Shuffle options
-                q.options = this.shuffleArray([...q.options]);
+                // Shuffle
+                const shuffled = this.shuffleArray(indexedOptions);
 
-                // Find new index of correct answer
-                q.correctAnswer = q.options.indexOf(correctAnswerText);
+                // Replace options with shuffled text
+                q.options = shuffled.map(o => o.text);
+
+                // Map from new (randomized) index → original DB index
+                q.originalIndices = shuffled.map(o => o.originalIndex);
+
+                // Keep the original DB correct answer for local scoring
+                q.originalCorrectAnswer = q.correctAnswer;
+
+                // Update correctAnswer to the new position (for UI highlighting)
+                q.correctAnswer = shuffled.findIndex(o => o.originalIndex === q.originalCorrectAnswer);
 
                 return q;
             });
@@ -175,15 +184,37 @@ const ContentLoader = {
             // Map lesson to chapter card format
             const icon = this.getLessonIcon(lesson.order_index);
 
+            // Determine button text and styling based on progress
+            const status = lesson.progress?.status || 'not_started';
+            let linkText, linkIcon, completedClass, statusIndicator;
+
+            if (status === 'completed') {
+                linkText = 'Completed';
+                linkIcon = 'fa-check-circle';
+                completedClass = ' completed';
+                statusIndicator = '<span class="chapter-card-status status-done"><i class="fas fa-check-circle"></i> Completed</span>';
+            } else if (status === 'in_progress') {
+                linkText = 'Continue Lesson';
+                linkIcon = 'fa-play-circle';
+                completedClass = '';
+                statusIndicator = '<span class="chapter-card-status status-pending"><i class="fas fa-spinner"></i> In Progress</span>';
+            } else {
+                linkText = 'Begin Lesson';
+                linkIcon = 'fa-arrow-right';
+                completedClass = '';
+                statusIndicator = '';
+            }
+
             return `
-                <div class="chapter-card">
+                <div class="chapter-card${completedClass}">
                     <div class="chapter-card-icon">
                         <i class="fas fa-${icon}"></i>
                     </div>
                     <div class="chapter-card-content">
                         <h3>${this.escapeHtml(lesson.title)}</h3>
                         ${lesson.subtitle ? `<p>${this.escapeHtml(lesson.subtitle)}</p>` : ''}
-                        <a href="../lessons/lesson-dynamic.html?lesson_id=${lesson.id}" class="chapter-link">Begin Lesson</a>
+                        ${statusIndicator}
+                        <a href="../lessons/lesson-dynamic.html?lesson_id=${lesson.id}" class="chapter-link"><i class="fas ${linkIcon}"></i> ${linkText}</a>
                     </div>
                 </div>
             `;
@@ -232,13 +263,50 @@ const ContentLoader = {
             }
         }
 
-        // Inject lesson content
+        // Inject lesson content (with optional header video / hero image)
         if (containerSelectors.content) {
             const contentElement = document.querySelector(containerSelectors.content);
-            if (contentElement && lesson.content) {
-                contentElement.innerHTML = lesson.content;
+            if (contentElement) {
+                const mediaHtml = this.buildLessonMediaHeader(lesson);
+                const bodyHtml = lesson.content || '';
+                contentElement.innerHTML = mediaHtml + bodyHtml;
             }
         }
+    },
+
+    /**
+     * Build header media HTML (video player or hero image) for a lesson.
+     * Returns empty string when the lesson has no media so existing lessons
+     * render unchanged.
+     * @param {object} lesson - Lesson data from API
+     * @returns {string} HTML string to prepend to lesson content
+     */
+    buildLessonMediaHeader(lesson) {
+        if (!lesson) return '';
+
+        if (lesson.video_url) {
+            const poster = lesson.video_poster_url || lesson.hero_image_url || '';
+            const posterAttr = poster ? ` poster="${poster}"` : '';
+            return `
+                <figure class="lesson-hero lesson-hero--video">
+                    <video controls preload="metadata" playsinline${posterAttr} class="lesson-hero__video">
+                        <source src="${lesson.video_url}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </figure>
+            `;
+        }
+
+        if (lesson.hero_image_url) {
+            const alt = (lesson.title || 'Lesson hero image').replace(/"/g, '&quot;');
+            return `
+                <figure class="lesson-hero lesson-hero--image">
+                    <img src="${lesson.hero_image_url}" alt="${alt}" loading="lazy" class="lesson-hero__img">
+                </figure>
+            `;
+        }
+
+        return '';
     },
 
     /**
@@ -389,7 +457,11 @@ const ContentLoader = {
             if (!question) return null;
 
             totalPoints += question.points;
-            const isCorrect = question.correctAnswer === answer.selected_answer;
+            // selected_answer is the original DB index; compare against original correct answer
+            const correctIdx = question.originalCorrectAnswer !== undefined
+                ? question.originalCorrectAnswer
+                : question.correctAnswer;
+            const isCorrect = correctIdx === answer.selected_answer;
 
             if (isCorrect) {
                 correctCount++;

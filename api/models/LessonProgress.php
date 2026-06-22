@@ -274,7 +274,7 @@ class LessonProgress extends BaseModel
      * @param int $courseId Course ID
      * @return array Engagement metrics including time spent, notes, bookmarks
      */
-    public function getEngagementMetrics(int $courseId): array
+    public function getEngagementMetrics(int $courseId, ?int $schoolId = null): array
     {
         try {
             // Use the database view for student engagement
@@ -300,11 +300,16 @@ class LessonProgress extends BaseModel
                         LEAST(bookmarks_created * 5, 20)
                     ), 2) as engagement_score
                 FROM v_student_engagement
-                WHERE course_id = :course_id
-                ORDER BY engagement_score DESC";
+                WHERE course_id = :course_id";
+            $bind = ['course_id' => $courseId];
+            if ($schoolId !== null) {
+                $sql .= " AND user_id IN (SELECT id FROM users WHERE primary_school_id = :school_id)";
+                $bind['school_id'] = $schoolId;
+            }
+            $sql .= " ORDER BY engagement_score DESC";
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['course_id' => $courseId]);
+            $stmt->execute($bind);
             $engagementData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Calculate aggregates
