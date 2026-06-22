@@ -1,0 +1,33 @@
+# Directories to exclude from production upload
+.git/
+.gitignore
+.claude/
+.vscode/
+Documentation/
+backups/
+scripts/
+api/tests/
+api/scripts/
+database/production/
+
+# Dev/test files
+test_api.html
+test-api.html
+redesignIndex.html
+
+# Documentation (not needed on server)
+CLAUDE.md
+README.md
+PHASE*.md
+*_COMPLETE.md
+DEPLOYMENT_GUIDE.md
+
+# Log files (upload empty directory structure only)
+api/logs/*.log
+api/logs/rate_limit_*.txt
+
+# Migration runner scripts (import SQL via phpMyAdmin instead)
+api/migrations/run_migration_*.php
+api/migrations/create_backup.php
+api/migrations/import_gauteng_schools.php
+api/migrations/backup_*.sql
