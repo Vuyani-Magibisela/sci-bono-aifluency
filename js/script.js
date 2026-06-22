@@ -124,8 +124,8 @@ let deferredPrompt;
 const installButton = document.createElement('button');
 installButton.style.display = 'none';
 installButton.className = 'install-button';
-installButton.textContent = 'Install AI Discovery Hub';
-installButton.setAttribute('aria-label', 'Install AI Discovery Hub app');
+installButton.textContent = 'Install AI Hub';
+installButton.setAttribute('aria-label', 'Install AI Hub app');
 
 document.addEventListener('DOMContentLoaded', function() {
   const headerControls = document.querySelector('.header-controls');

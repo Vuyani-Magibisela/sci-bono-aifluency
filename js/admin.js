@@ -89,7 +89,7 @@ const AdminDashboard = {
             // Update card descriptions to school-specific labels
             const descriptions = document.querySelectorAll('.card-description');
             const schoolLabels = {
-                'System-wide users': 'School users',
+                'Enrolled platform users': 'School users',
                 'Published courses': 'Available courses',
                 'Active teachers': 'School teachers',
                 'Enrolled students': 'School students'
@@ -123,14 +123,14 @@ const AdminDashboard = {
 
         try {
             // Load data in parallel
-            const [users, stats, recentActivity] = await Promise.all([
-                this.loadUsers(this.currentPage),
+            const [userStats, stats, recentActivity] = await Promise.all([
+                this.loadUserStats(),
                 this.loadSystemStats(),
                 this.loadRecentActivity()
             ]);
 
             // Update UI with loaded data
-            this.renderUsers(users);
+            this.renderUserStats(userStats);
             this.renderSystemStats(stats);
             this.renderRecentActivity(recentActivity);
 
@@ -410,6 +410,129 @@ const AdminDashboard = {
             `;
         });
         html += '</div>';
+
+        container.innerHTML = html;
+    },
+
+    /**
+     * Load user stats from API
+     */
+    async loadUserStats() {
+        try {
+            const response = await API.get('/admin/user-stats');
+            console.log('AdminDashboard: user-stats raw response:', JSON.stringify(response));
+            return response.data || null;
+        } catch (error) {
+            console.error('AdminDashboard: Could not load user stats:', error);
+            this._userStatsError = error.message || 'Unknown error';
+            return null;
+        }
+    },
+
+    /**
+     * Render a mini stat card (white theme)
+     */
+    renderMiniStatCard(title, value, icon, color) {
+        return `
+            <div style="background: #fff; border-radius: 10px; padding: 1.25rem 1rem; text-align: center; border-left: 4px solid ${color}; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                <div style="font-size: 1.3rem; margin-bottom: 0.3rem; color: ${color};">${icon}</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #333;">${value}</div>
+                <div style="font-size: 0.75rem; color: #888; margin-top: 0.25rem;">${title}</div>
+            </div>
+        `;
+    },
+
+    /**
+     * Render user stats section (white theme)
+     */
+    renderUserStats(data) {
+        const container = document.getElementById('user-stats-section');
+        if (!container) return;
+
+        if (!data) {
+            const errMsg = this._userStatsError || 'Could not load user statistics.';
+            container.innerHTML = this.getEmptyState('No Data', errMsg, null, null);
+            return;
+        }
+
+        console.log('AdminDashboard: renderUserStats data:', JSON.stringify(data));
+
+        const cp = data.course_progress || {};
+        const m = data.metrics || {};
+        let html = '';
+
+        // Summary row: 4 mini stat cards
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">';
+        html += this.renderMiniStatCard('Enrolled Users', data.enrolled_users || 0, '<i class="fas fa-user-check"></i>', '#004C9A');
+        html += this.renderMiniStatCard('Schools', data.total_schools || 0, '<i class="fas fa-school"></i>', '#00A86B');
+        html += this.renderMiniStatCard('Organizations', data.total_organizations || 0, '<i class="fas fa-building"></i>', '#6E4BFB');
+        html += this.renderMiniStatCard('Certificates', m.total_certificates || 0, '<i class="fas fa-certificate"></i>', '#E6A817');
+        html += '</div>';
+
+        // Activity metrics row
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">';
+        html += this.renderMiniStatCard('Active Today', m.active_users_today || 0, '<i class="fas fa-bolt"></i>', '#FB8C00');
+        html += this.renderMiniStatCard('Active (7d)', m.active_users_7days || 0, '<i class="fas fa-chart-line"></i>', '#0288D1');
+        html += this.renderMiniStatCard('Signups (30d)', m.recent_signups_30days || 0, '<i class="fas fa-user-plus"></i>', '#00A86B');
+        html += this.renderMiniStatCard('Avg Quiz Score', m.avg_quiz_score ? m.avg_quiz_score + '%' : '0%', '<i class="fas fa-star"></i>', '#D81B60');
+        html += '</div>';
+
+        // Course progress section
+        html += '<div style="background: #f8f9ff; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid #e8eaf6;">';
+        html += '<h4 style="margin-bottom: 1rem; font-size: 0.95rem; color: #333;"><i class="fas fa-graduation-cap" style="color: #004C9A;"></i> Course Progress</h4>';
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem;">';
+        html += `<div><div style="font-size: 1.3rem; font-weight: 700; color: #333;">${cp.total_enrollments || 0}</div><div style="font-size: 0.75rem; color: #888;">Total Enrollments</div></div>`;
+        html += `<div><div style="font-size: 1.3rem; font-weight: 700; color: #004C9A;">${cp.active_enrollments || 0}</div><div style="font-size: 0.75rem; color: #888;">Active</div></div>`;
+        html += `<div><div style="font-size: 1.3rem; font-weight: 700; color: #00A86B;">${cp.completed_enrollments || 0}</div><div style="font-size: 0.75rem; color: #888;">Completed</div></div>`;
+        html += `<div><div style="font-size: 1.3rem; font-weight: 700; color: #E6A817;">${cp.completion_rate || 0}%</div><div style="font-size: 0.75rem; color: #888;">Completion Rate</div></div>`;
+        html += '</div>';
+
+        // Avg progress bar
+        const avgProgress = cp.avg_progress || 0;
+        html += '<div style="margin-top: 0.5rem;">';
+        html += `<div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;"><span>Avg Progress</span><span>${avgProgress}%</span></div>`;
+        html += '<div style="background: #e0e0e0; border-radius: 4px; height: 8px; overflow: hidden;">';
+        html += `<div style="background: linear-gradient(90deg, #004C9A, #6E4BFB); width: ${Math.min(avgProgress, 100)}%; height: 100%; border-radius: 4px; transition: width 0.5s ease;"></div>`;
+        html += '</div></div>';
+        html += '</div>';
+
+        // Schools table
+        if (data.schools && data.schools.length > 0) {
+            html += '<div style="margin-bottom: 1.5rem;">';
+            html += '<h4 style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #333;"><i class="fas fa-school" style="color: #00A86B;"></i> Schools Breakdown</h4>';
+            html += '<div style="overflow-x: auto;">';
+            html += '<table class="admin-table" style="font-size: 0.85rem;">';
+            html += '<thead><tr><th>School</th><th>Organization</th><th>Students</th><th>Teachers</th><th>Total</th></tr></thead>';
+            html += '<tbody>';
+            data.schools.forEach(s => {
+                html += `<tr>
+                    <td>${this.escapeHtml(s.name)}</td>
+                    <td>${this.escapeHtml(s.organization_name)}</td>
+                    <td>${s.student_count}</td>
+                    <td>${s.teacher_count}</td>
+                    <td><strong>${s.user_count}</strong></td>
+                </tr>`;
+            });
+            html += '</tbody></table></div></div>';
+        }
+
+        // Organizations table
+        if (data.organizations && data.organizations.length > 0) {
+            html += '<div style="margin-bottom: 1rem;">';
+            html += '<h4 style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #333;"><i class="fas fa-building" style="color: #6E4BFB;"></i> Organizations Breakdown</h4>';
+            html += '<div style="overflow-x: auto;">';
+            html += '<table class="admin-table" style="font-size: 0.85rem;">';
+            html += '<thead><tr><th>Organization</th><th>Schools</th><th>Users</th></tr></thead>';
+            html += '<tbody>';
+            data.organizations.forEach(o => {
+                html += `<tr>
+                    <td>${this.escapeHtml(o.name)}</td>
+                    <td>${o.school_count}</td>
+                    <td><strong>${o.user_count}</strong></td>
+                </tr>`;
+            });
+            html += '</tbody></table></div></div>';
+        }
 
         container.innerHTML = html;
     },

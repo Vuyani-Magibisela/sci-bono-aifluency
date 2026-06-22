@@ -11,6 +11,11 @@ const AdminCourses = {
         search: ''
     },
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the course management interface
      */
@@ -23,6 +28,14 @@ const AdminCourses = {
             console.error('AdminCourses: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create/edit buttons for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-course-btn');
+            if (createBtn) createBtn.style.display = 'none';
+            const detailsEditBtn = document.getElementById('details-edit-btn');
+            if (detailsEditBtn) detailsEditBtn.style.display = 'none';
         }
 
         // Load courses
@@ -107,6 +120,7 @@ const AdminCourses = {
                         <button class="action-btn view" onclick="AdminCourses.viewCourse(${course.id})" title="View Details">
                             <i class="fas fa-eye"></i> View
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminCourses.editCourse(${course.id})" title="Edit Course">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -119,6 +133,7 @@ const AdminCourses = {
                         <button class="action-btn delete" onclick="AdminCourses.deleteCourse(${course.id})" title="Delete Course">
                             <i class="fas fa-trash"></i> Delete
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -136,10 +151,12 @@ const AdminCourses = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-book"></i></div>
                 <h3>No Courses Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first course to get started.</p>
                 <button class="btn-primary" onclick="AdminCourses.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Course
                 </button>
+                ` : '<p>No courses available yet.</p>'}
             </div>
         `;
     },
@@ -147,11 +164,12 @@ const AdminCourses = {
     /**
      * Show create course modal
      */
-    showCreateModal() {
+    async showCreateModal() {
         this.currentCourseId = null;
         document.getElementById('modal-title').textContent = 'Create Course';
         document.getElementById('course-form').reset();
         document.getElementById('course-id').value = '';
+        await this.populateCertificateTemplateOptions(null);
 
         // Auto-generate slug from title
         const titleInput = document.getElementById('course-title');
@@ -331,6 +349,7 @@ const AdminCourses = {
             document.getElementById('course-thumbnail').value = course.thumbnail_url || '';
             document.getElementById('course-featured').checked = course.is_featured ? true : false;
             document.getElementById('course-published').checked = course.is_published ? true : false;
+            await this.populateCertificateTemplateOptions(course.certificate_template_id || null);
 
             this.showModal();
             console.log('Edit modal opened successfully');
@@ -409,22 +428,69 @@ const AdminCourses = {
             is_published: document.getElementById('course-published').checked
         };
 
+        const templateValue = document.getElementById('course-cert-template').value;
+        const certificateTemplateId = templateValue === '' ? null : parseInt(templateValue, 10);
+
         try {
-            if (this.currentCourseId) {
-                // Update existing course
-                await API.put(`/courses/${this.currentCourseId}`, courseData);
-                alert('Course updated successfully!');
+            let savedCourseId = this.currentCourseId;
+            if (savedCourseId) {
+                await API.put(`/courses/${savedCourseId}`, courseData);
             } else {
-                // Create new course
-                await API.post('/courses', courseData);
-                alert('Course created successfully!');
+                const created = await API.post('/courses', courseData);
+                savedCourseId = created.data?.course?.id || created.data?.id;
             }
 
+            if (savedCourseId) {
+                try {
+                    await API.post(`/courses/${savedCourseId}/certificate-template`, {
+                        template_id: certificateTemplateId
+                    });
+                } catch (assignErr) {
+                    console.warn('Certificate template assignment failed:', assignErr);
+                }
+            }
+
+            alert(this.currentCourseId ? 'Course updated successfully!' : 'Course created successfully!');
             this.hideModal();
             await this.loadCourses();
         } catch (error) {
             this.showError('Failed to save course: ' + error.message);
         }
+    },
+
+    /**
+     * Load and populate the certificate-template <select> in the course form.
+     * Caches templates after the first call.
+     */
+    certificateTemplates: null,
+    async populateCertificateTemplateOptions(selectedId) {
+        const select = document.getElementById('course-cert-template');
+        if (!select) return;
+
+        if (!this.certificateTemplates) {
+            try {
+                const res = await API.get('/certificate-templates');
+                this.certificateTemplates = res.data?.templates || res.templates || [];
+            } catch (err) {
+                console.warn('Could not load certificate templates:', err);
+                this.certificateTemplates = [];
+            }
+        }
+
+        const opts = ['<option value="">— Use global default —</option>'];
+        this.certificateTemplates
+            .filter(t => Number(t.is_active) === 1)
+            .forEach(t => {
+                const sel = (selectedId !== null && Number(selectedId) === Number(t.id)) ? 'selected' : '';
+                opts.push(`<option value="${t.id}" ${sel}>${this.escapeHtml(t.name)} (${t.template_type})</option>`);
+            });
+        select.innerHTML = opts.join('');
+    },
+
+    escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s == null ? '' : String(s);
+        return div.innerHTML;
     },
 
     /**

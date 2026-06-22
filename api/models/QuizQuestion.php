@@ -74,7 +74,27 @@ class QuizQuestion extends BaseModel
     public function validateAnswers(int $quizId, array $studentAnswers): array
     {
         try {
-            $questions = $this->getByQuiz($quizId);
+            // Use deduplicated query matching what getQuestions() sends to the frontend.
+            // The quiz_questions table may contain duplicate rows; the frontend receives
+            // questions grouped by (question_text, options, correct_option) with MIN(id),
+            // so we must validate against the same deduplicated set.
+            $stmt = $this->pdo->prepare("
+                SELECT MIN(id) AS id, quiz_id, question_text, options,
+                       correct_option, explanation, points, MIN(order_index) AS order_index
+                FROM quiz_questions
+                WHERE quiz_id = ?
+                GROUP BY quiz_id, question_text, options, correct_option, explanation, points
+                ORDER BY order_index ASC
+            ");
+            $stmt->execute([$quizId]);
+            $questions = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            // Parse JSON options
+            foreach ($questions as $question) {
+                if (is_string($question->options)) {
+                    $question->options = json_decode($question->options, true);
+                }
+            }
 
             if (empty($questions)) {
                 return [
@@ -93,10 +113,7 @@ class QuizQuestion extends BaseModel
                 $studentAnswer = $studentAnswers[$question->id] ?? null;
                 $isCorrect = false;
 
-                // Compare answer index (correct_option is the 0-based index of the correct answer)
-                $correctOption = property_exists($question, 'correct_option')
-                    ? $question->correct_option
-                    : (property_exists($question, 'correct_answer') ? $question->correct_answer : null);
+                $correctOption = $question->correct_option;
 
                 if ($studentAnswer !== null && $correctOption !== null) {
                     $isCorrect = ((int)$studentAnswer === (int)$correctOption);
@@ -108,6 +125,7 @@ class QuizQuestion extends BaseModel
 
                 $results[] = [
                     'question_id' => $question->id,
+                    'question_text' => $question->question_text,
                     'is_correct' => $isCorrect,
                     'student_answer' => $studentAnswer,
                     'correct_answer' => $correctOption,

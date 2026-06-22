@@ -8,22 +8,22 @@
 
     let allAttempts = [];
     let filteredAttempts = [];
-    let modules = [];
 
     // Initialize page
     async function init() {
         // Check authentication
         if (!Auth.isAuthenticated()) {
-            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
             return;
         }
 
         try {
-            // Load modules for filter
-            await loadModules();
-
-            // Load quiz attempts
+            // Load quiz attempts (a single call returns everything we need:
+            // quiz/module/course titles, passing_score, module_id)
             await loadQuizAttempts();
+
+            // Populate the module filter dropdown from the loaded attempts
+            populateModuleFilter();
 
             // Setup filter event listeners
             setupFilters();
@@ -35,71 +35,38 @@
     }
 
     /**
-     * Load all modules for filter dropdown
-     */
-    async function loadModules() {
-        try {
-            const response = await API.get('/courses/1/modules');
-            modules = response.data || [];
-
-            // Populate module filter
-            const moduleFilter = document.getElementById('module-filter');
-            modules.forEach(module => {
-                const option = document.createElement('option');
-                option.value = module.id;
-                option.textContent = module.title;
-                moduleFilter.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error loading modules:', error);
-        }
-    }
-
-    /**
      * Load quiz attempts for current user
      */
     async function loadQuizAttempts() {
-        try {
-            const currentUser = Auth.getCurrentUser();
-            if (!currentUser) {
-                throw new Error('User not authenticated');
-            }
+        // /quizzes/attempts/recent reads the user from the JWT and joins quiz,
+        // module, lesson, and course titles in one shot.
+        const response = await API.get('/quizzes/attempts/recent?limit=100');
+        allAttempts = Array.isArray(response.data) ? response.data : [];
 
-            // Get quiz attempts from API
-            const response = await API.get(`/progress/quiz-attempts`);
-            allAttempts = response.data?.items || [];
-
-            // Enrich attempts with quiz and module data
-            await enrichAttempts();
-
-            // Apply filters and render
-            applyFilters();
-
-        } catch (error) {
-            console.error('Error loading quiz attempts:', error);
-            throw error;
-        }
+        // Apply filters and render
+        applyFilters();
     }
 
     /**
-     * Enrich attempts with quiz and module data
+     * Populate the module filter dropdown from modules that appear in the attempts.
      */
-    async function enrichAttempts() {
-        for (let attempt of allAttempts) {
-            try {
-                // Get quiz details
-                const quizResponse = await API.get(`/quizzes/${attempt.quiz_id}`);
-                attempt.quizData = quizResponse.data;
+    function populateModuleFilter() {
+        const moduleFilter = document.getElementById('module-filter');
+        if (!moduleFilter) return;
 
-                // Get module details
-                if (attempt.quizData.module_id) {
-                    const moduleResponse = await API.get(`/modules/${attempt.quizData.module_id}`);
-                    attempt.moduleData = moduleResponse.data;
-                }
-            } catch (error) {
-                console.error(`Error enriching attempt ${attempt.id}:`, error);
+        const seen = new Map();
+        allAttempts.forEach(a => {
+            if (a.module_id && a.module_title && !seen.has(a.module_id)) {
+                seen.set(a.module_id, a.module_title);
             }
-        }
+        });
+
+        seen.forEach((title, id) => {
+            const option = document.createElement('option');
+            option.value = String(id);
+            option.textContent = title;
+            moduleFilter.appendChild(option);
+        });
     }
 
     /**
@@ -122,13 +89,13 @@
         // Filter attempts
         filteredAttempts = allAttempts.filter(attempt => {
             // Module filter
-            if (moduleFilter !== 'all' && attempt.quizData?.module_id !== parseInt(moduleFilter)) {
+            if (moduleFilter !== 'all' && parseInt(attempt.module_id) !== parseInt(moduleFilter)) {
                 return false;
             }
 
             // Status filter
             if (statusFilter !== 'all') {
-                const passed = attempt.score >= (attempt.quizData?.passing_score || 70);
+                const passed = parseFloat(attempt.score) >= parseFloat(attempt.passing_score || 70);
                 if (statusFilter === 'passed' && !passed) return false;
                 if (statusFilter === 'failed' && passed) return false;
             }
@@ -136,17 +103,17 @@
             return true;
         });
 
-        // Sort attempts
+        // Sort attempts (time_completed is the canonical submission timestamp)
         filteredAttempts.sort((a, b) => {
             switch (sortFilter) {
                 case 'recent':
-                    return new Date(b.completed_at) - new Date(a.completed_at);
+                    return new Date(b.time_completed) - new Date(a.time_completed);
                 case 'oldest':
-                    return new Date(a.completed_at) - new Date(b.completed_at);
+                    return new Date(a.time_completed) - new Date(b.time_completed);
                 case 'highest':
-                    return b.score - a.score;
+                    return parseFloat(b.score) - parseFloat(a.score);
                 case 'lowest':
-                    return a.score - b.score;
+                    return parseFloat(a.score) - parseFloat(b.score);
                 default:
                     return 0;
             }
@@ -187,27 +154,36 @@
      * @returns {string} HTML string
      */
     function renderAttemptCard(attempt) {
-        const quizTitle = attempt.quizData?.title || 'Unknown Quiz';
-        const moduleTitle = attempt.moduleData?.title || 'Unknown Module';
-        const score = attempt.score || 0;
-        const passingScore = attempt.quizData?.passing_score || 70;
+        const quizTitle = attempt.quiz_title || 'Unknown Quiz';
+        const moduleTitle = attempt.module_title || attempt.lesson_title || 'Unknown Module';
+        const score = parseFloat(attempt.score) || 0;
+        const passingScore = parseFloat(attempt.passing_score) || 70;
         const passed = score >= passingScore;
-        const completedDate = new Date(attempt.completed_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
 
-        // Calculate time spent
-        const timeSpent = attempt.time_spent_seconds
-            ? formatTime(attempt.time_spent_seconds)
-            : 'N/A';
+        const completedDate = attempt.time_completed
+            ? new Date(attempt.time_completed).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+            : '—';
 
-        // Calculate questions answered
-        const totalQuestions = attempt.total_questions || 0;
-        const correctAnswers = Math.round((score / 100) * totalQuestions);
+        // Time spent: prefer canonical seconds, fall back to historical minutes column.
+        let timeSpent = 'N/A';
+        if (attempt.time_spent_seconds) {
+            timeSpent = formatTime(parseInt(attempt.time_spent_seconds, 10));
+        } else if (attempt.time_taken_minutes) {
+            timeSpent = formatTime(parseInt(attempt.time_taken_minutes, 10) * 60);
+        }
+
+        const totalQuestions = parseInt(attempt.total_questions, 10) || 0;
+        const correctAnswers = parseInt(attempt.correct_answers, 10)
+            || Math.round((score / 100) * totalQuestions);
+
+        const moduleIdParam = attempt.module_id ? `?module_id=${attempt.module_id}` : '';
+        const scoreDisplay = Number.isInteger(score) ? score : score.toFixed(1);
 
         return `
             <div class="quiz-attempt-card">
@@ -215,8 +191,8 @@
                     <div>
                         <div class="attempt-title">${Utils.escapeHtml(quizTitle)}</div>
                         <div class="attempt-date">
-                            <i class="fas fa-book"></i> ${Utils.escapeHtml(moduleTitle)} •
-                            <i class="fas fa-calendar"></i> ${completedDate}
+                            <i class="fas fa-book"></i> ${Utils.escapeHtml(moduleTitle)} &bull;
+                            <i class="fas fa-calendar"></i> ${Utils.escapeHtml(completedDate)}
                         </div>
                     </div>
                     <div class="stat-value ${passed ? 'passed' : 'failed'}">
@@ -226,7 +202,7 @@
 
                 <div class="attempt-stats">
                     <div class="stat-item">
-                        <div class="stat-value ${passed ? 'passed' : 'failed'}">${score}%</div>
+                        <div class="stat-value ${passed ? 'passed' : 'failed'}">${scoreDisplay}%</div>
                         <div class="stat-label">Score</div>
                     </div>
                     <div class="stat-item">
@@ -247,11 +223,9 @@
                     <a href="#" class="btn-review" onclick="viewAttemptDetails(${attempt.id}); return false;">
                         <i class="fas fa-eye"></i> Review Answers
                     </a>
-                    ${!passed || true ? `
-                        <a href="quiz-dynamic.html?module_id=${attempt.quizData?.module_id || ''}" class="btn-retake">
-                            <i class="fas fa-redo"></i> Retake Quiz
-                        </a>
-                    ` : ''}
+                    <a href="quiz-dynamic.html${moduleIdParam}" class="btn-retake">
+                        <i class="fas fa-redo"></i> Retake Quiz
+                    </a>
                 </div>
             </div>
         `;

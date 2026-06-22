@@ -36,6 +36,7 @@ const API = {
         // Build request configuration
         const config = {
             ...options,
+            cache: 'no-store',
             headers: {
                 'Content-Type': 'application/json',
                 ...(token && { 'Authorization': `Bearer ${token}` }),

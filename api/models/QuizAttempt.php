@@ -18,7 +18,6 @@ class QuizAttempt extends BaseModel
         'answers',
         'time_taken_minutes',
         'passed',
-        'completed_at',
         'attempt_number',
         'time_started',
         'time_completed',
@@ -45,7 +44,7 @@ class QuizAttempt extends BaseModel
      */
     public function getByUser(int $userId, ?int $limit = null, ?int $offset = null): array
     {
-        $attempts = $this->all(['user_id' => $userId], 'created_at DESC', $limit, $offset);
+        $attempts = $this->all(['user_id' => $userId], 'started_at DESC', $limit, $offset);
 
         // Parse JSON answers for each attempt
         foreach ($attempts as $attempt) {
@@ -67,7 +66,7 @@ class QuizAttempt extends BaseModel
      */
     public function getByQuiz(int $quizId, ?int $limit = null, ?int $offset = null): array
     {
-        $attempts = $this->all(['quiz_id' => $quizId], 'created_at DESC', $limit, $offset);
+        $attempts = $this->all(['quiz_id' => $quizId], 'started_at DESC', $limit, $offset);
 
         // Parse JSON answers for each attempt
         foreach ($attempts as $attempt) {
@@ -92,7 +91,7 @@ class QuizAttempt extends BaseModel
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
                 WHERE user_id = :user_id AND quiz_id = :quiz_id
-                ORDER BY created_at DESC
+                ORDER BY started_at DESC
             ");
             $stmt->execute([
                 'user_id' => $userId,
@@ -127,7 +126,7 @@ class QuizAttempt extends BaseModel
             $stmt = $this->pdo->prepare("
                 SELECT * FROM {$this->table}
                 WHERE user_id = :user_id AND quiz_id = :quiz_id
-                ORDER BY score DESC, created_at DESC
+                ORDER BY score DESC, started_at DESC
                 LIMIT 1
             ");
             $stmt->execute([
@@ -160,12 +159,29 @@ class QuizAttempt extends BaseModel
             $data['answers'] = json_encode($data['answers']);
         }
 
-        // Set completed_at to now if not provided
-        if (!isset($data['completed_at'])) {
-            $data['completed_at'] = date('Y-m-d H:i:s');
+        // Set time_completed to now if not provided
+        if (!isset($data['time_completed'])) {
+            $data['time_completed'] = date('Y-m-d H:i:s');
         }
 
-        return $this->create($data);
+        // Set time_started if not provided
+        if (!isset($data['time_started'])) {
+            $data['time_started'] = date('Y-m-d H:i:s');
+        }
+
+        // Ensure passed is integer (0 or 1) for tinyint column
+        if (isset($data['passed'])) {
+            $data['passed'] = $data['passed'] ? 1 : 0;
+        }
+
+        $result = $this->create($data);
+
+        if ($result === null) {
+            error_log("createAttempt FAILED - data keys: " . implode(', ', array_keys($data))
+                . " | quiz_id={$data['quiz_id']}, user_id={$data['user_id']}, score={$data['score']}");
+        }
+
+        return $result;
     }
 
     /**
@@ -356,9 +372,10 @@ class QuizAttempt extends BaseModel
      * Get all attempts pending instructor grading
      *
      * @param int|null $quizId Optional filter by quiz
+     * @param int|null $schoolId Optional filter by users.primary_school_id (teacher scope)
      * @return array
      */
-    public function getPendingGradingAttempts(?int $quizId = null): array
+    public function getPendingGradingAttempts(?int $quizId = null, ?int $schoolId = null): array
     {
         try {
             $sql = "
@@ -375,19 +392,20 @@ class QuizAttempt extends BaseModel
                 AND qa.instructor_score IS NULL
             ";
 
+            $params = [];
             if ($quizId) {
                 $sql .= " AND qa.quiz_id = :quiz_id";
+                $params['quiz_id'] = $quizId;
+            }
+            if ($schoolId) {
+                $sql .= " AND u.primary_school_id = :school_id";
+                $params['school_id'] = $schoolId;
             }
 
             $sql .= " ORDER BY qa.submitted_at DESC";
 
             $stmt = $this->pdo->prepare($sql);
-
-            if ($quizId) {
-                $stmt->execute(['quiz_id' => $quizId]);
-            } else {
-                $stmt->execute();
-            }
+            $stmt->execute($params);
 
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $e) {
@@ -837,12 +855,13 @@ class QuizAttempt extends BaseModel
         }
 
         // Get quiz attempts over time
+        // COALESCE so historical rows without time_spent_seconds still contribute via time_taken_minutes.
         $sql = "SELECT
                 DATE(time_completed) as completion_date,
                 COUNT(*) as attempts_count,
                 AVG(score) as avg_score,
                 SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count,
-                AVG(time_spent_seconds / 60) as avg_time_minutes
+                AVG(COALESCE(time_spent_seconds / 60, time_taken_minutes)) as avg_time_minutes
             FROM quiz_attempts
             WHERE user_id = :user_id
             AND time_completed IS NOT NULL
@@ -896,6 +915,8 @@ class QuizAttempt extends BaseModel
     {
         global $pdo;
 
+        // COALESCE on time_spent_seconds → time_taken_minutes for attempts submitted
+        // before the controller started populating time_spent_seconds.
         $sql = "SELECT
                 qa.quiz_id,
                 q.title as quiz_title,
@@ -903,15 +924,16 @@ class QuizAttempt extends BaseModel
                 SUM(CASE WHEN qa.passed = 0 THEN 1 ELSE 0 END) as failed_attempts,
                 AVG(qa.score) as avg_score,
                 MAX(qa.score) as best_score,
-                AVG(qa.time_spent_seconds / 60) as avg_time_minutes,
-                MAX(qa.time_spent_seconds / 60) as max_time_minutes,
+                AVG(COALESCE(qa.time_spent_seconds / 60, qa.time_taken_minutes)) as avg_time_minutes,
+                MAX(COALESCE(qa.time_spent_seconds / 60, qa.time_taken_minutes)) as max_time_minutes,
                 -- Struggle score: higher = more struggle
                 ROUND((
                     (SUM(CASE WHEN qa.passed = 0 THEN 1 ELSE 0 END) / COUNT(qa.id)) * 40 +
                     ((100 - AVG(qa.score)) / 100) * 30 +
                     (CASE
-                        WHEN AVG(qa.time_spent_seconds / 60) > q.time_limit * 1.5 THEN 30
-                        WHEN AVG(qa.time_spent_seconds / 60) > q.time_limit THEN 20
+                        WHEN q.time_limit_minutes IS NULL THEN 10
+                        WHEN AVG(COALESCE(qa.time_spent_seconds / 60, qa.time_taken_minutes)) > q.time_limit_minutes * 1.5 THEN 30
+                        WHEN AVG(COALESCE(qa.time_spent_seconds / 60, qa.time_taken_minutes)) > q.time_limit_minutes THEN 20
                         ELSE 10
                     END)
                 ), 2) as struggle_score
@@ -926,7 +948,7 @@ class QuizAttempt extends BaseModel
             $params['quiz_id'] = $quizId;
         }
 
-        $sql .= " GROUP BY qa.quiz_id, q.title, q.time_limit
+        $sql .= " GROUP BY qa.quiz_id, q.title, q.time_limit_minutes
                   ORDER BY struggle_score DESC";
 
         $stmt = $pdo->prepare($sql);

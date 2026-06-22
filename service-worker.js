@@ -1,4 +1,5 @@
-const CACHE_NAME = 'ai-fluency-cache-v39';
+const CACHE_NAME = 'ai-fluency-cache-v57';
+const LESSON_MEDIA_CACHE = 'lesson-media-v1';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -57,10 +58,16 @@ const urlsToCache = [
   '/js/achievements.js',
   '/student/achievements.html',
   '/student/certificates.html',
+  // Walkthrough / Driver.js Tour
+  '/js/walkthrough.js',
+  '/js/walkthrough-steps.js',
+  '/css/walkthrough.css',
+  'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css',
+  'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js',
   // Images
   '/images/favicon.ico',
   // External resources
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   // Quill.js (Phase 5B - Rich text editor)
@@ -71,6 +78,8 @@ const urlsToCache = [
 
 // Install event - cache all initial resources
 self.addEventListener('install', event => {
+  // Skip waiting so the new service worker activates immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -85,22 +94,32 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Network-first strategy for API requests (always get fresh data)
+  // Runtime cache for lesson media (videos + hero images) — Migration 033.
+  // Not pre-cached at install (would be huge); cached on first view so
+  // already-viewed lessons replay offline.
+  if (url.pathname.includes('/media/lessons/') || url.pathname.includes('/images/lessons/')) {
+    event.respondWith(
+      caches.open(LESSON_MEDIA_CACHE).then(cache =>
+        cache.match(request).then(cached => {
+          if (cached) return cached;
+          return fetch(request).then(networkResponse => {
+            if (networkResponse && networkResponse.ok) {
+              cache.put(request, networkResponse.clone());
+            }
+            return networkResponse;
+          }).catch(() => cached);
+        })
+      )
+    );
+    return;
+  }
+
+  // Network-only strategy for API requests (never cache user-specific data)
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(request)
-        .then(response => {
-          // Clone and cache successful API responses (except auth endpoints)
-          if (response && response.status === 200 && !url.pathname.includes('/auth/')) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
         .catch(error => {
-          // Network failed, try cache as fallback for GET requests
+          // Network failed, try cache as fallback for GET requests (offline support)
           if (request.method === 'GET') {
             return caches.match(request).then(cached => {
               if (cached) {
@@ -164,9 +183,9 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches and take control immediately
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
+  const cacheWhitelist = [CACHE_NAME, LESSON_MEDIA_CACHE];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -176,6 +195,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

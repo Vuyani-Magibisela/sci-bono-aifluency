@@ -37,9 +37,7 @@ define('API_PREFIX', '/api');
 
 // CORS Settings
 define('CORS_ALLOWED_ORIGINS', [
-    'http://localhost',
-    'http://localhost:8000',
-    'http://localhost:3000',
+    'https://sci-bono-ai-hub.vuyanimagibisela.co.za',
     APP_URL
 ]);
 
@@ -79,6 +77,8 @@ if (APP_DEBUG) {
     error_reporting(0);
     ini_set('display_errors', 0);
     ini_set('display_startup_errors', 0);
+    ini_set('log_errors', 1);
+    ini_set('error_log', __DIR__ . '/../logs/php_errors.log');
 }
 
 // Session Configuration

@@ -41,7 +41,7 @@ const HeaderTemplate = {
                             <li><a href="/index.html" class="nav-link">Home</a></li>
                             <li><a href="${this.getCoursesUrl(user)}" class="nav-link">Courses</a></li>
                             ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="nav-link">Projects</a></li>' : ''}
-                            <li><a href="#about" class="nav-link">About</a></li>
+                            <li><a href="/about.html" class="nav-link">About</a></li>
                         </ul>
                     </nav>
 
@@ -62,14 +62,18 @@ const HeaderTemplate = {
                 <div class="mobile-nav-overlay" id="mobileNavOverlay">
                     <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
                         <ul class="mobile-nav-links">
-                            <li><a href="/index.html" class="mobile-nav-link">Home</a></li>
-                            <li><a href="${this.getCoursesUrl(user)}" class="mobile-nav-link">Courses</a></li>
-                            ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="mobile-nav-link">Projects</a></li>' : ''}
-                            <li><a href="#about" class="mobile-nav-link">About</a></li>
+                            <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="${this.getCoursesUrl(user)}" class="mobile-nav-link"><i class="fas fa-book"></i> ${isAuthenticated ? 'My Courses' : 'Courses'}</a></li>
+                            ${isAuthenticated ? '<li><a href="/student/projects/index.html" class="mobile-nav-link"><i class="fas fa-project-diagram"></i> Projects</a></li>' : ''}
+                            <li><a href="/about.html" class="mobile-nav-link"><i class="fas fa-info-circle"></i> About</a></li>
                             ${isAuthenticated ? `
                                 <li class="mobile-nav-divider"></li>
                                 <li><a href="${Auth.getDashboardUrl()}" class="mobile-nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li><a href="/student/quizzes/quiz-history.html" class="mobile-nav-link"><i class="fas fa-question-circle"></i> Quizzes</a></li>
+                                <li><a href="${this.getAnalyticsUrl(user)}" class="mobile-nav-link"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                                <li><a href="/student/certificates.html" class="mobile-nav-link"><i class="fas fa-certificate"></i> Certificates</a></li>
                                 <li><a href="/profile/index.html" class="mobile-nav-link"><i class="fas fa-user"></i> Profile</a></li>
+                                <li><a href="/profile/edit.html" class="mobile-nav-link"><i class="fas fa-cog"></i> Settings</a></li>
                                 <li><button onclick="Auth.logout()" class="mobile-nav-button"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
                             ` : `
                                 <li class="mobile-nav-divider"></li>
@@ -80,6 +84,30 @@ const HeaderTemplate = {
                     </nav>
                 </div>
             </header>
+            ${isAuthenticated ? `
+                <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Primary mobile navigation">
+                    <a href="${Auth.getDashboardUrl()}" class="bottom-nav-item" data-nav="dashboard">
+                        <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="${this.getCoursesUrl(user)}" class="bottom-nav-item" data-nav="courses">
+                        <i class="fas fa-book" aria-hidden="true"></i>
+                        <span>Courses</span>
+                    </a>
+                    <a href="/student/quizzes/quiz-history.html" class="bottom-nav-item" data-nav="quizzes">
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                        <span>Quizzes</span>
+                    </a>
+                    <a href="${this.getAnalyticsUrl(user)}" class="bottom-nav-item" data-nav="analytics">
+                        <i class="fas fa-chart-line" aria-hidden="true"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <button type="button" class="bottom-nav-item bottom-nav-menu" id="bottomNavMenu" aria-label="Open menu">
+                        <i class="fas fa-bars" aria-hidden="true"></i>
+                        <span>Menu</span>
+                    </button>
+                </nav>
+            ` : ''}
         `;
 
         container.innerHTML = headerHTML;
@@ -89,6 +117,19 @@ const HeaderTemplate = {
 
         // Set active link
         this.setActiveLink();
+
+        // Initialize notifications (if logged in)
+        if (isAuthenticated) {
+            this.initNotifications();
+        }
+
+        // Load the feedback widget on every page
+        this.loadFeedbackWidget();
+
+        // Load Driver.js walkthrough (only when authenticated)
+        if (isAuthenticated) {
+            this.loadWalkthrough();
+        }
     },
 
     /**
@@ -105,6 +146,37 @@ const HeaderTemplate = {
                     <i class="fas fa-tachometer-alt"></i>
                     <span class="btn-text">Dashboard</span>
                 </a>
+                <div class="tour-help-wrapper" id="tour-help-wrapper">
+                    <button id="tour-help-button"
+                            type="button"
+                            class="tour-help-btn"
+                            aria-label="Platform tour and help"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-controls="tour-help-menu"
+                            title="Take the tour">
+                        <i class="fas fa-compass" aria-hidden="true"></i>
+                        <span id="tour-new-badge" aria-hidden="true" style="display:none;"></span>
+                    </button>
+                    <div id="tour-help-menu" class="tour-help-menu" role="menu" aria-labelledby="tour-help-button">
+                        <div class="tour-menu-header">Need help?</div>
+                        <button id="tour-action-full" type="button" role="menuitem">
+                            <i class="fas fa-route" aria-hidden="true"></i>
+                            <span>Take the full tour</span>
+                        </button>
+                        <button id="tour-action-page" type="button" role="menuitem">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <span>What's on this page?</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="notification-bell-wrapper">
+                    <button class="notification-bell-btn" aria-label="Notifications" onclick="NotificationManager.toggleDropdown()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notification-badge" style="display:none;">0</span>
+                    </button>
+                    <div class="notification-dropdown" id="notification-dropdown"></div>
+                </div>
                 <div class="user-menu">
                     <button class="user-menu-toggle" aria-label="User menu" aria-haspopup="true" aria-expanded="false">
                         <div class="user-avatar">
@@ -127,7 +199,7 @@ const HeaderTemplate = {
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
                         </a>
-                        <a href="settings.html" class="user-menu-item" role="menuitem">
+                        <a href="/profile/edit.html" class="user-menu-item" role="menuitem">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
@@ -193,6 +265,12 @@ const HeaderTemplate = {
                     }
                 });
             });
+
+            // Bottom-nav "Menu" button reuses the hamburger toggle
+            const bottomNavMenu = document.getElementById('bottomNavMenu');
+            if (bottomNavMenu) {
+                bottomNavMenu.addEventListener('click', () => hamburger.click());
+            }
         }
 
         // User menu dropdown
@@ -233,7 +311,15 @@ const HeaderTemplate = {
         const currentPath = window.location.pathname;
         const currentPage = currentPath.split('/').pop() || 'index.html';
 
-        // Don't highlight nav links on dashboard pages
+        // Highlight bottom-nav items on every page (including dashboard).
+        // Quizzes slot also activates for sibling pages in /student/quizzes/.
+        document.querySelectorAll('.bottom-nav-item[href]').forEach(item => {
+            const itemPath = new URL(item.href, window.location.origin).pathname;
+            const inQuizzesSection = item.dataset.nav === 'quizzes' && currentPath.startsWith('/student/quizzes/');
+            item.classList.toggle('active', itemPath === currentPath || inQuizzesSection);
+        });
+
+        // Don't highlight top nav links on dashboard pages
         if (currentPage === 'dashboard.html') {
             return;
         }
@@ -313,6 +399,22 @@ const HeaderTemplate = {
     },
 
     /**
+     * Get the correct analytics URL based on user role.
+     * Mirrors getCoursesUrl — teachers/instructors land on /instructor/analytics.html,
+     * admins on /admin/analytics.html, everyone else on /student/analytics.html.
+     *
+     * @param {Object|null} user - User object
+     * @returns {string} Analytics URL
+     */
+    getAnalyticsUrl(user) {
+        if (!user || !user.role) return '/student/analytics.html';
+        const role = user.role.toLowerCase();
+        if (role === 'teacher' || role === 'instructor') return '/instructor/analytics.html';
+        if (['superadmin', 'orgadmin', 'schooladmin', 'admin'].includes(role)) return '/admin/analytics.html';
+        return '/student/analytics.html';
+    },
+
+    /**
      * Format user role for display
      *
      * @param {string} role - User role
@@ -333,6 +435,126 @@ const HeaderTemplate = {
         };
 
         return roleMap[role.toLowerCase()] || role;
+    },
+
+    /**
+     * Load and initialize the notification system
+     */
+    initNotifications() {
+        if (typeof NotificationManager !== 'undefined') {
+            NotificationManager.init();
+            return;
+        }
+
+        // Dynamically load notifications.js
+        const basePath = document.querySelector('script[src*="header-template"]')?.src || '';
+        const dir = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+        const script = document.createElement('script');
+        script.src = dir + 'notifications.js';
+        script.onload = () => {
+            if (typeof NotificationManager !== 'undefined') {
+                NotificationManager.init();
+            }
+        };
+        document.head.appendChild(script);
+    },
+
+    /**
+     * Dynamically load the feedback widget script
+     */
+    loadFeedbackWidget() {
+        if (document.getElementById('feedback-widget-script')) return;
+        const basePath = document.querySelector('script[src*="header-template"]')?.src || '';
+        const dir = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+        const script = document.createElement('script');
+        script.id = 'feedback-widget-script';
+        script.src = dir + 'feedback-widget.js';
+        document.body.appendChild(script);
+    },
+
+    /**
+     * Inject Driver.js + walkthrough assets and the floating help button.
+     * Idempotent — safe to call on every render.
+     */
+    loadWalkthrough() {
+        if (!Auth.isAuthenticated()) return;
+
+        // 1. Inject Driver.js CSS (CDN)
+        if (!document.getElementById('driverjs-css')) {
+            const link = document.createElement('link');
+            link.id = 'driverjs-css';
+            link.rel = 'stylesheet';
+            link.href = 'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css';
+            link.onerror = () => console.error('[Walkthrough] Failed to load Driver.js CSS from CDN');
+            document.head.appendChild(link);
+        }
+
+        // 2. Inject walkthrough.css
+        if (!document.getElementById('walkthrough-css')) {
+            const wlink = document.createElement('link');
+            wlink.id = 'walkthrough-css';
+            wlink.rel = 'stylesheet';
+            wlink.href = '/css/walkthrough.css';
+            document.head.appendChild(wlink);
+        }
+
+        // 3. Help button markup is now rendered inline inside renderAuthControls()
+
+        // 4. Load Driver.js + walkthrough scripts in order, then init
+        const basePath = document.querySelector('script[src*="header-template"]')?.src || '';
+        const dir = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+
+        const startWalkthrough = () => {
+            if (typeof window.Walkthrough !== 'undefined') {
+                Walkthrough.init();
+            }
+        };
+
+        const loadStepsAndCore = () => {
+            if (!document.getElementById('walkthrough-steps-js')) {
+                const stepsScript = document.createElement('script');
+                stepsScript.id = 'walkthrough-steps-js';
+                stepsScript.src = dir + 'walkthrough-steps.js';
+                stepsScript.onerror = () => console.error('[Walkthrough] Failed to load', stepsScript.src);
+                stepsScript.onload = () => {
+                    console.log('[Walkthrough] walkthrough-steps.js loaded');
+                    if (!document.getElementById('walkthrough-js')) {
+                        const coreScript = document.createElement('script');
+                        coreScript.id = 'walkthrough-js';
+                        coreScript.src = dir + 'walkthrough.js';
+                        coreScript.onerror = () => console.error('[Walkthrough] Failed to load', coreScript.src);
+                        coreScript.onload = () => {
+                            console.log('[Walkthrough] walkthrough.js loaded');
+                            startWalkthrough();
+                        };
+                        document.body.appendChild(coreScript);
+                    } else {
+                        startWalkthrough();
+                    }
+                };
+                document.body.appendChild(stepsScript);
+            } else {
+                startWalkthrough();
+            }
+        };
+
+        if (typeof window.driver === 'undefined' && !document.getElementById('driverjs-script')) {
+            const driverScript = document.createElement('script');
+            driverScript.id = 'driverjs-script';
+            driverScript.src = 'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js';
+            driverScript.onerror = () => {
+                console.error('[Walkthrough] Failed to load Driver.js CDN — tour cannot run. URL:', driverScript.src);
+                // Still load steps + core so the help button at least logs a clear error on click.
+                loadStepsAndCore();
+            };
+            driverScript.onload = () => {
+                console.log('[Walkthrough] Driver.js loaded, window.driver =', typeof window.driver);
+                loadStepsAndCore();
+            };
+            document.body.appendChild(driverScript);
+        } else {
+            loadStepsAndCore();
+        }
     },
 
     /**

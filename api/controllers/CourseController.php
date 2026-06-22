@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Module;
 use App\Utils\Response;
 use App\Utils\Validator;
 use App\Utils\JWTHandler;
@@ -16,12 +17,14 @@ class CourseController extends BaseController
 {
     private Course $courseModel;
     private Enrollment $enrollmentModel;
+    private Module $moduleModel;
 
     public function __construct(\PDO $pdo)
     {
         parent::__construct($pdo);
         $this->courseModel = new Course($pdo);
         $this->enrollmentModel = new Enrollment($pdo);
+        $this->moduleModel = new Module($pdo);
     }
 
     /**
@@ -37,12 +40,37 @@ class CourseController extends BaseController
         // Public endpoint - no authentication required for published courses
         $currentUser = JWTHandler::getCurrentUser();
 
+        // Debug: log auth header detection for diagnosing enrollment display issue
+        if (APP_DEBUG) {
+            $debugInfo = [
+                'currentUser' => $currentUser ? $currentUser->id : null,
+                'HTTP_AUTHORIZATION' => isset($_SERVER['HTTP_AUTHORIZATION']) ? 'present' : 'missing',
+                'REDIRECT_HTTP_AUTHORIZATION' => isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']) ? 'present' : 'missing',
+                'getallheaders_auth' => 'missing',
+            ];
+            if (function_exists('getallheaders')) {
+                foreach (getallheaders() as $k => $v) {
+                    if (strtolower($k) === 'authorization') {
+                        $debugInfo['getallheaders_auth'] = 'present (key: ' . $k . ')';
+                    }
+                }
+            }
+            error_log('CourseController::index auth debug: ' . json_encode($debugInfo));
+        }
+
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $pageSize = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 20;
         $publishedOnly = isset($_GET['published']) ? filter_var($_GET['published'], FILTER_VALIDATE_BOOLEAN) : true;
         $featuredOnly = isset($_GET['featured']) ? filter_var($_GET['featured'], FILTER_VALIDATE_BOOLEAN) : false;
         $search = isset($_GET['search']) ? $_GET['search'] : null;
         $instructorId = isset($_GET['instructor_id']) ? (int)$_GET['instructor_id'] : null;
+        $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
+
+        // Authorization scope: a teacher querying with ?school_id is locked to their own school.
+        // Admins (superadmin/orgadmin) may pass any school_id.
+        if ($schoolId && $currentUser && in_array($currentUser->role, ['teacher', 'instructor'], true)) {
+            $schoolId = isset($currentUser->primary_school_id) ? (int)$currentUser->primary_school_id : null;
+        }
 
         if ($page < 1) $page = 1;
         if ($pageSize < 1 || $pageSize > 100) $pageSize = 20;
@@ -56,6 +84,9 @@ class CourseController extends BaseController
         } elseif ($featuredOnly) {
             $courses = $this->courseModel->getFeatured($pageSize);
             $total = count($this->courseModel->getFeatured());
+        } elseif ($schoolId) {
+            $courses = $this->courseModel->getBySchool($schoolId, $publishedOnly, $pageSize, $offset);
+            $total = $this->courseModel->countBySchool($schoolId, $publishedOnly);
         } elseif ($instructorId) {
             $courses = $this->courseModel->getByInstructor($instructorId, $pageSize, $offset);
             $total = $this->courseModel->count(['instructor_id' => $instructorId]);
@@ -182,6 +213,11 @@ class CourseController extends BaseController
             $course->enrollment_status = $enrollment ? $enrollment->status : null;
             $course->completion_percentage = $enrollment ? $enrollment->progress_percentage : 0;
 
+            // Pre-compute per-module unlock state once (cheaper than per-module queries).
+            $unlockMap = $enrollment
+                ? $this->moduleModel->getUnlockStatusMap($courseId, (int)$currentUser->id)
+                : [];
+
             // Add completion percentage and gating status for each module
             if ($enrollment) {
                 foreach ($course->modules as $module) {
@@ -226,13 +262,21 @@ class CourseController extends BaseController
                     $projectStmt->execute(['module_id' => $module->id, 'user_id' => $currentUser->id]);
                     $projectResult = $projectStmt->fetch(\PDO::FETCH_ASSOC);
                     $module->project_submitted = (int)$projectResult['cnt'] > 0;
+
+                    // Sequential unlock: module 1 always unlocked; later modules require
+                    // the previous module's quiz pass (or no quiz exists for previous module).
+                    $unlock = $unlockMap[(int)$module->id] ?? ['is_unlocked' => true, 'locked_reason' => null];
+                    $module->is_unlocked = $unlock['is_unlocked'];
+                    $module->locked_reason = $unlock['locked_reason'];
                 }
             } else {
-                // Not enrolled - set all module completion to 0
-                foreach ($course->modules as $module) {
+                // Not enrolled - set all module completion to 0; only first module accessible
+                foreach ($course->modules as $i => $module) {
                     $module->completion_percentage = 0;
                     $module->quiz_passed = false;
                     $module->project_submitted = false;
+                    $module->is_unlocked = ($i === 0);
+                    $module->locked_reason = $i === 0 ? null : 'Enroll in this course to access modules';
                 }
             }
         } else {
@@ -240,10 +284,12 @@ class CourseController extends BaseController
             $course->is_enrolled = false;
             $course->enrollment_status = null;
             $course->completion_percentage = 0;
-            foreach ($course->modules as $module) {
+            foreach ($course->modules as $i => $module) {
                 $module->completion_percentage = 0;
                 $module->quiz_passed = false;
                 $module->project_submitted = false;
+                $module->is_unlocked = ($i === 0);
+                $module->locked_reason = $i === 0 ? null : 'Sign in and enrol to access modules';
             }
         }
 
@@ -262,8 +308,8 @@ class CourseController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and teacher can create courses
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create courses
+        $this->requireRole(['superadmin']);
         $currentUser = $this->getCurrentUser();
 
         $data = $_POST;
@@ -362,7 +408,7 @@ class CourseController extends BaseController
         }
 
         $isInstructor = ($currentUser->id == $course->instructor_id);
-        $isAdmin = ($currentUser->role === 'admin');
+        $isAdmin = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin'], true);
 
         if (!$isInstructor && !$isAdmin) {
             Response::forbidden('You do not have permission to update this course');
@@ -451,8 +497,8 @@ class CourseController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete courses
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete courses
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Course ID is required', 400);

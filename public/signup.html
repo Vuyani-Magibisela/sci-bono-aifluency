@@ -42,8 +42,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - AI Fluency</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <style>
+        .email-status {
+            min-height: 1.1rem;
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .email-status.checking { color: #6b7280; }
+        .email-status.available { color: #047857; }
+        .email-status.taken { color: #b91c1c; }
+        .email-status.invalid { color: #b45309; }
+    </style>
 </head>
 <body>
     <!-- Dynamic Header -->
@@ -61,10 +73,34 @@
 
                     <form class="auth-form" id="signupForm" novalidate>
 
-                        <!-- ── Role Selector ── -->
-                        <div class="role-selector">
+                        <!-- ── Step 1: Learning Context Selector ── -->
+                        <div class="context-selector">
+                            <label class="context-selector-label">My learning context...</label>
+                            <div class="context-options">
+                                <button type="button" class="context-option active" data-context="public_school">
+                                    <i class="fas fa-school"></i>
+                                    <span>Public School</span>
+                                </button>
+                                <button type="button" class="context-option" data-context="private_school">
+                                    <i class="fas fa-building"></i>
+                                    <span>Private School</span>
+                                </button>
+                                <button type="button" class="context-option" data-context="homeschool">
+                                    <i class="fas fa-home"></i>
+                                    <span>Homeschool</span>
+                                </button>
+                                <button type="button" class="context-option" data-context="independent_learner">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <span>Independent Learner</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="selectedContext" name="education_context" value="public_school">
+                        </div>
+
+                        <!-- ── Step 2: Role Selector (hidden for independent learner) ── -->
+                        <div class="role-selector" id="roleSelectorWrap">
                             <label class="role-selector-label">I am a...</label>
-                            <div class="role-options">
+                            <div class="role-options" id="roleOptions">
                                 <button type="button" class="role-option active" data-role="student">
                                     <i class="fas fa-graduation-cap"></i>
                                     <span>Student</span>
@@ -95,7 +131,8 @@
                                 <i class="fas fa-envelope"></i>
                                 Email Address
                             </label>
-                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email">
+                            <div id="emailStatus" class="email-status" aria-live="polite"></div>
                         </div>
 
                         <div class="form-group">
@@ -132,7 +169,11 @@
                                    placeholder="Confirm your password" required>
                         </div>
 
-                        <!-- ── Student-only fields ── -->
+                        <!-- ══════════════════════════════════════════════ -->
+                        <!-- Context-specific field sections               -->
+                        <!-- ══════════════════════════════════════════════ -->
+
+                        <!-- ── Public School: Student fields ── -->
                         <div class="role-fields" id="studentFields">
 
                             <div class="form-group">
@@ -164,7 +205,7 @@
                                        placeholder="Auto-filled when school is selected" readonly>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="genderGroup">
                                 <label>
                                     <i class="fas fa-venus-mars"></i>
                                     Gender
@@ -186,7 +227,7 @@
                                 <input type="hidden" id="genderValue" name="gender">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="gradeGroup">
                                 <label for="grade">
                                     <i class="fas fa-list-ol"></i>
                                     Grade
@@ -200,7 +241,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="dobGroup">
                                 <label for="dateOfBirth">
                                     <i class="fas fa-calendar-alt"></i>
                                     Date of Birth
@@ -211,7 +252,7 @@
 
                         </div><!-- /#studentFields -->
 
-                        <!-- ── Teacher fields ── -->
+                        <!-- ── Public School: Teacher fields ── -->
                         <div class="role-fields" id="teacherFields" style="display:none;">
 
                             <div class="form-group">
@@ -245,7 +286,7 @@
 
                         </div><!-- /#teacherFields -->
 
-                        <!-- ── School Admin fields ── -->
+                        <!-- ── Public School: School Admin fields ── -->
                         <div class="role-fields" id="schooladminFields" style="display:none;">
 
                             <div class="form-group">
@@ -279,12 +320,190 @@
 
                         </div><!-- /#schooladminFields -->
 
+                        <!-- ── Private School fields ── -->
+                        <div class="role-fields" id="privateSchoolFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label for="privateSchoolName">
+                                    <i class="fas fa-building"></i>
+                                    School Name
+                                </label>
+                                <input type="text" id="privateSchoolName"
+                                       placeholder="Enter your school name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="privateProvince">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Province
+                                </label>
+                                <select id="privateProvince">
+                                    <option value="">-- Select province --</option>
+                                    <option value="Eastern Cape">Eastern Cape</option>
+                                    <option value="Free State">Free State</option>
+                                    <option value="Gauteng">Gauteng</option>
+                                    <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                    <option value="Limpopo">Limpopo</option>
+                                    <option value="Mpumalanga">Mpumalanga</option>
+                                    <option value="Northern Cape">Northern Cape</option>
+                                    <option value="North West">North West</option>
+                                    <option value="Western Cape">Western Cape</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="privateGenderGroup">
+                                <label>
+                                    <i class="fas fa-venus-mars"></i>
+                                    Gender
+                                </label>
+                                <div class="radio-group">
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_private" value="male">
+                                        <span class="radio-label">Male</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_private" value="female">
+                                        <span class="radio-label">Female</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_private" value="prefer_not_to_say">
+                                        <span class="radio-label">Prefer not to say</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="privateGradeGroup">
+                                <label for="privateGrade">
+                                    <i class="fas fa-list-ol"></i>
+                                    Grade
+                                </label>
+                                <select id="privateGrade">
+                                    <option value="">-- Select grade --</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="privateDobGroup">
+                                <label for="privateDob">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date of Birth
+                                </label>
+                                <input type="date" id="privateDob">
+                                <small class="form-hint">You must be at least 12 years old</small>
+                            </div>
+
+                        </div><!-- /#privateSchoolFields -->
+
+                        <!-- ── Homeschool fields ── -->
+                        <div class="role-fields" id="homeschoolFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label for="providerName">
+                                    <i class="fas fa-home"></i>
+                                    Family / Provider Name
+                                </label>
+                                <input type="text" id="providerName"
+                                       placeholder="e.g. The Smith Family, ABC Homeschool Co-op">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="homeschoolProvince">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Province
+                                </label>
+                                <select id="homeschoolProvince">
+                                    <option value="">-- Select province --</option>
+                                    <option value="Eastern Cape">Eastern Cape</option>
+                                    <option value="Free State">Free State</option>
+                                    <option value="Gauteng">Gauteng</option>
+                                    <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                    <option value="Limpopo">Limpopo</option>
+                                    <option value="Mpumalanga">Mpumalanga</option>
+                                    <option value="Northern Cape">Northern Cape</option>
+                                    <option value="North West">North West</option>
+                                    <option value="Western Cape">Western Cape</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="hsGenderGroup">
+                                <label>
+                                    <i class="fas fa-venus-mars"></i>
+                                    Gender
+                                </label>
+                                <div class="radio-group">
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_hs" value="male">
+                                        <span class="radio-label">Male</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_hs" value="female">
+                                        <span class="radio-label">Female</span>
+                                    </label>
+                                    <label class="radio-container">
+                                        <input type="radio" name="gender_hs" value="prefer_not_to_say">
+                                        <span class="radio-label">Prefer not to say</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="hsGradeGroup">
+                                <label for="hsGrade">
+                                    <i class="fas fa-list-ol"></i>
+                                    Grade
+                                </label>
+                                <select id="hsGrade">
+                                    <option value="">-- Select grade --</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="hsDobGroup">
+                                <label for="hsDob">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date of Birth
+                                </label>
+                                <input type="date" id="hsDob">
+                                <small class="form-hint">You must be at least 12 years old</small>
+                            </div>
+
+                        </div><!-- /#homeschoolFields -->
+
+                        <!-- ── Independent Learner fields ── -->
+                        <div class="role-fields" id="independentFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label for="independentProvince">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Province
+                                </label>
+                                <select id="independentProvince">
+                                    <option value="">-- Select province --</option>
+                                    <option value="Eastern Cape">Eastern Cape</option>
+                                    <option value="Free State">Free State</option>
+                                    <option value="Gauteng">Gauteng</option>
+                                    <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                    <option value="Limpopo">Limpopo</option>
+                                    <option value="Mpumalanga">Mpumalanga</option>
+                                    <option value="Northern Cape">Northern Cape</option>
+                                    <option value="North West">North West</option>
+                                    <option value="Western Cape">Western Cape</option>
+                                </select>
+                            </div>
+
+                        </div><!-- /#independentFields -->
+
                         <!-- ── Terms ── -->
                         <div class="form-options">
                             <label class="checkbox-container">
                                 <input type="checkbox" id="terms" name="terms" required>
                                 <span class="checkmark"></span>
-                                I agree to the <a href="#" class="link-text">Terms &amp; Conditions</a>
+                                I agree to the <a href="/terms-of-use.html" class="link-text" target="_blank">Terms &amp; Conditions</a>
                             </label>
                         </div>
 
@@ -307,8 +526,8 @@
             <p>&copy; 2025 AI Fluency Course</p>
             <div class="footer-links">
                 <a href="#">About</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
+                <a href="/privacy-policy.html">Privacy Policy</a>
+                <a href="/terms-of-use.html">Terms of Use</a>
             </div>
         </div>
     </footer>
@@ -322,7 +541,7 @@
 
     <script>
     // ============================================================
-    // Signup page — role-based form with autocomplete school search
+    // Signup page — context-aware, role-based form with school search
     // ============================================================
     (function () {
         'use strict';
@@ -337,7 +556,8 @@
             schooladmin: { comboId: 'adminCombo',    districtId: 'adminDistrict'    },
         };
 
-        let currentRole = 'student';
+        let currentContext = 'public_school';
+        let currentRole    = 'student';
 
         // ── Boot ───────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
@@ -347,29 +567,80 @@
             }
             setDOBMax();
             loadSchools();
+            bindContextSelector();
             bindRoleSelector();
             bindGenderRadios();
             bindPasswordStrength();
             bindFormSubmit();
             bindPasswordConfirm();
+            bindEmailAvailability();
             ['fullname','email','password','confirmPassword'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('focus', clearError);
             });
         });
 
-        // ── DOB max (must be ≥ 12 years old) ──────────────────
+        // ── Email availability check ───────────────────────────
+        let emailCheckTimer = null;
+        let lastCheckedEmail = '';
+        function bindEmailAvailability() {
+            const input = document.getElementById('email');
+            const status = document.getElementById('emailStatus');
+            if (!input || !status) return;
+
+            const run = () => {
+                const raw = (input.value || '').trim();
+                if (!raw) { status.className = 'email-status'; status.textContent = ''; return; }
+                if (raw === lastCheckedEmail) return;
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)) {
+                    status.className = 'email-status invalid';
+                    status.textContent = 'Please enter a valid email address.';
+                    return;
+                }
+                lastCheckedEmail = raw;
+                status.className = 'email-status checking';
+                status.textContent = 'Checking…';
+                fetch(`${API_BASE}/auth/check-email?email=${encodeURIComponent(raw)}`)
+                    .then(r => r.json())
+                    .then(json => {
+                        const data = (json && json.data) || {};
+                        if (data.invalid) {
+                            status.className = 'email-status invalid';
+                            status.textContent = 'Please enter a valid email address.';
+                        } else if (data.available) {
+                            status.className = 'email-status available';
+                            status.textContent = '✓ This email is available.';
+                        } else {
+                            status.className = 'email-status taken';
+                            status.textContent = 'This email is already registered. Try logging in instead.';
+                        }
+                    })
+                    .catch(() => {
+                        status.className = 'email-status';
+                        status.textContent = '';
+                    });
+            };
+
+            input.addEventListener('blur', run);
+            input.addEventListener('input', () => {
+                clearTimeout(emailCheckTimer);
+                emailCheckTimer = setTimeout(run, 600);
+            });
+        }
+
+        // ── DOB max (must be >= 12 years old) ──────────────────
         function setDOBMax() {
-            const dob = document.getElementById('dateOfBirth');
-            if (!dob) return;
             const d = new Date();
             d.setFullYear(d.getFullYear() - 12);
-            dob.max = d.toISOString().split('T')[0];
+            const maxDate = d.toISOString().split('T')[0];
+            ['dateOfBirth', 'privateDob', 'hsDob'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.max = maxDate;
+            });
         }
 
         // ── Load all schools once ──────────────────────────────
         async function loadSchools() {
-            // Show loading state in all comboboxes
             Object.values(COMBOS).forEach(({ comboId }) => {
                 const combo = document.getElementById(comboId);
                 if (combo) combo.querySelector('.school-combobox-input').placeholder = 'Loading schools...';
@@ -380,16 +651,13 @@
                 const json = await res.json();
                 allSchools = (json.data && json.data.schools) ? json.data.schools : [];
 
-                // Restore placeholder and init each combobox
                 Object.entries(COMBOS).forEach(([role, cfg]) => {
                     initCombobox(cfg.comboId, cfg.districtId);
                 });
 
-                // Update hint
                 document.querySelectorAll('.school-combobox-hint').forEach(el => {
                     el.textContent = `${allSchools.length.toLocaleString()} schools available — type to search`;
                 });
-
             } catch (e) {
                 console.warn('Could not load schools:', e);
                 document.querySelectorAll('.school-combobox-hint').forEach(el => {
@@ -400,20 +668,18 @@
 
         // ── Build a single combobox ────────────────────────────
         function initCombobox(comboId, districtInputId) {
-            const combo       = document.getElementById(comboId);
+            const combo = document.getElementById(comboId);
             if (!combo) return;
 
-            const input       = combo.querySelector('.school-combobox-input');
-            const list        = combo.querySelector('.school-combobox-list');
-            const hiddenVal   = combo.querySelector('.school-combobox-value');
-            const clearBtn    = combo.querySelector('.school-combobox-clear');
-            const districtEl  = document.getElementById(districtInputId);
+            const input      = combo.querySelector('.school-combobox-input');
+            const list       = combo.querySelector('.school-combobox-list');
+            const hiddenVal  = combo.querySelector('.school-combobox-value');
+            const clearBtn   = combo.querySelector('.school-combobox-clear');
+            const districtEl = document.getElementById(districtInputId);
 
             input.placeholder = 'Type to search your school...';
             let activeIndex   = -1;
-            let isSelected    = false;
 
-            // Helpers
             function closeList() {
                 list.innerHTML = '';
                 list.classList.remove('open');
@@ -421,23 +687,20 @@
             }
 
             function selectSchool(school) {
-                input.value       = school.name + (school.city ? ' — ' + school.city : '');
-                hiddenVal.value   = school.id;
+                input.value     = school.name + (school.city ? ' — ' + school.city : '');
+                hiddenVal.value = school.id;
                 if (districtEl) districtEl.value = school.district || '';
                 clearBtn.style.display = '';
-                isSelected = true;
                 closeList();
-                // Mark combobox as valid
                 combo.classList.remove('has-error');
                 combo.classList.add('has-selection');
             }
 
             function clearSelection() {
-                input.value          = '';
-                hiddenVal.value      = '';
+                input.value     = '';
+                hiddenVal.value = '';
                 if (districtEl) districtEl.value = '';
                 clearBtn.style.display = 'none';
-                isSelected = false;
                 combo.classList.remove('has-selection');
                 input.focus();
                 closeList();
@@ -450,20 +713,18 @@
                     list.classList.add('open');
                     return;
                 }
-                // Show up to 50 results
                 const show = matches.slice(0, 50);
                 show.forEach((s, i) => {
                     const li = document.createElement('li');
                     li.setAttribute('role', 'option');
                     li.dataset.idx = i;
-                    // Highlight matched portion
                     const q    = input.value.trim();
                     const re   = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
                     const name = s.name.replace(re, '<mark>$1</mark>');
                     li.innerHTML = `<span class="school-name">${name}</span>` +
                         (s.district ? `<span class="school-district">${s.district}</span>` : '');
                     li.addEventListener('mousedown', (e) => {
-                        e.preventDefault(); // keep focus on input
+                        e.preventDefault();
                         selectSchool(s);
                     });
                     list.appendChild(li);
@@ -478,9 +739,7 @@
                 activeIndex = -1;
             }
 
-            // Input handler
             input.addEventListener('input', () => {
-                isSelected = false;
                 hiddenVal.value = '';
                 if (districtEl) districtEl.value = '';
                 clearBtn.style.display = input.value ? '' : 'none';
@@ -493,7 +752,6 @@
                 renderList(matches);
             });
 
-            // Keyboard nav
             input.addEventListener('keydown', (e) => {
                 const items = list.querySelectorAll('li[role="option"]');
                 if (e.key === 'ArrowDown') {
@@ -518,20 +776,116 @@
                 }
             });
 
-            // Close on blur (but not when clicking a list item — mousedown handles that)
-            input.addEventListener('blur', () => {
-                setTimeout(closeList, 150);
+            input.addEventListener('blur', () => setTimeout(closeList, 150));
+            clearBtn.addEventListener('click', clearSelection);
+            combo._getSchoolId = () => hiddenVal.value;
+        }
+
+        // ── Context selector ─────────────────────────────────────
+        function bindContextSelector() {
+            document.querySelectorAll('.context-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.context-option').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentContext = btn.dataset.context;
+                    document.getElementById('selectedContext').value = currentContext;
+                    applyContext();
+                });
+            });
+        }
+
+        function applyContext() {
+            const roleSelectorWrap = document.getElementById('roleSelectorWrap');
+            const roleOptionsEl   = document.getElementById('roleOptions');
+
+            // Hide all context-specific field sections
+            ['studentFields', 'teacherFields', 'schooladminFields',
+             'privateSchoolFields', 'homeschoolFields', 'independentFields'].forEach(id => {
+                document.getElementById(id).style.display = 'none';
             });
 
-            // Clear button
-            clearBtn.addEventListener('click', clearSelection);
+            if (currentContext === 'public_school') {
+                // Show standard role selector with Student / Teacher / School Admin
+                roleSelectorWrap.style.display = '';
+                roleOptionsEl.innerHTML = `
+                    <button type="button" class="role-option active" data-role="student">
+                        <i class="fas fa-graduation-cap"></i><span>Student</span>
+                    </button>
+                    <button type="button" class="role-option" data-role="teacher">
+                        <i class="fas fa-chalkboard-teacher"></i><span>Teacher</span>
+                    </button>
+                    <button type="button" class="role-option" data-role="schooladmin">
+                        <i class="fas fa-school"></i><span>School Admin</span>
+                    </button>`;
+                currentRole = 'student';
+                document.getElementById('selectedRole').value = 'student';
+                document.getElementById('studentFields').style.display = '';
+                bindRoleButtons();
 
-            // Expose selected value for form submission
-            combo._getSchoolId = () => hiddenVal.value;
+            } else if (currentContext === 'private_school') {
+                // Show role selector with Student / Teacher / School Admin
+                roleSelectorWrap.style.display = '';
+                roleOptionsEl.innerHTML = `
+                    <button type="button" class="role-option active" data-role="student">
+                        <i class="fas fa-graduation-cap"></i><span>Student</span>
+                    </button>
+                    <button type="button" class="role-option" data-role="teacher">
+                        <i class="fas fa-chalkboard-teacher"></i><span>Teacher</span>
+                    </button>
+                    <button type="button" class="role-option" data-role="schooladmin">
+                        <i class="fas fa-school"></i><span>School Admin</span>
+                    </button>`;
+                currentRole = 'student';
+                document.getElementById('selectedRole').value = 'student';
+                document.getElementById('privateSchoolFields').style.display = '';
+                showPrivateStudentFields(true);
+                bindRoleButtons();
+
+            } else if (currentContext === 'homeschool') {
+                // Show role selector with Learner / Parent-Educator
+                roleSelectorWrap.style.display = '';
+                roleOptionsEl.innerHTML = `
+                    <button type="button" class="role-option active" data-role="student">
+                        <i class="fas fa-graduation-cap"></i><span>Learner</span>
+                    </button>
+                    <button type="button" class="role-option" data-role="teacher">
+                        <i class="fas fa-chalkboard-teacher"></i><span>Parent / Educator</span>
+                    </button>`;
+                currentRole = 'student';
+                document.getElementById('selectedRole').value = 'student';
+                document.getElementById('homeschoolFields').style.display = '';
+                showHomeschoolStudentFields(true);
+                bindRoleButtons();
+
+            } else if (currentContext === 'independent_learner') {
+                // Hide role selector, auto-assign student
+                roleSelectorWrap.style.display = 'none';
+                currentRole = 'student';
+                document.getElementById('selectedRole').value = 'student';
+                document.getElementById('independentFields').style.display = '';
+            }
+        }
+
+        // Show/hide student-specific fields in private school context
+        function showPrivateStudentFields(isStudent) {
+            ['privateGenderGroup', 'privateGradeGroup', 'privateDobGroup'].forEach(id => {
+                document.getElementById(id).style.display = isStudent ? '' : 'none';
+            });
+        }
+
+        // Show/hide student-specific fields in homeschool context
+        function showHomeschoolStudentFields(isStudent) {
+            ['hsGenderGroup', 'hsGradeGroup', 'hsDobGroup'].forEach(id => {
+                document.getElementById(id).style.display = isStudent ? '' : 'none';
+            });
         }
 
         // ── Role selector ──────────────────────────────────────
         function bindRoleSelector() {
+            bindRoleButtons();
+        }
+
+        function bindRoleButtons() {
             document.querySelectorAll('.role-option').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.role-option').forEach(b => b.classList.remove('active'));
@@ -539,28 +893,28 @@
                     currentRole = btn.dataset.role;
                     document.getElementById('selectedRole').value = currentRole;
 
-                    const fields = { student: 'studentFields', teacher: 'teacherFields', schooladmin: 'schooladminFields' };
-                    Object.entries(fields).forEach(([r, id]) => {
-                        document.getElementById(id).style.display = (r === currentRole) ? '' : 'none';
-                    });
-
-                    // Toggle student-only required attrs
-                    const isStudent = currentRole === 'student';
-                    ['grade', 'dateOfBirth'].forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) isStudent ? el.setAttribute('required','') : el.removeAttribute('required');
-                    });
-                    document.getElementById('genderValue').required = isStudent;
+                    if (currentContext === 'public_school') {
+                        // Toggle public school field sections
+                        const fields = { student: 'studentFields', teacher: 'teacherFields', schooladmin: 'schooladminFields' };
+                        Object.entries(fields).forEach(([r, id]) => {
+                            document.getElementById(id).style.display = (r === currentRole) ? '' : 'none';
+                        });
+                    } else if (currentContext === 'private_school') {
+                        showPrivateStudentFields(currentRole === 'student');
+                    } else if (currentContext === 'homeschool') {
+                        showHomeschoolStudentFields(currentRole === 'student');
+                    }
                 });
             });
         }
 
         // ── Gender radios ──────────────────────────────────────
         function bindGenderRadios() {
-            document.querySelectorAll('input[name="gender_student"]').forEach(radio => {
-                radio.addEventListener('change', () => {
-                    document.getElementById('genderValue').value = radio.value;
-                });
+            // Delegate to handle dynamically rendered radio groups too
+            document.addEventListener('change', (e) => {
+                if (e.target.matches('input[name="gender_student"]')) {
+                    document.getElementById('genderValue').value = e.target.value;
+                }
             });
         }
 
@@ -570,12 +924,10 @@
             { id: 'req-upper',   test: pw => /[A-Z]/.test(pw) },
             { id: 'req-lower',   test: pw => /[a-z]/.test(pw) },
             { id: 'req-number',  test: pw => /[0-9]/.test(pw) },
-            // Matches backend: /[!@#$%^&*(),.?":{}|<>]/
             { id: 'req-special', test: pw => /[!@#$%^&*(),.?":{}|<>]/.test(pw) },
         ];
 
         function checkPasswordStrength(pw) {
-            // Use forEach (not every) so ALL items are updated, not just up to the first failure
             let allOk = true;
             PW_RULES.forEach(r => {
                 const el = document.getElementById(r.id);
@@ -629,6 +981,7 @@
                 const confirmP = document.getElementById('confirmPassword').value;
                 const terms    = document.getElementById('terms').checked;
                 const role     = document.getElementById('selectedRole').value;
+                const context  = document.getElementById('selectedContext').value;
                 const contact  = document.getElementById('contactNumber').value.trim();
                 clearError();
 
@@ -643,29 +996,74 @@
                 if (!terms)
                     return showError('Please accept the Terms & Conditions');
 
-                const payload = { name: fullname, email, password, password_confirmation: confirmP, role };
+                const payload = {
+                    name: fullname, email, password,
+                    password_confirmation: confirmP,
+                    role, education_context: context
+                };
                 if (contact) payload.contact_number = contact;
 
-                if (role === 'student') {
-                    const schoolId = getSchoolId('student');
-                    const gender   = document.getElementById('genderValue').value;
-                    const grade    = document.getElementById('grade').value;
-                    const dob      = document.getElementById('dateOfBirth').value;
-                    if (!schoolId) return showError('Please select your school');
-                    if (!gender)   return showError('Please select your gender');
-                    if (!grade)    return showError('Please select your grade');
-                    if (!dob)      return showError('Please enter your date of birth');
-                    Object.assign(payload, { school_id: schoolId, gender, grade, date_of_birth: dob });
+                // ── Context-specific payload building ──
+                if (context === 'public_school') {
+                    if (role === 'student') {
+                        const schoolId = getSchoolId('student');
+                        const gender   = document.getElementById('genderValue').value;
+                        const grade    = document.getElementById('grade').value;
+                        const dob      = document.getElementById('dateOfBirth').value;
+                        if (!schoolId) return showError('Please select your school');
+                        if (!gender)   return showError('Please select your gender');
+                        if (!grade)    return showError('Please select your grade');
+                        if (!dob)      return showError('Please enter your date of birth');
+                        Object.assign(payload, { school_id: schoolId, gender, grade, date_of_birth: dob });
 
-                } else if (role === 'teacher') {
-                    const schoolId = getSchoolId('teacher');
-                    if (!schoolId) return showError('Please select your school');
-                    payload.school_id = schoolId;
+                    } else if (role === 'teacher') {
+                        const schoolId = getSchoolId('teacher');
+                        if (!schoolId) return showError('Please select your school');
+                        payload.school_id = schoolId;
 
-                } else if (role === 'schooladmin') {
-                    const schoolId = getSchoolId('schooladmin');
-                    if (!schoolId) return showError('Please select your school');
-                    payload.school_id = schoolId;
+                    } else if (role === 'schooladmin') {
+                        const schoolId = getSchoolId('schooladmin');
+                        if (!schoolId) return showError('Please select your school');
+                        payload.school_id = schoolId;
+                    }
+
+                } else if (context === 'private_school') {
+                    const schoolName = document.getElementById('privateSchoolName').value.trim();
+                    const province   = document.getElementById('privateProvince').value;
+                    if (!schoolName) return showError('Please enter your school name');
+                    payload.school_name = schoolName;
+                    if (province) payload.province = province;
+
+                    if (role === 'student') {
+                        const gender = getSelectedRadio('gender_private');
+                        const grade  = document.getElementById('privateGrade').value;
+                        const dob    = document.getElementById('privateDob').value;
+                        if (!gender) return showError('Please select your gender');
+                        if (!grade)  return showError('Please select your grade');
+                        if (!dob)    return showError('Please enter your date of birth');
+                        Object.assign(payload, { gender, grade, date_of_birth: dob });
+                    }
+
+                } else if (context === 'homeschool') {
+                    const providerName = document.getElementById('providerName').value.trim();
+                    const province     = document.getElementById('homeschoolProvince').value;
+                    if (!providerName) return showError('Please enter your family or provider name');
+                    payload.provider_name = providerName;
+                    if (province) payload.province = province;
+
+                    if (role === 'student') {
+                        const gender = getSelectedRadio('gender_hs');
+                        const grade  = document.getElementById('hsGrade').value;
+                        const dob    = document.getElementById('hsDob').value;
+                        if (!gender) return showError('Please select your gender');
+                        if (!grade)  return showError('Please select your grade');
+                        if (!dob)    return showError('Please enter your date of birth');
+                        Object.assign(payload, { gender, grade, date_of_birth: dob });
+                    }
+
+                } else if (context === 'independent_learner') {
+                    const province = document.getElementById('independentProvince').value;
+                    if (province) payload.province = province;
                 }
 
                 btn.disabled = true;
@@ -676,7 +1074,6 @@
                         showSuccess('Account created! Redirecting...');
                         setTimeout(() => Auth.handleLoginRedirect(), 1500);
                     } else {
-                        // Show the most specific error available
                         const errors = result.errors || {};
                         const firstField = Object.keys(errors)[0];
                         const msg = firstField
@@ -692,6 +1089,12 @@
                     btn.innerHTML = origHTML;
                 }
             });
+        }
+
+        // ── Helper: get selected radio value ─────────────────
+        function getSelectedRadio(name) {
+            const checked = document.querySelector(`input[name="${name}"]:checked`);
+            return checked ? checked.value : '';
         }
 
         // ── Alerts ─────────────────────────────────────────────

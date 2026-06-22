@@ -52,6 +52,34 @@ class UserController extends BaseController
         $search = isset($_GET['search']) ? $_GET['search'] : null;
         $organizationId = isset($_GET['organization_id']) ? (int)$_GET['organization_id'] : null;
         $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
+        $includeEnrollmentSummary = isset($_GET['include_enrollment_summary'])
+            && filter_var($_GET['include_enrollment_summary'], FILTER_VALIDATE_BOOLEAN);
+
+        // Parse is_active: '1'/'true' → true, '0'/'false' → false, anything else → null (no filter)
+        $isActive = null;
+        if (isset($_GET['is_active']) && $_GET['is_active'] !== '') {
+            $raw = strtolower((string)$_GET['is_active']);
+            if (in_array($raw, ['1', 'true'], true)) {
+                $isActive = true;
+            } elseif (in_array($raw, ['0', 'false'], true)) {
+                $isActive = false;
+            }
+        }
+
+        // Enrollment-summary-only filters/sorts (consumed by the school roster branch below).
+        // Whitelisted server-side so the frontend can't smuggle arbitrary SQL through ORDER BY / HAVING.
+        $progressFilter = null;
+        if (isset($_GET['progress_filter']) && in_array($_GET['progress_filter'], ['not-started', 'in-progress', 'completed'], true)) {
+            $progressFilter = $_GET['progress_filter'];
+        }
+        $sortBy = null;
+        if (isset($_GET['sort']) && in_array($_GET['sort'], ['name', 'progress', 'last_active'], true)) {
+            $sortBy = $_GET['sort'];
+        }
+        $sortOrder = null;
+        if (isset($_GET['order']) && in_array(strtolower((string)$_GET['order']), ['asc', 'desc'], true)) {
+            $sortOrder = strtolower((string)$_GET['order']);
+        }
 
         // Validate role if provided
         $validRoles = ['student', 'teacher', 'schooladmin', 'orgadmin', 'superadmin'];
@@ -59,13 +87,86 @@ class UserController extends BaseController
             Response::error('Invalid role specified', 400);
         }
 
+        // Expand 'teacher' to match legacy 'instructor' role values in the DB.
+        // Historical signups used role='instructor'; current signups use 'teacher'. Both represent the same persona.
+        $roleFilter = ($role === 'teacher') ? ['teacher', 'instructor'] : $role;
+
         $offset = ($page - 1) * $pageSize;
+
+        // Enrollment summary branch: used by the instructor students page so Progress
+        // and Course columns are meaningful at the school-roster level (no per-course filter).
+        // Requires: include_enrollment_summary=true + school_id + role=student.
+        if (
+            $includeEnrollmentSummary
+            && $schoolId
+            && $role === 'student'
+            && in_array($currentUser->role, ['teacher', 'instructor', 'schooladmin', 'orgadmin', 'superadmin'], true)
+        ) {
+            // Teachers are locked to their own school.
+            $scopedSchoolId = $schoolId;
+            if (in_array($currentUser->role, ['teacher', 'instructor'], true)) {
+                $scopedSchoolId = isset($currentUser->primary_school_id)
+                    ? (int)$currentUser->primary_school_id
+                    : 0;
+            } elseif ($currentUser->role === 'schooladmin') {
+                $scopedSchoolId = isset($currentUser->primary_school_id)
+                    ? (int)$currentUser->primary_school_id
+                    : 0;
+            }
+
+            if ($scopedSchoolId > 0) {
+                $enrollmentModel = new \App\Models\Enrollment($this->pdo);
+                $summaries = $enrollmentModel->getSchoolStudentSummaries(
+                    $scopedSchoolId,
+                    $pageSize,
+                    $offset,
+                    $search,
+                    $isActive,
+                    $progressFilter,
+                    $sortBy,
+                    $sortOrder
+                );
+                // Count must reflect the progress filter (HAVING on aggregates), so use the
+                // matching count method on Enrollment rather than the user-only counter.
+                $total = $enrollmentModel->countSchoolStudentSummaries(
+                    $scopedSchoolId,
+                    $search,
+                    $isActive,
+                    $progressFilter
+                );
+
+                $data = array_map(function ($row) {
+                    return [
+                        'id' => (int)$row->id,
+                        'name' => $row->name,
+                        'email' => $row->email,
+                        'is_active' => (bool)$row->is_active,
+                        'created_at' => $row->created_at,
+                        'enrollment_count' => (int)$row->enrollment_count,
+                        'completed_count' => (int)$row->completed_count,
+                        'avg_progress' => round((float)$row->avg_progress, 2),
+                        'last_active_at' => $row->last_active_at,
+                        'latest_enrolled_at' => $row->latest_enrolled_at,
+                        'single_course_title' => $row->single_course_title,
+                    ];
+                }, $summaries);
+
+                Response::success([
+                    'data' => $data,
+                    'total' => $total,
+                    'page' => $page,
+                    'pageSize' => $pageSize,
+                    'totalPages' => $pageSize > 0 ? (int)ceil($total / $pageSize) : 0
+                ], 'Users retrieved successfully');
+                return;
+            }
+        }
 
         // Apply organizational scoping based on current user's role
         if ($currentUser->role === 'superadmin') {
             // SuperAdmins see all users system-wide with optional filters
-            $users = $this->userModel->getFilteredUsers($role, $search, $organizationId, $schoolId, $pageSize, $offset);
-            $total = $this->userModel->countFilteredUsers($role, $search, $organizationId, $schoolId);
+            $users = $this->userModel->getFilteredUsers($roleFilter, $search, $organizationId, $schoolId, $pageSize, $offset, $isActive);
+            $total = $this->userModel->countFilteredUsers($roleFilter, $search, $organizationId, $schoolId, $isActive);
         } elseif ($currentUser->role === 'orgadmin') {
             // OrgAdmins see users in their organization(s)
             $managedOrgIds = $this->getManagedOrganizationIds();
@@ -77,8 +178,8 @@ class UserController extends BaseController
                 $targetOrgId = ($organizationId && in_array($organizationId, $managedOrgIds))
                     ? $organizationId
                     : $managedOrgIds[0];
-                $users = $this->userModel->getFilteredUsers($role, $search, $targetOrgId, $schoolId, $pageSize, $offset);
-                $total = $this->userModel->countFilteredUsers($role, $search, $targetOrgId, $schoolId);
+                $users = $this->userModel->getFilteredUsers($roleFilter, $search, $targetOrgId, $schoolId, $pageSize, $offset, $isActive);
+                $total = $this->userModel->countFilteredUsers($roleFilter, $search, $targetOrgId, $schoolId, $isActive);
             }
         } elseif ($currentUser->role === 'schooladmin') {
             // SchoolAdmins see users in their school only
@@ -86,11 +187,21 @@ class UserController extends BaseController
                 $users = [];
                 $total = 0;
             } else {
-                $users = $this->userModel->getFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset);
-                $total = $this->userModel->countFilteredUsers($role, $search, null, (int)$currentUser->primary_school_id);
+                $users = $this->userModel->getFilteredUsers($roleFilter, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset, $isActive);
+                $total = $this->userModel->countFilteredUsers($roleFilter, $search, null, (int)$currentUser->primary_school_id, $isActive);
+            }
+        } elseif (in_array($currentUser->role, ['teacher', 'instructor'], true)) {
+            // Teachers see users in their school only (view-only).
+            // Legacy 'instructor' role is the same persona as 'teacher' — both scoped identically.
+            if (!$currentUser->primary_school_id) {
+                $users = [];
+                $total = 0;
+            } else {
+                $users = $this->userModel->getFilteredUsers($roleFilter, $search, null, (int)$currentUser->primary_school_id, $pageSize, $offset, $isActive);
+                $total = $this->userModel->countFilteredUsers($roleFilter, $search, null, (int)$currentUser->primary_school_id, $isActive);
             }
         } else {
-            // Teachers and students cannot list users
+            // Students cannot list users
             Response::forbidden('Insufficient permissions to list users');
         }
 
@@ -135,21 +246,27 @@ class UserController extends BaseController
 
         $userId = (int)$params['id'];
 
-        // Authorization: admin, instructor, or self
+        // Authorization: admin, instructor (school-scoped), or self
         $currentUser = $this->getCurrentUser();
 
         $isSelf = ($currentUser->id == $userId);
-        $isAdminOrInstructor = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin']);
+        $isAdmin = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin'], true);
+        $isTeacher = in_array($currentUser->role, ['teacher', 'instructor'], true);
 
-        if (!$isSelf && !$isAdminOrInstructor) {
-            Response::forbidden('You do not have permission to view this user');
-        }
-
-        // Fetch user
+        // Fetch user (needed for school-scope check on teachers)
         $user = $this->userModel->find($userId);
 
         if (!$user) {
             Response::notFound('User not found');
+        }
+
+        // Teachers/instructors may view any user from their own school.
+        $sameSchool = $isTeacher
+            && !empty($currentUser->primary_school_id)
+            && (int)$user->primary_school_id === (int)$currentUser->primary_school_id;
+
+        if (!$isSelf && !$isAdmin && !$sameSchool) {
+            Response::forbidden('You do not have permission to view this user');
         }
 
         // Fetch user statistics
@@ -266,7 +383,13 @@ class UserController extends BaseController
         }
 
         $isSelf = ($currentUser->id == $userId);
-        $isAdminUpdate = in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin']);
+
+        // Only superadmin can edit other users; any user can edit their own profile
+        if (!$isSelf && $currentUser->role !== 'superadmin') {
+            Response::forbidden('Only superadmin can edit other users');
+        }
+
+        $isAdminUpdate = ($currentUser->role === 'superadmin');
 
         // Get request data
         $data = $_POST;
@@ -277,7 +400,7 @@ class UserController extends BaseController
             $allowedFields = ['name', 'profile_picture_url', 'bio', 'headline', 'location',
                             'website_url', 'github_url', 'linkedin_url', 'twitter_url'];
         } elseif ($isAdminUpdate) {
-            // Admin users managing other users - check hierarchical permissions
+            // SuperAdmin managing other users
             if (!$isSelf) {
                 // Check role hierarchy - can't manage equal or higher roles
                 $roleHierarchy = [
@@ -366,6 +489,128 @@ class UserController extends BaseController
     }
 
     /**
+     * Change own password
+     *
+     * PUT /api/users/me/password
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function changePassword(array $params): void
+    {
+        $currentUser = $this->getCurrentUser();
+
+        $data = $_POST;
+
+        // Validate required fields
+        if (empty($data['current_password'])) {
+            Response::error('Current password is required', 400);
+        }
+        if (empty($data['new_password'])) {
+            Response::error('New password is required', 400);
+        }
+        if (empty($data['confirm_password'])) {
+            Response::error('Password confirmation is required', 400);
+        }
+        if ($data['new_password'] !== $data['confirm_password']) {
+            Response::error('New passwords do not match', 400);
+        }
+        if (strlen($data['new_password']) < 8) {
+            Response::error('New password must be at least 8 characters', 400);
+        }
+
+        // Verify current password
+        $verified = $this->userModel->verifyPassword($currentUser->email, $data['current_password']);
+        if (!$verified) {
+            Response::error('Current password is incorrect', 401);
+        }
+
+        // Update password
+        $updated = $this->userModel->updatePassword($currentUser->id, $data['new_password']);
+        if (!$updated) {
+            Response::serverError('Failed to update password');
+        }
+
+        Response::success(null, 'Password changed successfully');
+    }
+
+    /**
+     * Admin / instructor password reset for another user
+     *
+     * PUT /api/users/:id/admin-reset-password
+     *
+     * Authorization:
+     *   - superadmin           → any user
+     *   - orgadmin             → users in a managed organization
+     *   - schooladmin          → users in their primary school
+     *   - teacher / instructor → only students in their primary school
+     */
+    public function adminResetPassword(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+
+        $targetId = (int)$params['id'];
+        $currentUser = $this->getCurrentUser();
+
+        if ($currentUser->id == $targetId) {
+            Response::error('Use the change-password endpoint to update your own password', 400);
+        }
+
+        $target = $this->userModel->find($targetId);
+        if (!$target) {
+            Response::notFound('User not found');
+        }
+
+        // Authorization
+        $role = $currentUser->role;
+        $allowed = false;
+        if ($role === 'superadmin') {
+            $allowed = true;
+        } elseif ($role === 'orgadmin') {
+            $managedOrgIds = $this->getManagedOrganizationIds();
+            $allowed = $managedOrgIds !== null
+                && in_array((int)$target->primary_organization_id, $managedOrgIds, true);
+        } elseif ($role === 'schooladmin') {
+            $allowed = !empty($currentUser->primary_school_id)
+                && (int)$target->primary_school_id === (int)$currentUser->primary_school_id;
+        } elseif (in_array($role, ['teacher', 'instructor'], true)) {
+            $allowed = $target->role === 'student'
+                && !empty($currentUser->primary_school_id)
+                && (int)$target->primary_school_id === (int)$currentUser->primary_school_id;
+        }
+
+        if (!$allowed) {
+            Response::forbidden('You cannot reset this user\'s password');
+        }
+
+        // Validate input
+        $data = $_POST;
+        if (empty($data['new_password'])) {
+            Response::error('New password is required', 400);
+        }
+        if (empty($data['confirm_password'])) {
+            Response::error('Password confirmation is required', 400);
+        }
+        if ($data['new_password'] !== $data['confirm_password']) {
+            Response::error('New passwords do not match', 400);
+        }
+        if (strlen($data['new_password']) < 8) {
+            Response::error('New password must be at least 8 characters', 400);
+        }
+
+        $updated = $this->userModel->updatePassword($targetId, $data['new_password']);
+        if (!$updated) {
+            Response::serverError('Failed to update password');
+        }
+
+        error_log("Password reset by user {$currentUser->id} ({$role}) for user {$targetId}");
+
+        Response::success(null, 'Password reset successfully');
+    }
+
+    /**
      * Delete user (Admin only)
      *
      * DELETE /api/users/:id
@@ -375,8 +620,8 @@ class UserController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete users
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete users
+        $this->requireRole(['superadmin']);
 
         // Get user ID from params
         if (!isset($params['id'])) {
@@ -663,6 +908,239 @@ class UserController extends BaseController
                 'totalPages' => $totalPages
             ]
         ], 'Profiles retrieved successfully');
+    }
+
+    /**
+     * Toggle is_active for a student. Used by the instructor students modal
+     * for soft account control without touching superadmin-only DELETE.
+     *
+     * PUT /api/users/:id/deactivate   body: { is_active: bool }
+     */
+    public function setActive(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+        $userId = (int)$params['id'];
+
+        $currentUser = $this->getCurrentUser();
+        $this->requireSchoolScope($currentUser, $userId);
+
+        $body = $this->readJsonBody();
+        if (!array_key_exists('is_active', $body)) {
+            Response::error('is_active is required', 400);
+        }
+        $isActive = filter_var($body['is_active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($isActive === null) {
+            Response::error('is_active must be a boolean', 400);
+        }
+
+        if (!$this->userModel->setActiveStatus($userId, $isActive)) {
+            Response::serverError('Failed to update account status');
+        }
+
+        Response::success(['id' => $userId, 'is_active' => $isActive], 'Account status updated');
+    }
+
+    /**
+     * Soft-delete a student account as a confirmed duplicate.
+     * Sets is_active = 0; superadmin retains the hard-delete path.
+     *
+     * POST /api/users/:id/mark-duplicate   body: { kept_user_id: int, reason?: string }
+     */
+    public function markDuplicate(array $params): void
+    {
+        if (!isset($params['id'])) {
+            Response::error('User ID is required', 400);
+        }
+        $userId = (int)$params['id'];
+
+        $currentUser = $this->getCurrentUser();
+        $this->requireSchoolScope($currentUser, $userId);
+
+        $body = $this->readJsonBody();
+        $keptUserId = isset($body['kept_user_id']) ? (int)$body['kept_user_id'] : 0;
+        if ($keptUserId <= 0 || $keptUserId === $userId) {
+            Response::error('A valid kept_user_id (different from this user) is required', 400);
+        }
+
+        $kept = $this->userModel->find($keptUserId);
+        if (!$kept) {
+            Response::notFound('Kept user not found');
+        }
+
+        $target = $this->userModel->find($userId);
+        if (!$target) {
+            Response::notFound('User not found');
+        }
+
+        if (!$this->userModel->setActiveStatus($userId, false)) {
+            Response::serverError('Failed to mark account as duplicate');
+        }
+
+        $reason = isset($body['reason']) ? substr(trim((string)$body['reason']), 0, 500) : '';
+        error_log(sprintf(
+            'duplicate-account: user_id=%d marked as duplicate of user_id=%d by user_id=%d (role=%s). Reason: %s',
+            $userId,
+            $keptUserId,
+            (int)$currentUser->id,
+            (string)$currentUser->role,
+            $reason !== '' ? $reason : '(none)'
+        ));
+
+        Response::success([
+            'id' => $userId,
+            'is_active' => false,
+            'kept_user_id' => $keptUserId,
+        ], 'Account marked as duplicate');
+    }
+
+    /**
+     * List student accounts in the instructor's school that share a normalised
+     * email with at least one other account. Used by the "Duplicates" view on
+     * the instructor students page.
+     *
+     * GET /api/instructor/students/duplicates
+     */
+    public function listSchoolDuplicates(array $params = []): void
+    {
+        $currentUser = $this->getCurrentUser();
+        $role = $currentUser->role;
+
+        if (in_array($role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            $schoolId = isset($currentUser->primary_school_id)
+                ? (int)$currentUser->primary_school_id
+                : 0;
+        } elseif (in_array($role, ['orgadmin', 'superadmin'], true)) {
+            $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : 0;
+        } else {
+            Response::forbidden('Insufficient permissions');
+        }
+
+        if ($schoolId <= 0) {
+            Response::success(['data' => [], 'total' => 0], 'No duplicates');
+            return;
+        }
+
+        $sql = "
+            SELECT u.id, u.name, u.email, u.is_active, u.created_at, u.last_login_at,
+                   LOWER(TRIM(u.email)) AS norm_email,
+                   dup.cnt AS duplicate_count
+            FROM users u
+            JOIN (
+                SELECT LOWER(TRIM(email)) AS norm_email, COUNT(*) AS cnt
+                FROM users
+                WHERE primary_school_id = :school_id_inner AND role = 'student'
+                GROUP BY LOWER(TRIM(email))
+                HAVING cnt > 1
+            ) dup ON LOWER(TRIM(u.email)) = dup.norm_email
+            WHERE u.primary_school_id = :school_id AND u.role = 'student'
+            ORDER BY dup.norm_email, u.created_at
+        ";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':school_id', $schoolId, \PDO::PARAM_INT);
+            $stmt->bindValue(':school_id_inner', $schoolId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            error_log('listSchoolDuplicates error: ' . $e->getMessage());
+            Response::serverError('Failed to load duplicate accounts');
+        }
+
+        Response::success(['data' => $rows, 'total' => count($rows)], 'Duplicates retrieved');
+    }
+
+    /**
+     * Ensure $currentUser can act on $targetUserId.
+     * Teachers/schooladmins: same school only. Org/SuperAdmins: always.
+     */
+    private function requireSchoolScope(object $currentUser, int $targetUserId): void
+    {
+        $role = $currentUser->role;
+        if (in_array($role, ['orgadmin', 'superadmin'], true)) {
+            return;
+        }
+        if (!in_array($role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            Response::forbidden('Insufficient permissions');
+        }
+        if (empty($currentUser->primary_school_id)) {
+            Response::forbidden('Not assigned to a school');
+        }
+        $target = $this->userModel->find($targetUserId);
+        if (!$target) {
+            Response::notFound('User not found');
+        }
+        if ((int)$target->primary_school_id !== (int)$currentUser->primary_school_id) {
+            Response::forbidden('That student is not in your school');
+        }
+        if ($target->role !== 'student') {
+            Response::forbidden('Only student accounts can be managed here');
+        }
+    }
+
+    /**
+     * Read JSON body, falling back to $_POST for form submissions.
+     */
+    private function readJsonBody(): array
+    {
+        $raw = file_get_contents('php://input');
+        if (is_string($raw) && trim($raw) !== '') {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return $_POST ?: [];
+    }
+
+    /**
+     * Aggregate student stats for an instructor's school.
+     *
+     * GET /api/instructor/students/stats[?school_id=N]
+     *
+     * Teachers/instructors are auto-scoped to their primary_school_id (school_id param ignored).
+     * SchoolAdmins are auto-scoped likewise. OrgAdmins / SuperAdmins may pass school_id.
+     */
+    public function getSchoolStudentStats(array $params = []): void
+    {
+        $currentUser = $this->getCurrentUser();
+        $role = $currentUser->role;
+        $requestedSchoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : 0;
+
+        // Resolve which school to report on
+        if (in_array($role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            $schoolId = isset($currentUser->primary_school_id)
+                ? (int)$currentUser->primary_school_id
+                : 0;
+        } elseif ($role === 'orgadmin') {
+            // OrgAdmins must specify a school within their managed organizations
+            $schoolId = $requestedSchoolId;
+        } elseif ($role === 'superadmin') {
+            $schoolId = $requestedSchoolId;
+        } else {
+            Response::forbidden('Insufficient permissions');
+        }
+
+        if ($schoolId <= 0) {
+            Response::success([
+                'total_students' => 0,
+                'active_count' => 0,
+                'avg_progress' => 0,
+            ], 'No school assigned');
+            return;
+        }
+
+        $total = $this->userModel->countFilteredUsers('student', null, null, $schoolId, null);
+        $enrollmentModel = new \App\Models\Enrollment($this->pdo);
+        $aggregates = $enrollmentModel->getSchoolAggregateStats($schoolId);
+
+        Response::success([
+            'total_students' => (int)$total,
+            'active_count' => (int)$aggregates['active_count'],
+            'avg_progress' => (float)$aggregates['avg_progress'],
+        ], 'School student stats retrieved successfully');
     }
 
     /**

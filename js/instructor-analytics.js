@@ -57,16 +57,34 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 async function initializeFilters() {
     try {
-        // Fetch instructor's courses
-        const coursesResponse = await API.get('/courses');
-        const courses = coursesResponse.courses || [];
+        const user = Auth.getUser();
+
+        if (!user || !user.primary_school_id) {
+            document.getElementById('filters-container').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-school"></i></div>
+                    <h3>Not assigned to a school</h3>
+                    <p>Analytics are scoped to your assigned school. Ask a SuperAdmin to assign you via <strong>Admin &rarr; Users</strong>.</p>
+                </div>
+            `;
+            hideAnalyticsSections();
+            return;
+        }
+
+        // Fetch courses visible to this teacher's school (published only, school-scoped)
+        const coursesResponse = await API.get(`/courses?school_id=${user.primary_school_id}&published=true`);
+        const raw = coursesResponse.data || {};
+        const courses = Array.isArray(raw) ? raw : (raw.items || raw.courses || raw.data || []);
 
         if (courses.length === 0) {
             document.getElementById('filters-container').innerHTML = `
-                <div class="error-message">
-                    No courses found. You must be assigned to courses to view analytics.
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>No courses to analyse yet</h3>
+                    <p>You are not yet listed as the instructor on any course for your school. Once an admin assigns you, analytics will appear here.</p>
                 </div>
             `;
+            hideAnalyticsSections();
             return;
         }
 
@@ -110,36 +128,36 @@ async function loadInstructorAnalytics() {
 
     const filterParams = AnalyticsFilters.getFilterParams();
     const loadingMessage = '<div class="loading-spinner">Loading analytics data...</div>';
+    const user = Auth.getUser();
+    const schoolQuery = user && user.primary_school_id ? `&school_id=${user.primary_school_id}` : '';
 
     try {
-        // Show loading states
-        document.getElementById('classDistributionChart').parentElement.innerHTML =
-            '<canvas id="classDistributionChart"></canvas>';
-        document.getElementById('engagementChart').parentElement.innerHTML =
-            '<canvas id="engagementChart"></canvas>';
-        document.getElementById('questionEffectivenessChart').parentElement.innerHTML =
-            '<canvas id="questionEffectivenessChart"></canvas>';
+        // Reset chart containers by stable ID. We can't go via the canvas's parentElement,
+        // because a previous render with no data may have replaced the canvas with a
+        // no-data <div> — getElementById('xxxChart') would then be null.
+        resetChartContainer('classDistributionContainer', 'classDistributionChart');
+        resetChartContainer('engagementContainer', 'engagementChart');
+        resetChartContainer('questionEffectivenessContainer', 'questionEffectivenessChart');
         document.getElementById('at-risk-tbody').innerHTML =
             '<tr><td colspan="7" class="loading-spinner">Loading at-risk students...</td></tr>';
         document.getElementById('grading-workload-container').innerHTML = loadingMessage;
 
-        // Fetch all data in parallel
-        const [
-            distributionData,
-            engagementData,
-            questionData,
-            atRiskData,
-            gradingData
-        ] = await Promise.all([
-            API.get(`/analytics/instructor/class/${currentCourseId}/distribution?${filterParams}`),
-            API.get(`/analytics/instructor/class/${currentCourseId}/engagement?${filterParams}`),
-            API.get(`/analytics/instructor/class/${currentCourseId}/question-effectiveness?${filterParams}`),
-            API.get(`/analytics/instructor/class/${currentCourseId}/at-risk-students?${filterParams}`),
-            API.get(`/analytics/instructor/class/${currentCourseId}/grading-workload?${filterParams}`)
+        // Fetch all analytics in parallel. Use allSettled so a single failing endpoint
+        // (e.g., question-effectiveness when no quiz is selected) doesn't blank the page.
+        const results = await Promise.allSettled([
+            API.get(`/analytics/instructor/class/${currentCourseId}/distribution?${filterParams}${schoolQuery}`),
+            API.get(`/analytics/instructor/engagement/${currentCourseId}?${filterParams}${schoolQuery}`),
+            // Question-effectiveness is quiz-scoped; without a picked quiz we skip.
+            Promise.resolve({ data: {} }),
+            API.get(`/analytics/instructor/at-risk-students/${currentCourseId}?${filterParams}${schoolQuery}`),
+            API.get(`/analytics/instructor/grading-workload?${filterParams}${schoolQuery}`)
         ]);
 
+        const [distributionData, engagementData, questionData, atRiskData, gradingData] =
+            results.map(r => (r.status === 'fulfilled' ? (r.value.data || {}) : {}));
+
         // Update summary cards
-        updateSummaryCards(distributionData, atRiskData, gradingData);
+        updateSummaryCards(distributionData, atRiskData, gradingData, engagementData);
 
         // Render visualizations
         renderClassDistribution(distributionData);
@@ -160,11 +178,26 @@ async function loadInstructorAnalytics() {
 /**
  * Update summary cards with key metrics
  */
-function updateSummaryCards(distributionData, atRiskData, gradingData) {
-    const totalStudents = distributionData.total_students || 0;
-    const avgScore = distributionData.class_average || 0;
+function updateSummaryCards(distributionData, atRiskData, gradingData, engagementData) {
+    // total_enrolled comes straight from `enrollments` (school-scoped) and is the right
+    // semantic for "Total Students" — every enrolled student, not just those with quiz
+    // attempts (distribution.attempts) or lesson activity (engagement.total_students,
+    // which depends on v_student_engagement having rows).
+    let totalStudents = Number(distributionData?.total_enrolled);
+    if (!Number.isFinite(totalStudents) || totalStudents === 0) {
+        totalStudents = Number(engagementData?.total_students) || 0;
+    }
+    if (totalStudents === 0 && Array.isArray(distributionData?.attempts)) {
+        const distinct = new Set(
+            distributionData.attempts
+                .map(a => a.user_id)
+                .filter(id => id != null)
+        );
+        totalStudents = distinct.size;
+    }
+    const avgScore = distributionData.average_score || 0;
     const atRiskCount = atRiskData.at_risk_students?.length || 0;
-    const pendingGrading = gradingData.pending_grading_tasks || 0;
+    const pendingGrading = gradingData.total_pending || 0;
 
     Utils.animateCounter('total-students', totalStudents, 0);
     Utils.animateCounter('avg-class-score', avgScore, 1, '%');
@@ -176,10 +209,23 @@ function updateSummaryCards(distributionData, atRiskData, gradingData) {
  * Render class performance distribution histogram
  */
 function renderClassDistribution(data) {
-    const distribution = data.distribution || [];
+    const raw = data.distribution || [];
+    // Backend returns an object map { '0-20%': 3, '21-40%': 5, ... } from
+    // AdvancedAnalyticsController::getClassDistribution. Normalise to a stable
+    // array of {score_range, student_count} regardless of which shape arrives.
+    const RANGE_ORDER = ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'];
+    let distribution;
+    if (Array.isArray(raw)) {
+        distribution = raw;
+    } else {
+        distribution = RANGE_ORDER
+            .filter(r => Object.prototype.hasOwnProperty.call(raw, r))
+            .map(r => ({ score_range: r, student_count: Number(raw[r]) || 0 }));
+    }
 
-    if (distribution.length === 0) {
-        document.getElementById('classDistributionChart').parentElement.innerHTML =
+    const totalCount = distribution.reduce((sum, d) => sum + (Number(d.student_count) || 0), 0);
+    if (distribution.length === 0 || totalCount === 0) {
+        document.getElementById('classDistributionContainer').innerHTML =
             '<div class="no-data-message">No performance data available for this course.</div>';
         return;
     }
@@ -187,26 +233,22 @@ function renderClassDistribution(data) {
     const labels = distribution.map(d => d.score_range);
     const values = distribution.map(d => d.student_count);
 
+    // Colour bands match the actual range labels returned by the backend.
+    const colorFor = (label) => {
+        if (label === '81-100%') return { bg: 'rgba(75, 251, 157, 0.8)', border: '#4BFB9D' }; // Excellent
+        if (label === '61-80%')  return { bg: 'rgba(75, 110, 251, 0.8)', border: '#4B6EFB' }; // Good
+        if (label === '41-60%')  return { bg: 'rgba(110, 75, 251, 0.8)', border: '#6E4BFB' }; // Average
+        if (label === '21-40%')  return { bg: 'rgba(255, 165, 0, 0.8)',  border: '#FFA500' }; // Below
+        return { bg: 'rgba(251, 75, 75, 0.8)', border: '#FB4B4B' };                            // Poor
+    };
+
     const chartData = {
         labels: labels,
         datasets: [{
-            label: 'Number of Students',
+            label: 'Quiz Attempts',
             data: values,
-            backgroundColor: labels.map((label, index) => {
-                // Color code by performance level
-                if (label.includes('90-100')) return 'rgba(75, 251, 157, 0.8)'; // Excellent - Green
-                if (label.includes('80-89')) return 'rgba(75, 110, 251, 0.8)'; // Good - Blue
-                if (label.includes('70-79')) return 'rgba(110, 75, 251, 0.8)'; // Average - Purple
-                if (label.includes('60-69')) return 'rgba(255, 165, 0, 0.8)'; // Below Average - Orange
-                return 'rgba(251, 75, 75, 0.8)'; // Poor - Red
-            }),
-            borderColor: labels.map((label) => {
-                if (label.includes('90-100')) return '#4BFB9D';
-                if (label.includes('80-89')) return '#4B6EFB';
-                if (label.includes('70-79')) return '#6E4BFB';
-                if (label.includes('60-69')) return '#FFA500';
-                return '#FB4B4B';
-            }),
+            backgroundColor: labels.map(l => colorFor(l).bg),
+            borderColor: labels.map(l => colorFor(l).border),
             borderWidth: 2,
             borderRadius: 8
         }]
@@ -222,8 +264,8 @@ function renderClassDistribution(data) {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        const percentage = ((context.parsed.y / data.total_students) * 100).toFixed(1);
-                        return `${context.parsed.y} students (${percentage}%)`;
+                        const percentage = ((context.parsed.y / totalCount) * 100).toFixed(1);
+                        return `${context.parsed.y} attempts (${percentage}%)`;
                     }
                 }
             }
@@ -239,7 +281,7 @@ function renderClassDistribution(data) {
                 },
                 title: {
                     display: true,
-                    text: 'Number of Students'
+                    text: 'Quiz Attempts'
                 }
             },
             x: {
@@ -261,7 +303,7 @@ function renderEngagementMetrics(data) {
     const engagementData = data.engagement_data || [];
 
     if (engagementData.length === 0) {
-        document.getElementById('engagementChart').parentElement.innerHTML =
+        document.getElementById('engagementContainer').innerHTML =
             '<div class="no-data-message">No engagement data available.</div>';
         return;
     }
@@ -329,7 +371,7 @@ function renderQuestionEffectiveness(data) {
     const questions = data.questions || [];
 
     if (questions.length === 0) {
-        document.getElementById('questionEffectivenessChart').parentElement.innerHTML =
+        document.getElementById('questionEffectivenessContainer').innerHTML =
             '<div class="no-data-message">No quiz questions found for this course.</div>';
         return;
     }
@@ -488,31 +530,65 @@ function renderAtRiskStudents(data) {
  */
 function renderGradingWorkload(data) {
     const container = document.getElementById('grading-workload-container');
-    const workloadItems = data.workload_breakdown || [];
+    const pendingProjects = Number(data.pending_projects) || 0;
+    const pendingQuizzes = Number(data.pending_quizzes) || 0;
+    const totalPending = Number(data.total_pending) || 0;
+    const avgGradingHours = Number(data.avg_grading_time_hours) || 0;
+    const recent = Array.isArray(data.recent_grading) ? data.recent_grading : [];
 
-    if (workloadItems.length === 0) {
+    if (totalPending === 0 && recent.length === 0) {
         container.innerHTML = '<div class="no-data-message">No grading tasks at this time.</div>';
         return;
     }
 
-    container.innerHTML = workloadItems.map(item => `
-        <div class="grading-workload-item">
-            <div class="workload-info">
-                <h4>${Utils.escapeHtml(item.quiz_title)}</h4>
-                <div class="workload-stats">
-                    <span>✅ Graded: ${item.graded_count}</span>
-                    <span>⏳ Pending: ${item.pending_count}</span>
-                    <span>📊 Total Attempts: ${item.total_attempts}</span>
-                    <span>⏱️ Avg Time: ${Utils.formatDuration(item.avg_grading_time)}</span>
-                </div>
+    const summaryHtml = `
+        <div class="grading-workload-summary">
+            <div class="grading-workload-stat">
+                <span class="grading-workload-stat-label">Pending Projects</span>
+                <span class="grading-workload-stat-value">${pendingProjects}</span>
             </div>
-            <div class="workload-badge">
-                ${item.pending_count}
+            <div class="grading-workload-stat">
+                <span class="grading-workload-stat-label">Pending Quizzes</span>
+                <span class="grading-workload-stat-value">${pendingQuizzes}</span>
+            </div>
+            <div class="grading-workload-stat">
+                <span class="grading-workload-stat-label">Avg Turnaround</span>
+                <span class="grading-workload-stat-value">${avgGradingHours.toFixed(1)}h</span>
             </div>
         </div>
-    `).join('');
+    `;
 
-    // Animate workload items
+    const recentHtml = recent.length === 0
+        ? ''
+        : `
+            <h4 class="grading-workload-recent-heading">Recent grading activity</h4>
+            ${recent.map(item => {
+                const turnaround = item.grading_time_hours != null
+                    ? `${Number(item.grading_time_hours).toFixed(1)}h`
+                    : '—';
+                const gradedAt = item.graded_at ? Utils.formatDate(item.graded_at) : '—';
+                return `
+                    <div class="grading-workload-item">
+                        <div class="workload-info">
+                            <h4>${Utils.escapeHtml(item.item_title || 'Untitled')}</h4>
+                            <div class="workload-stats">
+                                <span>👤 ${Utils.escapeHtml(item.student_name || 'Unknown')}</span>
+                                <span>📂 ${Utils.escapeHtml(item.item_type || '')}</span>
+                                <span>✅ Graded ${gradedAt}</span>
+                                <span>⏱️ Turnaround ${turnaround}</span>
+                            </div>
+                        </div>
+                        <div class="workload-badge">
+                            ${turnaround}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        `;
+
+    container.innerHTML = summaryHtml + recentHtml;
+
+    // Animate workload items (no-op if there are no recent items)
     gsap.from('.grading-workload-item', {
         opacity: 0,
         y: 20,
@@ -529,7 +605,7 @@ function generateInstructorInsights(distributionData, engagementData, atRiskData
     const insights = [];
 
     // Performance insights
-    const classAvg = distributionData.class_average || 0;
+    const classAvg = distributionData.average_score || 0;
     if (classAvg >= 80) {
         insights.push({
             type: 'success',
@@ -624,6 +700,22 @@ function renderInsights(insights) {
 
 // Utility Functions
 
+/**
+ * Reset a chart container to a fresh canvas, regardless of whether the previous
+ * render replaced the canvas with a no-data <div>. Idempotent across reloads.
+ */
+function resetChartContainer(containerId, canvasId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    // Tear down any Chart.js instance still bound to the old canvas before we
+    // throw the canvas away.
+    if (chartInstances[canvasId]) {
+        try { chartInstances[canvasId].destroy(); } catch (e) { /* noop */ }
+        delete chartInstances[canvasId];
+    }
+    container.innerHTML = `<canvas id="${canvasId}"></canvas>`;
+}
+
 function getRiskLevel(score) {
     if (score >= 80) return { label: 'Critical', class: 'critical' };
     if (score >= 60) return { label: 'High', class: 'high' };
@@ -652,6 +744,17 @@ function showError(message) {
             ❌ ${Utils.escapeHtml(message)}
         </div>
     `;
+}
+
+/**
+ * Hide the analytics summary cards and chart grid when there's nothing to render
+ * (teacher unassigned or no courses). The filters-container still shows the empty state.
+ */
+function hideAnalyticsSections() {
+    const summary = document.querySelector('.analytics-summary-cards');
+    const grid = document.querySelector('.analytics-charts-grid');
+    if (summary) summary.style.display = 'none';
+    if (grid) grid.style.display = 'none';
 }
 
 function contactStudent(email) {

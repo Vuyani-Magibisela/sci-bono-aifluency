@@ -145,8 +145,8 @@ abstract class BaseModel
             $stmt->execute($filteredData);
 
             return (int) $this->pdo->lastInsertId();
-        } catch (PDOException $e) {
-            error_log("Database error in create: " . $e->getMessage());
+        } catch (\PDOException $e) {
+            error_log("Database error in create ({$this->table}): " . $e->getMessage() . " | SQL: $sql | Data keys: " . implode(', ', array_keys($filteredData)));
             return null;
         }
     }

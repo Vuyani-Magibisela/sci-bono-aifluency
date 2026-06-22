@@ -225,6 +225,122 @@ class School
     }
 
     /**
+     * Get only schools that have active users, with user_count included.
+     * Uses INNER JOIN to naturally exclude schools with zero users.
+     */
+    public function getSchoolsWithUsers(?int $organizationId = null): array
+    {
+        $sql = "SELECT s.*, o.name AS organization_name, COUNT(u.id) AS user_count
+                FROM schools s
+                LEFT JOIN organizations o ON s.organization_id = o.id
+                INNER JOIN users u ON u.primary_school_id = s.id AND u.is_active = 1
+                WHERE s.is_active = 1";
+
+        if ($organizationId !== null) {
+            $sql .= " AND s.organization_id = :organization_id";
+        }
+
+        $sql .= " GROUP BY s.id ORDER BY o.name ASC, s.name ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        if ($organizationId !== null) {
+            $stmt->bindValue(':organization_id', $organizationId, \PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get user counts for all schools in a single query
+     * Returns associative array: school_id => user_count
+     */
+    public function getAllUserCounts(): array
+    {
+        $stmt = $this->pdo->query("
+            SELECT primary_school_id, COUNT(*) as user_count
+            FROM users
+            WHERE primary_school_id IS NOT NULL
+            AND is_active = 1
+            GROUP BY primary_school_id
+        ");
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[(int)$row['primary_school_id']] = (int)$row['user_count'];
+        }
+        return $counts;
+    }
+
+    /**
+     * Get detailed statistics for school (superset of getStatistics)
+     */
+    public function getDetailedStatistics(int $schoolId): array
+    {
+        // Role breakdown (same as getStatistics)
+        $stats = $this->getStatistics($schoolId);
+
+        // Enrollment stats
+        $stmt = $this->pdo->prepare("
+            SELECT
+                COUNT(*) as total_enrollments,
+                ROUND(AVG(progress_percentage), 1) as avg_progress,
+                SUM(CASE WHEN progress_percentage = 100 THEN 1 ELSE 0 END) as completed_courses
+            FROM enrollments e
+            INNER JOIN users u ON e.user_id = u.id
+            WHERE u.primary_school_id = :school_id
+            AND u.is_active = 1
+        ");
+        $stmt->execute(['school_id' => $schoolId]);
+        $enrollment = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stats['total_enrollments'] = (int)($enrollment['total_enrollments'] ?? 0);
+        $stats['avg_progress'] = (float)($enrollment['avg_progress'] ?? 0);
+        $stats['completed_courses'] = (int)($enrollment['completed_courses'] ?? 0);
+
+        // Quiz stats
+        $stmt = $this->pdo->prepare("
+            SELECT
+                COUNT(*) as total_quiz_attempts,
+                ROUND(AVG(score), 1) as avg_quiz_score
+            FROM quiz_attempts qa
+            INNER JOIN users u ON qa.user_id = u.id
+            WHERE u.primary_school_id = :school_id
+            AND u.is_active = 1
+        ");
+        $stmt->execute(['school_id' => $schoolId]);
+        $quiz = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stats['total_quiz_attempts'] = (int)($quiz['total_quiz_attempts'] ?? 0);
+        $stats['avg_quiz_score'] = (float)($quiz['avg_quiz_score'] ?? 0);
+
+        // Certificates earned
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) as total_certificates
+            FROM certificates c
+            INNER JOIN users u ON c.user_id = u.id
+            WHERE u.primary_school_id = :school_id
+            AND u.is_active = 1
+        ");
+        $stmt->execute(['school_id' => $schoolId]);
+        $cert = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stats['total_certificates'] = (int)($cert['total_certificates'] ?? 0);
+
+        // Recent signups (last 30 days)
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) as recent_signups
+            FROM users
+            WHERE primary_school_id = :school_id
+            AND is_active = 1
+            AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        ");
+        $stmt->execute(['school_id' => $schoolId]);
+        $recent = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stats['recent_signups'] = (int)($recent['recent_signups'] ?? 0);
+
+        return $stats;
+    }
+
+    /**
      * Get schools by multiple organization IDs
      */
     public function getSchoolsByOrganizationIds(array $organizationIds): array

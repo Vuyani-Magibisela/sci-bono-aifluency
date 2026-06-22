@@ -120,7 +120,11 @@ const StudentDashboard = {
     async loadCertificates() {
         try {
             const response = await API.get('/certificates/my-certificates');
-            return response.data || [];
+            // Backend returns { certificates: [...] } under data; older code paths
+            // returned the array directly — handle both.
+            const payload = response.data ?? response;
+            if (Array.isArray(payload)) return payload;
+            return Array.isArray(payload?.certificates) ? payload.certificates : [];
         } catch (error) {
             console.warn('StudentDashboard: Could not load certificates:', error);
             return [];
@@ -173,7 +177,7 @@ const StudentDashboard = {
 
         let html = '<div class="course-grid">';
         courses.forEach(course => {
-            const progress = course.progress || 0;
+            const progress = Math.round(course.completion_percentage ?? course.progress ?? 0);
             html += `
                 <div class="course-card" data-course-id="${course.id}">
                     <div class="course-header">
@@ -292,11 +296,12 @@ const StudentDashboard = {
 
         let html = '<div class="certificates-grid">';
         certificates.forEach(cert => {
+            const earnedOn = cert.issue_date || cert.effective_issue_date || cert.issued_date;
             html += `
                 <div class="certificate-card" data-certificate-id="${cert.id}">
                     <div class="certificate-icon">🏆</div>
-                    <h4>${this.escapeHtml(cert.course_title || 'Certificate')}</h4>
-                    <p class="certificate-date">Earned on ${this.formatDate(cert.issued_date)}</p>
+                    <h4>${this.escapeHtml(cert.course_title || cert.title || 'Certificate')}</h4>
+                    <p class="certificate-date">Earned on ${this.formatDate(earnedOn)}</p>
                     <button class="btn-secondary btn-sm" onclick="StudentDashboard.viewCertificate(${cert.id})">
                         View Certificate
                     </button>
@@ -505,9 +510,7 @@ const StudentDashboard = {
      * Continue a course
      */
     continueCourse(courseId) {
-        // Navigate to course page (Phase 5 will implement this)
-        console.log(`StudentDashboard: Continue course ${courseId}`);
-        alert(`Course navigation will be implemented in Phase 5.\nCourse ID: ${courseId}`);
+        window.location.href = `course-view.html?course_id=${courseId}`;
     },
 
     /**

@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\Project;
 use App\Models\ProjectSubmission;
+use App\Models\Enrollment;
 use App\Utils\Response;
 use App\Utils\Validator;
 use App\Utils\JWTHandler;
@@ -60,7 +61,7 @@ class ProjectController extends BaseController
                 $total = $this->projectModel->count(['course_id' => $courseId]);
             }
         } else {
-            if (!$currentUser || !in_array($currentUser->role, ['admin', 'instructor'])) {
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
                 $projects = $this->projectModel->all(['is_published' => true], 'title ASC', $pageSize, $offset);
                 $total = $this->projectModel->count(['is_published' => true]);
             } else {
@@ -136,7 +137,7 @@ class ProjectController extends BaseController
 
         // Check if project is published
         if (!$project->is_published) {
-            if (!$currentUser || !in_array($currentUser->role, ['admin', 'instructor'])) {
+            if (!$currentUser || !in_array($currentUser->role, ['superadmin', 'orgadmin', 'schooladmin', 'teacher'])) {
                 Response::forbidden('This project is not published');
             }
         }
@@ -167,10 +168,13 @@ class ProjectController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create projects
+        $this->requireRole(['superadmin']);
 
-        $data = $_POST;
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         // Validate input
         $validator = Validator::make($data);
@@ -242,8 +246,8 @@ class ProjectController extends BaseController
      */
     public function update(array $params): void
     {
-        // Only admin and instructor can update projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can update projects
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);
@@ -257,7 +261,10 @@ class ProjectController extends BaseController
             Response::notFound('Project not found');
         }
 
-        $data = $_POST;
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data)) {
+            $data = $_POST;
+        }
 
         // Validate input
         $validator = Validator::make($data);
@@ -332,8 +339,8 @@ class ProjectController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete projects
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete projects
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Project ID is required', 400);
@@ -425,6 +432,17 @@ class ProjectController extends BaseController
 
             $this->submissionModel->commit();
 
+            // Recompute course progress: a submission is the final missing piece
+            // for some students, so this triggers the auto-issue path.
+            try {
+                if (!empty($project->course_id)) {
+                    $enrollmentModel = new Enrollment($this->pdo);
+                    $enrollmentModel->calculateProgress((int)$currentUser->id, (int)$project->course_id);
+                }
+            } catch (\Exception $e) {
+                error_log('Project submit: progress recalc failed (non-fatal): ' . $e->getMessage());
+            }
+
             $submission = $this->submissionModel->getSubmissionWithDetails($submissionId);
 
             Response::success([
@@ -477,6 +495,51 @@ class ProjectController extends BaseController
             'submissions' => $submissions,
             'project_title' => $project->title
         ], 'Project submissions retrieved successfully');
+    }
+
+    /**
+     * Get pending project submissions for the caller's grading queue.
+     *
+     * GET /api/projects/submissions/pending
+     * Query params: ?limit=50&offset=0&course_id=1&school_id=2
+     *
+     * Authorization: teacher/instructor/schooladmin roles are locked to their own
+     * primary_school_id regardless of the school_id param. Admins can pass any school_id.
+     *
+     * @param array $params Route parameters
+     * @return void
+     */
+    public function pendingSubmissions(array $params = []): void
+    {
+        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $currentUser = $this->getCurrentUser();
+
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+        $courseId = isset($_GET['course_id']) ? (int)$_GET['course_id'] : null;
+        $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
+
+        if ($limit < 1 || $limit > 100) $limit = 50;
+        if ($offset < 0) $offset = 0;
+
+        // Teachers/schooladmins are locked to their own school.
+        if ($currentUser && in_array($currentUser->role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            $schoolId = isset($currentUser->primary_school_id) ? (int)$currentUser->primary_school_id : null;
+        }
+
+        try {
+            $submissions = $this->submissionModel->getPendingSubmissions($courseId, $schoolId, $limit, $offset);
+
+            Response::success([
+                'submissions' => $submissions,
+                'total' => count($submissions),
+                'limit' => $limit,
+                'offset' => $offset
+            ], 'Pending submissions retrieved successfully');
+        } catch (\Exception $e) {
+            error_log('Pending submissions error: ' . $e->getMessage());
+            Response::serverError('An error occurred while retrieving pending submissions');
+        }
     }
 
     /**

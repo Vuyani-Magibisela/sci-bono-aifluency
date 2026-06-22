@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Load header
-    loadHeader();
+    // Header is auto-rendered by header-template.js on DOMContentLoaded
 
     // Initialize filters
     initializeFilters();
@@ -69,12 +68,13 @@ async function loadStudentAnalytics(userId) {
         const filterParams = AnalyticsFilters.getFilterParams();
 
         // Fetch all analytics data in parallel
-        const [velocityData, timeOnTaskData, proficiencyData, struggleData] = await Promise.all([
+        // API.get() returns {success, data}, unwrap .data from each response
+        const [velocityData, timeOnTaskData, proficiencyData, struggleData] = (await Promise.all([
             API.get(`/analytics/student/${userId}/velocity?${filterParams}`),
             API.get(`/analytics/student/${userId}/time-on-task?${filterParams}`),
             API.get(`/analytics/student/${userId}/skill-proficiency?${filterParams}`),
             API.get(`/analytics/student/${userId}/struggle-indicators?${filterParams}`)
-        ]);
+        ])).map(r => r.data || {});
 
         // Update summary cards
         updateSummaryCards(velocityData, timeOnTaskData, proficiencyData);
@@ -244,20 +244,26 @@ function renderProficiencyChart(proficiencyData) {
  * Render time distribution pie chart
  */
 function renderTimeDistributionChart(timeOnTaskData) {
-    if (!timeOnTaskData.time_on_task || timeOnTaskData.time_on_task.length === 0) {
-        showNoDataMessage('timeDistributionChart', 'No time tracking data available');
-        return;
-    }
+    const items = timeOnTaskData.time_on_task || [];
 
-    // Aggregate time by module
+    // Aggregate time by module, ignoring zero / null / NaN entries.
+    // lesson_progress.time_spent_minutes defaults to 0 and quiz_attempts.time_spent_seconds
+    // is nullable — without this filter Chart.js receives all-zero slices and draws nothing.
     const timeByModule = {};
-    timeOnTaskData.time_on_task.forEach(item => {
+    items.forEach(item => {
+        const minutes = parseFloat(item.time_minutes);
+        if (!Number.isFinite(minutes) || minutes <= 0) return;
         const module = item.module_title || 'Other';
-        timeByModule[module] = (timeByModule[module] || 0) + parseFloat(item.time_minutes || 0);
+        timeByModule[module] = (timeByModule[module] || 0) + minutes;
     });
 
     const labels = Object.keys(timeByModule);
     const values = Object.values(timeByModule);
+
+    if (values.length === 0) {
+        showNoDataMessage('timeDistributionChart', 'No time tracking data recorded yet');
+        return;
+    }
 
     const data = {
         labels: labels,
@@ -481,10 +487,25 @@ function animateDashboard() {
 
 /**
  * Show loading state
+ *
+ * Overlays a spinner on each chart container without removing the <canvas>
+ * elements — Chart.js needs them in place when render functions run.
  */
 function showLoadingState() {
     document.querySelectorAll('.chart-container').forEach(container => {
-        container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        // Clear any prior no-data overlay so a fresh fetch can re-render the canvas
+        container.querySelectorAll('.chart-no-data-overlay').forEach(el => el.remove());
+
+        // Make sure the canvas is visible again (may have been hidden by a previous no-data state)
+        const canvas = container.querySelector('canvas');
+        if (canvas) canvas.style.display = '';
+
+        if (!container.querySelector('.chart-loading-overlay')) {
+            const overlay = document.createElement('div');
+            overlay.className = 'chart-loading-overlay';
+            overlay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            container.appendChild(overlay);
+        }
     });
 }
 
@@ -492,9 +513,7 @@ function showLoadingState() {
  * Hide loading state
  */
 function hideLoadingState() {
-    document.querySelectorAll('.loading-spinner').forEach(spinner => {
-        spinner.remove();
-    });
+    document.querySelectorAll('.chart-loading-overlay').forEach(overlay => overlay.remove());
 }
 
 /**
@@ -515,18 +534,29 @@ function showErrorMessage(message) {
 
 /**
  * Show "no data" message in chart
+ *
+ * Hides the canvas and overlays a message — the canvas is preserved so a
+ * subsequent fetch (e.g. after a filter change) can re-render into it.
  */
 function showNoDataMessage(canvasId, message) {
     const canvas = document.getElementById(canvasId);
-    if (canvas) {
-        const container = canvas.parentElement;
-        container.innerHTML = `
-            <div class="no-data-message">
-                <i class="fas fa-chart-line" style="font-size: 3rem; color: #ccc;"></i>
-                <p>${message}</p>
-            </div>
-        `;
+    if (!canvas) return;
+
+    const container = canvas.parentElement;
+    canvas.style.display = 'none';
+
+    let overlay = container.querySelector('.chart-no-data-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'chart-no-data-overlay';
+        container.appendChild(overlay);
     }
+    overlay.innerHTML = `
+        <div class="no-data-message">
+            <i class="fas fa-chart-line" style="font-size: 3rem; color: #ccc;"></i>
+            <p>${message}</p>
+        </div>
+    `;
 }
 
 // escapeHtml moved to Utils.js (Phase 11 refactoring)

@@ -104,9 +104,13 @@ const InstructorGrading = {
             const quizId = document.getElementById('quiz-filter').value;
             const status = document.getElementById('status-filter').value;
 
+            const user = Auth.getUser();
             let url = '/grading/pending?limit=100';
             if (quizId) {
                 url += `&quiz_id=${quizId}`;
+            }
+            if (user && user.primary_school_id) {
+                url += `&school_id=${user.primary_school_id}`;
             }
 
             const response = await API.get(url);

@@ -14,6 +14,11 @@ class StudentCourses {
      */
     async init() {
         try {
+            // Ensure token is fresh before checking auth status
+            if (typeof Auth !== 'undefined' && Auth.checkAuthOnPageLoad) {
+                await Auth.checkAuthOnPageLoad();
+            }
+
             // Check authentication
             if (typeof Auth !== 'undefined' && Auth.isAuthenticated && Auth.isAuthenticated()) {
                 this.currentUser = Auth.getUser();
@@ -37,60 +42,80 @@ class StudentCourses {
      */
     async loadCourses() {
         try {
-            console.log('=== Loading courses from API ===');
-            console.log('Current user:', this.currentUser);
-            console.log('API object type:', typeof API);
-
             if (typeof API === 'undefined' || typeof API.get !== 'function') {
                 throw new Error('API module not loaded correctly');
             }
 
-            // Try direct fetch first to see what we're getting
-            console.log('Testing direct fetch...');
-            try {
-                const testResponse = await fetch('/api/courses?published=true');
-                const testText = await testResponse.text();
-                console.log('Direct fetch status:', testResponse.status);
-                console.log('Direct fetch response (first 500 chars):', testText.substring(0, 500));
-            } catch (e) {
-                console.error('Direct fetch test failed:', e);
-            }
-
-            console.log('Calling API.get...');
             const response = await API.get('/courses', { published: true });
-            console.log('API Response:', response);
-            console.log('Response type:', typeof response);
 
             if (response && response.success && response.data) {
                 // Handle paginated response
                 this.courses = response.data.items || response.data;
-                console.log('Loaded courses:', this.courses);
-                console.log('Courses array length:', this.courses.length);
 
                 if (!Array.isArray(this.courses)) {
                     console.error('Courses is not an array:', this.courses);
                     this.courses = [];
                 }
 
+                // If user is authenticated, fetch enrollment status separately
+                // using the authenticated /enrollments endpoint (auth: true)
+                // which properly handles token refresh via 401 → retry
+                if (this.currentUser) {
+                    await this.mergeEnrollmentStatus();
+                }
+
                 this.renderCourses();
             } else {
-                console.error('API response not successful:', response);
                 throw new Error((response && response.message) || 'Failed to load courses');
             }
         } catch (error) {
-            console.error('=== Error loading courses ===');
-            console.error('Error:', error);
-            console.error('Error message:', error.message);
-            console.error('Error stack:', error.stack);
-            console.error('Error type:', error.name);
+            console.error('Error loading courses:', error);
 
-            // Show more helpful error message
             let errorMsg = error.message;
             if (errorMsg.includes('Unexpected token')) {
-                errorMsg += ' (Server returned HTML instead of JSON - check browser console for details)';
+                errorMsg += ' (Server returned HTML instead of JSON)';
             }
 
-            this.showError(`Failed to load courses: ${errorMsg}. Please check the browser console (F12) and refresh the page.`);
+            this.showError(`Failed to load courses: ${errorMsg}. Please refresh the page.`);
+        }
+    }
+
+    /**
+     * Fetch user's enrollments from the authenticated endpoint
+     * and merge enrollment status into the courses array.
+     * This uses auth:true endpoint which triggers 401→refresh→retry
+     * when the token has expired server-side.
+     */
+    async mergeEnrollmentStatus() {
+        try {
+            const enrollResponse = await API.get('/enrollments', { pageSize: 100 });
+
+            if (enrollResponse && enrollResponse.success && enrollResponse.data) {
+                const enrollments = enrollResponse.data.items || enrollResponse.data;
+
+                if (Array.isArray(enrollments)) {
+                    // Build a map of course_id → enrollment for fast lookup
+                    const enrollmentMap = {};
+                    for (const enrollment of enrollments) {
+                        enrollmentMap[enrollment.course_id] = enrollment;
+                    }
+
+                    // Merge into courses
+                    for (const course of this.courses) {
+                        const enrollment = enrollmentMap[course.id];
+                        if (enrollment) {
+                            course.is_enrolled = true;
+                            course.enrollment_status = enrollment.status;
+                            course.completion_percentage = enrollment.progress_percentage || 0;
+                        }
+                    }
+
+                    console.log('Enrollment status merged for', Object.keys(enrollmentMap).length, 'enrollments');
+                }
+            }
+        } catch (error) {
+            // Don't fail the whole page if enrollment check fails
+            console.warn('Could not fetch enrollment status:', error.message);
         }
     }
 
@@ -330,6 +355,7 @@ class StudentCourses {
             if (error.message.includes('already enrolled')) {
                 this.showToast('You are already enrolled in this course', 'info');
                 await this.loadCourses(); // Refresh to show current state
+                return; // Don't re-throw — this is a recoverable state
             } else {
                 this.showToast(error.message || 'Failed to enroll. Please try again.', 'error');
             }

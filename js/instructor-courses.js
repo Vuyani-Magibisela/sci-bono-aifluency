@@ -31,12 +31,15 @@ const InstructorCourses = {
         const container = document.getElementById('courses-container');
         try {
             const user = Auth.getUser();
-            const response = await API.get(`/courses?instructor_id=${user.id}&published=false`);
+            const endpoint = user && user.primary_school_id
+                ? `/courses?school_id=${user.primary_school_id}&published=true`
+                : `/courses?instructor_id=${user.id}&published=false`;
+            const response = await API.get(endpoint);
             const raw = response.data || {};
             this.courses = Array.isArray(raw) ? raw : (raw.items || raw.data || []);
             this.allCourses = [...this.courses];
 
-            // Load enrollment counts per course
+            // Load enrollment counts per course (scoped to this school's students)
             await this.loadEnrollmentCounts();
 
             this.updateStats();
@@ -50,12 +53,19 @@ const InstructorCourses = {
     },
 
     async loadEnrollmentCounts() {
+        const user = Auth.getUser();
+        const schoolQuery = user && user.primary_school_id
+            ? `&school_id=${user.primary_school_id}`
+            : '';
         for (const course of this.courses) {
             try {
-                const response = await API.get(`/enrollments?course_id=${course.id}`);
+                const response = await API.get(`/enrollments?course_id=${course.id}${schoolQuery}&pageSize=100`);
                 const raw = response.data || {};
                 const enrollments = Array.isArray(raw) ? raw : (raw.items || raw.data || []);
-                course.enrollment_count = enrollments.length;
+                // Prefer the paginated `total` when available — it's the authoritative count.
+                course.enrollment_count = (raw && typeof raw.total === 'number')
+                    ? raw.total
+                    : enrollments.length;
                 course.enrollments = enrollments;
             } catch (error) {
                 course.enrollment_count = course.enrollment_count || 0;
@@ -83,11 +93,15 @@ const InstructorCourses = {
         if (!container) return;
 
         if (this.courses.length === 0) {
+            const user = Auth.getUser();
+            const message = user && user.primary_school_id
+                ? 'No published courses have students from your school enrolled yet. Once a student at your school enrols, the course will appear here.'
+                : 'No courses available. Ask an administrator to assign you to a school.';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">📚</div>
                     <h3>No Courses Yet</h3>
-                    <p>You haven't been assigned any courses yet. Contact an administrator to get started.</p>
+                    <p>${this.escapeHtml(message)}</p>
                 </div>
             `;
             return;

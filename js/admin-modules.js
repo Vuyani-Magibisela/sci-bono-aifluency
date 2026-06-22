@@ -10,6 +10,11 @@ const AdminModules = {
     selectedCourseId: null,
     draggedElement: null,
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the module management interface
      */
@@ -22,6 +27,14 @@ const AdminModules = {
             console.error('AdminModules: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create/edit buttons for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-module-btn');
+            if (createBtn) createBtn.style.display = 'none';
+            const detailsEditBtn = document.getElementById('details-edit-btn');
+            if (detailsEditBtn) detailsEditBtn.style.display = 'none';
         }
 
         // Load courses first
@@ -137,6 +150,7 @@ const AdminModules = {
                         <button class="action-btn view" onclick="AdminModules.viewModule(${module.id})" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminModules.editModule(${module.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -148,6 +162,7 @@ const AdminModules = {
                         <button class="action-btn delete" onclick="AdminModules.deleteModule(${module.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -282,10 +297,12 @@ const AdminModules = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-layer-group"></i></div>
                 <h3>No Modules Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first module to organize course content.</p>
                 <button class="btn-primary" onclick="AdminModules.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Module
                 </button>
+                ` : '<p>No modules available yet.</p>'}
             </div>
         `;
     },

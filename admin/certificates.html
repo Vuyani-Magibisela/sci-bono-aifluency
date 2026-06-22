@@ -1,0 +1,214 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates - AI Fluency Admin</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin-courses.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <style>
+        .modal.active { display: flex; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #fff; border-radius: 12px; padding: 1.1rem 1.25rem; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+        .stat-card .label { font-size: .85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card .value { font-size: 2rem; font-weight: 700; color: #1f2640; margin-top: .25rem; }
+        .stat-card .delta { font-size: .8rem; color: #6b7280; }
+        .stat-card.warn .value { color: #b45309; }
+
+        table.cert-table { width: 100%; border-collapse: collapse; }
+        table.cert-table th, table.cert-table td { padding: .65rem .75rem; border-bottom: 1px solid #eef0f5; text-align: left; font-size: .9rem; }
+        table.cert-table th { background: #f8fafc; color: #475569; font-weight: 600; }
+        table.cert-table tr:hover { background: #fafbfd; }
+        .pill { display: inline-block; padding: .15rem .5rem; border-radius: 6px; font-size: .75rem; }
+        .pill-ok { background: #dcfce7; color: #166534; }
+        .pill-warn { background: #fef3c7; color: #92400e; }
+        .pill-bad { background: #fee2e2; color: #991b1b; }
+        .row-actions { display: flex; gap: .35rem; }
+        .row-actions button { padding: .3rem .55rem; font-size: .8rem; }
+
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
+        .section-title h2 { margin: 0; font-size: 1.15rem; color: #1f2640; }
+
+        .modal-narrow .modal-content { max-width: 560px; }
+        .modal-wide .modal-content { max-width: 1000px; }
+
+        .completed-link {
+            background: none;
+            border: none;
+            color: #2563eb;
+            cursor: pointer;
+            padding: 0;
+            font-size: inherit;
+            font-family: inherit;
+            text-decoration: underline dotted;
+        }
+        .completed-link:hover { color: #1d4ed8; }
+        .gap-pill { display: inline-block; padding: .1rem .45rem; border-radius: 4px; font-size: .7rem; background: #fef3c7; color: #92400e; margin: .1rem .15rem; }
+        .progress-mini { display: inline-block; min-width: 48px; font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: #475569; }
+        .progress-mini.ok { color: #166534; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="dashboard-container">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../images/logo.svg" alt="Logo">
+                <h2>AI Fluency</h2>
+            </div>
+            <div class="sidebar-profile">
+                <div class="profile-avatar"><i class="fas fa-user-shield"></i></div>
+                <div class="profile-name">Admin User</div>
+                <div class="profile-role">System Administrator</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+                <a href="/admin/users.html" class="nav-item"><i class="fas fa-users"></i><span>Users</span></a>
+                <a href="/admin/courses.html" class="nav-item"><i class="fas fa-book"></i><span>Courses</span></a>
+                <a href="/admin/modules.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Modules</span></a>
+                <a href="/admin/lessons.html" class="nav-item"><i class="fas fa-file-alt"></i><span>Lessons</span></a>
+                <a href="/admin/quizzes.html" class="nav-item"><i class="fas fa-question-circle"></i><span>Quizzes</span></a>
+                <a href="/admin/projects.html" class="nav-item"><i class="fas fa-project-diagram"></i><span>Projects</span></a>
+                <a href="/admin/certificates.html" class="nav-item active"><i class="fas fa-certificate"></i><span>Certificates</span></a>
+                <a href="/admin/certificate-templates.html" class="nav-item"><i class="fas fa-paint-brush"></i><span>Cert. Templates</span></a>
+                <a href="/admin/analytics.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+                <a href="/admin/feedback.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>User Feedback</span></a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="dashboard-topbar">
+                <div class="topbar-left"><h1>Certificates</h1></div>
+                <div class="topbar-right">
+                    <button class="btn-primary" id="backfill-missing-btn" title="Issue certificates for completed enrollments that are missing one">
+                        <i class="fas fa-magic"></i> Backfill Missing
+                    </button>
+                    <a href="/admin/certificate-templates.html" class="btn-secondary">
+                        <i class="fas fa-paint-brush"></i> Templates
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- KPI cards -->
+                <div class="stats-row" id="stats-row">
+                    <div class="stat-card"><div class="label">Total issued</div><div class="value" id="stat-total">…</div></div>
+                    <div class="stat-card"><div class="label">Active</div><div class="value" id="stat-active">…</div></div>
+                    <div class="stat-card warn"><div class="label">Revoked</div><div class="value" id="stat-revoked">…</div></div>
+                    <div class="stat-card"><div class="label">This month</div><div class="value" id="stat-month">…</div></div>
+                    <div class="stat-card"><div class="label">Last 30 days</div><div class="value" id="stat-30">…</div></div>
+                </div>
+
+                <!-- Per-course breakdown -->
+                <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                    <div class="section-title">
+                        <h2><i class="fas fa-book"></i> Per-course breakdown</h2>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="cert-table" id="per-course-table">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Template</th>
+                                    <th>Enrolled</th>
+                                    <th>Completed</th>
+                                    <th>Issued</th>
+                                    <th>Completion rate</th>
+                                </tr>
+                            </thead>
+                            <tbody><tr><td colspan="6" style="text-align:center;padding:1.5rem;">Loading…</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent certificates -->
+                <div class="dashboard-card">
+                    <div class="section-title">
+                        <h2><i class="fas fa-clock"></i> Recent certificates</h2>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="cert-table" id="recent-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Recipient</th>
+                                    <th>Course</th>
+                                    <th>Issued</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody><tr><td colspan="6" style="text-align:center;padding:1.5rem;">Loading…</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Incomplete users modal -->
+    <div id="incomplete-modal" class="modal modal-wide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="incomplete-title">Students who haven't been issued a certificate</h2>
+                <button class="modal-close" id="incomplete-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="incomplete-summary" style="color:#475569;font-size:.9rem;margin-bottom:.75rem;">Loading…</p>
+                <div style="overflow-x:auto;">
+                    <table class="cert-table" id="incomplete-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>School</th>
+                                <th>Lessons</th>
+                                <th>Quizzes</th>
+                                <th>Projects</th>
+                                <th>Missing</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="7" style="text-align:center;padding:1.5rem;">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revoke modal -->
+    <div id="revoke-modal" class="modal modal-narrow">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Revoke Certificate</h2>
+                <button class="modal-close" id="revoke-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Revoking will mark the certificate as invalid. Verification lookups will return revoked, and the user will not be able to download a fresh PDF.</p>
+                <div class="form-group">
+                    <label for="revoke-reason">Reason (optional)</label>
+                    <textarea id="revoke-reason" rows="3" maxlength="500" placeholder="Why is this being revoked?"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="revoke-cancel">Cancel</button>
+                    <button class="btn-primary" id="revoke-confirm" style="background:#b91c1c;border-color:#b91c1c;">
+                        <i class="fas fa-ban"></i> Revoke
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/header-template.js"></script>
+    <script src="../js/admin-certificates.js"></script>
+
+    <script>
+        Auth.requireAuth(['superadmin', 'orgadmin', 'schooladmin']);
+    </script>
+</body>
+</html>

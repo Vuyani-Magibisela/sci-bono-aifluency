@@ -73,6 +73,57 @@ class Course extends BaseModel
     }
 
     /**
+     * Get courses that have at least one enrolled student from a given school.
+     *
+     * Used to populate instructor pages for teachers who oversee a school
+     * (users.primary_school_id) rather than owning courses themselves.
+     *
+     * @param int $schoolId School ID (users.primary_school_id)
+     * @param bool $publishedOnly If true, restrict to is_published = 1
+     * @param int|null $limit Optional limit
+     * @param int|null $offset Optional offset
+     * @return array
+     */
+    public function getBySchool(int $schoolId, bool $publishedOnly = true, ?int $limit = null, ?int $offset = null): array
+    {
+        $sql = "SELECT DISTINCT c.*
+                FROM courses c
+                INNER JOIN enrollments e ON e.course_id = c.id
+                INNER JOIN users u ON u.id = e.user_id AND u.primary_school_id = :school_id";
+        if ($publishedOnly) {
+            $sql .= " WHERE c.is_published = 1";
+        }
+        $sql .= " ORDER BY c.created_at DESC";
+        if ($limit !== null) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset !== null) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
+        return $this->query($sql, ['school_id' => $schoolId]);
+    }
+
+    /**
+     * Count distinct courses with ≥1 school enrollment (pair for getBySchool).
+     *
+     * @param int $schoolId School ID
+     * @param bool $publishedOnly If true, restrict to is_published = 1
+     * @return int
+     */
+    public function countBySchool(int $schoolId, bool $publishedOnly = true): int
+    {
+        $sql = "SELECT COUNT(DISTINCT c.id) AS total
+                FROM courses c
+                INNER JOIN enrollments e ON e.course_id = c.id
+                INNER JOIN users u ON u.id = e.user_id AND u.primary_school_id = :school_id";
+        if ($publishedOnly) {
+            $sql .= " WHERE c.is_published = 1";
+        }
+        $rows = $this->query($sql, ['school_id' => $schoolId]);
+        return isset($rows[0]) ? (int) $rows[0]->total : 0;
+    }
+
+    /**
      * Get course with modules
      *
      * @param int $courseId Course ID
@@ -183,9 +234,11 @@ class Course extends BaseModel
     {
         try {
             $sql = "SELECT * FROM {$this->table}
-                    WHERE (title LIKE :search OR description LIKE :search)";
+                    WHERE (title LIKE :search_title OR description LIKE :search_desc)";
 
-            $params = ['search' => "%{$searchTerm}%"];
+            // ATTR_EMULATE_PREPARES=false forbids reusing one named placeholder twice.
+            $needle = "%{$searchTerm}%";
+            $params = ['search_title' => $needle, 'search_desc' => $needle];
 
             if ($publishedOnly) {
                 $sql .= " AND is_published = 1";

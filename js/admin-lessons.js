@@ -12,6 +12,11 @@ const AdminLessons = {
     selectedCourseId: null,  // NEW: Course filter for multi-course support
     quillEditor: null,
 
+    isSuperAdmin() {
+        const user = Auth.getUser();
+        return user && user.role === 'superadmin';
+    },
+
     /**
      * Initialize the lesson management interface
      */
@@ -24,6 +29,12 @@ const AdminLessons = {
             console.error('AdminLessons: Unauthorized access');
             window.location.href = '/public/403.html';
             return;
+        }
+
+        // Hide create button for non-superadmin
+        if (!this.isSuperAdmin()) {
+            const createBtn = document.getElementById('create-lesson-btn');
+            if (createBtn) createBtn.style.display = 'none';
         }
 
         // Load courses and modules first
@@ -230,6 +241,7 @@ const AdminLessons = {
                         <button class="action-btn view" onclick="AdminLessons.viewLesson(${lesson.id})" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
+                        ${this.isSuperAdmin() ? `
                         <button class="action-btn edit" onclick="AdminLessons.editLesson(${lesson.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -241,6 +253,7 @@ const AdminLessons = {
                         <button class="action-btn delete" onclick="AdminLessons.deleteLesson(${lesson.id})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -258,10 +271,12 @@ const AdminLessons = {
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-file-alt"></i></div>
                 <h3>No Lessons Found</h3>
+                ${this.isSuperAdmin() ? `
                 <p>Create your first lesson to start building course content.</p>
                 <button class="btn-primary" onclick="AdminLessons.showCreateModal()">
                     <i class="fas fa-plus"></i> Create Lesson
                 </button>
+                ` : '<p>No lessons available yet.</p>'}
             </div>
         `;
     },
@@ -378,6 +393,9 @@ const AdminLessons = {
             document.getElementById('lesson-title').value = lesson.title;
             document.getElementById('lesson-subtitle').value = lesson.subtitle || '';
             document.getElementById('lesson-slug').value = lesson.slug;
+            document.getElementById('lesson-hero-image').value = lesson.hero_image_url || '';
+            document.getElementById('lesson-video-url').value = lesson.video_url || '';
+            document.getElementById('lesson-video-poster').value = lesson.video_poster_url || '';
             document.getElementById('lesson-order').value = lesson.order_index;
             document.getElementById('lesson-duration').value = lesson.duration_minutes || '';
             document.getElementById('lesson-published').checked = lesson.is_published;
@@ -455,6 +473,9 @@ const AdminLessons = {
             subtitle: formData.get('subtitle') || null,
             slug: formData.get('slug'),
             content: content,
+            hero_image_url: formData.get('hero_image_url') || null,
+            video_url: formData.get('video_url') || null,
+            video_poster_url: formData.get('video_poster_url') || null,
             order_index: parseInt(formData.get('order_index')),
             duration_minutes: formData.get('duration_minutes')
                 ? parseInt(formData.get('duration_minutes'))

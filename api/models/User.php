@@ -44,6 +44,7 @@ class User extends BaseModel
         'date_of_birth',
         'primary_organization_id',
         'primary_school_id',
+        'education_context',
     ];
     protected array $hidden = ['password_hash'];
 
@@ -228,9 +229,11 @@ class User extends BaseModel
     {
         try {
             $sql = "SELECT * FROM {$this->table}
-                    WHERE (name LIKE :search OR email LIKE :search)";
+                    WHERE (name LIKE :search_name OR email LIKE :search_email)";
 
-            $params = ['search' => "%{$searchTerm}%"];
+            // ATTR_EMULATE_PREPARES=false forbids reusing one named placeholder twice.
+            $needle = "%{$searchTerm}%";
+            $params = ['search_name' => $needle, 'search_email' => $needle];
 
             if ($role !== null) {
                 $sql .= " AND role = :role";
@@ -652,6 +655,7 @@ class User extends BaseModel
             $groupBy = $options['group_by'] ?? 'month';
             $startDate = $options['start_date'] ?? date('Y-m-d', strtotime('-6 months'));
             $endDate = $options['end_date'] ?? date('Y-m-d');
+            $schoolId = isset($options['school_id']) ? (int)$options['school_id'] : null;
 
             // Determine grouping format
             $dateFormat = match($groupBy) {
@@ -661,23 +665,31 @@ class User extends BaseModel
                 default => 'DATE_FORMAT(created_at, "%Y-%m")'
             };
 
+            $schoolWhere = $schoolId ? 'AND primary_school_id = :school_id' : '';
+
             $sql = "SELECT
                     $dateFormat as period,
                     COUNT(*) as new_users_count,
                     SUM(CASE WHEN role = 'student' THEN 1 ELSE 0 END) as students_count,
-                    SUM(CASE WHEN role = 'instructor' THEN 1 ELSE 0 END) as instructors_count,
-                    SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admins_count,
+                    SUM(CASE WHEN role IN ('instructor', 'teacher') THEN 1 ELSE 0 END) as instructors_count,
+                    SUM(CASE WHEN role IN ('admin', 'superadmin', 'orgadmin', 'schooladmin') THEN 1 ELSE 0 END) as admins_count,
                     SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active_count
                 FROM {$this->table}
                 WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                $schoolWhere
                 GROUP BY $dateFormat
                 ORDER BY period ASC";
 
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
+            $params = [
                 'start_date' => $startDate,
                 'end_date' => $endDate
-            ]);
+            ];
+            if ($schoolId) {
+                $params['school_id'] = $schoolId;
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
             $trends = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Calculate totals
@@ -712,7 +724,7 @@ class User extends BaseModel
      * @param int $riskThreshold Minimum risk score (0-100, default 60)
      * @return array At-risk students data
      */
-    public function getAtRiskStudents(int $courseId, int $riskThreshold = 60): array
+    public function getAtRiskStudents(int $courseId, int $riskThreshold = 60, ?int $schoolId = null): array
     {
         try {
             // Use the v_at_risk_students view
@@ -737,14 +749,19 @@ class User extends BaseModel
                     END as risk_level
                 FROM v_at_risk_students
                 WHERE course_id = :course_id
-                AND risk_score >= :risk_threshold
-                ORDER BY risk_score DESC";
-
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
+                AND risk_score >= :risk_threshold";
+            $bind = [
                 'course_id' => $courseId,
                 'risk_threshold' => $riskThreshold
-            ]);
+            ];
+            if ($schoolId !== null) {
+                $sql .= " AND user_id IN (SELECT id FROM users WHERE primary_school_id = :school_id)";
+                $bind['school_id'] = $schoolId;
+            }
+            $sql .= " ORDER BY risk_score DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($bind);
             $atRiskStudents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Categorize by risk level
@@ -787,43 +804,66 @@ class User extends BaseModel
      * @return array
      */
     public function getFilteredUsers(
-        ?string $role = null,
+        $role = null,
         ?string $search = null,
         ?int $orgId = null,
         ?int $schoolId = null,
         ?int $limit = null,
-        ?int $offset = null
+        ?int $offset = null,
+        ?bool $isActive = null
     ): array {
         $conditions = [];
         $params = [];
 
-        if ($role !== null) {
-            $conditions[] = 'role = :role';
+        if (is_array($role) && count($role) > 0) {
+            $placeholders = [];
+            foreach ($role as $i => $r) {
+                $key = 'role_' . $i;
+                $placeholders[] = ':' . $key;
+                $params[$key] = $r;
+            }
+            $conditions[] = 'u.role IN (' . implode(', ', $placeholders) . ')';
+        } elseif (is_string($role) && $role !== '') {
+            $conditions[] = 'u.role = :role';
             $params['role'] = $role;
         }
         if ($search !== null) {
-            $conditions[] = '(name LIKE :search OR email LIKE :search)';
-            $params['search'] = "%{$search}%";
+            // ATTR_EMULATE_PREPARES=false forbids reusing one named placeholder twice.
+            $conditions[] = '(u.name LIKE :search_name OR u.email LIKE :search_email)';
+            $needle = "%{$search}%";
+            $params['search_name'] = $needle;
+            $params['search_email'] = $needle;
         }
         if ($orgId !== null) {
-            $conditions[] = 'primary_organization_id = :org_id';
+            $conditions[] = 'u.primary_organization_id = :org_id';
             $params['org_id'] = $orgId;
         }
         if ($schoolId !== null) {
-            $conditions[] = 'primary_school_id = :school_id';
+            $conditions[] = 'u.primary_school_id = :school_id';
             $params['school_id'] = $schoolId;
         }
+        if ($isActive !== null) {
+            $conditions[] = 'u.is_active = :is_active';
+            $params['is_active'] = $isActive ? 1 : 0;
+        }
 
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT u.*, s.name AS school_name, o.name AS organization_name
+                FROM {$this->table} u
+                LEFT JOIN schools s ON u.primary_school_id = s.id
+                LEFT JOIN organizations o ON u.primary_organization_id = o.id";
         if (!empty($conditions)) {
             $sql .= ' WHERE ' . implode(' AND ', $conditions);
         }
-        $sql .= ' ORDER BY created_at DESC';
+        $sql .= ' ORDER BY u.created_at DESC';
 
         try {
             $stmt = $this->pdo->prepare($sql . ($limit !== null ? ' LIMIT :limit' : '') . ($limit !== null && $offset !== null ? ' OFFSET :offset' : ''));
             foreach ($params as $key => $value) {
-                $stmt->bindValue(':' . $key, $value);
+                if ($key === 'is_active') {
+                    $stmt->bindValue(':is_active', $value, \PDO::PARAM_INT);
+                } else {
+                    $stmt->bindValue(':' . $key, $value);
+                }
             }
             if ($limit !== null) {
                 $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
@@ -849,21 +889,33 @@ class User extends BaseModel
      * @return int
      */
     public function countFilteredUsers(
-        ?string $role = null,
+        $role = null,
         ?string $search = null,
         ?int $orgId = null,
-        ?int $schoolId = null
+        ?int $schoolId = null,
+        ?bool $isActive = null
     ): int {
         $conditions = [];
         $params = [];
 
-        if ($role !== null) {
+        if (is_array($role) && count($role) > 0) {
+            $placeholders = [];
+            foreach ($role as $i => $r) {
+                $key = 'role_' . $i;
+                $placeholders[] = ':' . $key;
+                $params[$key] = $r;
+            }
+            $conditions[] = 'role IN (' . implode(', ', $placeholders) . ')';
+        } elseif (is_string($role) && $role !== '') {
             $conditions[] = 'role = :role';
             $params['role'] = $role;
         }
         if ($search !== null) {
-            $conditions[] = '(name LIKE :search OR email LIKE :search)';
-            $params['search'] = "%{$search}%";
+            // ATTR_EMULATE_PREPARES=false forbids reusing one named placeholder twice.
+            $conditions[] = '(name LIKE :search_name OR email LIKE :search_email)';
+            $needle = "%{$search}%";
+            $params['search_name'] = $needle;
+            $params['search_email'] = $needle;
         }
         if ($orgId !== null) {
             $conditions[] = 'primary_organization_id = :org_id';
@@ -872,6 +924,10 @@ class User extends BaseModel
         if ($schoolId !== null) {
             $conditions[] = 'primary_school_id = :school_id';
             $params['school_id'] = $schoolId;
+        }
+        if ($isActive !== null) {
+            $conditions[] = 'is_active = :is_active';
+            $params['is_active'] = $isActive ? 1 : 0;
         }
 
         $sql = "SELECT COUNT(*) as cnt FROM {$this->table}";
@@ -882,7 +938,11 @@ class User extends BaseModel
         try {
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $key => $value) {
-                $stmt->bindValue(':' . $key, $value);
+                if ($key === 'is_active') {
+                    $stmt->bindValue(':is_active', $value, \PDO::PARAM_INT);
+                } else {
+                    $stmt->bindValue(':' . $key, $value);
+                }
             }
             $stmt->execute();
             $row = $stmt->fetch(\PDO::FETCH_OBJ);

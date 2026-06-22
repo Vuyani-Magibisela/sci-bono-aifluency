@@ -104,6 +104,88 @@ class Module extends BaseModel
     }
 
     /**
+     * Build per-module unlock state for a given user in a course.
+     *
+     * Module 1 (lowest order_index) is always unlocked. Module N is unlocked iff
+     * the user has at least one passed quiz attempt for the previous module's
+     * module-level quiz. Modules without a published module-level quiz are
+     * treated as auto-pass so they don't block downstream modules.
+     *
+     * @return array Map of [module_id => ['is_unlocked' => bool, 'locked_reason' => string|null]]
+     */
+    public function getUnlockStatusMap(int $courseId, int $userId): array
+    {
+        try {
+            // One row per module. has_quiz tells us whether any published module-level
+            // quiz exists; quiz_passed tells us whether the user has passed any of them.
+            // Defensive against modules with multiple published module-level quizzes.
+            $stmt = $this->pdo->prepare("
+                SELECT m.id, m.title, m.order_index,
+                       (
+                         SELECT COUNT(*) FROM quizzes q
+                         WHERE q.module_id = m.id
+                           AND q.lesson_id IS NULL
+                           AND q.is_published = 1
+                       ) AS quiz_count,
+                       (
+                         SELECT COUNT(*)
+                         FROM quiz_attempts qa
+                         JOIN quizzes q ON qa.quiz_id = q.id
+                         WHERE q.module_id = m.id
+                           AND q.lesson_id IS NULL
+                           AND q.is_published = 1
+                           AND qa.user_id = :user_id
+                           AND qa.passed = 1
+                       ) AS pass_count
+                FROM modules m
+                WHERE m.course_id = :course_id AND m.is_published = 1
+                ORDER BY m.order_index ASC
+            ");
+            $stmt->execute(['course_id' => $courseId, 'user_id' => $userId]);
+            $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            $map = [];
+            $previousPassed = true;
+            $previousTitle = null;
+            foreach ($rows as $row) {
+                $unlocked = $previousPassed; // Module 1 always true; later modules depend on prev pass
+                $map[(int)$row->id] = [
+                    'is_unlocked' => $unlocked,
+                    'locked_reason' => $unlocked
+                        ? null
+                        : ('Pass the quiz in "' . $previousTitle . '" to unlock this module')
+                ];
+                // For the next iteration: this module is "passed" iff it has no module-level
+                // quiz, or the user has passed at least one of its quizzes.
+                $previousPassed = ((int)$row->quiz_count === 0) || ((int)$row->pass_count > 0);
+                $previousTitle = $row->title;
+            }
+            return $map;
+        } catch (\PDOException $e) {
+            error_log("Database error in getUnlockStatusMap: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Check whether a single module is unlocked for a user (used by access-gate
+     * checks in LessonController). Returns ['is_unlocked' => bool, 'locked_reason' => ?string].
+     */
+    public function getUnlockStatusForModule(int $moduleId, int $userId): array
+    {
+        $module = $this->find($moduleId);
+        if (!$module) {
+            return ['is_unlocked' => false, 'locked_reason' => 'Module not found'];
+        }
+        $map = $this->getUnlockStatusMap((int)$module->course_id, $userId);
+        if (!isset($map[$moduleId])) {
+            // Module not in map (e.g. unpublished). Default to unlocked so we don't block instructors.
+            return ['is_unlocked' => true, 'locked_reason' => null];
+        }
+        return $map[$moduleId];
+    }
+
+    /**
      * Get module statistics
      *
      * @param int $moduleId Module ID

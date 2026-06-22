@@ -50,10 +50,19 @@ class GradingController extends BaseController
     public function getPendingQueue(array $params = []): void
     {
         $this->requireInstructorRole();
+        $currentUser = JWTHandler::getCurrentUser();
 
         $quizId = isset($_GET['quiz_id']) ? (int)$_GET['quiz_id'] : null;
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+        $schoolId = isset($_GET['school_id']) ? (int)$_GET['school_id'] : null;
+
+        // Authorization: teachers and schooladmins are locked to their own school,
+        // regardless of what school_id query param they send. Admins (superadmin/orgadmin)
+        // may target any school.
+        if ($currentUser && in_array($currentUser->role, ['teacher', 'instructor', 'schooladmin'], true)) {
+            $schoolId = isset($currentUser->primary_school_id) ? (int)$currentUser->primary_school_id : null;
+        }
 
         // Cap limit for performance
         if ($limit > 100) {
@@ -61,7 +70,7 @@ class GradingController extends BaseController
         }
 
         try {
-            $pendingAttempts = $this->quizAttemptModel->getPendingGradingAttempts($quizId);
+            $pendingAttempts = $this->quizAttemptModel->getPendingGradingAttempts($quizId, $schoolId);
 
             // Apply pagination
             $total = count($pendingAttempts);

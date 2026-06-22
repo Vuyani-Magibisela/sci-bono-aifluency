@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Models\QuizAttempt;
+use App\Models\Enrollment;
 use App\Utils\Response;
 use App\Utils\Validator;
 use App\Utils\JWTHandler;
@@ -79,6 +80,7 @@ class QuizController extends BaseController
                 $bestScore = $this->quizModel->getUserBestScore($quiz->id, $currentUser->id);
                 $quiz->user_best_score = $bestScore;
                 $quiz->can_attempt = $this->quizModel->canUserAttempt($quiz->id, $currentUser->id);
+                $quiz->user_attempt_count = $this->attemptModel->countUserAttempts($quiz->id, $currentUser->id);
             }
         }
 
@@ -121,6 +123,10 @@ class QuizController extends BaseController
         // Get quiz with questions
         $quiz = $this->quizModel->getQuizWithQuestions($quizId, $includeAnswers);
 
+        if (!$quiz) {
+            Response::notFound('Quiz not found');
+        }
+
         // Get quiz statistics for instructors/admins
         if ($includeAnswers) {
             $quiz->statistics = $this->quizModel->getQuizStats($quizId);
@@ -148,8 +154,8 @@ class QuizController extends BaseController
      */
     public function create(array $params = []): void
     {
-        // Only admin and instructor can create quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can create quizzes
+        $this->requireRole(['superadmin']);
 
         $data = $_POST;
 
@@ -229,8 +235,8 @@ class QuizController extends BaseController
      */
     public function update(array $params): void
     {
-        // Only admin and instructor can update quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        // Only superadmin can update quizzes
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -319,8 +325,8 @@ class QuizController extends BaseController
      */
     public function delete(array $params): void
     {
-        // Only admin can delete quizzes
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin']);
+        // Only superadmin can delete quizzes
+        $this->requireRole(['superadmin']);
 
         if (!isset($params['id'])) {
             Response::error('Quiz ID is required', 400);
@@ -400,6 +406,13 @@ class QuizController extends BaseController
 
         $rawAnswers = $data['answers'];
         $timeSpent = isset($data['time_taken_minutes']) ? (int)$data['time_taken_minutes'] : 0;
+        // Analytics queries read time_spent_seconds; populate it (and time_started/time_completed)
+        // alongside time_taken_minutes so dashboards aren't blind to historical attempts.
+        $timeSpentSeconds = $timeSpent > 0 ? $timeSpent * 60 : null;
+        $now = date('Y-m-d H:i:s');
+        $timeStarted = $timeSpentSeconds !== null
+            ? date('Y-m-d H:i:s', time() - $timeSpentSeconds)
+            : $now;
 
         // Transform array-of-objects format [{question_id, selected_answer}] to keyed format {id => answer}
         $answers = [];
@@ -425,6 +438,10 @@ class QuizController extends BaseController
         $score = $validation['score'];
         $passed = $score >= $quiz->passing_score;
 
+        // Calculate correct answers count
+        $totalQuestions = isset($validation['results']) ? count($validation['results']) : 0;
+        $correctAnswers = isset($validation['results']) ? count(array_filter($validation['results'], fn($r) => !empty($r['is_correct']))) : 0;
+
         // Create quiz attempt
         try {
             $this->attemptModel->beginTransaction();
@@ -433,13 +450,21 @@ class QuizController extends BaseController
                 'quiz_id' => $quizId,
                 'user_id' => $currentUser->id,
                 'score' => $score,
+                'total_questions' => $totalQuestions,
+                'correct_answers' => $correctAnswers,
                 'answers' => $answers,
                 'time_taken_minutes' => $timeSpent,
-                'passed' => $passed
+                'time_spent_seconds' => $timeSpentSeconds,
+                'time_started' => $timeStarted,
+                'time_completed' => $now,
+                'passed' => $passed ? 1 : 0,
+                'status' => 'submitted',
+                'attempt_number' => $this->attemptModel->countUserAttempts($currentUser->id, $quizId) + 1
             ]);
 
             if (!$attemptId) {
                 $this->attemptModel->rollback();
+                error_log("Quiz attempt creation failed for quiz_id=$quizId, user_id={$currentUser->id}, score=$score, total=$totalQuestions, correct=$correctAnswers");
                 Response::serverError('Failed to submit quiz attempt');
             }
 
@@ -449,9 +474,9 @@ class QuizController extends BaseController
                     if (!isset($result['question_id'])) continue;
 
                     $questionId = (int)$result['question_id'];
-                    $userAnswer = $result['student_answer'] ?? $result['selected_answer'] ?? null;
-                    $correctAnswer = $result['correct_answer'] ?? null;
-                    $questionText = $result['question_text'] ?? '';
+                    $userAnswer = (string)($result['student_answer'] ?? $result['selected_answer'] ?? '');
+                    $correctAnswer = (string)($result['correct_answer'] ?? '');
+                    $questionText = (string)($result['question_text'] ?? '');
                     $isCorrect = isset($result['is_correct']) ? ($result['is_correct'] ? 1 : 0) : 0;
                     $pointsAwarded = $result['points_earned'] ?? $result['points_awarded'] ?? 0;
                     $pointsPossible = $result['points_possible'] ?? 10;
@@ -487,6 +512,27 @@ class QuizController extends BaseController
             $this->attemptModel->commit();
 
             $attempt = $this->attemptModel->find($attemptId);
+
+            // If the attempt passed, recompute course progress so the student
+            // unlocks the next module immediately and the certificate auto-issues
+            // when this was the final missing artifact.
+            if ($passed) {
+                try {
+                    $courseStmt = $this->pdo->prepare(
+                        "SELECT m.course_id FROM quizzes q
+                         JOIN modules m ON q.module_id = m.id
+                         WHERE q.id = :quiz_id LIMIT 1"
+                    );
+                    $courseStmt->execute(['quiz_id' => $quizId]);
+                    $courseId = $courseStmt->fetchColumn();
+                    if ($courseId) {
+                        $enrollmentModel = new Enrollment($this->pdo);
+                        $enrollmentModel->calculateProgress((int)$currentUser->id, (int)$courseId);
+                    }
+                } catch (\Exception $e) {
+                    error_log('Quiz pass: progress recalc failed (non-fatal): ' . $e->getMessage());
+                }
+            }
 
             // Check for achievement unlocks (Phase 6 - Task 4: Enhanced Achievement Triggers)
             $newAchievements = [];
@@ -605,25 +651,62 @@ class QuizController extends BaseController
         $currentUser = $this->getCurrentUser();
 
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
-
         if ($limit < 1 || $limit > 100) $limit = 5;
 
-        // Query recent quiz attempts for current user
+        // Default: current user's attempts. Instructors/admins may pass
+        // ?user_id=N to look at any student in their school (or anywhere,
+        // for org/superadmins). Students are always pinned to themselves.
+        $targetUserId = (int)$currentUser->id;
+        if (isset($_GET['user_id'])) {
+            $requested = (int)$_GET['user_id'];
+            if ($requested > 0 && $requested !== (int)$currentUser->id) {
+                $role = $currentUser->role;
+                if (in_array($role, ['orgadmin', 'superadmin'], true)) {
+                    $targetUserId = $requested;
+                } elseif (in_array($role, ['teacher', 'instructor', 'schooladmin'], true)) {
+                    $stmt = $this->pdo->prepare(
+                        "SELECT primary_school_id FROM users WHERE id = ? LIMIT 1"
+                    );
+                    $stmt->execute([$requested]);
+                    $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                    if (!$row) {
+                        Response::notFound('User not found');
+                    }
+                    if (empty($currentUser->primary_school_id)
+                        || (int)$row->primary_school_id !== (int)$currentUser->primary_school_id) {
+                        Response::forbidden('That student is not in your school');
+                    }
+                    $targetUserId = $requested;
+                } else {
+                    Response::forbidden('Insufficient permissions');
+                }
+            }
+        }
+
+        // Query recent quiz attempts for the target user.
+        // Join modules directly via q.module_id (always non-null) — joining via
+        // lessons would lose module info for module-level quizzes whose lesson_id
+        // is NULL.
         $stmt = $this->pdo->prepare("
-            SELECT qa.*, q.title as quiz_title, l.title as lesson_title, c.title as course_title
+            SELECT qa.*,
+                   q.title as quiz_title,
+                   q.passing_score,
+                   q.module_id,
+                   m.title as module_title,
+                   l.title as lesson_title,
+                   c.title as course_title
             FROM quiz_attempts qa
             JOIN quizzes q ON qa.quiz_id = q.id
+            LEFT JOIN modules m ON q.module_id = m.id
             LEFT JOIN lessons l ON q.lesson_id = l.id
-            LEFT JOIN modules m ON l.module_id = m.id
             LEFT JOIN courses c ON m.course_id = c.id
             WHERE qa.user_id = ?
             ORDER BY qa.time_completed DESC
             LIMIT ?
         ");
-        $stmt->execute([$currentUser->id, $limit]);
+        $stmt->execute([$targetUserId, $limit]);
         $attempts = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
-        // Return attempts array directly for dashboard
         Response::success($attempts, 'Recent quiz attempts retrieved successfully');
     }
 
@@ -656,10 +739,11 @@ class QuizController extends BaseController
         }
 
         $stmt = $this->pdo->prepare("
-            SELECT id, quiz_id, question_text AS question, options,
-                   correct_option AS correct_answer, explanation, points, order_index
+            SELECT MIN(id) AS id, quiz_id, question_text AS question, options,
+                   correct_option AS correct_answer, explanation, points, MIN(order_index) AS order_index
             FROM quiz_questions
             WHERE quiz_id = ?
+            GROUP BY quiz_id, question_text, options, correct_option, explanation, points
             ORDER BY order_index ASC
         ");
         $stmt->execute([$quizId]);
@@ -681,7 +765,7 @@ class QuizController extends BaseController
      */
     public function createQuestion(array $params = []): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Validate required fields
@@ -757,7 +841,7 @@ class QuizController extends BaseController
      */
     public function updateQuestion(array $params): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $questionId = (int)$params['id'];
         $data = json_decode(file_get_contents('php://input'), true);
 
@@ -828,7 +912,7 @@ class QuizController extends BaseController
      */
     public function deleteQuestion(array $params): void
     {
-        $this->requireRole(['superadmin', 'orgadmin', 'schooladmin', 'teacher']);
+        $this->requireRole(['superadmin']);
         $questionId = (int)$params['id'];
 
         // Verify question exists
