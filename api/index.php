@@ -175,12 +175,14 @@ try {
     http_response_code(500);
     header('Content-Type: application/json; charset=UTF-8');
 
+    $debugEnabled = defined('APP_DEBUG') && APP_DEBUG;
+
     $response = [
         'success' => false,
-        'message' => APP_DEBUG ? $e->getMessage() : 'Internal server error'
+        'message' => $debugEnabled ? $e->getMessage() : 'Internal server error'
     ];
 
-    if (APP_DEBUG) {
+    if ($debugEnabled) {
         $response['debug'] = [
             'file' => $e->getFile(),
             'line' => $e->getLine(),
