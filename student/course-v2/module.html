@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency — Module</title>
+    <meta name="description" content="Module missions.">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#0b2c52">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="../../css/course-v2/tokens.css">
+    <link rel="stylesheet" href="../../css/course-v2/animations.css">
+    <link rel="stylesheet" href="../../css/course-v2/shell.css">
+    <link rel="stylesheet" href="../../css/course-v2/hub.css">
+</head>
+<body>
+    <div id="v2-root"></div>
+
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+
+    <script src="../../js/course-v2/ui-mode.js"></script>
+    <script src="../../js/course-v2/xp.js"></script>
+    <script src="../../js/course-v2/animations.js"></script>
+    <script src="../../js/course-v2/data-adapter.js"></script>
+    <script src="../../js/course-v2/shell.js"></script>
+    <script src="../../js/course-v2/content-pack.js"></script>
+    <script src="../../js/course-v2/minigames/index.js"></script>
+
+    <script>
+    (async function () {
+      'use strict';
+
+      var root = document.getElementById('v2-root');
+      var user = Shell.requireAuth();
+      if (!user) return;
+
+      Shell.init({ logoSrc: '../../images/favicon.ico' });
+      Shell.mountRoot(root);
+
+      var params = new URLSearchParams(window.location.search);
+      var moduleId = parseInt(params.get('module_id'), 10);
+      if (!moduleId) {
+        var header = Shell.renderHeader(root, { contextLabel: 'AI Fluency', showXP: false });
+        var errMain = document.createElement('main');
+        errMain.className = 'v2-hub-main';
+        root.appendChild(errMain);
+        Shell.showError(errMain, 'No module specified.');
+        return;
+      }
+
+      var header = Shell.renderHeader(root, {
+        contextLabel: 'AI Fluency Course',
+        xp: 0,
+        showXP: true,
+        showSwitcher: { courseId: (UIMode.v2CourseIds[0] || null), moduleId: moduleId }
+      });
+
+      var main = document.createElement('main');
+      main.className = 'v2-hub-main';
+      root.appendChild(main);
+
+      Shell.showLoader(main, 'Loading module…');
+
+      try {
+        var moduleData = await DataAdapter.loadModule(moduleId);
+        var lessons = await DataAdapter.loadLessonsForModule(moduleId);
+        var quizzes = await DataAdapter.loadModuleQuizzes(moduleId);
+        var badges = [];
+        try { badges = await DataAdapter.loadMyBadges(moduleId); } catch (e) { /* non-blocking */ }
+        var badgeByLesson = {};
+        badges.forEach(function (b) { if (b.lesson_id) badgeByLesson[b.lesson_id] = b; });
+
+        // Merge best-quiz-scores into each lesson (if per-lesson quiz)
+        var bestByQuiz = {};
+        quizzes.forEach(function (q) {
+          if (q.user_best_score != null) bestByQuiz[q.id] = { score: q.user_best_score };
+        });
+        var quizByLesson = {};
+        quizzes.forEach(function (q) {
+          if (q.lesson_id) quizByLesson[q.lesson_id] = q.id;
+        });
+
+        var model = DataAdapter.toModuleHubModel(moduleData, lessons);
+
+        // Add quiz XP and mini-game XP to totals.
+        var progressByLesson = {};
+        lessons.forEach(function (l) { progressByLesson[l.id] = l.progress; });
+        model.totalXP = window.XP.moduleXP(
+          lessons,
+          progressByLesson,
+          bestByQuiz,
+          quizByLesson,
+          function (l) { return window.V2Minigames && window.V2Minigames.hasMinigame(l.id); }
+        );
+
+        Shell.setDocTitle(model.title + ' — AI Hub');
+        Shell.updateXP(header, model.totalXP);
+
+        renderHub(main, model);
+      } catch (e) {
+        console.error('Failed to load module:', e);
+        Shell.showError(main, e && e.message ? e.message : 'Could not load this module.');
+      }
+
+      function renderHub(container, model) {
+        container.innerHTML = '';
+
+        var title = document.createElement('div');
+        title.className = 'v2-hub-title-block';
+        title.innerHTML = ''
+          + '<div class="v2-hub-badge" style="color:' + model.accent + ';border-color:' + model.accent + ';background:rgba(47,212,221,0.1)">Module ' + model.moduleNumber + ' · ' + model.totalMissions + ' Missions</div>'
+          + '<h1 class="v2-hub-title">' + Shell.escapeHtml(model.title) + '</h1>'
+          + (model.description ? '<p class="v2-hub-subtitle">' + Shell.escapeHtml(model.description) + '</p>' : '')
+          + '<div class="v2-hub-stats">'
+          + '  <span>' + model.completedMissions + ' / ' + model.totalMissions + ' complete</span>'
+          + '  <span class="v2-hub-stats__divider"></span>'
+          + '  <span>' + model.totalXP + ' XP earned</span>'
+          + '</div>';
+        container.appendChild(title);
+
+        var grid = document.createElement('div');
+        grid.className = 'v2-mission-grid';
+        model.missions.forEach(function (m) {
+          var card = document.createElement('a');
+          card.className = 'v2-mission-card' + (m.isCompleted ? ' v2-mission-card--completed' : '');
+          card.style.setProperty('--v2-card-accent', m.accent);
+          card.href = '../course-v2/chapter.html?lesson_id=' + m.lessonId + '&module_id=' + model.id;
+          var badge = badgeByLesson[m.lessonId];
+          var badgeChip = badge
+            ? '<span class="v2-mission-card__badge" title="' + Shell.escapeAttr(badge.badge_name || badge.badge_slug) + '">🏅 ' + Shell.escapeHtml(badge.badge_name || badge.badge_slug) + '</span>'
+            : '';
+          card.innerHTML = ''
+            + '<div class="v2-mission-card__number">' + Shell.escapeHtml(String(m.number).padStart(2, '0')) + '</div>'
+            + '<div class="v2-mission-card__status">' + m.statusLabel + '</div>'
+            + '<h3 class="v2-mission-card__title">' + Shell.escapeHtml(m.title) + '</h3>'
+            + (m.blurb ? '<p class="v2-mission-card__blurb">' + Shell.escapeHtml(m.blurb) + '</p>' : '')
+            + badgeChip
+            + '<div class="v2-mission-card__footer">'
+            + '  <span>' + (m.isCompleted ? (m.xp + ' XP earned') : (m.statusLabel + ' &rarr;')) + '</span>'
+            + '</div>';
+          grid.appendChild(card);
+        });
+        container.appendChild(grid);
+
+        // Back to course
+        var back = document.createElement('div');
+        back.style.marginTop = '30px';
+        back.innerHTML = '<a href="' + UIMode.urlForV2Course(model.courseId || UIMode.v2CourseIds[0]) + '" class="v2-btn v2-btn--ghost">&larr; Back to Course</a>';
+        container.appendChild(back);
+      }
+    })();
+    </script>
+</body>
+</html>

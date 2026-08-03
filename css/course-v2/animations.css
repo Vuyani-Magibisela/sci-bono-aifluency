@@ -1,0 +1,86 @@
+/*
+ * AI Fluency Course v2 — Keyframe animations
+ * Source: prototype's inline <style> (Documentation/UI/AI Fluency Course Redesign.zip)
+ */
+
+@keyframes v2-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+@keyframes v2-glow {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+  50% { opacity: 0.55; }
+}
+
+@keyframes v2-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes v2-pop {
+  0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes v2-xpfloat {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(4px) scale(0.8); }
+  18%  { opacity: 1; transform: translateX(-50%) translateY(-2px) scale(1.05); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-34px) scale(1); }
+}
+
+@keyframes v2-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+@keyframes v2-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
+}
+
+@keyframes v2-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes v2-drift {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-22px); opacity: 1; }
+}
+
+@keyframes v2-risein {
+  from { transform: translateY(13px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes v2-toast-in {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes v2-toast-out {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+}
+
+@keyframes v2-modal-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes v2-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Utility classes */
+.v2-anim-pop   { animation: v2-pop 0.45s ease-out; }
+.v2-anim-risein { animation: v2-risein 0.45s ease-out; }
+.v2-anim-shake { animation: v2-shake 0.35s ease-in-out; }
+.v2-anim-glow  { animation: v2-glow 2s ease-in-out infinite; }
+.v2-anim-bob   { animation: v2-bob 3.4s ease-in-out infinite; }
+.v2-anim-pulse { animation: v2-pulse 2.2s ease-in-out infinite; }
+.v2-anim-spin  { animation: v2-spin 7s linear infinite; }

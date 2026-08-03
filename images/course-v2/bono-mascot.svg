@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="bono-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f9bff"/>
+      <stop offset="1" stop-color="#2c62b8"/>
+    </linearGradient>
+    <linearGradient id="bono-head" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fd0ff"/>
+      <stop offset="1" stop-color="#4f9bff"/>
+    </linearGradient>
+    <radialGradient id="bono-eye-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2fd4dd" stop-opacity="1"/>
+      <stop offset="1" stop-color="#2fd4dd" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Antenna -->
+  <line x1="60" y1="14" x2="60" y2="24" stroke="#7fd0ff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="60" cy="11" r="4" fill="#F4B740" stroke="#fff" stroke-width="1.2"/>
+
+  <!-- Head -->
+  <rect x="30" y="24" width="60" height="46" rx="16" fill="url(#bono-head)" stroke="#0c3566" stroke-width="1.5"/>
+  <rect x="34" y="28" width="52" height="26" rx="10" fill="#06203f"/>
+
+  <!-- Eye glow halos -->
+  <circle cx="47" cy="41" r="14" fill="url(#bono-eye-glow)"/>
+  <circle cx="73" cy="41" r="14" fill="url(#bono-eye-glow)"/>
+
+  <!-- Eyes -->
+  <circle cx="47" cy="41" r="5" fill="#2fd4dd"/>
+  <circle cx="73" cy="41" r="5" fill="#2fd4dd"/>
+  <circle cx="48.5" cy="39.5" r="1.6" fill="#fff"/>
+  <circle cx="74.5" cy="39.5" r="1.6" fill="#fff"/>
+
+  <!-- Smile -->
+  <path d="M50 60 Q60 66 70 60" stroke="#7fd0ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+
+  <!-- Body -->
+  <rect x="34" y="72" width="52" height="34" rx="10" fill="url(#bono-body)" stroke="#0c3566" stroke-width="1.5"/>
+
+  <!-- Chest panel -->
+  <rect x="46" y="80" width="28" height="18" rx="5" fill="#06203f" opacity="0.65"/>
+  <circle cx="53" cy="89" r="2.2" fill="#F4B740"/>
+  <circle cx="60" cy="89" r="2.2" fill="#2fd4dd"/>
+  <circle cx="67" cy="89" r="2.2" fill="#7ee0a0"/>
+
+  <!-- Side connectors (arms) -->
+  <rect x="24" y="80" width="8" height="14" rx="3" fill="#2c62b8" stroke="#0c3566" stroke-width="1"/>
+  <rect x="88" y="80" width="8" height="14" rx="3" fill="#2c62b8" stroke="#0c3566" stroke-width="1"/>
+
+  <!-- Feet -->
+  <rect x="40" y="105" width="14" height="9" rx="3" fill="#0c3566"/>
+  <rect x="66" y="105" width="14" height="9" rx="3" fill="#0c3566"/>
+</svg>

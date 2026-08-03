@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency — Course</title>
+    <meta name="description" content="AI Fluency course, redesigned.">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#0b2c52">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for concept icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="../../css/course-v2/tokens.css">
+    <link rel="stylesheet" href="../../css/course-v2/animations.css">
+    <link rel="stylesheet" href="../../css/course-v2/shell.css">
+    <link rel="stylesheet" href="../../css/course-v2/hub.css">
+</head>
+<body>
+    <div id="v2-root"></div>
+
+    <!-- Shared platform scripts -->
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+
+    <!-- v2 scripts -->
+    <script src="../../js/course-v2/ui-mode.js"></script>
+    <script src="../../js/course-v2/xp.js"></script>
+    <script src="../../js/course-v2/animations.js"></script>
+    <script src="../../js/course-v2/data-adapter.js"></script>
+    <script src="../../js/course-v2/shell.js"></script>
+
+    <script>
+    (async function () {
+      'use strict';
+
+      var root = document.getElementById('v2-root');
+      var user = Shell.requireAuth();
+      if (!user) return;
+
+      Shell.init({ logoSrc: '../../images/favicon.ico' });
+      Shell.mountRoot(root);
+
+      // Parse course_id
+      var params = new URLSearchParams(window.location.search);
+      var courseId = parseInt(params.get('course_id'), 10);
+      if (!courseId && UIMode.v2CourseIds.length) courseId = UIMode.v2CourseIds[0];
+
+      var header = Shell.renderHeader(root, {
+        contextLabel: 'AI Fluency Course',
+        xp: 0,
+        showXP: true,
+        showSwitcher: { courseId: courseId }
+      });
+
+      var main = document.createElement('main');
+      main.className = 'v2-hub-main';
+      root.appendChild(main);
+
+      Shell.showLoader(main, 'Loading your course…');
+
+      try {
+        var course = await DataAdapter.loadCourse(courseId);
+        var model = DataAdapter.toCourseLandingModel(course);
+        Shell.setDocTitle(model.title + ' — AI Hub');
+
+        // Compute course-wide XP from module completion (derived).
+        // The course endpoint returns per-module completion_percentage. We approximate
+        // XP by summing module_completion% × 100 (roughly aligned with the runner's per-step awards).
+        // For a live sum, chapter-runner adds awards on top as the user plays.
+        var derivedXP = 0;
+        model.modules.forEach(function (m) {
+          derivedXP += Math.round((m.completionPercentage || 0) * 3);
+        });
+        Shell.updateXP(header, derivedXP);
+
+        renderLanding(main, model);
+      } catch (e) {
+        console.error('Failed to load course:', e);
+        Shell.showError(main, e && e.message ? e.message : 'Could not load this course.');
+      }
+
+      function renderLanding(container, model) {
+        container.innerHTML = '';
+
+        var title = document.createElement('div');
+        title.className = 'v2-hub-title-block';
+        title.innerHTML = ''
+          + '<div class="v2-hub-badge">Course · ' + model.modules.length + ' Modules</div>'
+          + '<h1 class="v2-hub-title">' + Shell.escapeHtml(model.title) + '</h1>'
+          + (model.description ? '<p class="v2-hub-subtitle">' + Shell.escapeHtml(model.description) + '</p>' : '')
+          + '<div class="v2-hub-stats">'
+          + '  <span>' + model.completionPercentage + '% complete</span>'
+          + '  <span class="v2-hub-stats__divider"></span>'
+          + '  <span>' + model.modules.filter(function (m) { return m.completionPercentage >= 100; }).length + ' of ' + model.modules.length + ' modules</span>'
+          + '</div>';
+        container.appendChild(title);
+
+        var list = document.createElement('div');
+        list.className = 'v2-module-list';
+        model.modules.forEach(function (m) {
+          var row = document.createElement('a');
+          row.className = 'v2-module-row';
+          if (!m.isUnlocked) row.classList.add('v2-mission-card--locked');
+          row.style.setProperty('--v2-card-accent', m.accent);
+          if (m.isUnlocked) {
+            row.href = UIMode.urlForV2Module(m.id);
+          } else {
+            row.href = 'javascript:void(0)';
+            row.title = m.lockedReason || 'Locked';
+          }
+          row.innerHTML = ''
+            + '<div class="v2-module-row__num">' + m.number + '</div>'
+            + '<div class="v2-module-row__body">'
+            + '  <h3 class="v2-module-row__title">' + Shell.escapeHtml(m.title) + '</h3>'
+            + '  <span class="v2-module-row__meta">' + (m.isUnlocked ? (m.completionPercentage + '% complete') : (m.lockedReason || 'Locked')) + '</span>'
+            + '</div>'
+            + '<div class="v2-module-row__progress"><div class="v2-module-row__progress-fill" style="width:' + m.completionPercentage + '%; background:' + m.accent + '"></div></div>'
+            + '<div class="v2-module-row__pct">' + m.completionPercentage + '%</div>';
+          list.appendChild(row);
+        });
+        container.appendChild(list);
+      }
+    })();
+    </script>
+</body>
+</html>

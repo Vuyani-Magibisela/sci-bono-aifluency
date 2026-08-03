@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Fluency — Chapter</title>
+    <meta name="description" content="Chapter runner.">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#0b2c52">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="../../css/course-v2/tokens.css">
+    <link rel="stylesheet" href="../../css/course-v2/animations.css">
+    <link rel="stylesheet" href="../../css/course-v2/shell.css">
+    <link rel="stylesheet" href="../../css/course-v2/chapter.css">
+</head>
+<body>
+    <div id="v2-root"></div>
+
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+
+    <script src="../../js/course-v2/ui-mode.js"></script>
+    <script src="../../js/course-v2/xp.js"></script>
+    <script src="../../js/course-v2/animations.js"></script>
+    <script src="../../js/course-v2/data-adapter.js"></script>
+    <script src="../../js/course-v2/shell.js"></script>
+    <script src="../../js/course-v2/content-pack.js"></script>
+    <script src="../../js/course-v2/minigames/turing.js"></script>
+    <script src="../../js/course-v2/minigames/sort.js"></script>
+    <script src="../../js/course-v2/minigames/slider.js"></script>
+    <script src="../../js/course-v2/minigames/match.js"></script>
+    <script src="../../js/course-v2/minigames/index.js"></script>
+    <script src="../../js/course-v2/chapter-runner.js"></script>
+
+    <script>
+    (async function () {
+      'use strict';
+
+      var root = document.getElementById('v2-root');
+      var user = Shell.requireAuth();
+      if (!user) return;
+
+      Shell.init({ logoSrc: '../../images/favicon.ico' });
+      Shell.mountRoot(root);
+
+      var params = new URLSearchParams(window.location.search);
+      var lessonId = parseInt(params.get('lesson_id'), 10);
+      var moduleId = parseInt(params.get('module_id'), 10);
+
+      var header = Shell.renderHeader(root, {
+        contextLabel: 'Loading…',
+        xp: 0,
+        showXP: true,
+        showSwitcher: { courseId: (UIMode.v2CourseIds[0] || null), moduleId: moduleId }
+      });
+
+      var main = document.createElement('main');
+      main.className = 'v2-chapter-page';
+      root.appendChild(main);
+
+      if (!lessonId) { Shell.showError(main, 'No lesson specified.'); return; }
+
+      Shell.showLoader(main, 'Loading chapter…');
+
+      try {
+        var lesson = await DataAdapter.loadLesson(lessonId);
+        var mod = moduleId || (lesson && lesson.module_id);
+
+        // Pick the module's main quiz (either per-lesson or first module-level)
+        var quizzes = mod ? await DataAdapter.loadModuleQuizzes(mod) : [];
+        var quizStub = DataAdapter.pickQuizForLesson(lessonId, quizzes);
+        var fullQuiz = null;
+        if (quizStub) {
+          try { fullQuiz = await DataAdapter.loadQuiz(quizStub.id); } catch (e) { console.warn('Quiz load failed', e); }
+        }
+
+        var chapterModel = DataAdapter.toChapterModel(lesson, fullQuiz);
+        Shell.setDocTitle(chapterModel.title + ' — AI Hub');
+
+        // Compute course-wide starting XP so the pill reflects reality when the user enters.
+        var startingXP = 0;
+        try {
+          var courseId = UIMode.v2CourseIds[0];
+          if (courseId) {
+            var course = await DataAdapter.loadCourse(courseId);
+            var courseModules = (course && course.modules) || [];
+            // Sum per-module completion% × factor as a proxy for XP earned so far.
+            courseModules.forEach(function (m) { startingXP += Math.round((m.completion_percentage || 0) * 3); });
+          }
+        } catch (e) { /* non-blocking */ }
+
+        Shell.updateXP(header, startingXP);
+
+        // Set up stage + mascot
+        main.innerHTML = '';
+
+        // Back button (top-left of stage)
+        var backWrap = document.createElement('div');
+        backWrap.className = 'v2-stage__back';
+        backWrap.innerHTML = '<a class="v2-btn v2-btn--ghost" href="' + (mod ? UIMode.urlForV2Module(mod) : UIMode.urlForV2Course(UIMode.v2CourseIds[0])) + '">&larr; Module</a>';
+        main.appendChild(backWrap);
+
+        var stageHost = document.createElement('div');
+        main.appendChild(stageHost);
+        var stageContent = Shell.renderStage(stageHost);
+        var mascot = Shell.attachMascot(stageHost.querySelector('.v2-stage'));
+
+        var runner = ChapterRunner.create({
+          stageContent: stageContent,
+          header: header,
+          headerContainer: root,
+          chapterModel: chapterModel,
+          startingXP: startingXP,
+          mascot: mascot,
+          xpAnchor: Shell.xpWrap(root),
+          onExit: async function (which) {
+            if (which === 'next') {
+              // Try to find the next lesson under the module
+              try {
+                var lessons = mod ? await DataAdapter.loadLessonsForModule(mod) : [];
+                var idx = lessons.findIndex(function (l) { return l.id === lessonId; });
+                var next = idx >= 0 && idx < lessons.length - 1 ? lessons[idx + 1] : null;
+                if (next) {
+                  window.location.href = 'chapter.html?lesson_id=' + next.id + '&module_id=' + mod;
+                  return;
+                }
+              } catch (e) {}
+              // No next → back to module hub
+              window.location.href = UIMode.urlForV2Module(mod);
+            } else {
+              window.location.href = UIMode.urlForV2Module(mod);
+            }
+          }
+        });
+
+        // Mark lesson started (best-effort; ignore failures)
+        DataAdapter.markLessonStarted(lessonId).catch(function () {});
+
+        runner.start();
+      } catch (e) {
+        console.error('Failed to load chapter:', e);
+        Shell.showError(main, e && e.message ? e.message : 'Could not load this chapter.');
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1059,6 +1059,20 @@ $routes = [
         'auth' => true
     ],
 
+    // Badges Routes (v2 course UI gamification)
+    [
+        'method' => 'POST',
+        'pattern' => '/badges',
+        'handler' => 'BadgeController@award',
+        'auth' => true
+    ],
+    [
+        'method' => 'GET',
+        'pattern' => '/badges/my-badges',
+        'handler' => 'BadgeController@myBadges',
+        'auth' => true
+    ],
+
     // Bookmarks Routes (Phase 5D Priority 5)
     [
         'method' => 'GET',

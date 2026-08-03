@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v57';
+const CACHE_NAME = 'ai-fluency-cache-v62';
 const LESSON_MEDIA_CACHE = 'lesson-media-v1';
 const urlsToCache = [
   '/',
@@ -72,7 +72,31 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   // Quill.js (Phase 5B - Rich text editor)
   'https://cdn.quilljs.com/1.3.6/quill.js',
-  'https://cdn.quilljs.com/1.3.6/quill.snow.css'
+  'https://cdn.quilljs.com/1.3.6/quill.snow.css',
+  // AI Fluency Course v2 UI
+  '/student/course-v2/course.html',
+  '/student/course-v2/module.html',
+  '/student/course-v2/chapter.html',
+  '/css/course-v2/tokens.css',
+  '/css/course-v2/animations.css',
+  '/css/course-v2/shell.css',
+  '/css/course-v2/hub.css',
+  '/css/course-v2/chapter.css',
+  '/js/course-v2/ui-mode.js',
+  '/js/course-v2/xp.js',
+  '/js/course-v2/animations.js',
+  '/js/course-v2/data-adapter.js',
+  '/js/course-v2/shell.js',
+  '/js/course-v2/chapter-runner.js',
+  '/js/course-v2/old-module-hook.js',
+  '/js/course-v2/content-pack.js',
+  '/js/course-v2/minigames/turing.js',
+  '/js/course-v2/minigames/sort.js',
+  '/js/course-v2/minigames/slider.js',
+  '/js/course-v2/minigames/match.js',
+  '/js/course-v2/minigames/index.js',
+  '/images/course-v2/bono-mascot.svg',
+  'https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap'
 ];
 
 

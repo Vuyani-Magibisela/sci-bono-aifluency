@@ -1,0 +1,87 @@
+/*
+ * AI Fluency Course v2 — Design tokens
+ * Source: Documentation/UI/AI Fluency Course Redesign.zip (README.md)
+ */
+
+/* Reset the browser's default body margin — otherwise the page background
+   (styles.css or ua defaults) shows a white border around the dark v2 canvas. */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #03101f;
+  min-height: 100%;
+}
+
+:root {
+  /* Backgrounds */
+  --v2-bg-gradient: radial-gradient(120% 90% at 50% -10%, #0b2c52 0%, #061a33 46%, #03101f 100%);
+  --v2-stage-gradient: radial-gradient(130% 120% at 50% -10%, #15538f 0%, #0c3566 44%, #06203f 100%);
+  --v2-surface: rgba(8, 26, 52, 0.55);
+  --v2-panel-dark: #08203f;
+  --v2-border-soft: rgba(255, 255, 255, 0.12);
+  --v2-border-medium: rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --v2-text-white: #ffffff;
+  --v2-text-primary: #cfe2f7;
+  --v2-text-secondary: #eaf3ff;
+  --v2-text-muted: #9db8d8;
+  --v2-text-dim: #7e9cc4;
+  --v2-text-faint: #6f8cb0;
+  --v2-text-badge: #bcd6f4;
+
+  /* Brand + accents */
+  --v2-accent-gold: #F4B740;
+  --v2-accent-cyan: #2fd4dd;
+  --v2-accent-blue: #4f9bff;
+  --v2-accent-orange: #ff9b54;
+  --v2-accent-pink: #ff7a8a;
+  --v2-accent-green: #7ee0a0;
+  --v2-accent-purple: #c08bff;
+
+  /* Per-module accent palette (M1 uses cyan for the module, per-chapter colors override) */
+  --v2-module-1-accent: #2fd4dd;
+  --v2-module-2-accent: #c08bff;
+  --v2-module-3-accent: #ff9b54;
+  --v2-module-4-accent: #7ee0a0;
+  --v2-module-5-accent: #ff7a8a;
+  --v2-module-6-accent: #F4B740;
+
+  /* Semantic */
+  --v2-correct: #34c759;
+  --v2-correct-soft: #7ee0a0;
+  --v2-wrong: #ff5a5f;
+
+  /* Confetti */
+  --v2-confetti: #F4B740, #2fd4dd, #4f9bff, #ff7a8a, #7ee0a0, #c08bff;
+
+  /* Fonts */
+  --v2-font-display: 'Baloo 2', system-ui, sans-serif;
+  --v2-font-body: 'Nunito', system-ui, sans-serif;
+
+  /* Radii */
+  --v2-radius-card: 18px;
+  --v2-radius-stage: 28px;
+  --v2-radius-pill: 999px;
+  --v2-radius-button: 18px;
+  --v2-radius-def-box: 14px;
+  --v2-radius-small: 10px;
+
+  /* Shadows */
+  --v2-shadow-card-hover: 0 20px 44px rgba(0, 0, 0, 0.5);
+  --v2-shadow-stage: 0 30px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --v2-shadow-chip: 0 2px 10px rgba(0, 0, 0, 0.25);
+  --v2-shadow-button-lift: 0 3px 10px rgba(0, 0, 0, 0.45);
+  --v2-shadow-glow-cyan: 0 0 30px rgba(47, 212, 221, 0.35);
+
+  /* Spacing */
+  --v2-space-header: 18px 30px;
+  --v2-space-card-grid: 20px;
+  --v2-space-stage-pad-y: 24px;
+  --v2-space-stage-pad-x: 56px;
+
+  /* Motion */
+  --v2-transition-fast: 0.18s ease;
+  --v2-transition-medium: 0.32s ease;
+  --v2-transition-lift: 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}

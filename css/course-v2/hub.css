@@ -1,0 +1,321 @@
+/*
+ * AI Fluency Course v2 — Hub layouts
+ * Course landing and module hub (mission-card grid).
+ */
+
+.v2-hub-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6px 24px 54px;
+  position: relative;
+  z-index: 2;
+  gap: 24px;
+}
+
+.v2-hub-title-block {
+  text-align: center;
+  max-width: 760px;
+}
+
+.v2-hub-badge {
+  display: inline-block;
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--v2-accent-cyan);
+  border: 1px solid rgba(47, 212, 221, 0.5);
+  background: rgba(47, 212, 221, 0.1);
+  padding: 6px 16px;
+  border-radius: var(--v2-radius-pill);
+  margin-bottom: 16px;
+}
+
+.v2-hub-title {
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 62px);
+  color: var(--v2-text-white);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-shadow: var(--v2-shadow-glow-cyan);
+}
+
+.v2-hub-subtitle {
+  margin: 14px auto 0;
+  max-width: 560px;
+  font-family: var(--v2-font-body);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--v2-text-muted);
+  text-wrap: pretty;
+}
+
+.v2-hub-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--v2-text-badge);
+}
+
+.v2-hub-stats__divider {
+  width: 1px;
+  height: 18px;
+  background: var(--v2-border-medium);
+}
+
+/* Mission card grid */
+
+.v2-mission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(264px, 300px));
+  gap: var(--v2-space-card-grid);
+  max-width: 720px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .v2-mission-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
+
+.v2-mission-card {
+  background: var(--v2-surface);
+  border: 1px solid var(--v2-border-soft);
+  border-radius: var(--v2-radius-card);
+  padding: 20px 22px 18px 26px;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform var(--v2-transition-lift), box-shadow var(--v2-transition-lift);
+  overflow: hidden;
+}
+
+.v2-mission-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--v2-card-accent, var(--v2-accent-cyan));
+}
+
+.v2-mission-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--v2-shadow-card-hover);
+}
+
+.v2-mission-card--completed {
+  border-color: rgba(126, 224, 160, 0.5);
+}
+
+.v2-mission-card__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--v2-radius-pill);
+  font-family: var(--v2-font-display);
+  font-weight: 800;
+  font-size: 12px;
+  color: #06203f;
+  background: var(--v2-card-accent, var(--v2-accent-cyan));
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+}
+
+.v2-mission-card__status {
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--v2-text-dim);
+}
+
+.v2-mission-card--completed .v2-mission-card__status {
+  color: var(--v2-accent-green);
+}
+
+.v2-mission-card__title {
+  font-family: var(--v2-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  color: var(--v2-text-white);
+  margin: 0;
+  line-height: 1.15;
+}
+
+.v2-mission-card__blurb {
+  font-family: var(--v2-font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--v2-text-muted);
+  margin: 0;
+}
+
+.v2-mission-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--v2-card-accent, var(--v2-accent-cyan));
+}
+
+.v2-mission-card--completed .v2-mission-card__footer {
+  color: var(--v2-accent-green);
+}
+
+.v2-mission-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  margin-top: 6px;
+  border-radius: var(--v2-radius-pill);
+  background: rgba(244, 183, 64, 0.15);
+  border: 1px solid rgba(244, 183, 64, 0.4);
+  color: var(--v2-accent-gold);
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+}
+
+.v2-mission-card__chevron {
+  font-family: var(--v2-font-display);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.v2-mission-card--locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.v2-mission-card--locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Course landing (list of modules) */
+
+.v2-module-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 720px;
+  width: 100%;
+}
+
+.v2-module-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  background: var(--v2-surface);
+  border: 1px solid var(--v2-border-soft);
+  border-radius: var(--v2-radius-card);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--v2-transition-lift), box-shadow var(--v2-transition-lift);
+  position: relative;
+  overflow: hidden;
+}
+
+.v2-module-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--v2-card-accent, var(--v2-accent-cyan));
+}
+
+.v2-module-row:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--v2-shadow-card-hover);
+}
+
+.v2-module-row__num {
+  font-family: var(--v2-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--v2-card-accent, var(--v2-accent-cyan));
+  width: 44px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.v2-module-row__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.v2-module-row__title {
+  font-family: var(--v2-font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--v2-text-white);
+  margin: 0;
+}
+
+.v2-module-row__meta {
+  font-family: var(--v2-font-body);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--v2-text-muted);
+  letter-spacing: 0.4px;
+}
+
+.v2-module-row__progress {
+  width: 90px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.v2-module-row__progress-fill {
+  height: 100%;
+  background: var(--v2-card-accent, var(--v2-accent-cyan));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.v2-module-row__pct {
+  font-family: var(--v2-font-body);
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--v2-text-badge);
+  min-width: 40px;
+  text-align: right;
+}

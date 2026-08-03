@@ -412,5 +412,39 @@
 
     <!-- Course View Logic -->
     <script src="../js/course-view.js"></script>
+
+    <!-- v2 UI mode: first-visit popup + persistent "Try new experience" switcher -->
+    <script src="../js/course-v2/ui-mode.js"></script>
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var courseId = parseInt(params.get('course_id'), 10);
+            if (!courseId || !window.UIMode) return;
+
+            // If the user already chose the new UI, redirect them straight there.
+            if (UIMode.getMode() === UIMode.MODE_NEW && UIMode.isV2Course(courseId)) {
+                window.location.href = UIMode.urlForV2Course(courseId);
+                return;
+            }
+
+            // Show first-visit popup + render the persistent switcher pill.
+            UIMode.showPopupIfEligible(courseId);
+
+            // Mount the "Try new experience" pill into the course header once it renders.
+            var attempts = 0;
+            var interval = setInterval(function () {
+                var host = document.getElementById('course-header');
+                if (host) {
+                    clearInterval(interval);
+                    var slot = document.createElement('div');
+                    slot.style.marginTop = '1rem';
+                    UIMode.renderSwitcher(slot, { courseId: courseId });
+                    if (slot.firstChild) host.appendChild(slot);
+                } else if (++attempts > 40) {
+                    clearInterval(interval);
+                }
+            }, 100);
+        })();
+    </script>
 </body>
 </html>
