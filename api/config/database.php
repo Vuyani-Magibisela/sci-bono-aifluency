@@ -8,7 +8,7 @@
 // Use constants defined by config.php (loaded via Dotenv, which strips quotes properly)
 $host = defined('DB_HOST') ? DB_HOST : ($_ENV['DB_HOST'] ?? 'localhost');
 $port = defined('DB_PORT') ? DB_PORT : ($_ENV['DB_PORT'] ?? 3306);
-$dbname = defined('DB_NAME') ? DB_NAME : ($_ENV['DB_NAME'] ?? 'ai_fluency_lms');
+$dbname = defined('DB_NAME') ? DB_NAME : ($_ENV['DB_NAME'] ?? 'scibono_aihub_db');
 $username = defined('DB_USER') ? DB_USER : ($_ENV['DB_USER'] ?? 'root');
 $password = defined('DB_PASSWORD') ? DB_PASSWORD : ($_ENV['DB_PASSWORD'] ?? '');
 

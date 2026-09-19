@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__navigate",
+      "Bash(wsl *)",
+      "Bash(unzip -l \"/home/vuyanim/projects/scibono-github/Documentation/UI/AI Fluency Course Redesign.zip\")"
+    ]
+  }
+}
