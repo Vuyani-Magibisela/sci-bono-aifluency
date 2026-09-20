@@ -95,9 +95,7 @@
           var courseId = UIMode.v2CourseIds[0];
           if (courseId) {
             var course = await DataAdapter.loadCourse(courseId);
-            var courseModules = (course && course.modules) || [];
-            // Sum per-module completion% × factor as a proxy for XP earned so far.
-            courseModules.forEach(function (m) { startingXP += Math.round((m.completion_percentage || 0) * 3); });
+            startingXP = window.XP.courseXPFromModules(course && course.modules);
           }
         } catch (e) { /* non-blocking */ }
 
@@ -150,8 +148,18 @@
 
         runner.start();
       } catch (e) {
-        console.error('Failed to load chapter:', e);
-        Shell.showError(main, e && e.message ? e.message : 'Could not load this chapter.');
+        // A locked module is an expected state, not a failure - the API explains which quiz
+        // still has to be passed, so present it as a lock rather than a crash.
+        var msg = (e && e.message) ? e.message : 'Could not load this chapter.';
+        var locked = /unlock this module|locked/i.test(msg);
+
+        if (locked) {
+          Shell.setContextLabel(root, 'Locked');
+          Shell.showError(main, msg, 'Locked for now');
+        } else {
+          console.error('Failed to load chapter:', e);
+          Shell.showError(main, msg);
+        }
       }
     })();
     </script>

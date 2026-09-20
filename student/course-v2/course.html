@@ -75,15 +75,8 @@
         var model = DataAdapter.toCourseLandingModel(course);
         Shell.setDocTitle(model.title + ' — AI Hub');
 
-        // Compute course-wide XP from module completion (derived).
-        // The course endpoint returns per-module completion_percentage. We approximate
-        // XP by summing module_completion% × 100 (roughly aligned with the runner's per-step awards).
-        // For a live sum, chapter-runner adds awards on top as the user plays.
-        var derivedXP = 0;
-        model.modules.forEach(function (m) {
-          derivedXP += Math.round((m.completionPercentage || 0) * 3);
-        });
-        Shell.updateXP(header, derivedXP);
+        // Course-wide XP, derived from the same constants every other v2 screen uses.
+        Shell.updateXP(header, window.XP.courseXPFromModules(course && course.modules));
 
         renderLanding(main, model);
       } catch (e) {

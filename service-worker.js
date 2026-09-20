@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-fluency-cache-v62';
+const CACHE_NAME = 'ai-fluency-cache-v63';
 const LESSON_MEDIA_CACHE = 'lesson-media-v1';
 const urlsToCache = [
   '/',

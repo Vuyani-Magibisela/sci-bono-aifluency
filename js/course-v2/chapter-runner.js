@@ -26,7 +26,8 @@
     var steps = chapter.steps;
     var state = {
       stepIndex: 0,
-      runXP: 0,           // XP earned in this run only
+      runXP: 0,           // XP earned in this run only (includes in-run-only step awards)
+      persistedXP: 0,     // subset of runXP that survives a reload (see awardXP)
       totalXP: opts.startingXP || 0,  // course-wide XP (updates as we award)
       earned: {},         // idempotency keys — { c0: true, q1: true, g: true }
       quizAnswers: {},    // { question_id: selected_index } for final quiz submit
@@ -312,6 +313,13 @@
         }).catch(function (err) { console.warn('awardBadge failed (non-blocking):', err); });
       }
 
+      // Completing the lesson is what the derived model reads back on the next page load, so it
+      // is awarded here rather than being implied by the per-step awards above. A replay earns
+      // nothing new: the lesson already counts towards the derived total the pill started from.
+      if (!chapter.alreadyCompleted) {
+        awardXP('lesson-complete', window.XP.XP_LESSON_COMPLETED, true);
+      }
+
       if (window.V2Anim) window.V2Anim.confetti(60);
       if (opts.mascot) opts.mascot.hide();
 
@@ -322,7 +330,7 @@
         + '<svg class="v2-reward-trophy" viewBox="0 0 64 64" fill="currentColor"><path d="M32 4c-9 0-16 6-16 15v2H8v4c0 8 6 14 14 16v3h-4v6h28v-6h-4v-3c8-2 14-8 14-16v-4h-8v-2c0-9-7-15-16-15zm-12 15c0-6 5-11 12-11s12 5 12 11v10c0 6-5 11-12 11s-12-5-12-11V19z"/></svg>'
         + '<h1 class="v2-reward-title">' + esc(step.title || 'Chapter Complete!') + '</h1>'
         + '<div class="v2-reward-stats">'
-        + '  <div class="v2-reward-stat"><div class="v2-reward-stat__value">+' + state.runXP + '</div><div class="v2-reward-stat__label">XP earned</div></div>'
+        + '  <div class="v2-reward-stat"><div class="v2-reward-stat__value">+' + state.persistedXP + '</div><div class="v2-reward-stat__label">XP earned</div></div>'
         + '  <div class="v2-reward-stat"><div class="v2-reward-stat__value">' + bodyCount + '</div><div class="v2-reward-stat__label">' + bodyLabel + '</div></div>'
         + '  <div class="v2-reward-stat"><div class="v2-reward-stat__value">🏅</div><div class="v2-reward-stat__label">' + esc(badgeName) + '</div></div>'
         + '</div>'
@@ -344,13 +352,27 @@
       render();
     }
 
-    function awardXP(key, amount) {
+    /**
+     * Award XP for a step.
+     *
+     * `persisted` marks the awards that xp.js can re-derive after a reload (lesson completion,
+     * mini-game completion, quiz score). Concept/era/challenge awards are in-run encouragement
+     * only - counting them into the header pill made it read far higher during a chapter than
+     * the derived total shown everywhere afterwards, so the pill tracks only what survives.
+     * The burst animation still fires for every award.
+     */
+    function awardXP(key, amount, persisted) {
       if (state.earned[key]) return;
       state.earned[key] = true;
       state.runXP += amount;
-      state.totalXP += amount;
+
+      if (persisted) {
+        state.persistedXP += amount;
+        state.totalXP += amount;
+        if (window.Shell && opts.headerContainer) window.Shell.updateXP(opts.headerContainer, state.totalXP);
+      }
+
       if (opts.xpAnchor && window.V2Anim) window.V2Anim.xpBurst(amount, opts.xpAnchor);
-      if (window.Shell && opts.headerContainer) window.Shell.updateXP(opts.headerContainer, state.totalXP);
     }
 
     // ============================================================

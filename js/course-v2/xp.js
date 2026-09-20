@@ -66,6 +66,35 @@
   }
 
   /**
+   * Course-wide XP derived from the module rows that GET /courses/:id already returns.
+   *
+   * The course payload carries lessons_count / completion_percentage / quiz_passed per module
+   * but no per-lesson progress, so this is the one derivation every screen can afford to run on
+   * load. It reuses the constants above, so the header pill reads the same on the course page,
+   * the module page and inside a chapter.
+   *
+   * Minigame XP is deliberately excluded: the course payload cannot say which lessons carry a
+   * minigame. moduleXP() below stays the finer-grained, module-scoped figure.
+   */
+  function courseXPFromModules(moduleRows) {
+    if (!moduleRows || !moduleRows.length) return 0;
+    var total = 0;
+    for (var i = 0; i < moduleRows.length; i++) {
+      var m = moduleRows[i] || {};
+      var lessons = Number(m.lessons_count != null ? m.lessons_count : m.lessonsCount) || 0;
+      var pct = Number(m.completion_percentage != null ? m.completion_percentage : m.completionPercentage) || 0;
+
+      if (lessons > 0 && pct > 0) {
+        total += Math.round((pct / 100) * lessons) * XP_LESSON_COMPLETED;
+      }
+      if (m.quiz_passed || m.quizPassed) {
+        total += XP_QUIZ_MAX;
+      }
+    }
+    return total;
+  }
+
+  /**
    * Sum XP across all modules in a course.
    * @param {Array} modules  each with .lessons[]
    */
@@ -96,6 +125,7 @@
     quizXP: quizXP,
     minigameXP: minigameXP,
     moduleXP: moduleXP,
+    courseXPFromModules: courseXPFromModules,
     courseXP: courseXP
   };
 })();
