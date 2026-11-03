@@ -55,11 +55,13 @@ define('UPLOAD_PATH', __DIR__ . '/../../uploads/');
 define('DEFAULT_PAGE_SIZE', 20);
 define('MAX_PAGE_SIZE', 100);
 
-// Email Settings (for future use)
+// Email Settings
 define('MAIL_HOST', $_ENV['MAIL_HOST'] ?? '');
 define('MAIL_PORT', $_ENV['MAIL_PORT'] ?? 587);
 define('MAIL_USERNAME', $_ENV['MAIL_USERNAME'] ?? '');
 define('MAIL_PASSWORD', $_ENV['MAIL_PASSWORD'] ?? '');
+define('MAIL_FROM_ADDRESS', $_ENV['MAIL_FROM_ADDRESS'] ?? '');
+define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Sci-Bono AI Hub');
 
 // Timezone
 date_default_timezone_set('Africa/Johannesburg');
