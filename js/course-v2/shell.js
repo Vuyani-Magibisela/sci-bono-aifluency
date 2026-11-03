@@ -123,6 +123,12 @@
     return container.querySelector('[data-v2-xp]');
   }
 
+  /** Replace the header eyebrow after render - e.g. swapping "Loading…" for the real state. */
+  function setContextLabel(container, text) {
+    var el = container.querySelector('.v2-header__context');
+    if (el) el.textContent = text || '';
+  }
+
   // ============================================================
   // Stage card
   // ============================================================
@@ -210,10 +216,10 @@
       + '</div>';
   }
 
-  function showError(container, message) {
+  function showError(container, message, heading) {
     container.innerHTML = ''
       + '<div class="v2-error">'
-      + '  <h2>Something went wrong</h2>'
+      + '  <h2>' + escapeHtml(heading || 'Something went wrong') + '</h2>'
       + '  <p>' + escapeHtml(message || 'Please try again.') + '</p>'
       + '  <a href="' + escapeAttr(siteRoot() + 'student/dashboard.html') + '" class="v2-btn v2-btn--secondary" style="margin-top:20px">Back to dashboard</a>'
       + '</div>';
@@ -235,9 +241,26 @@
   // Utils
   // ============================================================
 
+  /**
+   * Decode HTML entities already present in stored content.
+   *
+   * Some course text was migrated pre-escaped (the AI Fluency description holds "AI&#039;s"),
+   * so escaping it again rendered the entity literally. Decoding first, then escaping, shows
+   * the intended character while still neutralising any real markup. Assigning to a textarea's
+   * innerHTML parses entities without executing anything.
+   */
+  function decodeEntities(s) {
+    if (s == null) return '';
+    var str = String(s);
+    if (str.indexOf('&') === -1) return str;
+    var ta = document.createElement('textarea');
+    ta.innerHTML = str;
+    return ta.value;
+  }
+
   function escapeHtml(s) {
     if (s == null) return '';
-    return String(s)
+    return decodeEntities(s)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -261,6 +284,7 @@
     mountRoot: mountRoot,
     renderHeader: renderHeader,
     updateXP: updateXP,
+    setContextLabel: setContextLabel,
     xpWrap: xpWrap,
     renderStage: renderStage,
     attachMascot: attachMascot,

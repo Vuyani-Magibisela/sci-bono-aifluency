@@ -166,3 +166,44 @@ If issues arise:
 1. The development environment at `http://aifluency.local` remains unchanged
 2. All changes are tracked in git — revert with `git checkout -- .`
 3. Database can be dropped and recreated from the SQL scripts
+
+---
+
+## Course v2 (Gamified UI)
+
+The gamified course experience ships alongside the classic pages rather than replacing them.
+It is **opt-in**: `js/course-v2/ui-mode.js` defaults `aihub_ui_mode` to `old`, so no existing
+learner is moved into it without choosing it.
+
+Full verification results and open items: `Documentation/COURSE_V2_QA_REPORT.md`.
+
+### Steps
+
+1. **Database** — import `database/production/05_migration_032_user_badges.sql` via phpMyAdmin,
+   **after** `01_schema.sql` (its foreign keys reference `users`, `lessons`, `modules`).
+   Safe to re-import: the table is created with `IF NOT EXISTS`.
+   Skipping this makes `POST /api/badges` return 500 and badges never appear on the module hub.
+
+2. **Files** — upload these directories; none are stripped by `.deployignore`:
+   - `student/course-v2/`
+   - `css/course-v2/`
+   - `js/course-v2/`
+   - `images/course-v2/`
+
+   Do **not** upload `dev-router.php` — it is a local development helper for `php -S` and is
+   already listed in `.deployignore`.
+
+3. **Service worker** — `CACHE_NAME` must be bumped whenever a precached v2 asset changes
+   (currently `ai-fluency-cache-v63`). Clients keep the stale cache otherwise; one reload picks
+   up the new version.
+
+4. **Verify after deploy**, signed in as a test student:
+   - `student/course-view.html?course_id=1` shows the first-visit popup
+   - `student/course-v2/course.html?course_id=1` lists the modules and an XP pill
+   - completing a chapter awards a badge and the XP total is unchanged after a reload
+
+### Rollback
+
+Additive and reversible: either omit `student/course-v2/` from the upload, or remove the
+`old-module-hook.js` include from `student/modules/moduleN.html`. Learners on the default
+`aihub_ui_mode=old` are unaffected. The `user_badges` table can be left in place.

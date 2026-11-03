@@ -157,3 +157,8 @@
 [2026-02-03 17:20:35] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"ADMIN123"}
 [2026-02-03 17:20:41] Raw Input Length: 51, Content: {"email":"admin@sci-bono.org","password":"adin123"}
 [2026-02-03 17:20:46] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-09-20 12:21:52] Raw Input Length: 59, Content: {"email":"admin@sci-bono.co.za","password":"Vu13#K*s3D_Ai"}
+[2026-09-20 12:22:05] Raw Input Length: 59, Content: {"email":"admin@sci-bono.co.za","password":"Vu13#k*s3D_AI"}
+[2026-09-20 12:22:07] Raw Input Length: 59, Content: {"email":"admin@sci-bono.co.za","password":"Vu13#k*s3D_Ai"}
+[2026-09-20 12:22:41] Raw Input Length: 52, Content: {"email":"admin@sci-bono.org","password":"admin123"}
+[2026-09-20 12:23:06] Raw Input Length: 67, Content: {"email":"admin@vuyanimagibisela.co.za","password":"Vu13#k*S3D_Ai"}

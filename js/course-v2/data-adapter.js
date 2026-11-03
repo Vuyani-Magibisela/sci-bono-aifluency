@@ -386,6 +386,12 @@
     var raw = lesson.description || lesson.subtitle || '';
     if (!raw) return 'Ready to dig in? Let’s go.';
     var s = String(raw).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+
+    // The intro step already shows lesson.subtitle as its tagline. When description is empty we
+    // fall back to that same string, which rendered it twice in a row - drop the body instead.
+    var tagline = String(lesson.subtitle || '').replace(/\s+/g, ' ').trim();
+    if (tagline && s.toLowerCase() === tagline.toLowerCase()) return 'Ready to dig in? Let’s go.';
+
     if (s.length > 220) s = s.slice(0, 217) + '…';
     return s;
   }
@@ -399,8 +405,15 @@
   }
 
   function formatChapterNumber(lesson) {
+    // The canonical number lives in the title ("Chapter 1.04: ..."). order_index is not a plain
+    // 1..n sequence in this dataset - module 1 runs 100-110 - so reading it directly produced
+    // labels like "1.104". Prefer the title, and fold the hundreds offset out of the fallback.
+    var fromTitle = /chapter\s+(\d+\.\d+)/i.exec(lesson.title || '');
+    if (fromTitle) return fromTitle[1];
+
     var mod = lesson.module_id || 0;
     var ord = parseInt(lesson.order_index, 10) || 0;
+    if (ord >= 100) ord = ord % 100;
     return mod + '.' + (ord < 10 ? '0' + ord : ord);
   }
 

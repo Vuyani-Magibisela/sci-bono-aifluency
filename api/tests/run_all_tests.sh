@@ -165,6 +165,12 @@ else
 fi
 ((TOTAL_TESTS++))
 
+# Course v2 gamification endpoints (requires a running server -- see test_badges.php header)
+echo ""
+echo "--- Testing Course v2 Badges ---"
+echo ""
+run_test "test_badges.php" "Badge award + listing endpoints"
+
 # Summary
 echo ""
 echo "================================================================================"

@@ -107,7 +107,18 @@
         );
 
         Shell.setDocTitle(model.title + ' — AI Hub');
-        Shell.updateXP(header, model.totalXP);
+
+        // The header pill is course-wide on every v2 screen, so derive it the same way here -
+        // model.totalXP above stays the module-scoped figure shown in the hub summary line.
+        var courseId = moduleData.course_id || (moduleData.course && moduleData.course.id);
+        var coursewideXP = model.totalXP;
+        if (courseId) {
+          try {
+            var parentCourse = await DataAdapter.loadCourse(courseId);
+            coursewideXP = window.XP.courseXPFromModules(parentCourse && parentCourse.modules);
+          } catch (e) { /* non-blocking - fall back to the module figure */ }
+        }
+        Shell.updateXP(header, coursewideXP);
 
         renderHub(main, model);
       } catch (e) {
